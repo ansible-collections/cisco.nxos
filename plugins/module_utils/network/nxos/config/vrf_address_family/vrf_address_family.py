@@ -33,7 +33,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_address_familyTemplate,
 )
 
-
 class Vrf_address_family(ResourceModule):
     """
     The nxos_vrf_address_family config class
@@ -83,7 +82,7 @@ class Vrf_address_family(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = self.filter_dict(haved, wantd)
+            haved = self._filter_have_to_want(haved, wantd)
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -113,11 +112,28 @@ class Vrf_address_family(ResourceModule):
         """
         waafs = want.get("address_families", {})
         haafs = have.get("address_families", {})
-        for afk, afv in iteritems(waafs):
+
+        address_fam_list = [
+            ("ipv4", "unicast"), 
+            ("ipv6", "unicast"), 
+            ("ipv4", "multicast"), 
+            ("ipv6", "multicast")
+        ]
+
+        for item in address_fam_list:
             begin = len(self.commands)
-            self._compare_single_af(wantaf=afv, haveaf=haafs.get(afk, {}))
+            for afk, afv in iteritems(waafs):
+                if afv.get("afi", "") == item[0] and afv.get("safi", "") == item[1]:
+                    self._compare_single_af(wantaf=afv, haveaf=haafs.pop(afk, {}))
+            for afk, afv in iteritems(haafs):
+                if afv.get("afi", "") == item[0] and afv.get("safi", "") == item[1]:
+                    self._compare_single_af(wantaf={}, haveaf=afv)
             if len(self.commands) != begin:
-                self.commands.insert(begin, self._tmplt.render(afv, "address_family", False))
+                self.commands.insert(
+                    begin, self._tmplt.render({"afi": item[0], "safi": item[1]}, 
+                    "address_family", 
+                    False)
+                )
 
     def _compare_single_af(self, wantaf, haveaf):
         """Compare a single address family.
@@ -166,19 +182,24 @@ class Vrf_address_family(ResourceModule):
                 result[key] = item
         return result
 
-    def filter_dict(self, haved, wantd):
+    def _filter_have_to_want(self, haved, wantd):
         if isinstance(haved, dict) and isinstance(wantd, dict):
-            # Only keep keys that are in `wantd` and filter recursively
-            return {k: self.filter_dict(haved[k], wantd[k]) for k in haved if k in wantd}
+            filtered = {k: self._filter_have_to_want(haved[k], wantd[k]) for k in haved if k in wantd}
+            return {k: v for k, v in filtered.items() if v not in [None, {}, []]}
         elif isinstance(haved, list) and isinstance(wantd, list):
-            # Filter list elements if they are dictionaries, otherwise return only items that match
-            return (
-                [self.filter_dict(h_item, wantd[0]) for h_item in haved if isinstance(h_item, dict)]
-                if wantd and isinstance(wantd[0], dict)
-                else [item for item in haved if item in wantd]
-            )
+            filtered_list = []
+            for h_item in haved:
+                if isinstance(h_item, dict):
+                    for w_item in wantd:
+                        filtered_item = self._filter_have_to_want(h_item, w_item)
+                        if filtered_item not in [None, {}, []]:
+                            filtered_list.append(filtered_item)
+                            break
+                else:
+                    if h_item in wantd:
+                        filtered_list.append(h_item)
+            return filtered_list
         else:
-            # For non-dict and non-list values, just return the value if it matches
             return haved if haved == wantd else None
 
     def _vrf_address_family_list_to_dict(self, vrf_af_list: list) -> dict:
