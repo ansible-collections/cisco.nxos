@@ -83,7 +83,7 @@ class Vrf_address_family(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = self.filter_dict(haved, wantd)
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -165,6 +165,17 @@ class Vrf_address_family(ResourceModule):
                     key = item[parser_item]
                 result[key] = item
         return result
+
+    def filter_dict(self, haved, wantd):
+        if isinstance(haved, dict) and isinstance(wantd, dict):
+            # Only keep keys that are in `wantd` and filter recursively
+            return {k: self.filter_dict(haved[k], wantd[k]) for k in haved if k in wantd}
+        elif isinstance(haved, list) and isinstance(wantd, list):
+            # Filter list elements if they are dictionaries, otherwise return only items that match
+            return [self.filter_dict(h_item, wantd[0]) for h_item in haved if isinstance(h_item, dict)] if wantd and isinstance(wantd[0], dict) else [item for item in haved if item in wantd]
+        else:
+            # For non-dict and non-list values, just return the value if it matches
+            return haved if haved == wantd else None
 
     def _vrf_address_family_list_to_dict(self, vrf_af_list: list) -> dict:
         """Convert a list of vrf_address_family dictionaries to a dictionary.
