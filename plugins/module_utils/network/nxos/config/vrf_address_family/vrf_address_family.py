@@ -33,6 +33,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_address_familyTemplate,
 )
 
+
 class Vrf_address_family(ResourceModule):
     """
     The nxos_vrf_address_family config class
@@ -114,10 +115,10 @@ class Vrf_address_family(ResourceModule):
         haafs = have.get("address_families", {})
 
         address_fam_list = [
-            ("ipv4", "unicast"), 
-            ("ipv6", "unicast"), 
-            ("ipv4", "multicast"), 
-            ("ipv6", "multicast")
+            ("ipv4", "unicast"),
+            ("ipv6", "unicast"),
+            ("ipv4", "multicast"),
+            ("ipv6", "multicast"),
         ]
 
         for item in address_fam_list:
@@ -130,9 +131,12 @@ class Vrf_address_family(ResourceModule):
                     self._compare_single_af(wantaf={}, haveaf=afv)
             if len(self.commands) != begin:
                 self.commands.insert(
-                    begin, self._tmplt.render({"afi": item[0], "safi": item[1]}, 
-                    "address_family", 
-                    False)
+                    begin,
+                    self._tmplt.render(
+                        {"afi": item[0], "safi": item[1]},
+                        "address_family",
+                        False,
+                    ),
                 )
 
     def _compare_single_af(self, wantaf, haveaf):
@@ -184,7 +188,9 @@ class Vrf_address_family(ResourceModule):
 
     def _filter_have_to_want(self, haved, wantd):
         if isinstance(haved, dict) and isinstance(wantd, dict):
-            filtered = {k: self._filter_have_to_want(haved[k], wantd[k]) for k in haved if k in wantd}
+            filtered = {
+                k: self._filter_have_to_want(haved[k], wantd[k]) for k in haved if k in wantd
+            }
             return {k: v for k, v in filtered.items() if v not in [None, {}, []]}
         elif isinstance(haved, list) and isinstance(wantd, list):
             filtered_list = []

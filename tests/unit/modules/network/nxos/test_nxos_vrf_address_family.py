@@ -690,13 +690,13 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             ),
         )
         commands = [
-            'vrf context VRF2', 
-            'address-family ipv4 unicast', 
-            'no maximum routes 500 60 reinstall 80', 
-            'no route-target export 65512:200', 
-            'no export map 22', 
-            'no export vrf default map 44 allow-vpn', 
-            'no export vrf allow-vpn'
+            "vrf context VRF2",
+            "address-family ipv4 unicast",
+            "no maximum routes 500 60 reinstall 80",
+            "no route-target export 65512:200",
+            "no export map 22",
+            "no export vrf default map 44 allow-vpn",
+            "no export vrf allow-vpn",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
