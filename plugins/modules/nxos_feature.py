@@ -234,7 +234,7 @@ def validate_feature(module, mode="show"):
                 "tacacs+": "tacacs",
                 "telnet": "telnetServer",
                 "ethernet-link-oam": "elo",
-                "port-security": "eth_port_sec",
+                "port-security": "eth-port-sec",
             },
             "config": {
                 "nve": "nv overlay",
@@ -249,7 +249,7 @@ def validate_feature(module, mode="show"):
                 "tacacs": "tacacs+",
                 "telnetServer": "telnet",
                 "elo": "ethernet-link-oam",
-                "eth_port_sec": "port-security",
+                "eth-port-sec": "port-security",
             },
         }
 
