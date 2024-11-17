@@ -98,6 +98,7 @@ class TestNxosFeatureModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["terminal dont-ask", "no feature port-security"])
 
+
 class TestNxosFeatureModuleMDS(TestNxosModule):
     module = nxos_feature
 
