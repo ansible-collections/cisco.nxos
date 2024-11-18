@@ -690,13 +690,253 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             ),
         )
         commands = [
-            "vrf context VRF2",
-            "address-family ipv4 unicast",
-            "no maximum routes 500 60 reinstall 80",
-            "no route-target export 65512:200",
-            "no export map 22",
-            "no export vrf default map 44 allow-vpn",
-            "no export vrf allow-vpn",
+            'vrf context VRF2', 
+            'address-family ipv4 unicast', 
+            'no maximum routes 500 60 reinstall 80', 
+            'no route-target export 65512:200', 
+            'no export map 22', 
+            'no export vrf default map 44 allow-vpn', 
+            'no export vrf allow-vpn'
         ]
         result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_vrf_af_replaced(self):
+        """Test merged."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context VRF1
+                address-family ipv4 unicast
+                    route-target export 65512:200
+                    export map 22
+                    export vrf default map 44 allow-vpn
+                address-family ipv6 unicast
+                    maximum routes 1000
+                    route-target import 65512:200
+            vrf context VRF2
+                address-family ipv4 unicast
+                    route-target export 65512:200
+                address-family ipv6 unicast
+                    maximum routes 1000
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "VRF1",
+                        "address_families": [
+                            {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "route_target": [
+                                    {
+                                        "export": "65512:200",
+                                    },
+                                ],
+                                "maximum": {
+                                    "max_routes": 500,
+                                    "max_route_options": {
+                                        "threshold": {
+                                            "threshold_value": 60,
+                                            "reinstall_threshold": 80,
+                                        },
+                                    },
+                                },
+                                "export": [
+                                    {
+                                        "map": "22",
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                            "map_import": "44",
+                                        },
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "VRF2",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "safi": "unicast",
+                                "route_target": [
+                                    {
+                                        "export": "65512:200",
+                                    },
+                                ],
+                                "maximum": {
+                                    "max_routes": 500,
+                                    "max_route_options": {
+                                        "threshold": {
+                                            "threshold_value": 60,
+                                            "reinstall_threshold": 80,
+                                        },
+                                    },
+                                },
+                                "export": [
+                                    {
+                                        "map": "22",
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                            "map_import": "44",
+                                        },
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            'vrf context VRF1', 
+            'address-family ipv4 unicast', 
+            'no route-target export 65512:200', 
+            'no export map 22', 
+            'no export vrf default map 44 allow-vpn', 
+            'address-family ipv6 unicast', 
+            'maximum routes 500 60 reinstall 80', 
+            'no route-target import 65512:200', 
+            'route-target export 65512:200', 
+            'export map 22', 
+            'export vrf default map 44 allow-vpn', 
+            'export vrf allow-vpn', 
+            'vrf context VRF2', 
+            'address-family ipv4 unicast', 
+            'maximum routes 500 60 reinstall 80', 
+            'export map 22', 
+            'export vrf default map 44 allow-vpn', 
+            'export vrf allow-vpn', 
+            'address-family ipv6 unicast', 
+            'no maximum routes 1000'
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_vrf_af_replaced_idem(self):
+        """Test merged."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context VRF1
+                address-family ipv6 unicast
+                    maximum routes 500 60 reinstall 80
+                    route-target export 65512:200
+                    export map 22
+                    export vrf default map 44 allow-vpn
+                    export vrf allow-vpn
+            vrf context VRF2
+                address-family ipv4 unicast
+                    maximum routes 500 60 reinstall 80
+                    route-target export 65512:200
+                    export map 22
+                    export vrf default map 44 allow-vpn
+                    export vrf allow-vpn
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "VRF1",
+                        "address_families": [
+                            {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "route_target": [
+                                    {
+                                        "export": "65512:200",
+                                    },
+                                ],
+                                "maximum": {
+                                    "max_routes": 500,
+                                    "max_route_options": {
+                                        "threshold": {
+                                            "threshold_value": 60,
+                                            "reinstall_threshold": 80,
+                                        },
+                                    },
+                                },
+                                "export": [
+                                    {
+                                        "map": "22",
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                            "map_import": "44",
+                                        },
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "VRF2",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "safi": "unicast",
+                                "route_target": [
+                                    {
+                                        "export": "65512:200",
+                                    },
+                                ],
+                                "maximum": {
+                                    "max_routes": 500,
+                                    "max_route_options": {
+                                        "threshold": {
+                                            "threshold_value": 60,
+                                            "reinstall_threshold": 80,
+                                        },
+                                    },
+                                },
+                                "export": [
+                                    {
+                                        "map": "22",
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                            "map_import": "44",
+                                        },
+                                    },
+                                    {
+                                        "vrf": {
+                                            "allow_vpn": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        commands = []
+        result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
