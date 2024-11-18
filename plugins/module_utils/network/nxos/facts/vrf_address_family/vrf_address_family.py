@@ -61,7 +61,7 @@ class Vrf_address_familyFacts(object):
         :returns: argspec compliant list
         """
         if not data:
-            return {}
+            return []
 
         vrf_lists = list(data.values())
         for item in vrf_lists:
@@ -104,8 +104,7 @@ class Vrf_address_familyFacts(object):
                 redact=True,
             ),
         )
-
-        facts["vrf_address_family"] = params["config"]
+        facts["vrf_address_family"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

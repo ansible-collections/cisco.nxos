@@ -72,16 +72,6 @@ class Vrf_address_familyTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "name",
-            "getval": re.compile(
-                r"""
-                ^vrf\scontext\s(?P<name>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "vrf context {{ name }}",
-            "result": {},
-        },
-        {
             "name": "address_family",
             "getval": re.compile(
                 r"""

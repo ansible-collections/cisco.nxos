@@ -102,7 +102,7 @@ class Vrf_address_family(ResourceModule):
         begin = len(self.commands)
         self._compare_vrf_afs(want=want, have=have)
         if len(self.commands) != begin:
-            self.commands.insert(begin, self._tmplt.render({"name": vrf}, "name", False))
+            self.commands.insert(begin, f"vrf context {vrf}")
 
     def _compare_vrf_afs(self, want, have):
         """Compare the VRF address families lists.

@@ -220,7 +220,6 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             "import vrf advertise-vpn",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_vrf_af_merged_idempotent(self):
