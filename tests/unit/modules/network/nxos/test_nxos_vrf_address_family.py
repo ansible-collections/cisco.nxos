@@ -690,13 +690,13 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             ),
         )
         commands = [
-            'vrf context VRF2', 
-            'address-family ipv4 unicast', 
-            'no maximum routes 500 60 reinstall 80', 
-            'no route-target export 65512:200', 
-            'no export map 22', 
-            'no export vrf default map 44 allow-vpn', 
-            'no export vrf allow-vpn'
+            "vrf context VRF2",
+            "address-family ipv4 unicast",
+            "no maximum routes 500 60 reinstall 80",
+            "no route-target export 65512:200",
+            "no export map 22",
+            "no export vrf default map 44 allow-vpn",
+            "no export vrf allow-vpn",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -807,26 +807,26 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             ),
         )
         commands = [
-            'vrf context VRF1', 
-            'address-family ipv4 unicast', 
-            'no route-target export 65512:200', 
-            'no export map 22', 
-            'no export vrf default map 44 allow-vpn', 
-            'address-family ipv6 unicast', 
-            'maximum routes 500 60 reinstall 80', 
-            'no route-target import 65512:200', 
-            'route-target export 65512:200', 
-            'export map 22', 
-            'export vrf default map 44 allow-vpn', 
-            'export vrf allow-vpn', 
-            'vrf context VRF2', 
-            'address-family ipv4 unicast', 
-            'maximum routes 500 60 reinstall 80', 
-            'export map 22', 
-            'export vrf default map 44 allow-vpn', 
-            'export vrf allow-vpn', 
-            'address-family ipv6 unicast', 
-            'no maximum routes 1000'
+            "vrf context VRF1",
+            "address-family ipv4 unicast",
+            "no route-target export 65512:200",
+            "no export map 22",
+            "no export vrf default map 44 allow-vpn",
+            "address-family ipv6 unicast",
+            "maximum routes 500 60 reinstall 80",
+            "no route-target import 65512:200",
+            "route-target export 65512:200",
+            "export map 22",
+            "export vrf default map 44 allow-vpn",
+            "export vrf allow-vpn",
+            "vrf context VRF2",
+            "address-family ipv4 unicast",
+            "maximum routes 500 60 reinstall 80",
+            "export map 22",
+            "export vrf default map 44 allow-vpn",
+            "export vrf allow-vpn",
+            "address-family ipv6 unicast",
+            "no maximum routes 1000",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
