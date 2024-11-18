@@ -1,4 +1,26 @@
 ---
+general:
+  after:
+    - address_families:
+        - afi: ipv4
+          export:
+            - map: "22"
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          maximum:
+            max_route_options:
+              threshold:
+                reinstall_threshold: 44
+                threshold_value: 22
+            max_routes: 900
+          route_target:
+            - import: "64512:200"
+            - export: "64512:200"
+          safi: unicast
+      name: VRF1
 merged:
   after:
     - address_families:
@@ -48,7 +70,25 @@ merged:
     - import vrf default map 44 advertise-vpn
     - import vrf advertise-vpn
 deleted:
-  commands: []
+  after:
+    - address_families:
+        - afi: ipv4
+          export:
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          route_target:
+            - export: "64512:200"
+          safi: unicast
+      name: VRF1
+  commands:
+    - vrf context VRF1
+    - address-family ipv4 unicast
+    - no maximum routes 900 22 reinstall 44
+    - no route-target import 64512:200
+    - no export map 22
 gathered:
   - name: VRF1
     address_families:

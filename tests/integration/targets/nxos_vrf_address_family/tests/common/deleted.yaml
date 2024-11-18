@@ -52,12 +52,12 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ general['after'] | symmetric_difference(res_before['before']) | length == 0 }}"
+          - "{{ general['after'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - deleted['after'] == res_after['after']
+          - deleted['after'] == result['after']
 
     - name: Delete provided VRF global (idempotent)
       register: result
