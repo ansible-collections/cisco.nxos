@@ -93,6 +93,11 @@ class TestNxosFeatureModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["terminal dont-ask", "no feature ospf"])
 
+    def test_nxos_feature_port_security_disable(self):
+        set_module_args(dict(feature="port-security", state="disabled"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["terminal dont-ask", "no feature port-security"])
+
 
 class TestNxosFeatureModuleMDS(TestNxosModule):
     module = nxos_feature
@@ -171,3 +176,8 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
         set_module_args(dict(feature="sftp-server", state="disabled"))
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_feature_port_security_enable(self):
+        set_module_args(dict(feature="port-security", state="enabled"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["terminal dont-ask", "feature port-security"])
