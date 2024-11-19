@@ -20,7 +20,6 @@ jobs:
     uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   integration:
     uses: ansible/ansible-content-actions/.github/workflows/network_integration.yaml@main
     needs:
@@ -28,7 +27,7 @@ jobs:
     with:
       lab_title: cisco_nxos
       network_os: cisco.nxos.nxos
-      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv"
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
