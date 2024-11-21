@@ -16,3 +16,7 @@
     lines:
       - vrf context temp
     match: none
+
+- name: Wait for 5 seconds
+  ansible.builtin.wait_for:
+    timeout: 5
