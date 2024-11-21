@@ -166,14 +166,14 @@ RETURN = """
 before:
   description: The configuration prior to the module execution.
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 after:
   description: The resulting configuration after module execution.
   returned: when changed
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
@@ -182,17 +182,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - vrf context management
+    - address-family ipv4 unicast
+    - maximum routes 500 60 reinstall 80
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - vrf context test1
+    - address-family ipv6 unicast
+    - route-target export 65512:200
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
