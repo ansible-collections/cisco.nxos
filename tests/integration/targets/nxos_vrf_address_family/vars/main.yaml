@@ -253,3 +253,18 @@ overridden:
     - route-target import 65512:200
     - export map 26
     - export vrf default map 46 allow-vpn
+rendered:
+  commands:
+    - vrf context VRF1
+    - address-family ipv6 unicast
+    - maximum routes 500 60 reinstall 80
+    - route-target export 65512:200
+    - export map 22
+    - export vrf default map 44 allow-vpn
+    - export vrf allow-vpn
+    - vrf context temp
+    - address-family ipv4 unicast
+    - maximum routes 1000
+    - route-target import 65512:200
+    - export map 26
+    - export vrf default map 46 allow-vpn
