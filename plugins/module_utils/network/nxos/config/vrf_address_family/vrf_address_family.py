@@ -90,8 +90,13 @@ class Vrf_address_family(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have, vrf=k)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}), vrf=k)
+        if self.state == "purged":
+            purge_list = wantd or haved
+            for k, item in iteritems(purge_list):
+                self.purge(k, item)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}), vrf=k)
 
     def _compare(self, want, have, vrf):
         """Leverages the base class `compare()` method and
@@ -162,6 +167,15 @@ class Vrf_address_family(ResourceModule):
             # remove remaining items in have for replaced
             for entry in hdict.values():
                 self.addcmd(entry, attrib, True)
+
+    def purge(self, vrf, item):
+        """Purge the VRF configuration"""
+        self.commands.append(f"vrf context {vrf}")
+        for _, value in iteritems(item.get("address_families", {})):
+            self.commands.append(self._tmplt.render(
+                {"afi": value.get("afi"), "safi": value.get("safi")}, 
+                "address_family", True)
+            )
 
     def _convert_to_dict(self, vrf_af_item: list, parser_item: str) -> dict:
         """Convert to dict based on parser name.

@@ -122,6 +122,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                 "parsed",
                 "gathered",
                 "deleted",
+                "purged",
                 "merged",
                 "replaced",
                 "rendered",
