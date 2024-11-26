@@ -13,30 +13,85 @@ on:  # yamllint disable-line rule:truthy
     - cron: '0 0 * * *'
 
 jobs:
-  changelog:
-    uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
-    if: github.event_name == 'pull_request'
   build-import:
-    uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/build-import@actions_refactor
+
+  build-tox-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor  # yamllint disable-line rule:line-length
+        id: build-matrix-unit
+        with:
+          scope: unit
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor  # yamllint disable-line rule:line-length
+        id: build-matrix-sanity
+        with:
+          scope: sanity
+    outputs:
+      unit-envlist: "${{ steps.build-matrix-unit.outputs.envlist }}"
+      sanity-envlist: "${{ steps.build-matrix-sanity.outputs.envlist }}"
+
+  run-unit-galaxy:
+    needs: build-tox-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: "${{ fromJson(needs.build-tox-matrix.outputs.unit-envlist) }}"
+    name: "${{ matrix.entry.name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-galaxy@actions_refactor  # yamllint disable-line rule:line-length
+        with:
+          test-env: "${{ matrix.entry.name }}"
+  run-sanity:
+    needs: build-tox-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: "${{ fromJson(needs.build-tox-matrix.outputs.sanity-envlist) }}"
+    name: "${{ matrix.entry.name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-sanity@actions_refactor  # yamllint disable-line rule:line-length
+        with:
+          test-env: "${{ matrix.entry.name }}"
+
   ansible-lint:
-    uses: ansible/ansible-content-actions/.github/workflows/ansible_lint.yaml@main
-  sanity:
-    uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@main
-  unit-galaxy:
-    uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-ansible-lint@actions_refactor  # yamllint disable-line rule:line-length
+
   unit-source:
     uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
+
   all_green:
     if: ${{ always() }}
     needs:
-      - changelog
       - build-import
-      - sanity
-      - unit-galaxy
+      - run-sanity
+      - run-unit-galaxy
       - unit-source
       - ansible-lint
     runs-on: ubuntu-latest
@@ -44,9 +99,9 @@ jobs:
       - run: >-
           python -c "assert 'failure' not in
           set([
-          '${{ needs.changelog.result }}',
-          '${{ needs.sanity.result }}',
-          '${{ needs.unit-galaxy.result }}'
+          '${{ needs.build-import.result }}',
+          '${{ needs.run-sanity.result }}',
+          '${{ needs.run-unit-galaxy.result }}'
           '${{ needs.ansible-lint.result }}'
           '${{ needs.unit-source.result }}'
           ])"
