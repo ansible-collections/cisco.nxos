@@ -171,13 +171,10 @@ class Vrf_address_family(ResourceModule):
     def purge(self, vrf, item):
         """Purge the VRF configuration"""
         self.commands.append(f"vrf context {vrf}")
-        for _, value in iteritems(item.get("address_families", {})):
-            self.commands.append(
-                self._tmplt.render(
-                    {"afi": value.get("afi"), "safi": value.get("safi")},
-                    "address_family",
-                    True,
-                ),
+        for i, value in iteritems(item.get("address_families", {})):
+            self.commands.append(self._tmplt.render(
+                {"afi": value.get("afi"), "safi": value.get("safi")},
+                "address_family", True)
             )
 
     def _convert_to_dict(self, vrf_af_item: list, parser_item: str) -> dict:

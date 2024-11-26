@@ -56,7 +56,6 @@ options:
               max_route_options:
                 description: Configure the options for maximum routes
                 type: dict
-                mutually_exclusive: [["warning_only", "threshold"]]
                 suboptions:
                   warning_only:
                     description: Configure only give a warning message if limit is exceeded
@@ -75,7 +74,6 @@ options:
             description: Specify Target VPN Extended Communities
             type: list
             elements: dict
-            mutually_exclusive: [["import", "export"]]
             suboptions:
               import:
                 description: Import Target-VPN community
@@ -87,7 +85,6 @@ options:
             description: VRF export
             type: list
             elements: dict
-            mutually_exclusive: [["map", "vrf"]]
             suboptions:
               map:
                 description: Route-map based VRF export
@@ -109,7 +106,6 @@ options:
             description: VRF import
             type: list
             elements: dict
-            mutually_exclusive: [["map", "vrf"]]
             suboptions:
               map:
                 description: Route-map based VRF export
@@ -137,7 +133,7 @@ options:
         and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
-    choices: [parsed, gathered, deleted, merged, replaced, rendered, overridden]
+    choices: [parsed, gathered, deleted, purged, merged, replaced, rendered, overridden]
     default: merged
     description:
       - The state the configuration should be left in
