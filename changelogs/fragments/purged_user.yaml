@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixes nxos_user purge deleting non-local users,ensuring only local users are removed.
