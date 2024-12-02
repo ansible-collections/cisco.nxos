@@ -17,7 +17,7 @@ DOCUMENTATION = """
 module: nxos_vrf_address_family
 short_description: Resource module to configure VRF definitions.
 description: This module provides declarative management of VRF definitions on Cisco NXOS.
-version_added: 9.2.1
+version_added: 9.3.0
 author: Vinay Mulugund (@roverflow)
 notes:
   - Tested against NX-OS 9.3.6.
