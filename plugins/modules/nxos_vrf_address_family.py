@@ -164,7 +164,7 @@ EXAMPLES = """
 
 - name: Merge provided configuration with device configuration
   register: result
-  cisco.nxos.nxos_vrf_address_family: &id001
+  cisco.nxos.nxos_vrf_address_family:
     config:
       - name: VRF1
         address_families:
@@ -287,7 +287,7 @@ EXAMPLES = """
 
 - name: Delete given vrf address family configuration
   register: result
-  cisco.nxos.nxos_vrf_address_family: &id001
+  cisco.nxos.nxos_vrf_address_family:
     config:
       - name: VRF1
         address_families:
