@@ -385,7 +385,7 @@ EXAMPLES = """
 # Task Output:
 # ------------
 #
-# after:
+# before:
 #     - address_families:
 #           - afi: ipv4
 #             export:
@@ -422,7 +422,7 @@ EXAMPLES = """
 #   - vrf context VRF1
 #   - no address-family ipv4 unicast
 #   - no address-family ipv6 unicast
-# before: {}
+# after: {}
 
 
 # Using overridden
@@ -658,6 +658,175 @@ EXAMPLES = """
 #     export map 26
 #     export vrf default map 46 allow-vpn
 #     maximum routes 1000
+
+# Using gathered
+
+# Before state:
+# -------------
+#
+# nxos#show running-config | section ^vrf
+# vrf context VRF1
+#   address-family ipv4 unicast
+#     route-target export 65512:200
+#     export map 22
+#     export vrf default map 44 allow-vpn
+#     export vrf allow-vpn
+#     maximum routes 500 60 reinstall 80
+#   address-family ipv6 unicast
+#     route-target import 65512:200
+#     import map 22
+#     import vrf default map 44 advertise-vpn
+#     import vrf advertise-vpn
+#     maximum routes 1000
+
+- name: Gathered state for VRF configuration
+  cisco.nxos.nxos_vrf_global:
+    config:
+    state: gathered
+
+# Task Output:
+# ------------
+#
+# gathered:
+#     - address_families:
+#           - afi: ipv4
+#             export:
+#                 - map: "22"
+#                 - vrf:
+#                       allow_vpn: true
+#                       map_import: "44"
+#                 - vrf:
+#                       allow_vpn: true
+#             maximum:
+#                 max_route_options:
+#                     threshold:
+#                         reinstall_threshold: 80
+#                         threshold_value: 60
+#                 max_routes: 500
+#             route_target:
+#                 - export: 65512:200
+#             safi: unicast
+#           - afi: ipv6
+#             import:
+#                 - map: "22"
+#                 - vrf:
+#                       advertise_vpn: true
+#                       map_import: "44"
+#                 - vrf:
+#                       advertise_vpn: true
+#             maximum:
+#                 max_routes: 1000
+#             route_target:
+#                 - import: 65512:200
+#             safi: unicast
+#       name: VRF1
+
+# Using rendered
+
+- name: Render provided configuration with device configuration
+  register: result
+  cisco.nxos.nxos_vrf_address_family:
+    config:
+      - name: VRF1
+        address_families:
+          - afi: ipv6
+            safi: unicast
+            route_target:
+              - export: 65512:200
+            maximum:
+              max_routes: 500
+              max_route_options:
+                threshold:
+                  threshold_value: 60
+                  reinstall_threshold: 80
+            export:
+              - map: "22"
+              - vrf:
+                  allow_vpn: true
+                  map_import: "44"
+              - vrf:
+                  allow_vpn: true
+      - name: temp
+        address_families:
+          - afi: ipv4
+            safi: unicast
+            route_target:
+              - import: 65512:200
+            maximum:
+              max_routes: 1000
+            export:
+              - map: "26"
+              - vrf:
+                  allow_vpn: true
+                  map_import: "46"
+    state: rendered
+
+# Task Output:
+# ------------
+#
+# commands:
+#   - vrf context VRF1
+#   - address-family ipv6 unicast
+#   - maximum routes 500 60 reinstall 80
+#   - route-target export 65512:200
+#   - export map 22
+#   - export vrf default map 44 allow-vpn
+#   - export vrf allow-vpn
+#   - vrf context temp
+#   - address-family ipv4 unicast
+#   - maximum routes 1000
+#   - route-target import 65512:200
+#   - export map 26
+#   - export vrf default map 46 allow-vpn
+
+# Using Parsed
+
+# Parsed Config:
+# -------------
+# vrf context VRF1
+#   address-family ipv4 unicast
+#     route-target import 64512:200
+#     route-target export 64512:200
+#     export map 22
+#     export vrf default map 44 allow-vpn
+#     export vrf allow-vpn
+#     maximum routes 900 22 reinstall 44
+#   address-family ipv6 unicast
+#     route-target import 554832:500
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.nxos.nxos_vrf_address_family:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+# Task Output:
+# ------------
+# parsed:
+#   - name: VRF1
+#     address_families:
+#       - afi: ipv4
+#         safi: unicast
+#         route_target:
+#           - import: 64512:200
+#           - export: 64512:200
+#         export:
+#           - map: "22"
+#           - vrf:
+#               allow_vpn: true
+#               map_import: "44"
+#           - vrf:
+#               allow_vpn: true
+#         maximum:
+#           max_routes: 900
+#           max_route_options:
+#             threshold:
+#               threshold_value: 22
+#               reinstall_threshold: 44
+#       - afi: ipv6
+#         safi: unicast
+#         route_target:
+#           - import: 554832:500
 """
 
 RETURN = """
