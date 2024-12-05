@@ -1,0 +1,24 @@
+---
+- name: Remove VRF global configurations
+  cisco.nxos.nxos_config:
+    lines:
+      - no vrf context VRF1
+  ignore_errors: true
+  register: testvrf
+
+- name: Wait for 20 seconds if VRF removal was successful
+  ansible.builtin.wait_for:
+    timeout: 20
+  when: not testvrf.failed
+
+- name: Remove VRF global configurations
+  cisco.nxos.nxos_config:
+    lines:
+      - no vrf context temp
+  ignore_errors: true
+  register: temp
+
+- name: Wait for 20 seconds if VRF removal was successful
+  ansible.builtin.wait_for:
+    timeout: 20
+  when: not temp.failed
