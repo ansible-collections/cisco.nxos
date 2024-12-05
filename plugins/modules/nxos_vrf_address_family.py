@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_address_family
-short_description: Resource module to configure VRF definitions.
+short_description: Resource module to configure VRF address family definitions.
 description: This module provides declarative management of VRF definitions on Cisco NXOS.
 version_added: 9.3.0
 author: Vinay Mulugund (@roverflow)
@@ -25,7 +25,7 @@ notes:
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
-    description: A list of device configurations for VRF.
+    description: A list of device configurations for VRF address family.
     type: list
     elements: dict
     suboptions:
