@@ -34,6 +34,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     search_obj_in_list,
 )
 
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
+
 
 class L3_interfaces(ConfigBase):
     """
@@ -482,10 +486,10 @@ class L3_interfaces(ConfigBase):
                 self.cmd_order_fixup(commands, name)
         if "ipv6_redirects" in diff:
             # Note: device will auto-disable redirects when secondaries are present
-            if diff["ipv6_redirects"] != self.check_existing(name, "ipv6_redirects"):
-                no_cmd = "no " if diff["ipv6_redirects"] is False else ""
-                commands.append(no_cmd + "ipv6 redirects")
-                self.cmd_order_fixup(commands, name)
+            # if diff["ipv6_redirects"] != self.check_existing(name, "ipv6_redirects"):
+            no_cmd = "no " if diff["ipv6_redirects"] is False else ""
+            commands.append(no_cmd + "ipv6 redirects")
+            self.cmd_order_fixup(commands, name)
         if "unreachables" in diff:
             if diff["unreachables"] != self.check_existing(name, "unreachables"):
                 no_cmd = "no " if diff["unreachables"] is False else ""
