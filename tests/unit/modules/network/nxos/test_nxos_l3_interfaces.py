@@ -1044,3 +1044,26 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         playbook["state"] = "replaced"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=commands)
+
+    def test_ipv6_redirects(self):
+        existing = dedent(
+            """\
+          interface Ethernet1/2
+            ipv6 redirects
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        playbook = dict(
+            config=[
+                dict(
+                    name="Ethernet1/2",
+                    ipv6_redirects=False,
+                ),
+            ],
+            state="merged",
+        )
+
+        commands = ["interface Ethernet1/2", "no ipv6 redirects"]
+        playbook["state"] = "merged"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=commands)
