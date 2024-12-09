@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,22 +16,20 @@ based on the configuration.
 """
 
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vrf_interfaces.vrf_interfaces import (
+    Vrf_interfacesArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vrf_interfaces import (
     Vrf_interfacesTemplate,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vrf_interfaces.vrf_interfaces import (
-    Vrf_interfacesArgs,
-)
 
 
 class Vrf_interfacesFacts(object):
-    """ The nxos vrf_interfaces facts class
-    """
+    """The nxos vrf_interfaces facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Vrf_interfacesArgs.argument_spec
 
@@ -38,7 +37,7 @@ class Vrf_interfacesFacts(object):
         return connection.get_config(flags="interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Vrf_interfaces network resource
+        """Populate the facts for Vrf_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -57,10 +56,12 @@ class Vrf_interfacesFacts(object):
         vrf_interfaces_parser = Vrf_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(vrf_interfaces_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('vrf_interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("vrf_interfaces", None)
 
         params = utils.remove_empties(
-            vrf_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            vrf_interfaces_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            ),
         )
 
         facts["vrf_interfaces"] = params.get("config", [])

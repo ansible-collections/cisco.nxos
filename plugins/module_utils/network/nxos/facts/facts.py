@@ -118,6 +118,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_
     Vrf_interfacesFacts,
 )
 
+
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
     legacy=Legacy,
