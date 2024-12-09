@@ -37,7 +37,6 @@ options:
         description:
           - Vrf that is to be added to the interface.
         type: str
-        required: true
   running_config:
     description:
       - This option is used only with state I(parsed).

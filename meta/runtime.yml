@@ -205,3 +205,5 @@ plugin_routing:
       redirect: cisco.nxos.nxos_zone_zoneset
     vrf_global:
       redirect: cisco.nxos.nxos_vrf_global
+    vrf_interfaces:
+      redirect: cisco.nxos.nxos_vrf_interfaces

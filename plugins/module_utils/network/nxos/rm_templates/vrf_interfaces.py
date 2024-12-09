@@ -56,5 +56,20 @@ class Vrf_interfacesTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+           "name": "vrf_context",
+           "getval": re.compile(
+               r"""
+               \s+vrf\scontext\s(?P<vrf_context>\S+)$
+               """,
+               re.VERBOSE,
+           ),
+           "setval": "vrf context {{ vrf_context}}",
+           "result": {
+                '{{ name }}': {
+                    'vrf_context': '{{ vrf_context }}',
+                },
+            },
+        },
     ]
     # fmt: on
