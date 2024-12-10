@@ -49,7 +49,6 @@ class Vrf_interfaces(ResourceModule):
         self.parsers = [
             "interface",
             "vrf_name",
-            "vrf_context",
         ]
 
     def execute_module(self):
@@ -69,6 +68,10 @@ class Vrf_interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
+
+        # Filter out mgmt0 interface
+        wantd = {k: v for k, v in wantd.items() if k != "mgmt0"}
+        haved = {k: v for k, v in haved.items() if k != "mgmt0"}
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
