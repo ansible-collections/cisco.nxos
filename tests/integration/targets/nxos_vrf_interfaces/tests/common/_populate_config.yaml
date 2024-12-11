@@ -1,0 +1,11 @@
+---
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_vrf_interfaces:
+    state: overridden
+    config:
+      - name: Ethernet1/2
+        vrf_name: test
+      - name: Ethernet1/6
+        vrf_name: test2
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
