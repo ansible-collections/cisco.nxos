@@ -23,11 +23,13 @@ from textwrap import dedent
 from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vrf_interfaces
+
 from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosVrfInterfacesModule(TestNxosModule):
     """Test the  nxos_vrf_interfaces module."""
+
     module = nxos_vrf_interfaces
 
     def setUp(self):

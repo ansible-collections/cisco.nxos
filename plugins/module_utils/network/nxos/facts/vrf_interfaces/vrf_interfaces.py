@@ -60,11 +60,13 @@ class Vrf_interfacesFacts(object):
 
         params = utils.remove_empties(
             vrf_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 
         facts["vrf_interfaces"] = params.get("config", [])
-        ansible_facts['ansible_network_resources'].update(facts)
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
