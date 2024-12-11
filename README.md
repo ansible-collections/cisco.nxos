@@ -138,6 +138,7 @@ Name | Description
 [cisco.nxos.nxos_vpc](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_module.rst)|Manages global VPC configuration
 [cisco.nxos.nxos_vpc_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_interface_module.rst)|Manages interface VPC configuration
 [cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|(deprecated, removed after 2026-07-25) Manages global VRF configuration.
+[cisco.nxos.nxos_vrf_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_address_family_module.rst)|Resource module to configure VRF address family definitions.
 [cisco.nxos.nxos_vrf_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_af_module.rst)|Manages VRF AF.
 [cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|Resource module to configure VRF definitions.
 [cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|Manages interface specific VRF configuration.
