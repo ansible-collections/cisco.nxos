@@ -1,5 +1,5 @@
 ---
-- name: Populate with simple overridden
+- name: Merge provided configuration with device configuration
   cisco.nxos.nxos_vrf_interfaces:
     state: overridden
     config:

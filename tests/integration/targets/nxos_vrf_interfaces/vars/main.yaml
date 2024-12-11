@@ -12,36 +12,38 @@ merged:
     - vrf member test
     - interface Ethernet1/6
     - vrf member test2
-  after:
-    - name: "Ethernet1/2"
-      vrf_name: "test"
-    - name: "Ethernet1/6"
-      vrf_name: "test2"
   before:
     - name: "Ethernet1/1"
     - name: "Ethernet1/2"
     - name: "Ethernet1/3"
-    - name: "Ethernet1/4"
+    - name: "Ethernet1/6"
+  after:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+      vrf_name: "test"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
 
 overridden:
   commands:
-    - interface GigabitEthernet2
-    - no vrf forwarding vrf_B
-    - interface GigabitEthernet4
-    - vrf forwarding vrf_C
-  after:
-    - name: "Loopback24"
-    - name: "GigabitEthernet1"
-    - name: "GigabitEthernet2"
-    - name: "GigabitEthernet3"
-    - name: "GigabitEthernet4"
-      vrf_name: "vrf_C"
+    - interface Ethernet1/2
+    - vrf member VRF8
+    - interface Ethernet1/6
+    - vrf member VRF9
   before:
     - name: "Ethernet1/1"
     - name: "Ethernet1/2"
       vrf_name: "vrf_B"
-    - name: "GigabitEthernet3"
-    - name: "GigabitEthernet4"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/6"
+  after:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+      vrf_name: "VRF8"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/6"
+      vrf_name: "VRF9"
 
 parsed:
   after:
@@ -53,43 +55,43 @@ parsed:
 replaced:
   commands:
     - interface Ethernet1/2
-    - vrf member test2
+    - vrf member TEST_VRF2
     - interface Ethernet1/6
-    - vrf member test6
+    - vrf member TEST_VRF3
   before:
     - name: "Ethernet1/1"
     - name: "Ethernet1/2"
       vrf_name: "test"
     - name: "Ethernet1/3"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
+  after:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+      vrf_name: "TEST_VRF2"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/6"
+      vrf_name: "TEST_VRF3"
+
+deleted:
+  commands:
+    - interface Ethernet1/2
+    - no vrf member test
+  before:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+      vrf_name: "vrf_B"
+    - name: "Ethernet1/3"
     - name: "Ethernet1/4"
   after:
     - name: "Ethernet1/1"
     - name: "Ethernet1/2"
-      vrf_name: "test2"
     - name: "Ethernet1/3"
     - name: "Ethernet1/4"
 
-deleted:
-  commands:
-    - interface GigabitEthernet2
-    - no vrf forwarding vrf_B
-  before:
-    - name: "Loopback24"
-    - name: "GigabitEthernet1"
-    - name: "GigabitEthernet2"
-      vrf_name: "vrf_B"
-    - name: "GigabitEthernet3"
-    - name: "GigabitEthernet4"
-  after:
-    - name: "Loopback24"
-    - name: "GigabitEthernet1"
-    - name: "GigabitEthernet2"
-    - name: "GigabitEthernet3"
-    - name: "GigabitEthernet4"
-
 rtt:
   commands:
-    - interface GigabitEthernet2
-    - vrf forwarding vrf_B
-    - interface GigabitEthernet4
-    - no vrf forwarding vrf_C
+    - interface "Ethernet1/6"
+    - vrf member test
+    - interface Ethernet1/2
+    - no vrf member test2

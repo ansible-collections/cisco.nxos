@@ -13,8 +13,6 @@
             vrf_name: VRF8
           - name: Ethernet1/6
             vrf_name: VRF9
-          - name: Ethernet1/4
-            vrf_name: vrf_C
         state: overridden
 
     - name: Assert that correct set of commands were generated

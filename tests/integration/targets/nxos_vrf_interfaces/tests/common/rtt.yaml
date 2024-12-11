@@ -9,13 +9,14 @@
       register: base_config
       cisco.nxos.nxos_vrf_interfaces:
         config:
+          - name: Ethernet1/1
           - name: Ethernet1/2
           - name: Ethernet1/6
-            vrf_name: vrf_B
+            vrf_name: test
         state: merged
 
     - name: Gather VRF interfaces facts
-      cisco.ios.ios_facts:
+      cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -26,9 +27,10 @@
       register: result
       cisco.nxos.nxos_vrf_interfaces:
         config:
+          - name: Ethernet1/1
           - name: Ethernet1/2
+            vrf_name: test2
           - name: Ethernet1/6
-            vrf_name: vrf_C
         state: overridden
 
     - ansible.builtin.assert:

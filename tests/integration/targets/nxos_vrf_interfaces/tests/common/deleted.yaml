@@ -11,7 +11,6 @@
       cisco.nxos.nxos_vrf_interfaces: &id001
         config:
           - name: Ethernet1/2
-            vrf: test
         state: deleted
 
     - name: Assert that correct set of commands were generated

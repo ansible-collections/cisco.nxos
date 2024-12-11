@@ -11,7 +11,9 @@
       cisco.nxos.nxos_vrf_interfaces: &id001
         config:
           - name: Ethernet1/2
-            vrf_name: test2
+            vrf_name: TEST_VRF2
+          - name: Ethernet1/6
+            vrf_name: TEST_VRF3
         state: replaced
 
     - name: Assert that correct set of commands were generated
