@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_l2_interfaces - Fixed handling of 'none' value in allowed_vlans configuration. Previously, the module would either fail with an int conversion error or incorrectly remove VLAN configuration when attempting to set allowed_vlans to 'none'."
