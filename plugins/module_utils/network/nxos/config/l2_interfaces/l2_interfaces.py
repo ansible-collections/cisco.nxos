@@ -151,6 +151,7 @@ class L2_interfaces(ConfigBase):
                     allowed_vlans = vlan_range_to_list(d["trunk"]["allowed_vlans"])
                     vlans_list = [str(line) for line in sorted(allowed_vlans)]
                     d["trunk"]["allowed_vlans"] = ",".join(vlans_list)
+
     def set_state(self, want, have):
         """Select the appropriate function based on the state provided
 
@@ -349,8 +350,8 @@ class L2_interfaces(ConfigBase):
             )
             if match:
                 data = match.groupdict()
-                if data["vlans"].lower() !="none":
+                if data["vlans"].lower() != "none":
                     unparsed = vlan_list_to_range(data["vlans"].split(","))
                 else:
-                    unparsed='none'
+                    unparsed = "none"
                 cmds[idx] = data["cmd"] + " " + unparsed
