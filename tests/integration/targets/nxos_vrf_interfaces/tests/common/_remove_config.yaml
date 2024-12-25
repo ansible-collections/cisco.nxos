@@ -1,0 +1,9 @@
+---
+- name: Override existing running configuration
+  cisco.nxos.nxos_vrf_interfaces:
+    config:
+      - name: Ethernet1/2
+      - name: Ethernet1/6
+    state: overridden
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
