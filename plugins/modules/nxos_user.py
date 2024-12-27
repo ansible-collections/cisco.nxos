@@ -424,7 +424,6 @@ def get_configured_usernames(module):
             usernames.add(username)
     return usernames
 
-
 def main():
     """main entry point for module execution"""
     element_spec = dict(
