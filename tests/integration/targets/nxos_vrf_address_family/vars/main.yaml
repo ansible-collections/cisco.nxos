@@ -125,7 +125,6 @@ parsed:
         safi: unicast
         route_target:
           - import: 554832:500
-
 replaced:
   commands:
     - vrf context VRF1
