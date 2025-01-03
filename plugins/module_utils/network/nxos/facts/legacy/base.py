@@ -169,6 +169,9 @@ class Hardware(FactsBase):
             self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
 
     def parse_cpu_utilization(self, data):
+        onemin = data.get(data.get("onemin_percent"))
+        if(isinstance(onemin,list)):
+            onemin = onemin[1]
         return {
             "core": {
                 "five_minutes": int(data.get("fivemin_percent", 0)),
@@ -178,7 +181,7 @@ class Hardware(FactsBase):
                 "five_seconds_interrupt": int(
                     data.get("fivesec_intr_percent", 0),
                 ),
-                "one_minute": int(data.get("onemin_percent", 0)),
+                "one_minute": int(onemin),
             },
         }
 
