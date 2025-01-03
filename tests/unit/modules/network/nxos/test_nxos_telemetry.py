@@ -2091,6 +2091,8 @@ class TestNxosTelemetryModule(TestNxosModule):
                 "use-vrf blue",
             ],
         )
+
+
 def build_args(data, type, state=None, check_mode=None):
     if state is None:
         state = "merged"
