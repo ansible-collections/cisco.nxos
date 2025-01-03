@@ -170,7 +170,7 @@ class Hardware(FactsBase):
 
     def parse_cpu_utilization(self, data):
         onemin = data.get(data.get("onemin_percent"))
-        if(isinstance(onemin,list)):
+        if isinstance(onemin, list):
             onemin = onemin[1]
         return {
             "core": {
