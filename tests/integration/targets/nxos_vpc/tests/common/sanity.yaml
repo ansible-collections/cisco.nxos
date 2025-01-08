@@ -42,6 +42,14 @@
 
     - name: Configure idempotence
       register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - "show hardware | json"
+
+    - name: Configure idempotence
+      register: result
+      vars:
+        ansible_network_import_modules: false
       cisco.nxos.nxos_vpc: *id001
 
     - ansible.builtin.assert: &id004
