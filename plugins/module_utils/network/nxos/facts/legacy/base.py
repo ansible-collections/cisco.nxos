@@ -169,7 +169,7 @@ class Hardware(FactsBase):
             self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
 
     def parse_cpu_utilization(self, data):
-        onemin = data.get("onemin_percent",0)
+        onemin = data.get("onemin_percent", 0)
         if isinstance(onemin, list):
             onemin = onemin[1]
         return {
