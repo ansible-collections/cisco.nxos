@@ -29,3 +29,5 @@ available_network_resources:
   - telemetry
   - vlans
   - vrf_global
+  - vrf_interfaces
+  - vrf_address_family
