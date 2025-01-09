@@ -60,8 +60,7 @@ class ActionModule(ActionNetworkModule):
                     "msg": (
                         f"Connection type must be fully qualified name for "
                         f"network_cli connection type, got {self._play_context.connection}"
-                    )
-                    % self._play_context.connection,
+                    ),
                 }
 
             conn = Connection(self._connection.socket_path)
