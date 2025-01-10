@@ -32,6 +32,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_interfacesTemplate,
 )
 
+
 class Vrf_interfaces(ResourceModule):
     """
     The nxos_vrf_interfaces config class
