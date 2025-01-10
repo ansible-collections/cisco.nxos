@@ -32,10 +32,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_interfacesTemplate,
 )
 
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
 class Vrf_interfaces(ResourceModule):
     """
     The nxos_vrf_interfaces config class
