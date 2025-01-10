@@ -1,5 +1,12 @@
 ---
-- name: Main task for vrf_interfaces module
-  ansible.builtin.include_tasks: cli.yaml
-  tags:
-    - network_cli
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli
+  always:
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi
