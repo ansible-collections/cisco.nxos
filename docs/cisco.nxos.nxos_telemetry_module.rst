@@ -565,6 +565,7 @@ Parameters
                                     <li>replaced</li>
                                     <li>deleted</li>
                                     <li>gathered</li>
+                                    <li>overridden</li>
                         </ul>
                 </td>
                 <td>
@@ -653,7 +654,7 @@ Examples
     # This action will replace telemetry configuration on the device with the
     # telemetry configuration defined in the playbook.
 
-    - name: Override Telemetry Configuration
+    - name: Replace Telemetry Configuration
       cisco.nxos.nxos_telemetry:
         config:
           certificate:
@@ -673,6 +674,31 @@ Examples
             - id: 5
               destination_group: 55
         state: replaced
+
+    # Using overridden
+    # This action will override all telemetry configuration on the device with the
+    # telemetry configuration defined in the playbook.
+
+    - name: Override Telemetry Configuration
+      cisco.nxos.nxos_telemetry:
+        config:
+          certificate:
+            key: /bootflash/server.key
+            hostname: localhost
+          compression: gzip
+          source_interface: Ethernet1/1
+          vrf: management
+          destination_groups:
+            - id: 2
+              destination:
+                ip: 192.168.0.2
+                port: 50001
+                protocol: gRPC
+                encoding: GPB
+          subscriptions:
+            - id: 5
+              destination_group: 55
+        state: overridden
 
 
 
