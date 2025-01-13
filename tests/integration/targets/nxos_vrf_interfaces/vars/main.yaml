@@ -77,6 +77,8 @@ deleted:
   commands:
     - interface Ethernet1/2
     - no vrf member test
+    - interface Ethernet1/6
+    - no vrf member test2
   before:
     - name: "Ethernet1/1"
     - name: "Ethernet1/2"
