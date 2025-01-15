@@ -1,0 +1,10 @@
+---
+- name: Gather the provided configuration
+  register: result
+  cisco.nxos.nxos_vrf_interfaces:
+    config:
+    state: gathered
+
+- name: Set initial gathered data
+  ansible.builtin.set_fact:
+    vrf_interfaces_device_facts: "{{ result['gathered'] }}"

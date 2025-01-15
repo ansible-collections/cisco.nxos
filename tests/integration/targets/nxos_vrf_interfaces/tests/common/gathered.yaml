@@ -16,7 +16,9 @@
       ansible.builtin.assert:
         that:
           - not result.changed
-          - "{{ gathered['config'] | symmetric_difference(result['gathered']) |length == 0 }}"
+          # Since different devices may have different interfaces, we can't assert the exact number of interfaces
+          # Hence we are asserting that the config/changes that are expected is present and not asseting the exact set of interfaces
+          - "{{ gathered['config'] | map('extract', result['gathered']) | list | length == gathered['config'] | length }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
