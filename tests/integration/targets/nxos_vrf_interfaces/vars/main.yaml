@@ -1,7 +1,7 @@
 ---
 gathered:
   config:
-    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
       vrf_name: "test"
     - name: "Ethernet1/6"
       vrf_name: "test2"
