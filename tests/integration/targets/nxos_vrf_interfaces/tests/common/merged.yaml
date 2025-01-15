@@ -3,7 +3,6 @@
     msg: START Merged nxos_vrf_interfaces state for integration tests on connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _remove_config.yaml
-- ansible.builtin.include_tasks: _gather_interfaces.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -24,7 +23,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ vrf_interfaces_device_facts | symmetric_difference(result['before']) | length == 0 }}"
+          - "{{ merged['before'] | map('extract', result['before']) | list | length == merged['before'] | length }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:

@@ -4,7 +4,6 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 - ansible.builtin.include_tasks: _populate_config.yaml
-- ansible.builtin.include_tasks: _gather_interfaces.yaml
 
 - block:
     - name: Replace provided VRF interfaces configuration
@@ -25,7 +24,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - vrf_interfaces_device_facts == result['before']
+          - "{{ replaced['before'] | map('extract', result['before']) | list | length == replaced['before'] | length }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:

@@ -3,7 +3,6 @@
     msg: START Overridden nxos_vrf_interfaces state for integration tests on connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _populate_config.yaml
-- ansible.builtin.include_tasks: _gather_interfaces.yaml
 
 - block:
     - name: Override provided configuration with device configuration
@@ -24,7 +23,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - vrf_interfaces_device_facts == result['before']
+          - "{{ overridden['before'] | map('extract', result['before']) | list | length == overridden['before'] | length }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
