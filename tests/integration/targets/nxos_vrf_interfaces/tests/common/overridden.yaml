@@ -23,14 +23,24 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ overridden['before'] | map('extract', result['before']) | list | length == overridden['before'] | length }}"
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(overridden['before'])
+              | length == 0
+            }}
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          # Since different devices may have different interfaces, we can't assert the exact number of interfaces
-          # Hence we are asserting that the config/changes that are expected is present and not asseting the exact set of interfaces
-          - "{{ overridden['after'] | map('extract', result['after']) | list | length == overridden['after'] | length }}"
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(overridden['after'])
+              | length == 0
+            }}
 
     - name: Override provided configuration with device configuration (idempotent)
       register: result
