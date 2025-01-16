@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed the invalid feature name error for port-security by updating the feature mapping from `eth_port_sec` to `eth-port-sec`.

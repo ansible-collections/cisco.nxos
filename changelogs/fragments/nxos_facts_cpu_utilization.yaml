@@ -1,0 +1,2 @@
+bugfixes:
+  - "Fixed hardware fact gathering failure for CPU utilization parsing on NX-OS 9.3(3) by handling both list and single value formats of onemin_percent"

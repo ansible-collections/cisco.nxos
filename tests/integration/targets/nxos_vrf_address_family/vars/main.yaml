@@ -1,0 +1,270 @@
+---
+general:
+  after:
+    - address_families:
+        - afi: ipv4
+          export:
+            - map: "22"
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          maximum:
+            max_route_options:
+              threshold:
+                reinstall_threshold: 44
+                threshold_value: 22
+            max_routes: 900
+          route_target:
+            - import: "64512:200"
+            - export: "64512:200"
+          safi: unicast
+      name: VRF1
+merged:
+  after:
+    - address_families:
+        - afi: ipv4
+          export:
+            - map: "22"
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          maximum:
+            max_route_options:
+              threshold:
+                reinstall_threshold: 80
+                threshold_value: 60
+            max_routes: 500
+          route_target:
+            - export: 65512:200
+          safi: unicast
+        - afi: ipv6
+          import:
+            - map: "22"
+            - vrf:
+                advertise_vpn: true
+                map_import: "44"
+            - vrf:
+                advertise_vpn: true
+          maximum:
+            max_routes: 1000
+          route_target:
+            - import: 65512:200
+          safi: unicast
+      name: VRF1
+  commands:
+    - vrf context VRF1
+    - address-family ipv4 unicast
+    - maximum routes 500 60 reinstall 80
+    - route-target export 65512:200
+    - export map 22
+    - export vrf default map 44 allow-vpn
+    - export vrf allow-vpn
+    - address-family ipv6 unicast
+    - maximum routes 1000
+    - route-target import 65512:200
+    - import map 22
+    - import vrf default map 44 advertise-vpn
+    - import vrf advertise-vpn
+deleted:
+  after:
+    - address_families:
+        - afi: ipv4
+          export:
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          route_target:
+            - export: "64512:200"
+          safi: unicast
+      name: VRF1
+  commands:
+    - vrf context VRF1
+    - address-family ipv4 unicast
+    - no maximum routes 900 22 reinstall 44
+    - no route-target import 64512:200
+    - no export map 22
+gathered:
+  - name: VRF1
+    address_families:
+      - afi: ipv4
+        safi: unicast
+        route_target:
+          - import: 64512:200
+      - afi: ipv6
+        safi: unicast
+        route_target:
+          - import: 554832:500
+parsed:
+  - name: VRF1
+    address_families:
+      - afi: ipv4
+        safi: unicast
+        route_target:
+          - import: 64512:200
+          - export: 64512:200
+        export:
+          - map: "22"
+          - vrf:
+              allow_vpn: true
+              map_import: "44"
+          - vrf:
+              allow_vpn: true
+        maximum:
+          max_routes: 900
+          max_route_options:
+            threshold:
+              threshold_value: 22
+              reinstall_threshold: 44
+      - afi: ipv6
+        safi: unicast
+        route_target:
+          - import: 554832:500
+replaced:
+  commands:
+    - vrf context VRF1
+    - address-family ipv4 unicast
+    - no route-target import 64512:200
+    - address-family ipv6 unicast
+    - maximum routes 500 60 reinstall 80
+    - no route-target import 554832:500
+    - route-target export 65512:200
+    - export map 22
+    - export vrf default map 44 allow-vpn
+    - export vrf allow-vpn
+    - vrf context temp
+    - address-family ipv4 unicast
+    - maximum routes 1000
+    - route-target import 65512:200
+    - export map 26
+    - export vrf default map 46 allow-vpn
+  before:
+    - address_families:
+        - afi: ipv4
+          route_target:
+            - import: 64512:200
+          safi: unicast
+        - afi: ipv6
+          route_target:
+            - import: 554832:500
+          safi: unicast
+      name: VRF1
+  after:
+    - address_families:
+        - afi: ipv4
+          safi: unicast
+        - afi: ipv6
+          export:
+            - map: "22"
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          maximum:
+            max_route_options:
+              threshold:
+                reinstall_threshold: 80
+                threshold_value: 60
+            max_routes: 500
+          route_target:
+            - export: 65512:200
+          safi: unicast
+      name: VRF1
+    - address_families:
+        - afi: ipv4
+          export:
+            - map: "26"
+            - vrf:
+                allow_vpn: true
+                map_import: "46"
+          maximum:
+            max_routes: 1000
+          route_target:
+            - import: 65512:200
+          safi: unicast
+      name: temp
+overridden:
+  after:
+    - address_families:
+        - afi: ipv4
+          safi: unicast
+        - afi: ipv6
+          export:
+            - map: "22"
+            - vrf:
+                allow_vpn: true
+                map_import: "44"
+            - vrf:
+                allow_vpn: true
+          maximum:
+            max_route_options:
+              threshold:
+                reinstall_threshold: 80
+                threshold_value: 60
+            max_routes: 500
+          route_target:
+            - export: 65512:200
+          safi: unicast
+      name: VRF1
+    - address_families:
+        - afi: ipv4
+          export:
+            - map: "26"
+            - vrf:
+                allow_vpn: true
+                map_import: "46"
+          maximum:
+            max_routes: 1000
+          route_target:
+            - import: 65512:200
+          safi: unicast
+      name: temp
+  before:
+    - address_families:
+        - afi: ipv4
+          route_target:
+            - import: 64512:200
+          safi: unicast
+        - afi: ipv6
+          route_target:
+            - import: 554832:500
+          safi: unicast
+      name: VRF1
+  commands:
+    - vrf context VRF1
+    - address-family ipv4 unicast
+    - no route-target import 64512:200
+    - address-family ipv6 unicast
+    - maximum routes 500 60 reinstall 80
+    - no route-target import 554832:500
+    - route-target export 65512:200
+    - export map 22
+    - export vrf default map 44 allow-vpn
+    - export vrf allow-vpn
+    - vrf context temp
+    - address-family ipv4 unicast
+    - maximum routes 1000
+    - route-target import 65512:200
+    - export map 26
+    - export vrf default map 46 allow-vpn
+rendered:
+  commands:
+    - vrf context VRF1
+    - address-family ipv6 unicast
+    - maximum routes 500 60 reinstall 80
+    - route-target export 65512:200
+    - export map 22
+    - export vrf default map 44 allow-vpn
+    - export vrf allow-vpn
+    - vrf context temp
+    - address-family ipv4 unicast
+    - maximum routes 1000
+    - route-target import 65512:200
+    - export map 26
+    - export vrf default map 46 allow-vpn
