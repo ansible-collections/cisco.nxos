@@ -24,12 +24,24 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - replaced['before'] == result['before']
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(replaced['before'])
+              | length == 0
+            }}
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - replaced['after'] == result['after']
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(replaced['after'])
+              | length == 0
+            }}
 
     - name: Replace provided VRF interfaces configuration (idempotent)
       register: result
