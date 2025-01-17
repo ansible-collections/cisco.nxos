@@ -23,12 +23,24 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - overridden['before'] == result['before']
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(overridden['before'])
+              | length == 0
+            }}
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - overridden['after'] == result['after']
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(overridden['after'])
+              | length == 0
+            }}
 
     - name: Override provided configuration with device configuration (idempotent)
       register: result

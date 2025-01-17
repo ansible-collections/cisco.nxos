@@ -1997,6 +1997,101 @@ class TestNxosTelemetryModule(TestNxosModule):
         )
         self.execute_module(changed=False, commands=[])
 
+    def test_tms_overridden_n9k(self):
+        # Assumes feature telemetry is enabled
+        # Similar to replaced state:
+        # - Modify vrf global config, remove default all other global config.
+        # - destination-group 2 destination '192.168.0.1' idempotent
+        # - destination-group 2 destination '192.168.0.2' remove
+        # - remove all other destination-groups
+        # - Modify sensor-group 55 and delete all others
+        # - Modify subscription 7, add 10 and delete all others
+        self.execute_show_command.return_value = load_fixture(
+            "nxos_telemetry",
+            "N9K.cfg",
+        )
+        self.get_platform_shortname.return_value = "N9K"
+        set_module_args(
+            {
+                "state": "overridden",
+                "config": {
+                    "vrf": "blue",
+                    "destination_groups": [
+                        {
+                            "id": 2,
+                            "destination": {
+                                "ip": "192.168.0.1",
+                                "port": 50001,
+                                "protocol": "GRPC",
+                                "encoding": "GPB",
+                            },
+                        },
+                    ],
+                    "sensor_groups": [
+                        {
+                            "id": 55,
+                            "data_source": "NX-API",
+                            "path": {
+                                "name": "sys/bgp",
+                                "depth": 0,
+                                "query_condition": "query_condition_xyz",
+                                "filter_condition": "filter_condition_xyz",
+                            },
+                        },
+                    ],
+                    "subscriptions": [
+                        {
+                            "id": 7,
+                            "destination_group": 10,
+                            "sensor_group": {
+                                "id": 55,
+                                "sample_interval": 1000,
+                            },
+                        },
+                        {
+                            "id": 10,
+                            "destination_group": 2,
+                            "sensor_group": {
+                                "id": 55,
+                                "sample_interval": 1000,
+                            },
+                        },
+                    ],
+                },
+            },
+            ignore_provider_arg,
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "telemetry",
+                "no subscription 3",
+                "no subscription 5",
+                "no subscription 4",
+                "subscription 7",
+                "no snsr-grp 2 sample-interval 1000",
+                "no subscription 6",
+                "no sensor-group 56",
+                "no sensor-group 2",
+                "no destination-group 10",
+                "destination-group 2",
+                "no ip address 192.168.0.2 port 60001 protocol grpc encoding gpb",
+                "sensor-group 55",
+                "data-source NX-API",
+                "path sys/bgp depth 0 query-condition query_condition_xyz filter-condition filter_condition_xyz",
+                "subscription 10",
+                "dst-grp 2",
+                "snsr-grp 55 sample-interval 1000",
+                "subscription 7",
+                "snsr-grp 55 sample-interval 1000",
+                "no certificate /bootflash/server.key localhost",
+                "destination-profile",
+                "no use-compression gzip",
+                "no source-interface loopback55",
+                "use-vrf blue",
+            ],
+        )
+
 
 def build_args(data, type, state=None, check_mode=None):
     if state is None:

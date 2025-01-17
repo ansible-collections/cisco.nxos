@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "lag_interfaces - Fix bug where lag interfaces was not erroring on command failure. (https://github.com/ansible-collections/cisco.nxos/pull/923)"
