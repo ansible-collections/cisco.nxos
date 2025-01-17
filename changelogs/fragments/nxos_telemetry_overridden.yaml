@@ -1,2 +1,0 @@
-minor_changes:
-  - "nxos_telemetry - Added support for 'overridden' state to provide complete configuration override capabilities."

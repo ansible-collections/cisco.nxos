@@ -1,5 +1,0 @@
----
-bugfixes:
-  - Fixes mixed usage of f-string and format string in action plugin for consistency.
-trivial:
-  - Added tests fixes for nxos_facts.

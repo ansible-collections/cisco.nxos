@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_l2_interfaces - Fixed handling of 'none' value in allowed_vlans to properly set trunk VLAN none"
