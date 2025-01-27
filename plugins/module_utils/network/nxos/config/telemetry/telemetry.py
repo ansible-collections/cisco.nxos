@@ -82,8 +82,6 @@ class Telemetry(ConfigBase):
         warnings = list()
 
         state = self._module.params["state"]
-        if "overridden" in state:
-            self._module.fail_json(msg="State <overridden> is invalid for this module.")
         # When state is 'deleted', the module_params should not contain data
         # under the 'config' key
         if "deleted" in state and self._module.params.get("config"):
@@ -153,7 +151,7 @@ class Telemetry(ConfigBase):
         # and does not require any processing using NxosCmdRef objects.
         if state == "deleted":
             return self._state_deleted(want, have)
-        elif state == "replaced":
+        elif state in ["replaced", "overridden"]:
             if want == have:
                 return []
             return self._state_replaced(want, have)

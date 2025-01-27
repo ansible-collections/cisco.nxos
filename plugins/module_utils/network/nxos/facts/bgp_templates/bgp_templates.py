@@ -37,8 +37,8 @@ class Bgp_templatesFacts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        as_number = connection.get("show running-config bgp | include 'router bgp'")
-        templates = connection.get("show running-config bgp | section 'template'")
+        as_number = connection.get("show running-config | include 'router bgp'")
+        templates = connection.get("show running-config | section 'template'")
 
         return as_number + "\n" + templates
 

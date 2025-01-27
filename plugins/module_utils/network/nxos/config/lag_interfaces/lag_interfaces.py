@@ -86,6 +86,8 @@ class Lag_interfaces(ConfigBase):
                             err_str = item
                             if err_str.lower().startswith("cannot add"):
                                 self._module.fail_json(msg=err_str)
+                            elif err_str.lower().startswith("command failed"):
+                                self._module.fail_json(msg=err_str)
             result["changed"] = True
 
         if self.state in self.ACTION_STATES:

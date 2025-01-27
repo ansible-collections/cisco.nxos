@@ -1,0 +1,72 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for nxos_vrf_address_family ansible_connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge config to be deleted with the existing running configuration
+      cisco.nxos.nxos_config:
+        lines:
+          - route-target import 64512:200
+          - route-target export 64512:200
+          - export map 22
+          - export vrf default map 44 allow-vpn
+          - export vrf allow-vpn
+          - maximum routes 900 22 reinstall 44
+        parents:
+          - vrf context VRF1
+          - address-family ipv4 unicast
+      retries: 2
+      delay: 10
+
+    - name: Delete given vrf address family configuration
+      register: result
+      cisco.nxos.nxos_vrf_address_family: &id001
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - import: 64512:200
+                export:
+                  - map: "22"
+                maximum:
+                  max_routes: 900
+                  max_route_options:
+                    threshold:
+                      threshold_value: 22
+                      reinstall_threshold: 44
+        state: deleted
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ general['after'] | symmetric_difference(result['before']) | length == 0 }}"
+
+    - name: Assert that after dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] == result['after']
+
+    - name: Delete provided VRF global (idempotent)
+      register: result
+      cisco.nxos.nxos_vrf_address_family: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
