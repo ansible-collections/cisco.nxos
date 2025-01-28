@@ -471,13 +471,9 @@ def main():
 
     if module.params["purge"]:
         want_users = set([x["name"] for x in want])
-        have_users = set([x["name"] for x in have])
+        have_users = get_configured_usernames(module)
 
-        configured_usernames = get_configured_usernames(module)
-
-        non_local_users = have_users.difference(want_users).difference(configured_usernames)
-
-        for item in configured_usernames.difference(non_local_users):
+        for item in set(have_users).difference(want_users):
             if item != "admin":
                 item = item.replace("\\", "\\\\")
                 commands.append("no username %s" % item)
