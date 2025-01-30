@@ -11,7 +11,7 @@ merged:
     - "logging level aaa 1"
     - "logging level ftp 6"
     - "logging server 203.0.113.100 1 use-vrf management"
-    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
+    - "logging server 203.0.113.101 3 facility local6"
     - "logging origin-id hostname"
   after:
     console:
@@ -76,7 +76,7 @@ replaced:
       - facility: local6
         severity: error
         host: 203.0.113.101
-        use_vrf: default
+        # use_vrf: default
 
 deleted:
   commands:
@@ -121,3 +121,17 @@ parsed:
         severity: error
         host: 203.0.113.101
         use_vrf: default
+
+rendered:
+  commands:
+    - "logging console 3"
+    - "logging monitor 4"
+    - "logging ip access-list cache entries 16384"
+    - "logging ip access-list cache interval 200"
+    - "logging ip access-list cache threshold 5000"
+    - "logging level auth 2"
+    - "logging level aaa 1"
+    - "logging level ftp 6"
+    - "logging server 203.0.113.100 1 use-vrf management"
+    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
+    - "logging origin-id hostname"
