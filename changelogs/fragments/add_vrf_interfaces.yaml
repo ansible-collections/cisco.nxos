@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Added nxos_vrf_interfaces resource module, that helps with configuration of vrfs within interface in favor of nxos_vrf_interface module.
