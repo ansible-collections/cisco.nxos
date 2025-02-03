@@ -123,6 +123,7 @@ EXAMPLES = """
     pkl_dest: 192.168.100.4
     pkl_src: 10.1.100.20
     peer_gw: true
+    peer_sw: true
     auto_recovery: true
 
 - name: configure
@@ -131,6 +132,7 @@ EXAMPLES = """
     role_priority: 32667
     system_priority: 2000
     peer_gw: true
+    peer_sw: true
     pkl_src: 10.1.100.2
     pkl_dest: 192.168.100.4
     auto_recovery: true
@@ -142,6 +144,7 @@ EXAMPLES = """
     system_priority: 2000
     delay_restore: 180
     peer_gw: true
+    peer_sw:true
     pkl_src: 1.1.1.2
     pkl_dest: 1.1.1.1
     pkl_vrf: vpckeepalive
@@ -155,7 +158,7 @@ commands:
     type: list
     sample: ["vpc domain 100",
             "peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management",
-            "auto-recovery", "peer-gateway"]
+            "auto-recovery", "peer-gateway","peer-switch"]
 """
 
 import re
