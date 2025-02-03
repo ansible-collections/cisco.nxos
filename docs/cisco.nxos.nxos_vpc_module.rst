@@ -322,7 +322,7 @@ Examples
         system_priority: 2000
         delay_restore: 180
         peer_gw: true
-        peer_sw:true
+        peer_sw: true
         pkl_src: 1.1.1.2
         pkl_dest: 1.1.1.1
         pkl_vrf: vpckeepalive
