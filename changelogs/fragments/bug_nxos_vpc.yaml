@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_vpc - Fixes an error where failed to gather facts for kickstart_ver_str
