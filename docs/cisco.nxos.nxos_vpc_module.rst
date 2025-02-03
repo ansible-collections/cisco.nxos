@@ -301,6 +301,7 @@ Examples
         pkl_dest: 192.168.100.4
         pkl_src: 10.1.100.20
         peer_gw: true
+        peer_sw: true
         auto_recovery: true
 
     - name: configure
@@ -309,6 +310,7 @@ Examples
         role_priority: 32667
         system_priority: 2000
         peer_gw: true
+        peer_sw: true
         pkl_src: 10.1.100.2
         pkl_dest: 192.168.100.4
         auto_recovery: true
@@ -320,6 +322,7 @@ Examples
         system_priority: 2000
         delay_restore: 180
         peer_gw: true
+        peer_sw:true
         pkl_src: 1.1.1.2
         pkl_dest: 1.1.1.1
         pkl_vrf: vpckeepalive
@@ -353,7 +356,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;, &#x27;peer-switch&#x27;]</div>
                 </td>
             </tr>
     </table>
