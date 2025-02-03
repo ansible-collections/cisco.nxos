@@ -229,7 +229,7 @@ def get_auto_recovery_default(module):
         auto = True
     elif re.search(r"N9K", pid):
         data = run_commands(module, ["show hardware | json"])[0]
-        ver = data.get("kickstart_ver_str", "unknown")
+        ver = data["kickstart_ver_str"]
         if re.search(r"7.0\(3\)F", ver):
             auto = True
 
