@@ -1,0 +1,7 @@
+---
+bugfixes:
+  - nxos_vpc - fixes failure due to kickstart_ver_str not being present
+  - nxos_user - fixes wrong command being generated for purge function
+trivial:
+  - nxos_logging_global - fixes assertion error due to facts for that specific attribute not being present in latest device versions
+  - vrf_global - Increase timeout for vrf_global module after vrf removal

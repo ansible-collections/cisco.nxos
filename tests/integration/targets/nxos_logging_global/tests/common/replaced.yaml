@@ -27,7 +27,7 @@
             - host: 203.0.113.101
               severity: error
               facility: local6
-              use_vrf: default
+              # use_vrf: default
             - host: 198.51.100.101
               severity: alert
               port: 6538

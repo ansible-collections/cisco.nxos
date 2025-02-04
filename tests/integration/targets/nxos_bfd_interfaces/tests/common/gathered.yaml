@@ -13,7 +13,15 @@
         state: gathered
 
     - ansible.builtin.assert:
-        that: "{{ result['gathered'][:3] | symmetric_difference(gathered) |length == 0 }}"
+        that:
+          - not result.changed
+          - >
+            {{
+              result['gathered']
+              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
+              | symmetric_difference(gathered)
+              | length == 0
+            }}
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
