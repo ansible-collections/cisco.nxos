@@ -56,6 +56,7 @@
         role_priority: 500
         system_priority: 2000
         peer_gw: true
+        peer_sw: true
         delay_restore: 5
         delay_restore_interface_vlan: 15
         delay_restore_orphan_port: "{{ delay_restore_orphan_port|default(omit) }}"
@@ -125,6 +126,7 @@
         role_priority: default
         system_priority: default
         peer_gw: true
+        peer_sw: true
         delay_restore: default
         delay_restore_interface_vlan: default
         delay_restore_orphan_port: "{{ def_delay_restore_orphan_port|default(omit) }}"
@@ -143,6 +145,7 @@
         state: present
         domain: 100
         peer_gw: false
+        peer_sw: false
 
     - ansible.builtin.assert: *id002
 
