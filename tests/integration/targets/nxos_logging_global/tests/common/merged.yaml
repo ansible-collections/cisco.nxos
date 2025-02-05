@@ -32,7 +32,7 @@
             - host: 203.0.113.101
               severity: error
               facility: local6
-              use_vrf: default
+              # use_vrf: default
           origin_id:
             hostname: true
       register: result
