@@ -377,10 +377,10 @@ class Interfaces(ConfigBase):
             commands.append(no_cmd + "switchport")
         if "description" in obj:
             commands.append("no description")
-        if "speed" in obj:
-            commands.append("no speed")
         if "duplex" in obj:
             commands.append("no duplex")
+        if "speed" in obj:
+            commands.append("no speed")
         if "enabled" in obj:
             sysdef_enabled = self.default_enabled(have=obj, action="delete")
             if obj["enabled"] is False and sysdef_enabled is True:
