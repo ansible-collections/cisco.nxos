@@ -36,7 +36,7 @@ merged:
     hosts:
       - severity: alert
         host: 203.0.113.100
-        use_vrf: management
+        # use_vrf: management
       - facility: local6
         severity: error
         host: 203.0.113.101
@@ -72,13 +72,41 @@ replaced:
       - severity: alert
         port: 6538
         host: 198.51.100.101
-        use_vrf: management
+        # use_vrf: management
       - facility: local6
         severity: error
         host: 203.0.113.101
         # use_vrf: default
 
 deleted:
+  before:
+    console:
+      severity: error
+    facilities:
+      - facility: aaa
+        severity: alert
+      - facility: auth
+        severity: critical
+      - facility: ftp
+        severity: informational
+    ip:
+      access_list:
+        cache:
+          entries: 16384
+          interval: 200
+          threshold: 5000
+    monitor:
+      severity: warning
+    origin_id:
+      hostname: true
+    hosts:
+      - severity: alert
+        host: 203.0.113.100
+        # use_vrf: management
+      - facility: local6
+        severity: error
+        host: 203.0.113.101
+        # use_vrf: default
   commands:
     - "logging console"
     - "logging monitor"
@@ -90,7 +118,7 @@ deleted:
     - "no logging level aaa 1"
     - "no logging level ftp 6"
     - "no logging server 203.0.113.100 1 use-vrf management"
-    - "no logging server 203.0.113.101 3 facility local6"
+    # - "no logging server 203.0.113.101 3 facility local6 use-vrf default"
 
 parsed:
   after:
@@ -135,3 +163,33 @@ rendered:
     - "logging server 203.0.113.100 1 use-vrf management"
     - "logging server 203.0.113.101 3 facility local6 use-vrf default"
     - "logging origin-id hostname"
+
+gathered:
+  config:
+    console:
+      severity: error
+    facilities:
+      - facility: aaa
+        severity: alert
+      - facility: auth
+        severity: critical
+      - facility: ftp
+        severity: informational
+    ip:
+      access_list:
+        cache:
+          entries: 16384
+          interval: 200
+          threshold: 5000
+    monitor:
+      severity: warning
+    origin_id:
+      hostname: true
+    hosts:
+      - severity: alert
+        host: 203.0.113.100
+        # use_vrf: management
+      - facility: local6
+        severity: error
+        host: 203.0.113.101
+        # use_vrf: default
