@@ -290,7 +290,7 @@ def main():
         candidate = candidate.items_text()
         if not module.check_mode:
             load_config(module, candidate)
-            results["changed"] = True
+        results["changed"] = True
         results["commands"] = candidate
     else:
         results["commands"] = []
