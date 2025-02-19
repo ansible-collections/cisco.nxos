@@ -1,0 +1,2 @@
+trivial:
+  - nxos_logging_global - fixes assertion error due to facts for that specific attribute not being present in latest device versions downstream

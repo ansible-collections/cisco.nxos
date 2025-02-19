@@ -49,7 +49,7 @@
     - name: Assert that after dicts were correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] == result['after'] }}"
+          - "{{ result['after'] | ansible.utils.remove_keys(target=['use_vrf']) == merged['after'] }}"
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_logging_global: *id001
