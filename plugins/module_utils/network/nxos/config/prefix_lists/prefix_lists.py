@@ -18,6 +18,15 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+try:
+    import ipaddress
+
+    HAS_IPADDRESS = True
+except ImportError:
+    HAS_IPADDRESS = False
+
+import copy
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -117,7 +126,7 @@ class Prefix_lists(ResourceModule):
     def _compare_seqs(self, want, have):
         for wseq, wentry in iteritems(want):
             hentry = have.pop(wseq, {})
-            if hentry != wentry:
+            if not self._compare_entry(wentry, hentry):
                 if hentry:
                     if self.state == "merged":
                         self._module.fail_json(
@@ -133,6 +142,41 @@ class Prefix_lists(ResourceModule):
         # remove remaining entries from have prefix list
         for hseq in have.values():
             self.addcmd(hseq, "entry", negate=True)
+
+    def _compare_entry(self, want_entry, have_entry):
+        if HAS_IPADDRESS:
+            want_entry_to_compare = copy.deepcopy(want_entry)
+            have_entry_to_compare = copy.deepcopy(have_entry)
+            if "prefix" in want_entry_to_compare and "prefix" in have_entry_to_compare:
+                try:
+                    want_entry_to_compare["prefix"] = ipaddress.ip_network(
+                        want_entry_to_compare["prefix"],
+                        strict=False,
+                    )
+                    have_entry_to_compare["prefix"] = ipaddress.ip_network(
+                        have_entry_to_compare["prefix"],
+                        strict=False,
+                    )
+                except ValueError as e:
+                    self._module.fail_json(
+                        msg="Cannot parse prefix. {0}.".format(str(e)),
+                    )
+            return want_entry_to_compare == have_entry_to_compare
+        else:
+            self.warnings.append(
+                (
+                    "The ipaddress package was not found. Prefix standardization "
+                    "will not be performed. Please ensure that the prefix arguments in the "
+                    "playbook and the running-config are exactly the same, or install the ipaddress "
+                    "package. If there is a discrepancy in prefix notation between the playbook "
+                    "and the running-config in this state, idempotency will not be maintained, "
+                    "resulting in the deletion and re-addition of existing configurations. For "
+                    "example, if the playbook specifies prefix: ::0/, the running-config will "
+                    "display it as 0::0/0. In this case, running the playbook multiple times will "
+                    "cause the existing config to be deleted and re-added each time."
+                ),
+            )
+        return want_entry == have_entry
 
     def _prefix_list_transform(self, entry):
         for afi, value in iteritems(entry):
