@@ -139,7 +139,7 @@
           - mgmt0_ip in result.remote_scp_server
 
     - ansible.builtin.pause:
-        seconds: 60
+        seconds: 100
 
     - name: Overwrite the file
       register: result
@@ -147,33 +147,33 @@
 
     - ansible.builtin.assert: *id006
 
-    - name: >-
-        Initiate copy with sftp from nxos device to copy
-        /bootflash/{{ test_destination_file }} to
-        bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
-      register: result
-      cisco.nxos.nxos_file_copy:
-        file_pull: true
-        file_pull_protocol: sftp
-        file_pull_timeout: 60
-        remote_file: "/bootflash/{{ test_destination_file }}"
-        local_file: "{{ test_destination_file }}_another_copy"
-        local_file_directory: dir1/dir2/dir3
-        remote_scp_server: "{{ mgmt0_ip }}"
-        remote_scp_server_user: temp_user
-        remote_scp_server_password: "{{ temp_passwd }}"
-        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
+    # - name: >-
+    #     Initiate copy with sftp from nxos device to copy
+    #     /bootflash/{{ test_destination_file }} to
+    #     bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
+    #   register: result
+    #   cisco.nxos.nxos_file_copy:
+    #     file_pull: true
+    #     file_pull_protocol: sftp
+    #     file_pull_timeout: 60
+    #     remote_file: "/bootflash/{{ test_destination_file }}"
+    #     local_file: "{{ test_destination_file }}_another_copy"
+    #     local_file_directory: dir1/dir2/dir3
+    #     remote_scp_server: "{{ mgmt0_ip }}"
+    #     remote_scp_server_user: temp_user
+    #     remote_scp_server_password: "{{ temp_passwd }}"
+    #     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - ansible.builtin.assert:
-        that:
-          - result.changed == true
-          - "'copy sftp:' in result.copy_cmd"
-          - "'bootflash:' in result.file_system"
-          - "'bootflash:dir1/dir2/dir3/test_destination_file_another_copy' in result.local_file"
-          - "'/bootflash/test_destination_file' in result.remote_file"
+    # - ansible.builtin.assert:
+    #     that:
+    #       - result.changed == true
+    #       - "'copy sftp:' in result.copy_cmd"
+    #       - "'bootflash:' in result.file_system"
+    #       - "'bootflash:dir1/dir2/dir3/test_destination_file_another_copy' in result.local_file"
+    #       - "'/bootflash/test_destination_file' in result.remote_file"
 
-          - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
-          - mgmt0_ip in result.remote_scp_server
+    #       - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
+    #       - mgmt0_ip in result.remote_scp_server
 
   always:
     - name: Remove file

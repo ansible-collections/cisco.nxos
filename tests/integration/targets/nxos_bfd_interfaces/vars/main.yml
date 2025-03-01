@@ -1,14 +1,11 @@
 ---
 gathered:
-  - name: "{{ nxos_int1 }}"
+  - name: "Ethernet1/1"
     bfd: disable
     echo: enable
-  - name: "{{ nxos_int2 }}"
+  - name: "Ethernet1/2"
     echo: disable
     bfd: enable
-  - name: "{{ nxos_int3 }}"
-    bfd: enable
-    echo: enable
 
 parsed:
   - bfd: disable

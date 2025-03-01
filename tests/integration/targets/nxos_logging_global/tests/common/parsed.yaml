@@ -11,4 +11,4 @@
 - name: Assert that configuration was correctly parsed
   ansible.builtin.assert:
     that:
-      - "{{ merged['after'] == result['parsed'] }}"
+      - "{{ parsed['after'] == result['parsed'] }}"
