@@ -75,6 +75,10 @@ options:
     description:
     - Enables/Disables peer gateway
     type: bool
+  peer_sw:
+    description:
+    - Enables/Disables peer-switch
+    type: bool
   auto_recovery:
     description:
     - Enables/Disables auto recovery on platforms that support disable
@@ -119,6 +123,7 @@ EXAMPLES = """
     pkl_dest: 192.168.100.4
     pkl_src: 10.1.100.20
     peer_gw: true
+    peer_sw: true
     auto_recovery: true
 
 - name: configure
@@ -127,6 +132,7 @@ EXAMPLES = """
     role_priority: 32667
     system_priority: 2000
     peer_gw: true
+    peer_sw: true
     pkl_src: 10.1.100.2
     pkl_dest: 192.168.100.4
     auto_recovery: true
@@ -138,6 +144,7 @@ EXAMPLES = """
     system_priority: 2000
     delay_restore: 180
     peer_gw: true
+    peer_sw: true
     pkl_src: 1.1.1.2
     pkl_dest: 1.1.1.1
     pkl_vrf: vpckeepalive
@@ -151,7 +158,7 @@ commands:
     type: list
     sample: ["vpc domain 100",
             "peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management",
-            "auto-recovery", "peer-gateway"]
+            "auto-recovery", "peer-gateway","peer-switch"]
 """
 
 import re
@@ -171,6 +178,7 @@ CONFIG_ARGS = {
     "delay_restore": "delay restore {delay_restore}",
     "delay_restore_interface_vlan": "delay restore interface-vlan {delay_restore_interface_vlan}",
     "delay_restore_orphan_port": "delay restore orphan-port {delay_restore_orphan_port}",
+    "peer_sw": "{peer_sw} peer-switch",
     "peer_gw": "{peer_gw} peer-gateway",
     "auto_recovery": "{auto_recovery} auto-recovery",
     "auto_recovery_reload_delay": "auto-recovery reload-delay {auto_recovery_reload_delay}",
@@ -183,6 +191,7 @@ PARAM_TO_DEFAULT_KEYMAP = {
     "role_priority": "32667",
     "system_priority": "32667",
     "peer_gw": False,
+    "peer_sw": False,
     "auto_recovery_reload_delay": 240,
 }
 
@@ -220,7 +229,8 @@ def get_auto_recovery_default(module):
         auto = True
     elif re.search(r"N9K", pid):
         data = run_commands(module, ["show hardware | json"])[0]
-        ver = data["kickstart_ver_str"]
+        ver = data.get("kickstart_ver_str", "")
+
         if re.search(r"7.0\(3\)F", ver):
             auto = True
 
@@ -269,6 +279,8 @@ def get_vpc(module):
                     vpc["auto_recovery_reload_delay"] = line[-1]
                 if "peer-gateway" in each:
                     vpc["peer_gw"] = False if "no " in each else True
+                if "peer-switch" in each:
+                    vpc["peer_sw"] = True
                 if "peer-keepalive destination" in each:
                     # destination is reqd; src & vrf are optional
                     m = re.search(
@@ -338,11 +350,18 @@ def get_commands_to_config_vpc(module, vpc, domain, existing):
         else:
             vpc["peer_gw"] = ""
 
+    if "peer_sw" in vpc:
+        if not vpc.get("peer_sw"):
+            vpc["peer_sw"] = "no"
+        else:
+            vpc["peer_sw"] = ""
     for param in vpc:
         command = CONFIG_ARGS.get(param)
         if command is not None:
             command = command.format(**vpc).strip()
             if "peer-gateway" in command:
+                commands.append("terminal dont-ask")
+            if "peer-switch" in command:
                 commands.append("terminal dont-ask")
             commands.append(command)
 
@@ -360,6 +379,7 @@ def main():
         pkl_dest=dict(required=False),
         pkl_vrf=dict(required=False),
         peer_gw=dict(required=False, type="bool"),
+        peer_sw=dict(required=False, type="bool"),
         auto_recovery=dict(required=False, type="bool"),
         auto_recovery_reload_delay=dict(required=False, type="str"),
         delay_restore=dict(required=False, type="str"),
@@ -385,6 +405,7 @@ def main():
     pkl_dest = module.params["pkl_dest"]
     pkl_vrf = module.params["pkl_vrf"]
     peer_gw = module.params["peer_gw"]
+    peer_sw = module.params["peer_sw"]
     auto_recovery = module.params["auto_recovery"]
     auto_recovery_reload_delay = module.params["auto_recovery_reload_delay"]
     delay_restore = module.params["delay_restore"]
@@ -400,6 +421,7 @@ def main():
         pkl_dest=pkl_dest,
         pkl_vrf=pkl_vrf,
         peer_gw=peer_gw,
+        peer_sw=peer_sw,
         auto_recovery=auto_recovery,
         auto_recovery_reload_delay=auto_recovery_reload_delay,
         delay_restore=delay_restore,

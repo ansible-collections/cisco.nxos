@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vrf
 *******************
 
-**Manages global VRF configuration.**
+**(deprecated, removed after 2026-07-25) Manages global VRF configuration.**
 
 
 Version added: 1.0.0

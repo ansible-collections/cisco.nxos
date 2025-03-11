@@ -111,6 +111,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.tele
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_address_family.vrf_address_family import (
+    Vrf_address_familyFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_global.vrf_global import (
+    Vrf_globalFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_interfaces.vrf_interfaces import (
+    Vrf_interfacesFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -150,6 +159,9 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     bgp_templates=Bgp_templatesFacts,
+    vrf_global=Vrf_globalFacts,
+    vrf_address_family=Vrf_address_familyFacts,
+    vrf_interfaces=Vrf_interfacesFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
     fc_interfaces=Fc_interfacesFacts,

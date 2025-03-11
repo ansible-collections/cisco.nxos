@@ -1,0 +1,49 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vrf_address_family rendered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Render provided configuration with device configuration
+      register: result
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv6
+                safi: unicast
+                route_target:
+                  - export: 65512:200
+                maximum:
+                  max_routes: 500
+                  max_route_options:
+                    threshold:
+                      threshold_value: 60
+                      reinstall_threshold: 80
+                export:
+                  - map: "22"
+                  - vrf:
+                      allow_vpn: true
+                      map_import: "44"
+                  - vrf:
+                      allow_vpn: true
+          - name: temp
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - import: 65512:200
+                maximum:
+                  max_routes: 1000
+                export:
+                  - map: "26"
+                  - vrf:
+                      allow_vpn: true
+                      map_import: "46"
+        state: rendered
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered.commands) == []

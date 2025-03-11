@@ -1,0 +1,22 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vrf_address_family gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather the provided configuration with the existing running configuration
+      register: result
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+        state: gathered
+
+    - name: Assert gathered state
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered == result['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

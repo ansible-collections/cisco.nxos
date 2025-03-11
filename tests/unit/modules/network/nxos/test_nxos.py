@@ -22,14 +22,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from os import path
-
-
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
-
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 from ansible.module_utils._text import to_bytes, to_text
 

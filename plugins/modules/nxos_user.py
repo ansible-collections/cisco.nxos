@@ -412,6 +412,19 @@ def update_objects(want, have):
     return updates
 
 
+def get_configured_usernames(module):
+    config_output = run_commands(
+        module,
+        [{"command": "show running-config | section ^username", "output": "text"}],
+    )
+    usernames = set()
+    for line in config_output[0].splitlines():
+        if line.startswith("username "):
+            username = line.split()[1]
+            usernames.add(username)
+    return usernames
+
+
 def main():
     """main entry point for module execution"""
     element_spec = dict(
@@ -457,8 +470,9 @@ def main():
     commands = map_obj_to_commands(update_objects(want, have), module)
 
     if module.params["purge"]:
-        want_users = [x["name"] for x in want]
-        have_users = [x["name"] for x in have]
+        want_users = set([x["name"] for x in want])
+        have_users = get_configured_usernames(module)
+
         for item in set(have_users).difference(want_users):
             if item != "admin":
                 item = item.replace("\\", "\\\\")

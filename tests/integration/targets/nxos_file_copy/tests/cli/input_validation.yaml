@@ -21,7 +21,7 @@
 
 - ansible.builtin.assert:
     that:
-      - result is search("argument 'file_pull_timeout' is of type .* and we were unable to convert to int")
+      - result.msg is ansible.builtin.search("argument 'file_pull_timeout' is of type .* and we were unable to convert to int", multiline=true)
 
 - name: Input validation - param should be type <bool>
   register: result

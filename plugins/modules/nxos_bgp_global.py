@@ -171,7 +171,7 @@ options:
             type: dict
             suboptions:
               set:
-                description: Activiate graceful-shutdown.
+                description: Activate graceful-shutdown.
                 type: bool
               route_map:
                 description: Apply route-map to modify attributes for outbound.
@@ -252,7 +252,7 @@ options:
                 description: Suppress 4-byte AS Capability.
                 type: bool
           description:
-            description: Neighbor specific descripion.
+            description: Neighbor specific description.
             type: str
           disable_connected_check:
             description: Disable check for directly connected peer.
@@ -294,8 +294,31 @@ options:
                 description: Peer-session template to inherit.
                 type: str
           local_as:
-            description: Specify the local-as number for the eBGP neighbor.
+            description:
+            - Specify the local-as number for the eBGP neighbor.
+            - B(Deprecated), Use local_as_config instead, the facts would always render local_as information as a part of local_as_config as_number
+            - This option has been deprecated and will be removed in a release after 2027-01-01.
             type: str
+          local_as_config:
+            description: Local Autonomous System Number options.
+            type: dict
+            suboptions:
+              as_number:
+                description:
+                - Set Specify the local-as number for the eBGP neighbor.
+                type: str
+              no_prepend:
+                description:
+                - Do not prepend the local-as number to updates from the eBGP neighbor.
+                type: bool
+              replace_as:
+                description:
+                - Prepend only the local-as number to updates to eBGP neighbor.
+                type: bool
+              dual_as:
+                description:
+                - Connect using either the local-as number or the real as.
+                type: bool
           log_neighbor_changes:
             description: Log message for neighbor up/down event.
             type: dict
@@ -309,7 +332,7 @@ options:
                 - Disable logging of neighbor up/down event.
                 type: bool
           low_memory:
-            description: Behaviour in low memory situations.
+            description: Behavior in low memory situations.
             type: dict
             suboptions:
               exempt:

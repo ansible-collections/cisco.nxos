@@ -4,6 +4,99 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v9.3.0
+======
+
+Minor Changes
+-------------
+
+- Add support for VRF address family via `vrf_address_family` resource module.
+- Added nxos_vrf_interfaces resource module, that helps with configuration of vrfs within interface in favor of nxos_vrf_interface module.
+- nxos_telemetry - Added support for 'overridden' state to provide complete configuration override capabilities.
+
+Bugfixes
+--------
+
+- Fixed hardware fact gathering failure for CPU utilization parsing on NX-OS 9.3(3) by handling both list and single value formats of onemin_percent
+- Fixed the invalid feature name error for port-security by updating the feature mapping from `eth_port_sec` to `eth-port-sec`.
+- Fixes mixed usage of f-string and format string in action plugin for consistency.
+- Fixes nxos_user purge deleting non-local users,ensuring only local users are removed.
+- [bgp_templates] - fix the show commands used to ensure task does not fail if BGP is not enabled on the device.
+- lag_interfaces - Fix bug where lag interfaces was not erroring on command failure. (https://github.com/ansible-collections/cisco.nxos/pull/923)
+- nxos_l2_interfaces - Fixed handling of 'none' value in allowed_vlans to properly set trunk VLAN none
+
+New Modules
+-----------
+
+- nxos_vrf_address_family - Resource module to configure VRF address family definitions.
+
+v9.2.1
+======
+
+Bugfixes
+--------
+
+- acls - Fix lookup of range port conversion from int to string to allow strings (https://github.com/ansible-collections/cisco.nxos/pull/888).
+- facts - Fixes issue where the LLDP neighbor information returns an error when empty.
+
+Documentation Changes
+---------------------
+
+- Includes a new support related section in the README.
+
+v9.2.0
+======
+
+Minor Changes
+-------------
+
+- nxos_bgp_global - Deprecate local_as with local_as_config which supports more configuration attributes, under neighbor.
+
+Documentation Changes
+---------------------
+
+- nxos_bgp_global - Marks local_as under neighbor deprecated, and some documentation corrections.
+
+v9.1.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_vrf_global resource module in favor of nxos_vrf module (https://github.com/ansible-collections/cisco.nxos/pull/870).
+
+Bugfixes
+--------
+
+- nxos_snmp_server - correctly render entity traps (https://github.com/ansible-collections/cisco.nxos/issues/820).
+
+v9.0.0
+======
+
+Release Summary
+---------------
+
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.15.0`. The last known version compatible with ansible-core<2.15 is v8.1.0.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.15.0`, since previous ansible-core versions are EoL now.
+
+v8.1.0
+======
+
+Minor Changes
+-------------
+
+- route_maps - support simple route-maps that do not contain set or match statements. it allows for the creation and management of purely basic route-map entries like 'route-map test-1 permit 10'.
+
+Bugfixes
+--------
+
+- nxos_l3_interfaces - fail if encapsulation exists on a different sub-interface.
+- nxos_static_routes - correctly generate command when track parameter is specified.
+
 v8.0.0
 ======
 
@@ -16,8 +109,7 @@ Minor Changes
 -------------
 
 - Add support for cli_restore functionality.
-- Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
-  The cli_restore module is a part of ansible.netcommon.
+- Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618). The cli_restore module is a part of ansible.netcommon.
 
 Bugfixes
 --------

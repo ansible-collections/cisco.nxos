@@ -1,0 +1,53 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vrf_interfaces round trip integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Apply the provided configuration (base config)
+      register: base_config
+      cisco.nxos.nxos_vrf_interfaces:
+        config:
+          - name: Ethernet1/1
+          - name: Ethernet1/2
+          - name: Ethernet1/6
+            vrf_name: test
+        state: merged
+
+    - name: Gather VRF interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - vrf_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.nxos.nxos_vrf_interfaces:
+        config:
+          - name: Ethernet1/1
+          - name: Ethernet1/2
+            vrf_name: test2
+          - name: Ethernet1/6
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands|symmetric_difference(rtt.commands_no_revert) == []
+
+    - name: Revert back to base configuration using facts round trip
+      register: revert
+      cisco.nxos.nxos_vrf_interfaces:
+        config: "{{ ansible_facts['network_resources']['vrf_interfaces'] }}"
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
