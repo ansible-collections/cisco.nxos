@@ -57,9 +57,17 @@ class Snmp_serverFacts(object):
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
         objs = snmp_server_parser.parse()
-
         if "communities" in objs:
-            objs["communities"] = sorted(objs["communities"], key=lambda k: to_text(k["name"]))
+            if "groups" in objs["communities"]:
+                objs["communities"]["groups"] = sorted(
+                    objs["communities"]["groups"],
+                    key=lambda k: to_text(k["name"]),
+                )
+            if "use_acls" in objs["communities"]:
+                objs["communities"]["use_acls"] = sorted(
+                    objs["communities"]["use_acls"],
+                    key=lambda k: to_text(k["name"]),
+                )
 
         if "users" in objs:
             if "auth" in objs["users"]:

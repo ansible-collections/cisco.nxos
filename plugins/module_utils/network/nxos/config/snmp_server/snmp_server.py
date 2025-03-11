@@ -202,7 +202,14 @@ class Snmp_server(ResourceModule):
         """
         Compare list of dictionaries
         """
-        for x in ["users.auth", "users.use_acls", "hosts", "communities"]:
+        for x in [
+            "users.auth",
+            "users.use_acls",
+            "hosts.sources",
+            "hosts.use_vrfs",
+            "communities.groups",
+            "communities.use_acls",
+        ]:
             wantx = get_from_dict(want, x) or {}
             havex = get_from_dict(have, x) or {}
             for wkey, wentry in iteritems(wantx):
@@ -230,7 +237,15 @@ class Snmp_server(ResourceModule):
 
         tmp = deepcopy(data)
         if "communities" in tmp:
-            tmp["communities"] = {_build_key(entry): entry for entry in tmp["communities"]}
+            if "groups" in tmp["communities"]:
+                tmp["communities"]["groups"] = {
+                    _build_key(entry): entry for entry in tmp["communities"]["groups"]
+                }
+            if "use_acls" in tmp["communities"]:
+                # tmp["communities"]["use_acls"] = {_build_key(entry): entry for entry in tmp["communities"]["use_acls"]}
+                tmp["communities"]["use_acls"] = {
+                    entry["name"]: entry for entry in tmp["communities"]["use_acls"]
+                }
         if "users" in tmp:
             if "auth" in tmp["users"]:
                 tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}
@@ -239,5 +254,12 @@ class Snmp_server(ResourceModule):
                     entry["user"]: entry for entry in tmp["users"]["use_acls"]
                 }
         if "hosts" in tmp:
-            tmp["hosts"] = {_build_key(entry): entry for entry in tmp["hosts"]}
+            if "sources" in tmp["hosts"]:
+                tmp["hosts"]["sources"] = {
+                    _build_key(entry): entry for entry in tmp["hosts"]["sources"]
+                }
+            if "use_vrfs" in tmp["hosts"]:
+                tmp["hosts"]["use_vrfs"] = {
+                    entry["host"]: entry for entry in tmp["hosts"]["use_vrfs"]
+                }
         return tmp
