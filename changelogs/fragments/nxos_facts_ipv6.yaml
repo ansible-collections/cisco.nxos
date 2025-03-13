@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_facts - Fixes an issue in nxos_facts where IPv6 addresses within VRF contexts were not being collected in `net_all_ipv6_addresses`.
