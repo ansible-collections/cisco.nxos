@@ -253,6 +253,7 @@ class Interfaces(FactsBase):
         self.facts["neighbors"] = {}
         data = None
 
+        # Gets the interface data
         data = self.run("show interface", output="json")
 
         if data:
@@ -263,7 +264,7 @@ class Interfaces(FactsBase):
                 self.facts["interfaces"] = self.populate_interfaces(interfaces)
 
         if self.ipv6_structure_op_supported():
-            data = self.run("show ipv6 interface", output="json")
+            data = self.run("show ipv6 interface vrf all", output="json")
         else:
             data = None
         if data:
