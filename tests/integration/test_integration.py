@@ -23,6 +23,7 @@ def run(ansible_project, environment):
         str(ansible_project.log_file),
         "--skip-tags",
         "local,nxapi",
+        "-vvv",
     ]
 
     process = subprocess.run(
