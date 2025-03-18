@@ -17,6 +17,7 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 from unittest.mock import patch
 
@@ -24,6 +25,7 @@ from ansible_collections.cisco.nxos.plugins.modules import nxos_facts
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
 from .nxos_module import TestNxosModule, load_fixture
+
 
 class TestNxosFactsModule(TestNxosModule):
     module = nxos_facts
@@ -55,7 +57,7 @@ class TestNxosFactsModule(TestNxosModule):
             "network_api": "cliconf",
         }
         self.mock_connection = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_facts.Connection"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_facts.Connection",
         )
         self.connection = self.mock_connection.start()
         self.connection_instance = self.connection.return_value
