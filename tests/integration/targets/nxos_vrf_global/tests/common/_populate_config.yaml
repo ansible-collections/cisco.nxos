@@ -23,6 +23,7 @@
     lines:
       - vrf context temp
     match: none
+  when: isGathered is not defined
 
 - name: Wait for 5 seconds (waiting for vrf creation)
   ansible.builtin.wait_for:

@@ -131,7 +131,7 @@ deleted:
 gathered:
   after:
     vrfs:
-      - name: temp
+      # - name: temp
       - description: testvrfhere
         ip:
           auto_discard: true

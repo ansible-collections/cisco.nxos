@@ -4,6 +4,8 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 - ansible.builtin.include_tasks: _populate_config.yaml
+  vars:
+    isGathered: true
 
 - block:
     - name: Gather the provided configuration with the existing running configuration
