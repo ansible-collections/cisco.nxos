@@ -4,6 +4,21 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v9.4.0
+======
+
+Minor Changes
+-------------
+
+- nxos_vpc - Added support for peer-switch feature configuration.
+
+Bugfixes
+--------
+
+- nxos_facts - Fixes an issue in nxos_facts where IPv6 addresses within VRF contexts were not being collected in `net_all_ipv6_addresses`.
+- nxos_user - fixes wrong command being generated for purge function
+- nxos_vpc - fixes failure due to kickstart_ver_str not being present
+
 v9.3.0
 ======
 

@@ -1274,3 +1274,18 @@ releases:
         name: nxos_vrf_address_family
         namespace: ""
     release_date: "2025-01-17"
+  9.4.0:
+    changes:
+      bugfixes:
+        - nxos_facts - Fixes an issue in nxos_facts where IPv6 addresses within VRF
+          contexts were not being collected in `net_all_ipv6_addresses`.
+        - nxos_user - fixes wrong command being generated for purge function
+        - nxos_vpc - fixes failure due to kickstart_ver_str not being present
+      minor_changes:
+        - nxos_vpc - Added support for peer-switch feature configuration.
+    fragments:
+      - added_support_peer_switch_cmd.yaml
+      - ci_logging_global.yaml
+      - nxos_facts_ipv6.yaml
+      - test_ci.yaml
+    release_date: "2025-03-27"
