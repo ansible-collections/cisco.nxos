@@ -4,3 +4,11 @@ release_summary: >
   The last version known to be compatible with `ansible-core` versions below `2.16` is v5.1.2.
 major_changes:
   - Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+removed_features:
+  - "This release removes all deprecated plugins that have reached their end-of-life."
+  - "This includes the following modules:"
+  - "nxos_snmp_community"
+  - "nxos_snmp_host"
+  - "nxos_snmp_contact"
+  - "nxos_snmp_location"
+  - "nxos_snmp_user"
