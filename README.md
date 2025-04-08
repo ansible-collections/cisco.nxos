@@ -121,13 +121,7 @@ Name | Description
 [cisco.nxos.nxos_route_maps](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_route_maps_module.rst)|Route Maps resource module.
 [cisco.nxos.nxos_rpm](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_rpm_module.rst)|Install patch or feature rpms on Cisco NX-OS devices.
 [cisco.nxos.nxos_snapshot](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snapshot_module.rst)|Manage snapshots of the running states of selected features.
-[cisco.nxos.nxos_snmp_community](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_community_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP community configs.
-[cisco.nxos.nxos_snmp_contact](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_contact_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP contact info.
-[cisco.nxos.nxos_snmp_host](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_host_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP host configuration.
-[cisco.nxos.nxos_snmp_location](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_location_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP location information.
 [cisco.nxos.nxos_snmp_server](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_server_module.rst)|SNMP Server resource module.
-[cisco.nxos.nxos_snmp_traps](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_traps_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP traps.
-[cisco.nxos.nxos_snmp_user](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_user_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP users for monitoring.
 [cisco.nxos.nxos_static_routes](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst)|Static routes resource module
 [cisco.nxos.nxos_system](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_system_module.rst)|Manage the system attributes on Cisco NXOS devices
 [cisco.nxos.nxos_telemetry](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_telemetry_module.rst)|TELEMETRY resource module
