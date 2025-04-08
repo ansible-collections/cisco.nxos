@@ -35,3 +35,5 @@
       cisco.nxos.nxos_user:
         name: temp_user
         state: absent
+      retries: 3
+      delay: 10
