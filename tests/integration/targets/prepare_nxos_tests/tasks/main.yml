@@ -24,7 +24,7 @@
 
 - name: Reload golden config
   cisco.nxos.nxos_command:
-    commands: configure replace bootflash:///golden_config non-interactive
+    commands: "configure replace bootflash:///golden_config non-interactive"
   when: reload_nxos_config | default(False) | bool
 
 - name: Run the prepare steps if requested
