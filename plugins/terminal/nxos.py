@@ -64,7 +64,7 @@ class TerminalModule(TerminalBase):
         ),
         re.compile(rb"No corresponding (.+) configured", re.I),
         re.compile(rb"(.+)please specify sequence number", re.I),
-        re.compile(rb"(.+sufficient free entries are not available in tcam bank.*)", re.I)
+        re.compile(rb"(.+sufficient free entries are not available in tcam bank.*)", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
