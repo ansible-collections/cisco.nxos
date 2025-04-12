@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.nxos.nxos_vlans - fix vlans regex pattern that ignores vlans missing a name, even though the vlan has a vn-segment. (https://github.com/ansible-collections/cisco.nxos/pull/938).
