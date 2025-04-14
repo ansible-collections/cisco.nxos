@@ -4,6 +4,29 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v10.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible-core` for this collection is `2.16.0`. The last version known to be compatible with `ansible-core` versions below `2.16` is v5.1.2.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- This release removes all deprecated plugins that have reached their end-of-life, including:
+- nxos_snmp_community
+- nxos_snmp_contact
+- nxos_snmp_host
+- nxos_snmp_location
+- nxos_snmp_user
+
 v9.4.0
 ======
 
