@@ -1299,8 +1299,7 @@ releases:
         for this collection is `2.16.0`. The last version known to be compatible with
         `ansible-core` versions below `2.16` is v5.1.2."
       removed_features:
-        - "This includes the following modules:"
-        - This release removes all deprecated plugins that have reached their end-of-life.
+        - "This release removes all deprecated plugins that have reached their end-of-life, including:"
         - nxos_snmp_community
         - nxos_snmp_contact
         - nxos_snmp_host

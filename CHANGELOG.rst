@@ -20,8 +20,7 @@ Major Changes
 Removed Features (previously deprecated)
 ----------------------------------------
 
-- This includes the following modules:
-- This release removes all deprecated plugins that have reached their end-of-life.
+- This release removes all deprecated plugins that have reached their end-of-life, including:
 - nxos_snmp_community
 - nxos_snmp_contact
 - nxos_snmp_host
