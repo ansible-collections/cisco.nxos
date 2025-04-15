@@ -10,11 +10,13 @@ from unittest.mock import patch
 from ansible.module_utils import basic
 from ansible.module_utils._text import to_bytes
 
+
 cur_context = None
+
 
 def set_module_args(args):
     global cur_context
-    
+
     # Add common defaults
     if "_ansible_remote_tmp" not in args:
         args["_ansible_remote_tmp"] = "/tmp"
@@ -32,6 +34,7 @@ def set_module_args(args):
     # Try to use the newer patch_module_args
     try:
         from ansible.module_utils.testing import patch_module_args
+
         cur_context = patch_module_args(args)
         cur_context.__enter__()
     except ImportError:
