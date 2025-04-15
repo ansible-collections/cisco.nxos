@@ -103,7 +103,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
             "lacp suspend-individual",
         ]
 
-        deleted = [ 
+        deleted = [
             "interface port-channel1",
             "lacp graceful-convergence",
             "lacp suspend-individual",
@@ -112,7 +112,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=merged)
-        
+
         playbook["state"] = "deleted"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=deleted)
