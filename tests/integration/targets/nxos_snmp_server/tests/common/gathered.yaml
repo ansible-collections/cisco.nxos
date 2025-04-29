@@ -15,7 +15,7 @@
     - name: Assert that facts were correctly generated
       ansible.builtin.assert:
         that:
-          - result["gathered"] == merged["after"]
+          - "{{ result['gathered'] == merged['after'] }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
