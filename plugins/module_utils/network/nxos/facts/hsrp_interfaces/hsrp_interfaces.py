@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,11 +21,12 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.hsrp_interfaces import (
-    Hsrp_interfacesTemplate,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesArgs,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.hsrp_interfaces import (
+    Hsrp_interfacesTemplate,
 )
 
 
@@ -98,7 +100,8 @@ class Hsrp_interfacesFacts(object):
         data = self.flatten_config(data)
         # parse native config using the Hsrp_interfaces template
         hsrp_interfaces_parser = Hsrp_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(hsrp_interfaces_parser.parse().values())
 
@@ -107,8 +110,10 @@ class Hsrp_interfacesFacts(object):
         ansible_facts["ansible_network_resources"].pop("hsrp_interfaces", None)
         params = utils.remove_empties(
             hsrp_interfaces_parser.validate_config(
-                self.argument_spec, {"config": hsrp_objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": hsrp_objs},
+                redact=True,
+            ),
         )
         facts["hsrp_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
