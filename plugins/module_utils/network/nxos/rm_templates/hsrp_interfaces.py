@@ -36,6 +36,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
+            "compval": "name",
             "setval": "interface {{ name }}",
             "result": {"{{ name }}": {"name": "{{ name }}"}},
             "shared": True,
@@ -44,7 +45,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.version",
             "getval": re.compile(
                 r"""
-                \s+hsrp\sversion\s(?P<version>\d+)
+                \s*hsrp\sversion\s(?P<version>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp version {{ version|string }}",
@@ -60,7 +61,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.bfd",
             "getval": re.compile(
                 r"""
-                \s+hsrp\sbfd
+                \s*hsrp\sbfd
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp bfd",
@@ -76,7 +77,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.delay",
             "getval": re.compile(
                 r"""
-                \s+hsrp\sdelay
+                \s*hsrp\sdelay
                 (\sminimum\s(?P<minimum>\d+))?
                 (\sreload\s(?P<reload>\d+))?
                 $""", re.VERBOSE,
@@ -99,7 +100,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.mac_refresh",
             "getval": re.compile(
                 r"""
-                \s+hsrp\smac-refresh\s(?P<mac_refresh_number>\d+)
+                \s*hsrp\smac-refresh\s(?P<mac_refresh_number>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp mac-refresh {{ mac_refresh|string }}",
@@ -115,7 +116,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.use_bia",
             "getval": re.compile(
                 r"""
-                \s+hsrp\suse-bia\sscope\sinterface
+                \s*hsrp\suse-bia\sscope\sinterface
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp use-bia scope interface",
@@ -134,33 +135,32 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "group_no",
             "getval": re.compile(
                 r"""
-                \s+hsrp\s(?P<grp_no>\d+)
+                \s*hsrp\s(?P<grp_no>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp {{ grp_no|string }}",
             "result": {
                 "{{ name }}": {
-                    "standby_options": [{
-                        "grp_no": "{{ grp_no }}",
-                    }],
+                    "group_{{ grp_no|string }}": {
+                        "group_no": "{{ grp_no }}",
+                    },
                 },
             },
-            "shared": True,
         },
         {
             "name": "follow",
             "getval": re.compile(
                 r"""
+                \s*hsrp\s(?P<grp_no>\d+)
                 \s*follow\s(?P<description>.+$)
                 $""", re.VERBOSE,
             ),
             "setval": "follow {{ follow }}",
             "result": {
                 "{{ name }}": {
-                    "standby_options": [{
-                        "grp_no": "{{ grp_no }}",
+                    "group_{{ grp_no|string }}": {
                         "follow": "{{ description }}",
-                    }],
+                    },
                 },
             },
         },
@@ -168,16 +168,16 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "mac_address",
             "getval": re.compile(
                 r"""
+                \s*hsrp\s(?P<grp_no>\d+)
                 \s*mac-address\s(?P<address>.+$)
                 $""", re.VERBOSE,
             ),
             "setval": "mac-address {{ mac_address }}",
             "result": {
                 "{{ name }}": {
-                    "standby_options": [{
-                        "grp_no": "{{ grp_no }}",
+                    "group_{{ grp_no|string }}": {
                         "mac_address": "{{ address }}",
-                    }],
+                    },
                 },
             },
         },
@@ -185,16 +185,16 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "group_name",
             "getval": re.compile(
                 r"""
+                \s*hsrp\s(?P<grp_no>\d+)
                 \s*name\s(?P<group_name>.+$)
                 $""", re.VERBOSE,
             ),
             "setval": "name {{ group_name }}",
             "result": {
                 "{{ name }}": {
-                    "standby_options": [{
-                        "grp_no": "{{ grp_no }}",
+                    "group_{{ grp_no|string }}": {
                         "group_name": "{{ group_name }}",
-                    }],
+                    },
                 },
             },
         },
