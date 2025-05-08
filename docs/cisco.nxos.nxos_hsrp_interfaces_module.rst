@@ -67,6 +67,8 @@ Parameters
                 </td>
                 <td>
                         <div>Enable/Disable HSRP Bidirectional Forwarding Detection (BFD) on the interface.</div>
+                        <div><b>Deprecated</b>, Use standby.bfd instead, the facts would always render bfd information as a part of standby configuration</div>
+                        <div>This option has been deprecated and will be removed in a release after 2028-06-01.</div>
                 </td>
             </tr>
             <tr>
