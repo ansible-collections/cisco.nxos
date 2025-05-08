@@ -62,25 +62,15 @@ options:
             description: Authentication configuration
             type: dict
             suboptions:
-              advertisement:
-                description: Redirect advertisement messages (standby redirect advertisement authentication md5)
-                type: dict
-                suboptions:
-                  key_chain:
-                    description: Set key chain
-                    type: str
-                  key_string:
-                    description: Set key string
-                    type: bool
-                  encryption:
-                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
-                    type: str
-                  time_out:
-                    description: Set timeout
-                    type: str
-                  password_text:
-                    description: Password text valid for plain text and and key-string
-                    type: str
+              key_chain:
+                description: Set key chain
+                type: str
+              key_string:
+                description: Set key string
+                type: str
+              password_text:
+                description: Password text valid for plain text and and key-string
+                type: str
           follow:
             description: Groups to be followed
             type: str
@@ -145,7 +135,7 @@ options:
                 type: int
               msec:
                 description: Specify hello interval in milliseconds
-                type: int
+                type: bool
           track:
             description: Priority tracking
             type: list

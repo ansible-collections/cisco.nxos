@@ -198,5 +198,148 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+            "name": "ip",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*ip\s(?P<ipv4>\S+)
+                (\s(?P<secondary>secondary))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip {{ virtual_ip }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "ip": [
+                            {
+                                "virtual_ip": "{{ ipv4 }}",
+                                "secondary": "{{ not not secondary }}",
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            "name": "preempt",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*preempt\sdelay
+                (\sminimum\s(?P<minimum>\d+))
+                (\sreload\s(?P<reload>\d+))
+                (\ssync\s(?P<sync>\d+))
+                (\s(?P<delay>delay))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ group_name }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "preempt": {
+                            "set": True,
+                            "minimum": "{{ minimum }}",
+                            "reload": "{{ reload }}",
+                            "sync": "{{ sync }}",
+                            "delay": "{{ not not delay }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "priority",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*priority\s(?P<priority>\d+)
+                (\sforwarding-threshold\slower\s(?P<lower>\d+))
+                (\supper\s(?P<upper>\d+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ group_name }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "priority": {
+                            "level": "{{ priority }}",
+                            "upper": "{{ upper }}",
+                            "lower": "{{ lower }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "timer",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*timers
+                (\s*(?P<msec>msec))?
+                (\s*(?P<hello_interval>\d+))
+                (\s*(?P<hold_time>\d+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ group_name }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "timer": {
+                            "msec": "{{ not not msec }}",
+                            "hello_interval": "{{ hello_interval }}",
+                            "hold_time": "{{ hold_time }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "track",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*track
+                (\s*(?P<object_no>\d+))
+                (\s*decrement\s(?P<decrement>\d+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ group_name }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "track": [{
+                            "object_no": "{{ object_no }}",
+                            "decrement": "{{ decrement }}",
+                        }],
+                    },
+                },
+            },
+        },
+        {
+            "name": "authentication",
+            "getval": re.compile(
+                r"""
+                \s*hsrp\s(?P<grp_no>\d+)
+                \s*authentication
+                (\stext\s(?P<password_text>\S+))?
+                (\smd5\skey-chain\s(?P<key_chain>\S+))?
+                (\smd5\skey-string\s(?P<key_string>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ group_name }}",
+            "result": {
+                "{{ name }}": {
+                    "group_{{ grp_no|string }}": {
+                        "authentication": {
+                            "key_chain": "{{ key_chain }}",
+                            "key_string": "{{ key_string }}",
+                            "password_text": "{{ password_text }}",
+                        },
+                    },
+                },
+            },
+        },
     ]
     # fmt: on

@@ -48,16 +48,9 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "authentication": {
                             "type": "dict",
                             "options": {
-                                "advertisement": {
-                                    "type": "dict",
-                                    "options": {
-                                        "key_chain": {"type": "str"},
-                                        "key_string": {"type": "bool"},
-                                        "encryption": {"type": "str"},
-                                        "time_out": {"type": "str"},
-                                        "password_text": {"type": "str"},
-                                    },
-                                },
+                                "key_chain": {"type": "str"},
+                                "key_string": {"type": "str"},
+                                "password_text": {"type": "str"},
                             },
                         },
                         "follow": {"type": "str"},
@@ -94,7 +87,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "hello_interval": {"type": "int"},
                                 "hold_time": {"type": "int"},
-                                "msec": {"type": "int"},
+                                "msec": {"type": "bool"},
                             },
                         },
                         "track": {
