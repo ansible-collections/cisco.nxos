@@ -67,11 +67,9 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "preempt": {
                             "type": "dict",
                             "options": {
-                                "set": {"type": "bool"},
                                 "minimum": {"type": "int"},
                                 "reload": {"type": "int"},
                                 "sync": {"type": "int"},
-                                "delay": {"type": "bool"},
                             },
                         },
                         "priority": {

@@ -230,7 +230,6 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\sminimum\s(?P<minimum>\d+))
                 (\sreload\s(?P<reload>\d+))
                 (\ssync\s(?P<sync>\d+))
-                (\s(?P<delay>delay))?
                 $""", re.VERBOSE,
             ),
             "setval": "name {{ group_name }}",
@@ -238,11 +237,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
                         "preempt": {
-                            "set": True,
                             "minimum": "{{ minimum }}",
                             "reload": "{{ reload }}",
                             "sync": "{{ sync }}",
-                            "delay": "{{ not not delay }}",
                         },
                     },
                 },

@@ -95,9 +95,6 @@ options:
             description: Overthrow lower priority Active routers
             type: dict
             suboptions:
-              set:
-                description: set preempt only
-                type: bool
               minimum:
                 description: Delay at least this long
                 type: int
@@ -107,9 +104,6 @@ options:
               sync:
                 description: Wait for IP redundancy clients
                 type: int
-              delay:
-                description: Wait before preempting
-                type: bool
           priority:
             description: Priority level
             type: dict
@@ -416,6 +410,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hs
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfaces,
 )
+
+
+# import debugpy
+
+# debugpy.listen(5002)
+# debugpy.wait_for_client()
 
 
 def main():

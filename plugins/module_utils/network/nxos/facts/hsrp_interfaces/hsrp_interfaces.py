@@ -38,7 +38,7 @@ class Hsrp_interfacesFacts(object):
         self.argument_spec = Hsrp_interfacesArgs.argument_spec
 
     def get_hsrp_data(self, connection):
-        return connection.get("sh running-config | section ^interface")
+        return connection.get("show running-config | section ^interface")
 
     def flatten_config(self, config):
         dataLines = config.split("\n")
