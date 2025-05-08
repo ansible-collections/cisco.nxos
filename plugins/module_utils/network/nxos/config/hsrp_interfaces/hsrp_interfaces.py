@@ -165,6 +165,16 @@ class Hsrp_interfaces(ResourceModule):
         if param:
             for _k, val in iteritems(param):
                 temp_standby_grp = {}
+
+                # handle the deprecated attribute, only appliacble for want
+                if val.get("bfd"):
+                    if val.get("bfd") == "enable":
+                        val["standby"] = {}
+                        val["standby"]["bfd"] = True
+                    else:
+                        val["standby"] = {}
+                        val["standby"]["bfd"] = False
+
                 for standby_grp in val.get("standby_options", {}):
                     temp_ip = {}
                     if standby_grp.get("ip"):

@@ -552,3 +552,43 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_hsrp_interfaces_deprecated_bfd(self):
+        self.get_config.return_value = dedent(
+            """\
+                interface Vlan1
+                  hsrp version 2
+                interface Vlan10
+                  hsrp bfd
+                interface Vlan14
+                  bandwidth 99999
+                  hsrp bfd
+                interface Vlan1000
+                  hsrp 10
+                    authentication md5 key-string SECUREKEY100
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Vlan1",
+                        "bfd": "enable",
+                    },
+                    {
+                        "name": "Vlan14",
+                        "bfd": "enable",
+                    },
+                    {"name": "Vlan2"},
+                    {
+                        "name": "Vlan10",
+                        "bfd": "disable",
+                    },
+                ],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = ["interface Vlan1", "hsrp bfd", "interface Vlan10", "no hsrp bfd"]
+        self.assertEqual(set(result["commands"]), set(commands))
