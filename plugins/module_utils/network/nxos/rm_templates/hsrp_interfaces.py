@@ -36,7 +36,6 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "compval": "name",
             "setval": "interface {{ name }}",
             "result": {"{{ name }}": {"name": "{{ name }}"}},
             "shared": True,
@@ -48,7 +47,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s*hsrp\sversion\s(?P<version>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "hsrp version {{ version|string }}",
+            "setval": "hsrp version {{ standby.version|string }}",
             "result": {
                 "{{ name }}": {
                     "standby": {
@@ -83,8 +82,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp delay"
-                      "{{ ' ' + delay.minimum|string if delay.minimum is defined else ''}}"
-                      "{{ ' ' + delay.reload|string if delay.reload is defined else ''}}",
+                      "{{ ' ' + standby.delay.minimum|string if standby.delay.minimum is defined else ''}}"
+                      "{{ ' ' + standby.delay.reload|string if standby.delay.reload is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby": {
@@ -103,7 +102,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s*hsrp\smac-refresh\s(?P<mac_refresh_number>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "hsrp mac-refresh {{ mac_refresh|string }}",
+            "setval": "hsrp mac-refresh {{ standby.mac_refresh|string }}",
             "result": {
                 "{{ name }}": {
                     "standby": {
@@ -138,7 +137,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s*hsrp\s(?P<grp_no>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "hsrp {{ grp_no|string }}",
+            "setval": "hsrp {{ group_no|string }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -207,7 +206,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\s(?P<secondary>secondary))?
                 $""", re.VERBOSE,
             ),
-            "setval": "ip {{ virtual_ip }}",
+            "setval": "ip {{ ip.virtual_ip }}"
+            "{{ ' secondary' if ip.secondary|d(False) else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -232,7 +232,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\ssync\s(?P<sync>\d+))
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ group_name }}",
+            "setval": "preempt delay minimum {{ preempt.minimum|string }}"
+            "{{ (' reload ' + preempt.reload|string) if preempt.reload is defined else '' }}"
+            "{{ (' sync ' + preempt.sync|string) if preempt.sync is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -255,7 +257,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\supper\s(?P<upper>\d+))
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ group_name }}",
+            "setval": "priority {{ priority.level|string }}"
+            "{{ (' forwarding-threshold lower ' + priority.lower|string) if priority.lower is defined else '' }}"
+            "{{ (' upper ' + priority.upper|string) if priority.upper is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -279,7 +283,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\s*(?P<hold_time>\d+))
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ group_name }}",
+            "setval": "timers"
+            "{{ ' msec' if timer.msec|d(False) else ''}}"
+            "{{ (' ' + timer.hello_interval|string) if timer.hello_interval is defined else '' }}"
+            "{{ (' ' + timer.hold_time|string) if timer.hold_time is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -302,7 +309,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\s*decrement\s(?P<decrement>\d+))
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ group_name }}",
+            "setval": "track {{ track.object_no }}"
+            "{{ (' decrement ' + track.decrement|string) if track.decrement is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -325,7 +333,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\smd5\skey-string\s(?P<key_string>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ group_name }}",
+            "setval": "authentication"
+            "{{ (' text ' + authentication.password_text|string) if authentication.password_text is defined else '' }}"
+            "{{ (' md5 key-chain ' + authentication.key_chain|string) if authentication.key_chain is defined else '' }}"
+            "{{ (' md5 key-string ' + authentication.key_string|string) if authentication.key_string is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {

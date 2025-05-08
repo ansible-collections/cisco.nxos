@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -49,7 +47,26 @@ class Hsrp_interfaces(ResourceModule):
             resource="hsrp_interfaces",
             tmplt=Hsrp_interfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "standby.version",
+            "standby.bfd",
+            "standby.delay",
+            "standby.mac_refresh",
+            "standby.use_bia",
+        ]
+        self.complex_parsers = [
+            "follow",
+            "mac_address",
+            "group_name",
+            "preempt",
+            "priority",
+            "timer",
+            "authentication",
+        ]
+        self.complex_list_parsers = [
+            "ip",
+            "track",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -66,8 +83,21 @@ class Hsrp_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        if self.want:
+            wantd = {}
+            for each in self.want:
+                wantd.update({each["name"]: each})
+        else:
+            wantd = {}
+        if self.have:
+            haved = {}
+            for each in self.have:
+                haved.update({each["name"]: each})
+        else:
+            haved = {}
+
+        for each in wantd, haved:
+            self.list_to_dict(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -93,4 +123,61 @@ class Hsrp_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Hsrp_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_complex_attrs(
+            want.get("standby_options", {}),
+            have.get("standby_options", {}),
+        )
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def _compare_complex_attrs(self, want_group, have_group):
+        for grp_no, standby_want in want_group.items():
+            standby_have = have_group.pop(grp_no, {})
+            begin_grp = len(self.commands)
+            # compare non list attributes directly
+            self.compare(parsers=self.complex_parsers, want=standby_want, have=standby_have)
+            # compare list attributes directly
+            for x in self.complex_list_parsers:
+                for wkey, wentry in standby_want.get(x, {}).items():
+                    hentry = standby_have.get(x, {}).pop(wkey, {})
+                    if wentry != hentry:
+                        self.compare(
+                            parsers=self.complex_list_parsers,
+                            want={x: wentry},
+                            have={x: hentry},
+                        )
+                # remove extra ip or track
+                for hkey, hentry in standby_have.get(x, {}).items():
+                    self.compare(parsers=self.complex_list_parsers, want={}, have={x: hentry})
+            # adds hsrp [number]
+            if len(self.commands) != begin_grp:
+                self.commands.insert(
+                    begin_grp,
+                    self._tmplt.render(standby_want or standby_have, "group_no", False),
+                )
+        # remove group via numbers
+        for not_req_grp in have_group.values():
+            self.commands.append(self._tmplt.render(not_req_grp, "group_no", True))
+
+    def list_to_dict(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                temp_standby_grp = {}
+                for standby_grp in val.get("standby_options", {}):
+                    temp_ip = {}
+                    if standby_grp.get("ip"):
+                        for ips in standby_grp.get("ip", {}):
+                            temp_ip[ips.get("virtual_ip")] = ips
+                        standby_grp["ip"] = temp_ip
+                    temp_track = {}
+                    if standby_grp.get("track"):
+                        for trk in standby_grp.get("track", {}):
+                            temp_track[trk.get("object_no")] = trk
+                        standby_grp["track"] = temp_track
+                    temp_standby_grp[standby_grp.get("group_no")] = standby_grp
+
+                if val.get("standby_options", {}):
+                    val["standby_options"] = temp_standby_grp
+        print(param)
