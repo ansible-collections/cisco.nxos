@@ -47,9 +47,8 @@ class Hsrp_interfaces(ResourceModule):
             resource="hsrp_interfaces",
             tmplt=Hsrp_interfacesTemplate(),
         )
-                    #"standby.version",
+        # "standby.version",
         self.parsers = [
-
             "standby.bfd",
             "standby.delay",
             "standby.mac_refresh",
