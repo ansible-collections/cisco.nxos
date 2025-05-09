@@ -47,9 +47,9 @@ class Hsrp_interfaces(ResourceModule):
             resource="hsrp_interfaces",
             tmplt=Hsrp_interfacesTemplate(),
         )
-        # "standby.version",
         self.parsers = [
             "standby.bfd",
+            "standby.version",
             "standby.delay",
             "standby.mac_refresh",
             "standby.use_bia",
@@ -190,4 +190,3 @@ class Hsrp_interfaces(ResourceModule):
 
                 if val.get("standby_options", {}):
                     val["standby_options"] = temp_standby_grp
-        print(param)

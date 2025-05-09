@@ -134,7 +134,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "group_no",
             "getval": re.compile(
                 r"""
-                \s*hsrp\s(?P<grp_no>\d+)\s
+                \s*hsrp\s(?P<grp_no>\d+)\s*
                 $""", re.VERBOSE,
             ),
             "setval": "hsrp {{ group_no|string }}",

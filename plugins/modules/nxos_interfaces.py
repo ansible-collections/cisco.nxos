@@ -532,7 +532,7 @@ before:
   type: list
   sample: >
     The configuration returned will always be in the same format
-     of the parameters above.
+    of the parameters above.
 after:
   description: The configuration as structured data after module completion.
   returned: when changed
