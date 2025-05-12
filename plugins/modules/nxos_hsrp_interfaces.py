@@ -231,7 +231,7 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: '{{ test_int1 }}'
+      - name: Ethernet1/1
         standby:
           bfd: true
           mac_refresh: 400
@@ -396,7 +396,7 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: '{{ test_int1 }}'
+      - name: Ethernet1/1
         standby:
           bfd: true
           mac_refresh: 400
@@ -407,7 +407,7 @@ EXAMPLES = """
             group_name: VLAN11-GROUP
             group_no: 11
             mac_address: 00CC.10DD.10EE
-      - name: '{{ test_int2 }}'
+      - name: Ethernet1/2
         standby:
           bfd: true
           mac_refresh: 400
@@ -573,7 +573,7 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: '{{ test_int1 }}'
+      - name: Ethernet1/1
         standby:
           bfd: true
           mac_refresh: 400
@@ -584,7 +584,7 @@ EXAMPLES = """
             group_name: VLAN11-GROUP
             group_no: 11
             mac_address: 00CC.10DD.10EE
-      - name: '{{ test_int2 }}'
+      - name: Ethernet1/2
         standby:
           bfd: true
           mac_refresh: 400
@@ -755,7 +755,7 @@ EXAMPLES = """
 - name: Delete or return interface parameters to default settings
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: '{{ test_int1 }}'
+      - name: Ethernet1/1
         standby:
           bfd: true
           mac_refresh: 400
@@ -766,7 +766,7 @@ EXAMPLES = """
             group_name: VLAN11-GROUP
             group_no: 11
             mac_address: 00CC.10DD.10EE
-      - name: '{{ test_int2 }}'
+      - name: Ethernet1/2
         standby:
           bfd: true
           mac_refresh: 400
