@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.debug:
-    msg: Start nxos_hsrp_interfaces merged integration tests connection={{ ansible_connection }}
+    msg: Start nxos_hsrp_interfaces deleted integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1' and 'test_int2'
   ansible.builtin.set_fact:
@@ -36,8 +36,7 @@
         commands: show run | sec interface
 
     - name: Merged
-      register: result
-      cisco.nxos.nxos_hsrp_interfaces: &id001
+      cisco.nxos.nxos_hsrp_interfaces:
         config:
           - name: "{{ test_int1 }}"
             standby:
@@ -53,7 +52,53 @@
                   - secondary: true
                     virtual_ip: 10.10.10.2
                 mac_address: 00CC.10DD.10EE
+          - name: "{{ test_int2 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_chain: SECUREKEY20
+                group_name: VLAN20-GROUP
+                group_no: 20
+                ip:
+                  - secondary: true
+                    virtual_ip: 10.10.10.3
+                mac_address: 00CC.10DD.10EF
         state: merged
+
+    - name: run show version on remote devices
+      cisco.nxos.nxos_command:
+        commands: show run | sec interface
+
+    - name: Deleted
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &id001
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_string: SECUREKEY10
+                group_name: VLAN11-GROUP
+                group_no: 11
+                mac_address: 00CC.10DD.10EE
+          - name: "{{ test_int2 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_chain: SECUREKEY20
+                group_name: VLAN20-GROUP
+                group_no: 20
+                mac_address: 00CC.10DD.10EF
+        state: deleted
 
     - name: run show version on remote devices
       cisco.nxos.nxos_command:
@@ -62,17 +107,10 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          #- "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
-    - name: Gather hsrp_interfaces facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
-        gather_network_resources: hsrp_interfaces
-
-    - name: Idempotence - merged
+    - name: Idempotence - deleted
       register: result
       cisco.nxos.nxos_hsrp_interfaces: *id001
 

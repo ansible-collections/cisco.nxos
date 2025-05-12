@@ -209,23 +209,755 @@ options:
 """
 
 EXAMPLES = """
-#test# sh run | section interface
-#feature interface-vlan
+# Using merged
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+# interface Ethernet1/2
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: '{{ test_int1 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_string: SECUREKEY10
+            group_name: VLAN10-GROUP
+            group_no: 10
+            ip:
+              - secondary: true
+                virtual_ip: 10.10.10.2
+            mac_address: 00CC.10DD.10EE
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+# - name: Ethernet1/2
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+#  commands:
+# - interface Ethernet1/1
+# - hsrp version 2
+# - hsrp mac-refresh 400
+# - hsrp 10
+# - mac-address 00CC.10DD.10EE
+# - name VLAN10-GROUP
+# - authentication md5 key-string SECUREKEY10
+# - ip 10.10.10.2 secondary
+# - interface Ethernet1/2
+# - hsrp bfd
+# - hsrp version 2
+# - hsrp mac-refresh 400
+# - hsrp 20
+# - mac-address 00CC.10DD.10EF
+# - name VLAN20-GROUP
+# - authentication md5 key-chain SECUREKEY20
+# - ip 10.10.10.3 secondary
+#  after:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN10-GROUP
+#       group_no: 10
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.2
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.3
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 10
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN10-GROUP
+#     mac-address 00CC.10DD.10EE
+#     ip 10.10.10.2 secondary
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+#     ip 10.10.10.3 secondary
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 10
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN10-GROUP
+#     mac-address 00CC.10DD.10EE
+#     ip 10.10.10.2 secondary
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+#     ip 10.10.10.3 secondary
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+- name: Replaces device configuration of listed interfaces with provided configuration
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: '{{ test_int1 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_string: SECUREKEY10
+            group_name: VLAN11-GROUP
+            group_no: 11
+            mac_address: 00CC.10DD.10EE
+      - name: '{{ test_int2 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_chain: SECUREKEY20
+            group_name: VLAN20-GROUP
+            group_no: 20
+            mac_address: 00CC.10DD.10EF
+    state: replaced
+
+# Task Output
+# -----------
+#
+#  before:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN10-GROUP
+#       group_no: 10
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.2
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.3
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+#  commands:
+# - interface Ethernet1/1
+# - hsrp 11
+# - mac-address 00CC.10DD.10EE
+# - name VLAN11-GROUP
+# - authentication md5 key-string SECUREKEY10
+# - no hsrp 10
+# - interface Ethernet1/2
+# - hsrp 20
+# - no ip 10.10.10.3 secondary
+#  after:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN11-GROUP
+#       group_no: 11
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 11
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN11-GROUP
+#     mac-address 00CC.10DD.10EE
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 10
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN10-GROUP
+#     mac-address 00CC.10DD.10EE
+#     ip 10.10.10.2 secondary
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+#     ip 10.10.10.3 secondary
+
+- name: Override device configuration of all interfaces with provided configuration
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: '{{ test_int1 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_string: SECUREKEY10
+            group_name: VLAN11-GROUP
+            group_no: 11
+            mac_address: 00CC.10DD.10EE
+      - name: '{{ test_int2 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_chain: SECUREKEY20
+            group_name: VLAN20-GROUP
+            group_no: 20
+            mac_address: 00CC.10DD.10EF
+    state: overridden
+
+# Task Output
+# -----------
+#
+#  before:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN10-GROUP
+#       group_no: 10
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.2
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.3
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+#  commands:
+# - interface Ethernet1/1
+# - hsrp 11
+# - mac-address 00CC.10DD.10EE
+# - name VLAN11-GROUP
+# - authentication md5 key-string SECUREKEY10
+# - no hsrp 10
+# - interface Ethernet1/2
+# - hsrp 20
+# - no ip 10.10.10.3 secondary
+#  after:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN11-GROUP
+#       group_no: 11
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 11
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN11-GROUP
+#     mac-address 00CC.10DD.10EE
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 10
+#     authentication md5 key-string SECUREKEY10
+#     name VLAN10-GROUP
+#     mac-address 00CC.10DD.10EE
+#     ip 10.10.10.2 secondary
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+#   hsrp version 2
+#   hsrp mac-refresh 400
+#   hsrp 20
+#     authentication md5 key-chain SECUREKEY20
+#     name VLAN20-GROUP
+#     mac-address 00CC.10DD.10EF
+#     ip 10.10.10.3 secondary
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+- name: Delete or return interface parameters to default settings
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: '{{ test_int1 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_string: SECUREKEY10
+            group_name: VLAN11-GROUP
+            group_no: 11
+            mac_address: 00CC.10DD.10EE
+      - name: '{{ test_int2 }}'
+        standby:
+          bfd: true
+          mac_refresh: 400
+          version: 2
+        standby_options:
+          - authentication:
+              key_chain: SECUREKEY20
+            group_name: VLAN20-GROUP
+            group_no: 20
+            mac_address: 00CC.10DD.10EF
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_string: SECUREKEY10
+#       group_name: VLAN10-GROUP
+#       group_no: 10
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.2
+#       mac_address: 00CC.10DD.10EE
+# - name: Ethernet1/2
+#   standby:
+#     bfd: true
+#     mac_refresh: 400
+#     version: 2
+#   standby_options:
+#     - authentication:
+#         key_chain: SECUREKEY20
+#       group_name: VLAN20-GROUP
+#       group_no: 20
+#       ip:
+#         - secondary: true
+#           virtual_ip: 10.10.10.3
+#       mac_address: 00CC.10DD.10EF
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+# - name: Ethernet1/7
+# commands:
+# - interface Ethernet1/1
+# - no hsrp bfd
+# - no hsrp version 2
+# - no hsrp mac-refresh 400
+# - no hsrp 10
+# - interface Ethernet1/2
+# - no hsrp bfd
+# - no hsrp version 2
+# - no hsrp mac-refresh 400
+# - no hsrp 20
+# after:
+# - name: Vlan1
+# - name: Vlan10
+# - name: Vlan14
+# - name: Vlan1000
+# - name: Ethernet1/1
+# - name: Ethernet1/2
+# - name: Ethernet1/3
+# - name: Ethernet1/4
+# - name: Ethernet1/5
+# - name: Ethernet1/6
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Vlan1
+# interface Vlan10
+# interface Vlan14
+#   bandwidth 99999
+# interface Vlan1000
+# interface Ethernet1/1
+#   no switchport
+# interface Ethernet1/2
+#   no switchport
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+# interface Ethernet1/6
+# interface Ethernet1/7
+
+# Using rendered
+
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: Ethernet1/1
+        description: outbound-intf
+        mode: layer3
+        speed: 100
+      - name: Ethernet1/2
+        mode: layer2
+        enabled: true
+        duplex: full
+    state: rendered
+
+# Task Output
+# -----------
+#
+#rendered:
+#  - interface Vlan1
+#  - hsrp version 2
+#  - hsrp 10
+#  - timers msec 250 255
+#  - authentication md5 key-chain test
+#  - interface Vlan10
+#  - hsrp bfd
+#  - hsrp version 2
+#  - hsrp mac-refresh 400
+#  - hsrp 10
+#  - mac-address 00CC.10DD.10EE
+#  - name VLAN10-GROUP
+#  - preempt delay minimum 15 reload 120 sync 10
+#  - authentication md5 key-string SECUREKEY10
+#  - ip 10.10.10.2 secondary
+#  - interface Vlan14
+#  - hsrp bfd
+#  - hsrp version 2
+#  - hsrp delay 22 123
+#  - hsrp mac-refresh 300
+#  - hsrp 14
+#  - follow VLAN14-GROUP
+#  - mac-address 00AA.14BB.14CC
+#  - ip 192.168.14.1 secondary
+#  - ip 192.168.14.2 secondary
+#  - hsrp 15
+#  - mac-address 00BB.14CC.15DD
+#  - preempt delay minimum 10 reload 100 sync 5
+#  - priority 22 forwarding-threshold lower 12 upper 22
+#  - timers msec 456 33
+#  - authentication md5 key-string SECUREKEY14
+#  - interface Vlan1000
+#  - hsrp 10
+#  - mac-address 0423.4567.89AB
+#  - name testhsr
+#  - preempt delay minimum 33 reload 23 sync 22
+#  - priority 22 forwarding-threshold lower 12 upper 22
+#  - timers msec 456 33
+#  - authentication md5 key-string testmesecurte
+#  - ip 10.15.8.1 secondary
+
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+#
 #interface Vlan1
+#  hsrp version 2
+#  hsrp 10
+#    authentication md5 key-chain test
+#    timers msec 250  255
+#interface Vlan10
+#  hsrp bfd
+#  hsrp version 2
+#  hsrp mac-refresh 400
+#  hsrp 10
+#    authentication md5 key-string SECUREKEY10
+#    name VLAN10-GROUP
+#    mac-address 00CC.10DD.10EE
+#    preempt delay minimum 15 reload 120 sync 10
+#    ip 10.10.10.2 secondary
 #interface Vlan14
 #  bandwidth 99999
 #  hsrp bfd
 #  hsrp version 2
 #  hsrp delay minimum 22 reload 123
-#  hsrp mac-refresh 222
+#  hsrp mac-refresh 300
 #  hsrp 14
-#    follow testfolow
-#    ip 10.0.1.1 secondary
-#    ip 10.1.1.3
+#    follow VLAN14-GROUP
+#    mac-address 00AA.14BB.14CC
+#    ip 192.168.14.1 secondary
+#    ip 192.168.14.2 secondary
 #  hsrp 15
-#    authentication md5 key-string testmesecurte
-#    mac-address 0423.4567.89AB
-#    preempt delay minimum 33 reload 23 sync 22
+#    authentication md5 key-string SECUREKEY14
+#    mac-address 00BB.14CC.15DD
+#    preempt delay minimum 10 reload 100 sync 5
 #    priority 22 forwarding-threshold lower 12 upper 22
 #    timers msec 456  33
 #interface Vlan1000
@@ -238,124 +970,147 @@ EXAMPLES = """
 #    timers msec 456  33
 #    ip 10.15.8.1 secondary
 
-
-
-# Using deleted
-
-- name: Configure hsrp attributes on interfaces
-  cisco.nxos.nxos_hsrp_interfaces:
-    config:
-      - name: Ethernet1/1
-      - name: Ethernet1/2
-    operation: deleted
-
-
-# Using merged
-
-- name: Configure hsrp attributes on interfaces
-  cisco.nxos.nxos_hsrp_interfaces:
-    config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
-    operation: merged
-
-
-# Using overridden
-
-- name: Configure hsrp attributes on interfaces
-  cisco.nxos.nxos_hsrp_interfaces:
-    config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
-    operation: overridden
-
-
-# Using replaced
-
-- name: Configure hsrp attributes on interfaces
-  cisco.nxos.nxos_hsrp_interfaces:
-    config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
-    operation: replaced
-
-# Using rendered
-
-- name: Use rendered state to convert task input to device specific commands
-  cisco.nxos.nxos_hsrp_interfaces:
-    config:
-      - name: Ethernet1/800
-        bfd: enable
-      - name: Ethernet1/801
-        bfd: enable
-    state: rendered
-
-# Task Output (redacted)
-# -----------------------
-
-# rendered:
-#   - "interface Ethernet1/800"
-#   - "hsrp bfd"
-#   - "interface Ethernet1/801"
-#   - "hsrp bfd"
-
-# Using parsed
-
-# parsed.cfg
-# ------------
-# interface Ethernet1/800
-#   no switchport
-#   hsrp bfd
-# interface Ethernet1/801
-#   no switchport
-#   hsrp bfd
-
 - name: Use parsed state to convert externally supplied config to structured format
   cisco.nxos.nxos_hsrp_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
-
-# parsed:
-#   - name: Ethernet1/800
-#     bfd: enable
-#   - name: Ethernet1/801
-#     bfd: enable
-
-# Using gathered
-
-# Existing device config state
-# -------------------------------
-
-# interface Ethernet1/1
-#   no switchport
-#   hsrp bfd
-# interface Ethernet1/2
-#   no switchport
-#   hsrp bfd
-# interface Ethernet1/3
-#   no switchport
-
-- name: Gather hsrp_interfaces facts from the device using nxos_hsrp_interfaces
-  cisco.nxos.nxos_hsrp_interfaces:
-    state: gathered
-
-# Task output (redacted)
-# -----------------------
-
-# gathered:
-#   - name: Ethernet1/1
-#     bfd: enable
-#   - name: Ethernet1/2
-#     bfd: enable
+# Task output
+# -----------
+#
+#{"parsed": [
+#        {
+#            "name": "Vlan1",
+#            "standby": {
+#                "version": 2
+#            },
+#            "standby_options": [
+#                {
+#                    "authentication": {
+#                        "key_chain": "test"
+#                    },
+#                    "group_no": 10,
+#                    "timer": {
+#                        "hello_interval": 250,
+#                        "hold_time": 255,
+#                        "msec": true
+#                    }
+#                }
+#            ]
+#        },
+#        {
+#            "name": "Vlan10",
+#            "standby": {
+#                "bfd": true,
+#                "mac_refresh": 400,
+#                "version": 2
+#            },
+#            "standby_options": [
+#                {
+#                    "authentication": {
+#                        "key_string": "SECUREKEY10"
+#                    },
+#                    "group_name": "VLAN10-GROUP",
+#                    "group_no": 10,
+#                    "ip": [
+#                        {
+#                            "secondary": true,
+#                            "virtual_ip": "10.10.10.2"
+#                        }
+#                    ],
+#                    "mac_address": "00CC.10DD.10EE",
+#                    "preempt": {
+#                        "minimum": 15,
+#                        "reload": 120,
+#                        "sync": 10
+#                    }
+#                }
+#            ]
+#        },
+#        {
+#            "name": "Vlan14",
+#            "standby": {
+#                "bfd": true,
+#                "delay": {
+#                    "minimum": 22,
+#                    "reload": 123
+#                },
+#                "mac_refresh": 300,
+#                "version": 2
+#            },
+#            "standby_options": [
+#                {
+#                    "follow": "VLAN14-GROUP",
+#                    "group_no": 14,
+#                    "ip": [
+#                        {
+#                            "secondary": true,
+#                            "virtual_ip": "192.168.14.1"
+#                        },
+#                        {
+#                            "secondary": true,
+#                            "virtual_ip": "192.168.14.2"
+#                        }
+#                    ],
+#                    "mac_address": "00AA.14BB.14CC"
+#                },
+#                {
+#                    "authentication": {
+#                        "key_string": "SECUREKEY14"
+#                    },
+#                    "group_no": 15,
+#                    "mac_address": "00BB.14CC.15DD",
+#                    "preempt": {
+#                        "minimum": 10,
+#                        "reload": 100,
+#                        "sync": 5
+#                    },
+#                    "priority": {
+#                        "level": 22,
+#                        "lower": 12,
+#                        "upper": 22
+#                    },
+#                    "timer": {
+#                        "hello_interval": 456,
+#                        "hold_time": 33,
+#                        "msec": true
+#                    }
+#                }
+#            ]
+#        },
+#        {
+#            "name": "Vlan1000",
+#            "standby_options": [
+#                {
+#                    "authentication": {
+#                        "key_string": "testmesecurte"
+#                    },
+#                    "group_name": "testhsr",
+#                    "group_no": 10,
+#                    "ip": [
+#                        {
+#                            "secondary": true,
+#                            "virtual_ip": "10.15.8.1"
+#                        }
+#                    ],
+#                    "mac_address": "0423.4567.89AB",
+#                    "preempt": {
+#                        "minimum": 33,
+#                        "reload": 23,
+#                        "sync": 22
+#                    },
+#                    "priority": {
+#                        "level": 22,
+#                        "lower": 12,
+#                        "upper": 22
+#                    },
+#                    "timer": {
+#                        "hello_interval": 456,
+#                        "hold_time": 33,
+#                        "msec": true
+#                    }
+#                }
+#            ]}
 """
 
 RETURN = """
@@ -378,17 +1133,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - hsrp 14
+    - follow VLAN14-GROUP
+    - mac-address 00AA.14BB.14CC
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - hsrp 14
+    - follow VLAN14-GROUP
+    - mac-address 00AA.14BB.14CC
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -413,12 +1168,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hs
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfaces,
 )
-
-
-# import debugpy
-
-# debugpy.listen(5003)
-# debugpy.wait_for_client()
 
 
 def main():

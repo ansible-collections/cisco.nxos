@@ -14,6 +14,17 @@ merged:
     - name VLAN10-GROUP
     - authentication md5 key-string SECUREKEY10
     - ip 10.10.10.2 secondary
+replaced:
+  commands:
+    - interface Ethernet1/1
+    - hsrp 11
+    - mac-address 00CC.10DD.10EE
+    - name VLAN11-GROUP
+    - authentication md5 key-string SECUREKEY10
+    - no hsrp 10
+    - interface Ethernet1/2
+    - hsrp 20
+    - no ip 10.10.10.3 secondary
 parsed:
   - name: Vlan1
     standby:
