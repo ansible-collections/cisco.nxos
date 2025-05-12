@@ -590,5 +590,5 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             ignore_provider_arg,
         )
         result = self.execute_module(changed=True)
-        commands = ["interface Vlan1", "hsrp bfd", "interface Vlan10", "no hsrp bfd"]
+        commands = ["interface Vlan1", "hsrp bfd", "interface Vlan10", "no hsrp bfd", "no hsrp version 2"]
         self.assertEqual(set(result["commands"]), set(commands))

@@ -48,9 +48,9 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "authentication": {
                             "type": "dict",
                             "options": {
-                                "key_chain": {"type": "str"},
-                                "key_string": {"type": "str"},
-                                "password_text": {"type": "str"},
+                                "key_chain": {"type": "str", "no_log": True},
+                                "key_string": {"type": "str", "no_log": True},
+                                "password_text": {"type": "str", "no_log": True},
                             },
                         },
                         "follow": {"type": "str"},
