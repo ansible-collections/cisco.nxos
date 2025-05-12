@@ -107,7 +107,6 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          #- "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Idempotence - deleted

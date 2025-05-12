@@ -1503,7 +1503,7 @@ Examples
     # Task Output
     # -----------
     #
-    #rendered:
+    # rendered:
     #  - interface Vlan1
     #  - hsrp version 2
     #  - hsrp 10
@@ -1551,47 +1551,47 @@ Examples
     # parsed.cfg
     # ------------
     #
-    #interface Vlan1
-    #  hsrp version 2
-    #  hsrp 10
-    #    authentication md5 key-chain test
-    #    timers msec 250  255
-    #interface Vlan10
-    #  hsrp bfd
-    #  hsrp version 2
-    #  hsrp mac-refresh 400
-    #  hsrp 10
-    #    authentication md5 key-string SECUREKEY10
-    #    name VLAN10-GROUP
-    #    mac-address 00CC.10DD.10EE
-    #    preempt delay minimum 15 reload 120 sync 10
-    #    ip 10.10.10.2 secondary
-    #interface Vlan14
-    #  bandwidth 99999
-    #  hsrp bfd
-    #  hsrp version 2
-    #  hsrp delay minimum 22 reload 123
-    #  hsrp mac-refresh 300
-    #  hsrp 14
-    #    follow VLAN14-GROUP
-    #    mac-address 00AA.14BB.14CC
-    #    ip 192.168.14.1 secondary
-    #    ip 192.168.14.2 secondary
-    #  hsrp 15
-    #    authentication md5 key-string SECUREKEY14
-    #    mac-address 00BB.14CC.15DD
-    #    preempt delay minimum 10 reload 100 sync 5
-    #    priority 22 forwarding-threshold lower 12 upper 22
-    #    timers msec 456  33
-    #interface Vlan1000
-    #  hsrp 10
-    #    authentication md5 key-string testmesecurte
-    #    name testhsr
-    #    mac-address 0423.4567.89AB
-    #    preempt delay minimum 33 reload 23 sync 22
-    #    priority 22 forwarding-threshold lower 12 upper 22
-    #    timers msec 456  33
-    #    ip 10.15.8.1 secondary
+    # interface Vlan1
+    #   hsrp version 2
+    #   hsrp 10
+    #     authentication md5 key-chain test
+    #     timers msec 250  255
+    # interface Vlan10
+    #   hsrp bfd
+    #   hsrp version 2
+    #   hsrp mac-refresh 400
+    #   hsrp 10
+    #     authentication md5 key-string SECUREKEY10
+    #     name VLAN10-GROUP
+    #     mac-address 00CC.10DD.10EE
+    #     preempt delay minimum 15 reload 120 sync 10
+    #     ip 10.10.10.2 secondary
+    # interface Vlan14
+    #   bandwidth 99999
+    #   hsrp bfd
+    #   hsrp version 2
+    #   hsrp delay minimum 22 reload 123
+    #   hsrp mac-refresh 300
+    #   hsrp 14
+    #     follow VLAN14-GROUP
+    #     mac-address 00AA.14BB.14CC
+    #     ip 192.168.14.1 secondary
+    #     ip 192.168.14.2 secondary
+    #   hsrp 15
+    #     authentication md5 key-string SECUREKEY14
+    #     mac-address 00BB.14CC.15DD
+    #     preempt delay minimum 10 reload 100 sync 5
+    #     priority 22 forwarding-threshold lower 12 upper 22
+    #     timers msec 456  33
+    # interface Vlan1000
+    #   hsrp 10
+    #     authentication md5 key-string testmesecurte
+    #     name testhsr
+    #     mac-address 0423.4567.89AB
+    #     preempt delay minimum 33 reload 23 sync 22
+    #     priority 22 forwarding-threshold lower 12 upper 22
+    #     timers msec 456  33
+    #     ip 10.15.8.1 secondary
 
     - name: Use parsed state to convert externally supplied config to structured format
       cisco.nxos.nxos_hsrp_interfaces:
@@ -1601,7 +1601,7 @@ Examples
     # Task output
     # -----------
     #
-    #{"parsed": [
+    # {"parsed": [
     #        {
     #            "name": "Vlan1",
     #            "standby": {
