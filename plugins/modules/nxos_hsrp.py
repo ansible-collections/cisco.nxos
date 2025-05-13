@@ -6,7 +6,6 @@ __metaclass__ = type
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-
 DOCUMENTATION = """
 module: nxos_hsrp
 extends_documentation_fragment:
@@ -17,7 +16,7 @@ description:
 version_added: 1.0.0
 deprecated:
   removed_at_date: '2028-06-01'
-  alternative: ios_hsrp_interfaces
+  alternative: Use M(cisco.nxos.nxos_hsrp_interfaces) instead.
   why: Newer and updated modules released with more functionality.
 author:
 - Jason Edelman (@jedelman8)
