@@ -8,7 +8,7 @@ cisco.nxos.nxos_vrf_interfaces
 **Resource module to configure VRF interfaces.**
 
 
-Version added: 1.0.0
+Version added: 9.3.0
 
 .. contents::
    :local:

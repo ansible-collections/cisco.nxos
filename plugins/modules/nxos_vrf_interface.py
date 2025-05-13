@@ -29,6 +29,10 @@ short_description: Manages interface specific VRF configuration.
 description:
 - Manages interface specific VRF configuration.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_vrf_interfaces
+  why: Newer and updated modules released with more functionality.
+  removed_at_date: "2028-06-01"
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)

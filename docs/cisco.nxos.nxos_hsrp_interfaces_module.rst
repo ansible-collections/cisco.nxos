@@ -8,7 +8,7 @@ cisco.nxos.nxos_hsrp_interfaces
 **HSRP interfaces resource module**
 
 
-Version added: 1.0.0
+Version added: 10.1.0
 
 .. contents::
    :local:
