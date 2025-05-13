@@ -90,7 +90,7 @@ Name | Description
 [cisco.nxos.nxos_gir](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_module.rst)|Trigger a graceful removal or insertion (GIR) of the switch.
 [cisco.nxos.nxos_gir_profile_management](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_profile_management_module.rst)|Create a maintenance-mode or normal-mode profile for GIR.
 [cisco.nxos.nxos_hostname](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hostname_module.rst)|Hostname resource module.
-[cisco.nxos.nxos_hsrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_module.rst)|Manages HSRP configuration on NX-OS switches.
+[cisco.nxos.nxos_hsrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_module.rst)|(deprecated, removed after 2028-06-01) Manages HSRP configuration on NX-OS switches.
 [cisco.nxos.nxos_hsrp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst)|HSRP interfaces resource module
 [cisco.nxos.nxos_igmp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_module.rst)|Manages IGMP global configuration.
 [cisco.nxos.nxos_igmp_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_interface_module.rst)|Manages IGMP interface configuration.

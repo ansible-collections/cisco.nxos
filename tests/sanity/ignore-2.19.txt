@@ -1,5 +1,1 @@
 plugins/action/nxos.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
-plugins/modules/nxos_hsrp.py validate-modules:deprecation-mismatch
-plugins/modules/nxos_hsrp.py validate-modules:invalid-documentation
-plugins/modules/nxos_vrf_interface.py validate-modules:deprecation-mismatch
-plugins/modules/nxos_vrf_interface.py validate-modules:invalid-documentation
