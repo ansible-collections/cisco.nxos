@@ -4,8 +4,8 @@
 
 - name: Set a fact for 'test_int1' and 'test_int2'
   ansible.builtin.set_fact:
-    test_int1: '{{ nxos_int1 }}'
-    test_int2: '{{ nxos_int2 }}'
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - name: Set a fact for 'bfd_disable' and 'bfd_enable'
   ansible.builtin.set_fact:
@@ -19,22 +19,22 @@
     - name: Setup2
       cisco.nxos.nxos_config:
         lines:
-          - 'feature bfd'
-          - 'feature hsrp'
-          - 'interface {{ test_int1 }}'
-          - '  no switchport'
-          - '  hsrp bfd'
+          - "feature bfd"
+          - "feature hsrp"
+          - "interface {{ test_int1 }}"
+          - "  no switchport"
+          - "  hsrp bfd"
 
     - name: Setup3
       cisco.nxos.nxos_config:
         lines:
-          - 'interface {{ test_int2 }}'
-          - '  no switchport'
+          - "interface {{ test_int2 }}"
+          - "  no switchport"
 
     - name: Merged
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             standby:
               bfd: true
               mac_refresh: 400
@@ -48,7 +48,7 @@
                   - secondary: true
                     virtual_ip: 10.10.10.2
                 mac_address: 00CC.10DD.10EE
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             standby:
               bfd: true
               mac_refresh: 400
@@ -68,7 +68,7 @@
       register: result
       cisco.nxos.nxos_hsrp_interfaces: &id001
         config:
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             standby:
               bfd: true
               mac_refresh: 400
@@ -77,7 +77,7 @@
               - group_name: VLAN11-GROUP
                 group_no: 11
                 mac_address: 00CC.10DD.10EE
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             standby:
               bfd: true
               mac_refresh: 400
