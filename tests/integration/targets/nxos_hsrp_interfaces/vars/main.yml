@@ -1,8 +1,8 @@
 ---
 gathered:
-  - name: '{{ nxos_int1 }}'
+  - name: "{{ nxos_int1 }}"
     bfd: enable
-  - name: '{{ nxos_int2 }}'
+  - name: "{{ nxos_int2 }}"
     bfd: enable
 merged:
   commands:

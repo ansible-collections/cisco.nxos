@@ -53,7 +53,7 @@
 
     - name: Render the provided configuration
       cisco.nxos.nxos_hsrp_interfaces:
-        config: '{{ result_parsed.parsed }}'
+        config: "{{ result_parsed.parsed }}"
         state: rendered
       register: result_rendered
 
