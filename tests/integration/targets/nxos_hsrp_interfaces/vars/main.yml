@@ -1,8 +1,8 @@
 ---
 gathered:
-  - name: "{{ nxos_int1 }}"
+  - name: '{{ nxos_int1 }}'
     bfd: enable
-  - name: "{{ nxos_int2 }}"
+  - name: '{{ nxos_int2 }}'
     bfd: enable
 merged:
   commands:
@@ -20,7 +20,6 @@ replaced:
     - hsrp 11
     - mac-address 00CC.10DD.10EE
     - name VLAN11-GROUP
-    - authentication md5 key-string SECUREKEY10
     - no hsrp 10
     - interface Ethernet1/2
     - hsrp 20
@@ -30,9 +29,7 @@ parsed:
     standby:
       version: 2
     standby_options:
-      - authentication:
-          key_chain: test
-        group_no: 10
+      - group_no: 10
         timer:
           hello_interval: 250
           hold_time: 255
@@ -43,9 +40,7 @@ parsed:
       mac_refresh: 400
       version: 2
     standby_options:
-      - authentication:
-          key_string: SECUREKEY10
-        group_name: VLAN10-GROUP
+      - group_name: VLAN10-GROUP
         group_no: 10
         ip:
           - secondary: true
@@ -72,9 +67,7 @@ parsed:
           - secondary: true
             virtual_ip: 192.168.14.2
         mac_address: 00AA.14BB.14CC
-      - authentication:
-          key_string: SECUREKEY14
-        group_no: 15
+      - group_no: 15
         mac_address: 00BB.14CC.15DD
         preempt:
           minimum: 10
@@ -90,9 +83,7 @@ parsed:
           msec: true
   - name: Vlan1000
     standby_options:
-      - authentication:
-          key_string: testmesecurte
-        group_name: testhsr
+      - group_name: testhsr
         group_no: 10
         ip:
           - secondary: true
@@ -115,7 +106,6 @@ rendered:
   - hsrp version 2
   - hsrp 10
   - timers msec 250 255
-  - authentication md5 key-chain test
   - interface Vlan10
   - hsrp bfd
   - hsrp version 2
@@ -124,7 +114,6 @@ rendered:
   - mac-address 00CC.10DD.10EE
   - name VLAN10-GROUP
   - preempt delay minimum 15 reload 120 sync 10
-  - authentication md5 key-string SECUREKEY10
   - ip 10.10.10.2 secondary
   - interface Vlan14
   - hsrp bfd
@@ -141,7 +130,6 @@ rendered:
   - preempt delay minimum 10 reload 100 sync 5
   - priority 22 forwarding-threshold lower 12 upper 22
   - timers msec 456 33
-  - authentication md5 key-string SECUREKEY14
   - interface Vlan1000
   - hsrp 10
   - mac-address 0423.4567.89AB
@@ -149,5 +137,4 @@ rendered:
   - preempt delay minimum 33 reload 23 sync 22
   - priority 22 forwarding-threshold lower 12 upper 22
   - timers msec 456 33
-  - authentication md5 key-string testmesecurte
   - ip 10.15.8.1 secondary
