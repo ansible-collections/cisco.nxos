@@ -1,20 +1,4 @@
 ---
-#- name: Remove interface from layer 3 mode Ethernet1/2
-#  cisco.nxos.nxos_config:
-#    commands:
-#      - switchport
-#    parents:
-#      - interface Ethernet1/2
-#    match: none
-
-#- name: Remove interface from layer 3 mode Ethernet1/6
-#  cisco.nxos.nxos_config:
-#    commands:
-#      - switchport
-#    parents:
-#      - interface Ethernet1/6
-#    match: none
-
 - name: Override existing running configuration
   cisco.nxos.nxos_vrf_interfaces:
     config:
