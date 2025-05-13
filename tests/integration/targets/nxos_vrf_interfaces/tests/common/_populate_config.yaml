@@ -1,4 +1,20 @@
 ---
+- name: Put interface in layer 3 Ethernet1/2
+  cisco.nxos.nxos_config:
+    commands:
+      - no switchport
+    parents:
+      - interface Ethernet1/2
+    match: none
+
+- name: Put interface in layer 3 Ethernet1/6
+  cisco.nxos.nxos_config:
+    commands:
+      - no switchport
+    parents:
+      - interface Ethernet1/6
+    match: none
+
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_vrf_interfaces:
     state: overridden
