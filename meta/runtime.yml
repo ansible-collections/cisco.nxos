@@ -40,6 +40,9 @@ plugin_routing:
       redirect: cisco.nxos.nxos_hostname
     hsrp:
       redirect: cisco.nxos.nxos_hsrp
+      deprecation:
+        removal_date: "2028-06-01"
+        warning_text: Newer and updated modules released with more functionality.
     hsrp_interfaces:
       redirect: cisco.nxos.nxos_hsrp_interfaces
     igmp:
@@ -133,6 +136,9 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vrf_af
     vrf_interface:
       redirect: cisco.nxos.nxos_vrf_interface
+      deprecation:
+        removal_date: "2028-06-01"
+        warning_text: Newer and updated modules released with more functionality.
     vrrp:
       redirect: cisco.nxos.nxos_vrrp
     vsan:
