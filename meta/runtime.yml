@@ -138,7 +138,7 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vrf_interface
       deprecation:
         removal_date: "2028-06-01"
-        warning_text: Newer and updated modules released with more functionality.
+        warning_text: See the plugin documentation for more details
     vrrp:
       redirect: cisco.nxos.nxos_vrrp
     vsan:

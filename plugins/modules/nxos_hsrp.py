@@ -16,7 +16,7 @@ description:
 version_added: 1.0.0
 deprecated:
   removed_at_date: '2028-06-01'
-  alternative: Use M(cisco.nxos.nxos_hsrp_interfaces) instead.
+  alternative: cisco.nxos.nxos_hsrp_interfaces
   why: Newer and updated modules released with more functionality.
 author:
 - Jason Edelman (@jedelman8)

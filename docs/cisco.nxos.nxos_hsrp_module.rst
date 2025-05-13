@@ -18,7 +18,7 @@ DEPRECATED
 ----------
 :Removed in collection release after 2028-06-01
 :Why: Newer and updated modules released with more functionality.
-:Alternative: Use :ref:`cisco.nxos.nxos_hsrp_interfaces <cisco.nxos.nxos_hsrp_interfaces_module>` instead.
+:Alternative: cisco.nxos.nxos_hsrp_interfaces
 
 
 
