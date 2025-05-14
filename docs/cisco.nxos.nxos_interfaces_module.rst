@@ -723,8 +723,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The configuration as structured data prior to module invocation.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
-     of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
                 </td>
             </tr>
             <tr>
