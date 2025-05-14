@@ -14,10 +14,6 @@ short_description: (deprecated, removed after 2028-06-01) Manages HSRP configura
 description:
 - Manages HSRP configuration on NX-OS switches.
 version_added: 1.0.0
-deprecated:
-  removed_at_date: '2028-06-01'
-  alternative: cisco.nxos.nxos_hsrp_interfaces
-  why: Newer and updated modules released with more functionality.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)

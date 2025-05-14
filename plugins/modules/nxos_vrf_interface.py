@@ -29,10 +29,6 @@ short_description: (deprecated, removed after 2028-06-01) Manages interface spec
 description:
 - Manages interface specific VRF configuration.
 version_added: 1.0.0
-deprecated:
-  alternative: cisco.nxos.nxos_vrf_interfaces
-  why: Newer and updated modules released with more functionality.
-  removed_at_date: '2028-06-01'
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
