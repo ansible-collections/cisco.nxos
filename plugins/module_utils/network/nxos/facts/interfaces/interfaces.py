@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,18 +21,19 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
-    InterfacesTemplate,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
+    InterfacesTemplate,
+)
+
 
 class InterfacesFacts(object):
-    """ The nxos interfaces facts class
-    """
+    """The nxos interfaces facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = InterfacesArgs.argument_spec
 
@@ -39,7 +41,7 @@ class InterfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Interfaces network resource
+        """Populate the facts for Interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -58,13 +60,13 @@ class InterfacesFacts(object):
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = sorted(list(interfaces_parser.parse().values()), key=lambda k, sk="name": k[sk])
 
-        ansible_facts['ansible_network_resources'].pop('interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("interfaces", None)
         facts = {"interfaces": []}
         params = utils.remove_empties(
-            interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts['interfaces'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["interfaces"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

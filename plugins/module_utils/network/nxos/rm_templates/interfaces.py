@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -30,7 +33,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^interface\s(?P<name>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": 'interface {{ name }}',
             "result": {
                 '{{ name }}': {
@@ -38,14 +42,15 @@ class InterfacesTemplate(NetworkTemplate):
                     'enabled': True,
                 },
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "description",
             "getval": re.compile(
                 r"""
                 \s+description\s(?P<description>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "description {{ description }}",
             "result": {
                 '{{ name }}': {
@@ -58,7 +63,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+speed\s(?P<speed>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "speed {{ speed|string }}",
             "result": {
                 '{{ name }}': {

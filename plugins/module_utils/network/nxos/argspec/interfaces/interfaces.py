@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the nxos_interfaces module
 
 
 class InterfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_interfaces module
-    """
+    """The arg spec for the nxos_interfaces module"""
 
     argument_spec = {
         "config": {
@@ -60,7 +60,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                         "trap": {
                             "type": "dict",
                             "options": {"link_status": {"type": "bool"}},
-                        }
+                        },
                     },
                 },
                 "service_policy": {
