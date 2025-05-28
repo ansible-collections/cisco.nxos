@@ -84,14 +84,6 @@ class Interfaces(ResourceModule):
             self.run_commands()
         return self.result
     
-    def get_platform(self):
-        """ Get the platform of the device.
-
-        :rtype: str
-        :returns: The platform name
-        """
-        return self.facts.get("ansible_net_platform", "")
-
     def get_switchport_defaults(self):
         """Wrapper method for `_connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
@@ -143,7 +135,7 @@ class Interfaces(ResourceModule):
 
         # Handle the 'enabled' state separately
         want_enabled = want.get("enabled")
-        have_enabled = have.get("enabled")
+        have_enabled = have.get("enabled", self.defaults.get("L2_enabled", False))
         if want_enabled is not None:
             if want_enabled != have_enabled:
                 if want_enabled is True:
@@ -157,15 +149,18 @@ class Interfaces(ResourceModule):
                 self.addcmd(have, "enabled", False)
 
         # Handle the 'mode' state separately
-        if want.get("mode") != have.get("mode", self.defaults.get("default_mode")):
-            if want.get("mode") == "layer3":
-                self.addcmd(want, "mode", True)
-            else:
-                if want:
-                    self.addcmd(want, "mode", False)
-                elif have.get("mode"):  # can oly have layer2 as switchport no show cli
-                    # handles deleted as want be blank and only
-                    self.addcmd(have, "mode", False)
+        want_mode = want.get("mode")
+        have_mode = have.get("mode", self.defaults.get("default_mode"))
+        if want_mode is not None:
+            if want_mode != have_mode:
+                if want_mode == "layer3":
+                    self.addcmd(want, "mode", True)
+                else:
+                    if want:
+                        self.addcmd(want, "mode", False)
+                    elif have.get("mode"):  # can oly have layer2 as switchport no show cli
+                        # handles deleted as want be blank and only
+                        self.addcmd(have, "mode", False)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -192,9 +187,6 @@ class Interfaces(ResourceModule):
         Run through the gathered interfaces and tag their default enabled state.
         """
         interface_defs = {}
-        L3_enabled = True if re.search("N[56]K", self.get_platform()) else False
-        interface_defs["L3_enabled"] = L3_enabled
-
         switchport_data = self.get_switchport_defaults()
 
         # Layer 2/3 mode defaults

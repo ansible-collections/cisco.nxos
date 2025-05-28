@@ -51,6 +51,12 @@ class TestNxosInterfacesModule(TestNxosModule):
             "InterfacesFacts._get_interface_config",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
+
+        self.mock_exec_get_defaults_command = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces."
+            "Interfaces.get_interface_defaults",
+        )
+        self.exec_get_defaults = self.mock_exec_get_defaults_command.start()
         self.maxDiff = None
 
 
@@ -60,6 +66,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.mock_execute_show_command.stop()
 
     def test_nxos_interfaces_merged(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
         self.execute_show_command.return_value = dedent(
             """\
           interface mgmt0
@@ -113,16 +123,16 @@ class TestNxosInterfacesModule(TestNxosModule):
             "description ansible",
             "interface Ethernet1/2",
             "speed 10000",
-            "duplex auto",
             "mtu 1500",
+            "duplex auto",
             "no ip forward",
             "no fabric forwarding mode anycast-gateway",
             "interface Ethernet1/3",
             "description ansible",
-            "interface Ethernet1/3.101",
-            "description test-sub-intf",
             "interface Ethernet1/4",
             "switchport",
+            "interface Ethernet1/3.101",
+            "description test-sub-intf",
             "interface loopback1",
             "description test-loopback",
         ]
