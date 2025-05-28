@@ -18,6 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import re
+
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
@@ -69,6 +71,7 @@ class Interfaces(ResourceModule):
             "service_policy.type_options.queuing.input",
             "service_policy.type_options.queuing.output",
         ]
+        self.defaults = self.get_interface_defaults()
 
     def execute_module(self):
         """Execute the module
@@ -80,6 +83,22 @@ class Interfaces(ResourceModule):
             self.generate_commands()
             self.run_commands()
         return self.result
+    
+    def get_platform(self):
+        """ Get the platform of the device.
+
+        :rtype: str
+        :returns: The platform name
+        """
+        return self.facts.get("ansible_net_platform", "")
+
+    def get_switchport_defaults(self):
+        """Wrapper method for `_connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return self._connection.get(
+            "show running-config all | incl 'system default switchport'",
+        )
 
     def generate_commands(self):
         """Generate configuration commands to send based on
@@ -138,7 +157,7 @@ class Interfaces(ResourceModule):
                 self.addcmd(have, "enabled", False)
 
         # Handle the 'mode' state separately
-        if want.get("mode") != have.get("mode"):
+        if want.get("mode") != have.get("mode", self.defaults.get("default_mode")):
             if want.get("mode") == "layer3":
                 self.addcmd(want, "mode", True)
             else:
@@ -160,3 +179,34 @@ class Interfaces(ResourceModule):
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
         return param
+    
+    def get_interface_defaults(self):
+        """Collect user-defined-default states for 'system default switchport'
+        configurations. These configurations determine default L2/L3 modes
+        and enabled/shutdown states. The default values for user-defined-default
+        configurations may be different for legacy platforms.
+        Notes:
+        - L3 enabled default state is False on N9K,N7K,N3K but True for N5K,N6K
+        - Changing L2-L3 modes may change the default enabled value.
+        - '(no) system default switchport shutdown' only applies to L2 interfaces.
+        Run through the gathered interfaces and tag their default enabled state.
+        """
+        interface_defs = {}
+        L3_enabled = True if re.search("N[56]K", self.get_platform()) else False
+        interface_defs["L3_enabled"] = L3_enabled
+
+        switchport_data = self.get_switchport_defaults()
+
+        # Layer 2/3 mode defaults
+        pat = "(no )*system default switchport$"
+        default_mode = re.search(pat, switchport_data, re.MULTILINE)
+        if default_mode:
+            interface_defs["default_mode"] = "layer3" if "no " in default_mode.groups() else "layer2"
+
+        # Interface enabled state defaults
+        pat = "(no )*system default switchport shutdown$"
+        default_enabled = re.search(pat, switchport_data, re.MULTILINE)
+        if default_enabled:
+            interface_defs["L2_enabled"] = True if "no " in default_enabled.groups() else False
+
+        return interface_defs
