@@ -59,6 +59,21 @@ class InterfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "enabled",
+            "getval": re.compile(
+                r"""
+                (?P<negate>\sno)?
+                (?P<shutdown>\sshutdown)
+                $""", re.VERBOSE,
+            ),
+            "setval": "shutdown",
+            "result": {
+                '{{ name }}': {
+                    'enabled': "{{ False if shutdown is defined and negate is not defined else True }}",
+                },
+            },
+        },
+        {
             "name": "speed",
             "getval": re.compile(
                 r"""
@@ -69,6 +84,259 @@ class InterfacesTemplate(NetworkTemplate):
             "result": {
                 '{{ name }}': {
                     'speed': "{{ speed }}",
+                },
+            },
+        },
+        {
+            "name": "mtu",
+            "getval": re.compile(
+                r"""
+                \s+mtu\s(?P<mtu>\d+)
+                $""", re.VERBOSE),
+            "setval": "mtu {{ mtu|string }}",
+            "result": {
+                '{{ name }}': {
+                    'mtu': "{{ mtu }}",
+                },
+            },
+        },
+        {
+            "name": "duplex",
+            "getval": re.compile(
+                r"""
+                \s+duplex\s(?P<duplex>full|half|auto)
+                $""", re.VERBOSE),
+            "setval": "duplex {{ duplex }}",
+            "result": {
+                '{{ name }}': {
+                    'duplex': "{{ duplex }}",
+                },
+            },
+        },
+        {
+            "name": "ip_forward",
+            "getval": re.compile(
+                r"""
+                \s+ip\s(?P<ip_forward>forward)
+                $""", re.VERBOSE),
+            "setval": "ip forward",
+            "result": {
+                '{{ name }}': {
+                    'ip_forward': "{{ True if ip_forward is defined }}",
+                },
+            },
+        },
+        {
+            "name": "fabric_forwarding_anycast_gateway",
+            "getval": re.compile(
+                r"""
+                \s+fabric\sforwarding
+                \smode\sanycast-gateway
+                $""", re.VERBOSE),
+            "setval": "fabric forwarding mode anycast-gateway",
+            "result": {
+                '{{ name }}': {
+                    'fabric_forwarding_anycast_gateway': "{{ True }}",
+                },
+            },
+        },
+        {  # only applicable for switches
+            "name": "mode",
+            "getval": re.compile(
+                r"""
+                (?P<negate>\sno)?
+                (?P<switchport>\sswitchport)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport",
+            "result": {
+                '{{ name }}': {
+                    'mode': "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
+                },
+            },
+        },
+        {
+            "name": "mac_address",
+            "getval": re.compile(
+                r"""
+                \s+mac-address
+                (\s(?P<mac_address>.+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "mac-address {{ mac_address }}",
+            "result": {
+                '{{ name }}': {
+                    'mac_address': "{{ mac_address }}",
+                },
+            },
+        },
+        {
+            "name": "logging.link_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent
+                \sport(\s(?P<link_status>link-status))
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event port link-status",
+            "result": {
+                '{{ name }}': {
+                    "logging": {
+                        "link_status": "{{ True if link_status is defined }}",
+                    }
+                },
+            },
+        },
+        {
+            "name": "logging.trunk_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent
+                \sport(\s(?P<trunk_status>trunk-status))
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event port trunk-status",
+            "result": {
+                '{{ name }}': {
+                    "logging": {
+                        "trunk_status": "{{ True if trunk_status is defined }}",
+                    }
+                },
+            },
+        },
+        {
+            "name": "snmp.trap.link_status",
+            "getval": re.compile(
+                r"""
+                \s+snmp\strap(\s(?P<link_status>link-status))
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp trap link-status",
+            "result": {
+                '{{ name }}': {
+                    "snmp": {
+                        "trap": {
+                            "link_status": "{{ True if link_status is defined }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.input",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\sinput
+                (\s(?P<service_policy_input>\S+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy input {{ service_policy.input }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "input":  "{{ service_policy_input }}",
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.output",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\soutput
+                (\s(?P<service_policy_output>\S+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy output {{ service_policy.output }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "output":  "{{ service_policy_output }}",
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.type_options.qos.input",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\stype\sqos
+                (\sinput\s(?P<service_policy_input>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy type qos input {{ service_policy.type_options.qos.input }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "type_options": {
+                            "qos": {
+                                "input":  "{{ service_policy_input }}",
+                            }
+                        }
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.type_options.qos.output",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\stype\sqos
+                (\soutput\s(?P<service_policy_output>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy type qos output {{ service_policy.type_options.qos.output }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "type_options": {
+                            "qos": {
+                                "output":  "{{ service_policy_output }}",
+                            }
+                        }
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.type_options.queuing.input",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\stype\squeuing
+                (\sinput\s(?P<service_policy_input>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy type queuing input {{ service_policy.type_options.queuing.input }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "type_options": {
+                            "queuing": {
+                                "input":  "{{ service_policy_input }}",
+                            }
+                        }
+                    }
+                },
+            },
+        },
+        {
+            "name": "service_policy.type_options.queuing.output",
+            "getval": re.compile(
+                r"""
+                \s+service-policy\stype\squeuing
+                (\soutput\s(?P<service_policy_output>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "service-policy type queuing output {{ service_policy.type_options.queuing.output }}",
+            "result": {
+                '{{ name }}': {
+                    "service_policy": {
+                        "type_options": {
+                            "queuing": {
+                                "output":  "{{ service_policy_output }}",
+                            }
+                        }
+                    }
                 },
             },
         },

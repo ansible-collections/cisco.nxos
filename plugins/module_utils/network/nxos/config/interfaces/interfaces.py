@@ -34,7 +34,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
     InterfacesTemplate,
 )
-
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
+)
 
 class Interfaces(ResourceModule):
     """
@@ -49,7 +51,24 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "description",
+            "speed",
+            "mtu",
+            "duplex",
+            "ip_forward",
+            "fabric_forwarding_anycast_gateway",
+            "mac_address",
+            "logging.link_status",
+            "logging.trunk_status",
+            "snmp.trap.link_status",
+            "service_policy.input",
+            "service_policy.output",
+            "service_policy.type_options.qos.input",
+            "service_policy.type_options.qos.output",
+            "service_policy.type_options.queuing.input",
+            "service_policy.type_options.queuing.output",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -66,8 +85,11 @@ class Interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = {entry['name']: entry for entry in self.want}
+        haved = {entry['name']: entry for entry in self.have}
+
+        for each in wantd, haved:
+            self.normalize_interface_names(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -84,8 +106,12 @@ class Interfaces(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == "purged":
+            for k, have in iteritems(haved):
+                self.purge(have)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -93,4 +119,44 @@ class Interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        # Handle the 'enabled' state separately
+        want_enabled = want.get("enabled")
+        have_enabled = have.get("enabled")
+        if want_enabled is not None:
+            if want_enabled != have_enabled:
+                if want_enabled is True:
+                    self.addcmd(want, "enabled", True)
+                else:
+                    self.addcmd(want, "enabled", False)
+        elif not want and self.state == "overridden":
+            self.addcmd(have, "enabled", False)
+        elif not want and self.state == "deleted":
+            if have_enabled:
+                self.addcmd(have, "enabled", False)
+
+        # Handle the 'mode' state separately
+        if want.get("mode") != have.get("mode"):
+            if want.get("mode") == "layer3":
+                self.addcmd(want, "mode", True)
+            else:
+                if want:
+                    self.addcmd(want, "mode", False)
+                elif have.get("mode"):  # can oly have layer2 as switchport no show cli
+                    # handles deleted as want be blank and only
+                    self.addcmd(have, "mode", False)
+
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def purge(self, have):
+        """Handle operation for purged state"""
+        self.commands.append(self._tmplt.render(have, "name", True))
+
+    def normalize_interface_names(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
+        return param
