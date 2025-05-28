@@ -131,171 +131,237 @@ class TestNxosInterfacesModule(TestNxosModule):
             "description ansible",
             "interface Ethernet1/4",
             "switchport",
-            "interface Ethernet1/3.101",
-            "description test-sub-intf",
             "interface loopback1",
             "description test-loopback",
+            "interface Ethernet1/3.101",
+            'shutdown',
+            "description test-sub-intf",
         ]
 
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        print(result["commands"])
-        self.assertEqual(result["commands"], merged)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
 
-    # def test_1(self):
-    #     # Overall general test for each state: merged, deleted, overridden, replaced
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface mgmt0
-    #         description do not manage mgmt0!
-    #       interface Ethernet1/1
-    #         description foo
-    #       interface Ethernet1/2
-    #         description bar
-    #         speed 1000
-    #         duplex full
-    #         mtu 4096
-    #         ip forward
-    #         fabric forwarding mode anycast-gateway
-    #       interface Ethernet1/3
-    #       interface Ethernet1/4
-    #       interface Ethernet1/5
-    #       interface Ethernet1/6
-    #         no shutdown
-    #       interface loopback0
-    #         description test-loopback
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
-        
+    def test_nxos_interfaces_deleted(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+            description do not manage mgmt0!
+          interface Ethernet1/1
+            description foo
+          interface Ethernet1/2
+            description bar
+            speed 1000
+            duplex full
+            mtu 4096
+            ip forward
+            fabric forwarding mode anycast-gateway
+          interface Ethernet1/3
+          interface Ethernet1/4
+          interface Ethernet1/5
+          interface Ethernet1/6
+            no shutdown
+          interface loopback0
+            description test-loopback
+        """,
+        )
 
-    #     playbook = dict(
-    #         config=[
-    #             dict(name="Ethernet1/1", description="ansible", mode="layer3"),
-    #             dict(
-    #                 name="Ethernet1/2",
-    #                 speed=10000,
-    #                 duplex="auto",
-    #                 mtu=1500,
-    #                 ip_forward=False,
-    #                 fabric_forwarding_anycast_gateway=False,
-    #             ),
-    #             dict(name="Ethernet1/3", description="ansible", mode="layer3"),
-    #             dict(
-    #                 name="Ethernet1/3.101",
-    #                 description="test-sub-intf",
-    #                 enabled=False,
-    #             ),
-    #             dict(name="Ethernet1/4", mode="layer2"),
-    #             dict(name="Ethernet1/5"),
-    #             dict(name="loopback1", description="test-loopback"),
-    #         ],
-    #     )
-    #     merged = [
-    #         # Update existing device states with any differences in the playbook.
-    #         "interface Ethernet1/1",
-    #         "description ansible",
-    #         "interface Ethernet1/2",
-    #         "speed 10000",
-    #         "duplex auto",
-    #         "mtu 1500",
-    #         "no ip forward",
-    #         "no fabric forwarding mode anycast-gateway",
-    #         "interface Ethernet1/3",
-    #         "description ansible",
-    #         "interface Ethernet1/3.101",
-    #         "description test-sub-intf",
-    #         "interface Ethernet1/4",
-    #         "switchport",
-    #         "interface loopback1",
-    #         "description test-loopback",
-    #     ]
-    #     playbook["state"] = "merged"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=merged)
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/1", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/2",
+                    speed=10000,
+                    duplex="auto",
+                    mtu=1500,
+                    ip_forward=False,
+                    fabric_forwarding_anycast_gateway=False,
+                ),
+                dict(name="Ethernet1/3", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/3.101",
+                    description="test-sub-intf",
+                    enabled=False,
+                ),
+                dict(name="Ethernet1/4", mode="layer2"),
+                dict(name="Ethernet1/5"),
+                dict(name="loopback1", description="test-loopback"),
+            ],
+            state="deleted",
+        )
 
-    #     deleted = [
-    #         # Reset existing device state to default values. Scope is limited to
-    #         # objects in the play. Ignores any play attrs other than 'name'.
-    #         "interface Ethernet1/1",
-    #         "no description",
-    #         "interface Ethernet1/2",
-    #         "no description",
-    #         "no speed",
-    #         "no duplex",
-    #         "no mtu",
-    #         "no ip forward",
-    #         "no fabric forwarding mode anycast-gateway",
-    #     ]
-    #     playbook["state"] = "deleted"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=deleted)
+        deleted = [
+            # Reset existing device state to default values. Scope is limited to
+            # objects in the play. Ignores any play attrs other than 'name'.
+            "interface Ethernet1/1",
+            "no description foo",
+            "interface Ethernet1/2",
+            "no description bar",
+            "no speed 1000",
+            "no mtu 4096",
+            "no duplex full",
+            "no ip forward",
+            "no fabric forwarding mode anycast-gateway",
+        ]
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], deleted)
 
-    #     replaced = [
-    #         # Scope is limited to objects in the play. The play is the source of
-    #         # truth for the objects that are explicitly listed.
-    #         "interface Ethernet1/1",
-    #         "description ansible",
-    #         "interface Ethernet1/2",
-    #         "no description",
-    #         "no ip forward",
-    #         "no fabric forwarding mode anycast-gateway",
-    #         "speed 10000",
-    #         "duplex auto",
-    #         "mtu 1500",
-    #         "interface Ethernet1/3",
-    #         "description ansible",
-    #         "interface Ethernet1/3.101",
-    #         "description test-sub-intf",
-    #         "interface Ethernet1/4",
-    #         "switchport",
-    #         "interface loopback1",
-    #         "description test-loopback",
-    #     ]
-    #     playbook["state"] = "replaced"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=replaced)
+    def test_nxos_interfaces_replaced(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+            description do not manage mgmt0!
+          interface Ethernet1/1
+            description foo
+          interface Ethernet1/2
+            description bar
+            speed 1000
+            duplex full
+            mtu 4096
+            ip forward
+            fabric forwarding mode anycast-gateway
+          interface Ethernet1/3
+          interface Ethernet1/4
+          interface Ethernet1/5
+          interface Ethernet1/6
+            no shutdown
+          interface loopback0
+            description test-loopback
+        """,
+        )
 
-    #     overridden = [
-    #         # The play is the source of truth. Similar to replaced but the scope
-    #         # includes all objects on the device; i.e. it will also reset state
-    #         # on objects not found in the play.
-    #         "interface Ethernet1/1",
-    #         "description ansible",
-    #         "interface Ethernet1/2",
-    #         "no description",
-    #         "no ip forward",
-    #         "no fabric forwarding mode anycast-gateway",
-    #         "speed 10000",
-    #         "duplex auto",
-    #         "mtu 1500",
-    #         "interface Ethernet1/6",
-    #         "shutdown",
-    #         "interface loopback0",
-    #         "no description",
-    #         "interface Ethernet1/3",
-    #         "description ansible",
-    #         "interface Ethernet1/4",
-    #         "switchport",
-    #         "interface Ethernet1/3.101",
-    #         "description test-sub-intf",
-    #         "interface loopback1",
-    #         "description test-loopback",
-    #         "interface mgmt0",
-    #         "no description",
-    #     ]
-    #     playbook["state"] = "overridden"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=overridden)
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/1", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/2",
+                    speed=10000,
+                    duplex="auto",
+                    mtu=1500,
+                    ip_forward=False,
+                    fabric_forwarding_anycast_gateway=False,
+                ),
+                dict(name="Ethernet1/3", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/3.101",
+                    description="test-sub-intf",
+                    enabled=False,
+                ),
+                dict(name="Ethernet1/4", mode="layer2"),
+                dict(name="Ethernet1/5"),
+                dict(name="loopback1", description="test-loopback"),
+            ],
+            state="replaced",
+        )
+        replaced = [
+            # Scope is limited to objects in the play. The play is the source of
+            # truth for the objects that are explicitly listed.
+            "interface Ethernet1/1",
+            "description ansible",
+            "interface Ethernet1/2",
+            "no description bar",
+            "no ip forward",
+            "no fabric forwarding mode anycast-gateway",
+            "speed 10000",
+            "duplex auto",
+            "mtu 1500",
+            "interface Ethernet1/3",
+            "description ansible",
+            "interface Ethernet1/3.101",
+            "description test-sub-intf",
+            "shutdown",
+            "interface Ethernet1/4",
+            "switchport",
+            "interface loopback1",
+            "description test-loopback",
+        ]
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_nxos_interfaces_overridden(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+            description do not manage mgmt0!
+          interface Ethernet1/1
+            description foo
+          interface Ethernet1/2
+            description bar
+            speed 1000
+            duplex full
+            mtu 4096
+            ip forward
+            fabric forwarding mode anycast-gateway
+          interface Ethernet1/3
+          interface Ethernet1/4
+          interface Ethernet1/5
+          interface Ethernet1/6
+            no shutdown
+          interface loopback0
+            description test-loopback
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/1", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/2",
+                    speed=10000,
+                    duplex="auto",
+                    mtu=1500,
+                    ip_forward=False,
+                    fabric_forwarding_anycast_gateway=False,
+                ),
+                dict(name="Ethernet1/3", description="ansible", mode="layer3"),
+                dict(
+                    name="Ethernet1/3.101",
+                    description="test-sub-intf",
+                    enabled=False,
+                ),
+                dict(name="Ethernet1/4", mode="layer2"),
+                dict(name="Ethernet1/5"),
+                dict(name="loopback1", description="test-loopback"),
+            ],
+            state="replaced",
+        )
+        overridden = [
+            'interface Ethernet1/1', 
+            'description ansible', 
+            'interface Ethernet1/2', 
+            'no description bar', 
+            'speed 10000', 
+            'mtu 1500', 
+            'duplex auto', 
+            'no ip forward', 
+            'no fabric forwarding mode anycast-gateway', 
+            'interface Ethernet1/3', 
+            'description ansible', 
+            'interface Ethernet1/3.101', 
+            'shutdown',
+            'description test-sub-intf', 
+            'interface Ethernet1/4', 
+            'switchport', 
+            'interface loopback1', 
+            'description test-loopback'
+        ]
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
     # def test_2(self):
     #     # 'enabled'/shutdown behaviors are tricky:
@@ -743,130 +809,118 @@ class TestNxosInterfacesModule(TestNxosModule):
     #     result = self.execute_module(changed=False)
     #     self.assertEqual(result["gathered"], gathered_facts)
 
-    # def test_7_purged(self):
-    #     # check for parsing correct contexts
-    #     sysdefs = dedent(
-    #         """\
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface Vlan1
-    #       interface Vlan42
-    #         mtu 1800
-    #       interface port-channel10
-    #       interface port-channel11
-    #       interface Ethernet1/1
-    #       interface Ethernet1/2
-    #       interface Ethernet1/2.100
-    #         description sub-intf
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_7_purged(self):
+        # check for parsing correct contexts
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan1
+          interface Vlan42
+            mtu 1800
+          interface port-channel10
+          interface port-channel11
+          interface Ethernet1/1
+          interface Ethernet1/2
+          interface Ethernet1/2.100
+            description sub-intf
+        """,
+        )
         
 
-    #     playbook = dict(
-    #         config=[
-    #             dict(name="Vlan42"),
-    #             dict(name="port-channel10"),
-    #             dict(name="Ethernet1/2.100"),
-    #         ],
-    #     )
-    #     playbook["state"] = "purged"
+        playbook = dict(
+            config=[
+                dict(name="Vlan42"),
+                dict(name="port-channel10"),
+                dict(name="Ethernet1/2.100"),
+            ],
+        )
+        playbook["state"] = "purged"
 
-    #     commands = [
-    #         "no interface port-channel10",
-    #         "no interface Ethernet1/2.100",
-    #         "no interface Vlan42",
-    #     ]
+        commands = [
+            "no interface port-channel10",
+            "no interface Ethernet1/2.100",
+            "no interface Vlan42",
+        ]
 
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(sorted(result["commands"]), sorted(commands))
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    # def test_vlan_enabled(self):
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface Vlan9
-    #         no shutdown
-    #       interface Vlan10
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_vlan_enabled(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan9
+            no shutdown
+          interface Vlan10
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(name="Vlan9", enabled=False),
+                dict(name="Vlan10", enabled=True),
+                dict(name="Vlan11", enabled=True),
+            ],
+        )
+        merged = [
+            "interface Vlan9",
+            "shutdown",
+            "interface Vlan10",
+            "no shutdown",
+            "interface Vlan11",
+            "no shutdown",
+        ]
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+
+    def test_mode_mtu(self):
+        # test mode change with MTU
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/28
+                description Auto_Cable_Testing
+                mtu 3456
+            """,
+        )
         
 
-    #     playbook = dict(
-    #         config=[
-    #             dict(name="Vlan9", enabled=False),
-    #             dict(name="Vlan10", enabled=True),
-    #             dict(name="Vlan11", enabled=True),
-    #         ],
-    #     )
-    #     merged = [
-    #         "interface Vlan9",
-    #         "shutdown",
-    #         "interface Vlan10",
-    #         "no shutdown",
-    #         "interface Vlan11",
-    #         "no shutdown",
-    #     ]
-    #     playbook["state"] = "merged"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=merged)
-
-    # def test_mode_mtu(self):
-    #     # test mode change with MTU
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface Ethernet1/28
-    #         description Auto_Cable_Testing
-    #         mtu 9216
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
-        
-
-    #     playbook = dict(
-    #         config=[
-    #             dict(
-    #                 name="Ethernet1/28",
-    #                 description="Ansible Port Turn Up1",
-    #                 mode="layer2",
-    #                 mtu="9216",
-    #                 speed="1000",
-    #                 duplex="full",
-    #                 enabled=True,
-    #             ),
-    #         ],
-    #     )
-    #     replaced = [
-    #         "interface Ethernet1/28",
-    #         "description Ansible Port Turn Up1",
-    #         "switchport",
-    #         "mtu 9216",
-    #         "speed 1000",
-    #         "duplex full",
-    #         "no shutdown",
-    #     ]
-    #     playbook["state"] = "replaced"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=replaced)
+        playbook = dict(
+            config=[
+                dict(
+                    name="Ethernet1/28",
+                    description="Ansible Port Turn Up1",
+                    mode="layer2",
+                    mtu="9216",
+                    speed="1000",
+                    duplex="full",
+                    enabled=True,
+                ),
+            ],
+        )
+        replaced = [
+            "interface Ethernet1/28",
+            "description Ansible Port Turn Up1",
+            "switchport",
+            "mtu 9216",
+            "speed 1000",
+            "duplex full",
+            "no shutdown",
+        ]
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))

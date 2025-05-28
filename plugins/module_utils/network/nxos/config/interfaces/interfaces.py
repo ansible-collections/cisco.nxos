@@ -36,7 +36,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
     InterfacesTemplate,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
 )
 
@@ -118,8 +118,7 @@ class Interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         if self.state == "purged":
-            for k, have in iteritems(haved):
-                self.purge(have)
+            self.purge(wantd, haved)
         else:
             for k, want in iteritems(wantd):
                 self._compare(want=want, have=haved.pop(k, {}))
@@ -135,7 +134,7 @@ class Interfaces(ResourceModule):
 
         # Handle the 'enabled' state separately
         want_enabled = want.get("enabled")
-        have_enabled = have.get("enabled", self.defaults.get("L2_enabled", False))
+        have_enabled = have.get("enabled")
         if want_enabled is not None:
             if want_enabled != have_enabled:
                 if want_enabled is True:
@@ -165,9 +164,13 @@ class Interfaces(ResourceModule):
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
-    def purge(self, have):
+    def purge(self, wantd, haved):
         """Handle operation for purged state"""
-        self.commands.append(self._tmplt.render(have, "name", True))
+        if wantd:
+            for k, want in iteritems(wantd):
+                have = haved.pop(k, {})
+                if have:
+                    self.commands.append(self._tmplt.render(have, "name", True))
 
     def normalize_interface_names(self, param):
         if param:
