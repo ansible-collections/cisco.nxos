@@ -160,6 +160,11 @@ class Interfaces(ResourceModule):
                     elif have.get("mode"):  # can oly have layer2 as switchport no show cli
                         # handles deleted as want be blank and only
                         self.addcmd(have, "mode", False)
+        elif not want and self.state == "deleted":
+            if have.get("mode") and have_mode != self.defaults.get("default_mode"):
+                no_cmd = True if self.defaults.get("default_mode") == "layer3" else False
+                self.addcmd(have, "mode", no_cmd)
+
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))

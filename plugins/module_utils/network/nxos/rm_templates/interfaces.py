@@ -61,8 +61,8 @@ class InterfacesTemplate(NetworkTemplate):
             "name": "enabled",
             "getval": re.compile(
                 r"""
-                (?P<negate>\sno)?
-                (?P<shutdown>\sshutdown)
+                (?P<negate>\s+no)?
+                (?P<shutdown>\s+shutdown)
                 $""", re.VERBOSE,
             ),
             "setval": "shutdown",
@@ -143,8 +143,8 @@ class InterfacesTemplate(NetworkTemplate):
             "name": "mode",
             "getval": re.compile(
                 r"""
-                (?P<negate>\sno)?
-                (?P<switchport>\sswitchport)
+                (?P<negate>\s+no)?
+                (?P<switchport>\s+switchport)
                 $""", re.VERBOSE,
             ),
             "setval": "switchport",

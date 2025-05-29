@@ -363,451 +363,232 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
-    # def test_2(self):
-    #     # 'enabled'/shutdown behaviors are tricky:
-    #     # - different default states for different interface types for different
-    #     #   platforms, based on 'system default switchport' settings
-    #     # - virtual interfaces may not exist yet
-    #     # - idempotence for interfaces with all default states
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface mgmt0
-    #       interface Ethernet1/1
-    #       interface Ethernet1/2
-    #         switchport
-    #         shutdown
-    #       interface Ethernet1/3
-    #         switchport
-    #       interface loopback1
-    #       interface loopback2
-    #         shutdown
-    #       interface loopback3
-    #       interface loopback8
-    #       interface loopback9
-    #         shutdown
-    #       interface port-channel2
-    #       interface port-channel3
-    #         shutdown
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_3(self):
+        # Testing 'enabled' with different 'system default' settings.
+        # This is the same as test_2 with some minor changes.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer2",
+            "L2_enabled": True,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+          interface Ethernet1/1
+          interface Ethernet1/2
+            no switchport
+            no shutdown
+          interface Ethernet1/3
+            no switchport
+          interface loopback1
+          interface loopback2
+            shutdown
+          interface loopback3
+          interface loopback8
+          interface loopback9
+            shutdown
+          interface port-channel2
+          interface port-channel3
+            shutdown
+        """,
+        )
         
 
-    #     playbook = dict(
-    #         config=[
-    #             # Set non-default states on existing objs
-    #             dict(name="Ethernet1/1", mode="layer3", enabled=True),
-    #             dict(name="loopback1", enabled=False),
-    #             # Set default states on existing objs
-    #             dict(name="Ethernet1/2", enabled=True),
-    #             dict(name="loopback2", enabled=True),
-    #             # Set explicit default state on existing objs (no chg)
-    #             dict(name="Ethernet1/3", enabled=True),
-    #             dict(name="loopback3", enabled=True),
-    #             dict(name="port-channel3", enabled=True),
-    #             dict(name="loopback4", enabled=True),
-    #             dict(name="port-channel4", enabled=True),
-    #             dict(name="Ethernet1/4.101"),
-    #         ],
-    #     )
-    #     # Testing with newer code version
-    #     merged = [
-    #         "interface Ethernet1/1",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface Ethernet1/2",
-    #         "no shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     playbook["state"] = "merged"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=merged)
+        playbook = dict(
+            config=[
+                # Set non-default states on existing objs
+                dict(name="Ethernet1/1", mode="layer3", enabled=True),
+                dict(name="loopback1", enabled=False),
+                # Set default states on existing objs
+                dict(name="Ethernet1/2", enabled=False),
+                dict(name="loopback2", enabled=True),
+                # Set explicit default state on existing objs (no chg)
+                dict(name="loopback3", enabled=True),
+                dict(name="port-channel3", enabled=True),
+                # Set default state on non-existent objs; no state changes but need to create intf
+                dict(name="loopback4", enabled=True),
+                dict(name="port-channel4", enabled=True),
+                dict(name="Ethernet1/4.101"),
+            ],
+        )
+        merged = [
+            "interface Ethernet1/1",
+            "no shutdown",
+            "no switchport",
+            "interface Ethernet1/2",
+            "shutdown",
+            "interface loopback1",
+            "shutdown",
+            "interface loopback2",
+            "no shutdown",
+            "interface loopback3",
+            "no shutdown",
+            "interface port-channel3",
+            "no shutdown",
+            "interface loopback4",
+            "no shutdown",
+            "interface port-channel4",
+            "no shutdown",
+        ]
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
 
-    #     deleted = [
-    #         # e1/2 becomes L3 so enable default changes to false
-    #         "interface Ethernet1/2",
-    #         "no switchport",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "no switchport",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #     ]
-    #     playbook["state"] = "deleted"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=deleted)
+        # Test with an older image version which has different defaults
+        merged_legacy = [
+            "interface Ethernet1/1",
+            "no shutdown",
+            "no switchport",
+            "interface loopback1",
+            "shutdown",
+            "interface Ethernet1/2",
+            "shutdown",
+            "interface loopback2",
+            "no shutdown",
+            "interface loopback3",
+            "no shutdown",
+            "interface port-channel3",
+            "no shutdown",
+            "interface loopback4",
+            "no shutdown",
+            "interface port-channel4",
+            "no shutdown",
+        ]
+        result = self.execute_module(changed=True, device="legacy")
+        self.assertEqual(sorted(result["commands"]), sorted(merged_legacy))
 
-    #     replaced = [
-    #         "interface Ethernet1/1",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface Ethernet1/2",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     playbook["state"] = "replaced"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=replaced)
+        deleted = [
+            "interface Ethernet1/2",
+            "switchport",
+            "shutdown",
+        ]
+        playbook["state"] = "deleted"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
-    #     overridden = [
-    #         "interface Ethernet1/2",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface loopback9",
-    #         "no shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface Ethernet1/1",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     playbook["state"] = "overridden"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=overridden)
+        replaced = [
+            "interface Ethernet1/1",
+            "no switchport",
+            "no shutdown",
+            "interface loopback1",
+            "shutdown",
+            "interface Ethernet1/2",
+            "shutdown",
+            "interface loopback2",
+            "no shutdown",
+            "interface loopback3",
+            "no shutdown",
+            "interface port-channel3",
+            "no shutdown",
+            "interface loopback4",
+            "no shutdown",
+            "interface port-channel4",
+            "no shutdown",
+        ]
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
-    # def test_3(self):
-    #     # Testing 'enabled' with different 'system default' settings.
-    #     # This is the same as test_2 with some minor changes.
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L2 !!
-    #       !
-    #       system default switchport
-    #       system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface mgmt0
-    #       interface Ethernet1/1
-    #       interface Ethernet1/2
-    #         no switchport
-    #         no shutdown
-    #       interface Ethernet1/3
-    #         no switchport
-    #       interface loopback1
-    #       interface loopback2
-    #         shutdown
-    #       interface loopback3
-    #       interface loopback8
-    #       interface loopback9
-    #         shutdown
-    #       interface port-channel2
-    #       interface port-channel3
-    #         shutdown
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_4(self):
+        # Basic idempotence test
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/1
+          interface Ethernet1/2
+            switchport
+            speed 1000
+            shutdown
+        """,
+        )
         
 
-    #     playbook = dict(
-    #         config=[
-    #             # Set non-default states on existing objs
-    #             dict(name="Ethernet1/1", mode="layer3", enabled=True),
-    #             dict(name="loopback1", enabled=False),
-    #             # Set default states on existing objs
-    #             dict(name="Ethernet1/2", enabled=False),
-    #             dict(name="loopback2", enabled=True),
-    #             # Set explicit default state on existing objs (no chg)
-    #             dict(name="Ethernet1/3", enabled=False),
-    #             dict(name="loopback3", enabled=True),
-    #             dict(name="port-channel3", enabled=True),
-    #             # Set default state on non-existent objs; no state changes but need to create intf
-    #             dict(name="loopback4", enabled=True),
-    #             dict(name="port-channel4", enabled=True),
-    #             dict(name="Ethernet1/4.101"),
-    #         ],
-    #     )
-    #     merged = [
-    #         "interface Ethernet1/1",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface Ethernet1/2",
-    #         "shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     playbook["state"] = "merged"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=merged)
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/1", mode="layer3"),
+                dict(name="Ethernet1/2", mode="layer2", enabled=False),
+            ],
+        )
+        merged = []
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        self.execute_module(changed=False, commands=merged)
 
-    #     # Test with an older image version which has different defaults
-    #     merged_legacy = [
-    #         "interface Ethernet1/1",
-    #         "no switchport",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface Ethernet1/2",
-    #         "shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     self.execute_module(changed=True, commands=merged_legacy, device="legacy")
-
-    #     deleted = [
-    #         "interface Ethernet1/2",
-    #         "switchport",
-    #         "shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "switchport",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #     ]
-    #     playbook["state"] = "deleted"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=deleted)
-
-    #     replaced = [
-    #         "interface Ethernet1/1",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface Ethernet1/2",
-    #         "switchport",
-    #         "shutdown",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface Ethernet1/3",
-    #         "switchport",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #     ]
-    #     playbook["state"] = "replaced"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=replaced)
-
-    #     playbook = dict(
-    #         config=[
-    #             # Set non-default states on existing objs
-    #             dict(name="Ethernet1/1", mode="layer3", enabled=True),
-    #             dict(name="loopback1", enabled=False),
-    #             # Set default states on existing objs
-    #             dict(name="Ethernet1/2", enabled=False),
-    #             dict(name="loopback2", enabled=True),
-    #             # Set explicit default state on existing objs (no chg)
-    #             dict(name="Ethernet1/3", enabled=False),
-    #             dict(name="loopback3", enabled=True),
-    #             dict(name="port-channel3", enabled=True),
-    #             # Set default state on non-existent objs; no state changes but need to create intf
-    #             dict(name="loopback4", enabled=True),
-    #             dict(name="port-channel4", enabled=True),
-    #             dict(name="Ethernet1/4.101", enabled=False),
-    #             dict(name="Ethernet1/4.102", enabled=True),
-    #         ],
-    #     )
-
-    #     overridden = [
-    #         "interface Ethernet1/2",
-    #         "switchport",
-    #         "shutdown",
-    #         "interface Ethernet1/3",
-    #         "switchport",
-    #         "interface loopback2",
-    #         "no shutdown",
-    #         "interface loopback9",
-    #         "no shutdown",
-    #         "interface port-channel3",
-    #         "no shutdown",
-    #         "interface Ethernet1/1",
-    #         "no switchport",
-    #         "no shutdown",
-    #         "interface loopback1",
-    #         "shutdown",
-    #         "interface loopback4",
-    #         "no shutdown",
-    #         "interface port-channel4",
-    #         "no shutdown",
-    #         "interface Ethernet1/4.101",
-    #         "interface Ethernet1/4.102",
-    #         "no shutdown",
-    #     ]
-    #     playbook["state"] = "overridden"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=overridden)
-
-    # def test_4(self):
-    #     # Basic idempotence test
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface Ethernet1/1
-    #       interface Ethernet1/2
-    #         switchport
-    #         speed 1000
-    #         shutdown
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_5(self):
+        # 'state: deleted' without 'config'; clean all objects.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/1
+            switchport
+          interface Ethernet1/2
+            speed 1000
+            no shutdown
+        """,
+        )
         
 
-    #     playbook = dict(
-    #         config=[
-    #             dict(name="Ethernet1/1", mode="layer3"),
-    #             dict(name="Ethernet1/2", mode="layer2", enabled=False),
-    #         ],
-    #     )
-    #     merged = []
-    #     playbook["state"] = "merged"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=False, commands=merged)
+        playbook = dict()
+        deleted = [
+            "interface Ethernet1/1",
+            "no switchport",
+            "interface Ethernet1/2",
+            "no speed 1000",
+            "shutdown",
+        ]
+        playbook["state"] = "deleted"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
-    # def test_5(self):
-    #     # 'state: deleted' without 'config'; clean all objects.
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface Ethernet1/1
-    #         switchport
-    #       interface Ethernet1/2
-    #         speed 1000
-    #         no shutdown
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+    def test_6_gathered(self):
+        # check for parsing correct contexts
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value =  dedent(
+            """\
+          interface nve1
+            no shutdown
+            source-interface loopback1
+          interface Ethernet1/1
+            switchport
+            description interface
+          interface Ethernet1/2
+            speed 1000
+            no shutdown
+          interface loopback1
+        """,
+        )
         
 
-    #     playbook = dict()
-    #     deleted = [
-    #         "interface Ethernet1/1",
-    #         "no switchport",
-    #         "interface Ethernet1/2",
-    #         "no speed",
-    #         "shutdown",
-    #     ]
-    #     playbook["state"] = "deleted"
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     self.execute_module(changed=True, commands=deleted)
+        playbook = dict()
+        playbook["state"] = "gathered"
 
-    # def test_6_gathered(self):
-    #     # check for parsing correct contexts
-    #     sysdefs = dedent(
-    #         """\
-    #       !
-    #       ! Interfaces default to L3 !!
-    #       !
-    #       no system default switchport
-    #       no system default switchport shutdown
-    #     """,
-    #     )
-    #     intf = dedent(
-    #         """\
-    #       interface nve1
-    #         no shutdown
-    #         source-interface loopback1
-    #       interface Ethernet1/1
-    #         switchport
-    #         description interface
-    #       interface Ethernet1/2
-    #         speed 1000
-    #         no shutdown
-    #       interface loopback1
-    #     """,
-    #     )
-    #     self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
-        
-
-    #     playbook = dict()
-    #     playbook["state"] = "gathered"
-
-    #     gathered_facts = [
-    #         {"name": "nve1", "enabled": True},
-    #         {
-    #             "name": "Ethernet1/1",
-    #             "mode": "layer2",
-    #             "description": "interface",
-    #         },
-    #         {"name": "Ethernet1/2", "enabled": True, "speed": "1000"},
-    #         {"name": "loopback1"},
-    #     ]
-    #     set_module_args(playbook, ignore_provider_arg)
-    #     result = self.execute_module(changed=False)
-    #     self.assertEqual(result["gathered"], gathered_facts)
+        gathered_facts = [
+            {"name": "nve1", "enabled": True},
+            {
+                "name": "Ethernet1/1",
+                "mode": "layer2",
+                "description": "interface",
+            },
+            {"enabled": True, "name": "Ethernet1/2", "speed": "1000"},
+            {"name": "loopback1"},
+        ]
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        print(result["gathered"])
+        self.assertEqual(result["gathered"], gathered_facts)
 
     def test_7_purged(self):
         # check for parsing correct contexts
@@ -880,7 +661,6 @@ class TestNxosInterfacesModule(TestNxosModule):
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
     def test_mode_mtu(self):
