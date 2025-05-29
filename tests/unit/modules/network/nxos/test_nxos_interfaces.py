@@ -103,13 +103,18 @@ class TestNxosInterfacesModule(TestNxosModule):
                     ip_forward=False,
                     fabric_forwarding_anycast_gateway=False,
                 ),
-                dict(name="Ethernet1/3", description="ansible", mode="layer3", service_policy={
-                    "type_options": {
-                        "qos": {
-                            "output": "test-policy",
-                        }
+                dict(
+                    name="Ethernet1/3",
+                    description="ansible",
+                    mode="layer3",
+                    service_policy={
+                        "type_options": {
+                            "qos": {
+                                "output": "test-policy",
+                            },
+                        },
                     },
-                }),
+                ),
                 dict(
                     name="Ethernet1/3.101",
                     description="test-sub-intf",
@@ -117,10 +122,13 @@ class TestNxosInterfacesModule(TestNxosModule):
                 ),
                 dict(name="Ethernet1/4", mode="layer2", mac_address="00:11:22:33:44:55"),
                 dict(name="Ethernet1/5", logging={"link_status": True}),
-                dict(name="Ethernet1/6", service_policy={
-                    "input": "test-policy",
-                }),
-                dict(name="loopback1", description="test-loopback",logging={"trunk_status": True}),
+                dict(
+                    name="Ethernet1/6",
+                    service_policy={
+                        "input": "test-policy",
+                    },
+                ),
+                dict(name="loopback1", description="test-loopback", logging={"trunk_status": True}),
             ],
             state="merged",
         )
