@@ -103,7 +103,13 @@ class TestNxosInterfacesModule(TestNxosModule):
                     ip_forward=False,
                     fabric_forwarding_anycast_gateway=False,
                 ),
-                dict(name="Ethernet1/3", description="ansible", mode="layer3"),
+                dict(name="Ethernet1/3", description="ansible", mode="layer3", service_policy={
+                    "type_options": {
+                        "qos": {
+                            "output": "test-policy",
+                        }
+                    },
+                }),
                 dict(
                     name="Ethernet1/3.101",
                     description="test-sub-intf",
@@ -131,6 +137,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "no fabric forwarding mode anycast-gateway",
             "interface Ethernet1/3",
             "description ansible",
+            "service-policy type qos output test-policy",
             "interface Ethernet1/4",
             "mac-address 00:11:22:33:44:55",
             "switchport",
@@ -169,6 +176,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             ip forward
             fabric forwarding mode anycast-gateway
           interface Ethernet1/3
+            service-policy type qos output test-policy
           interface Ethernet1/4
           interface Ethernet1/5
           interface Ethernet1/6
@@ -214,6 +222,8 @@ class TestNxosInterfacesModule(TestNxosModule):
             "no duplex full",
             "no ip forward",
             "no fabric forwarding mode anycast-gateway",
+            "interface Ethernet1/3",
+            "no service-policy type qos output test-policy",
         ]
         set_module_args(playbook)
         result = self.execute_module(changed=True)
@@ -315,8 +325,10 @@ class TestNxosInterfacesModule(TestNxosModule):
             ip forward
             fabric forwarding mode anycast-gateway
           interface Ethernet1/3
+            service-policy type qos output test-policy
           interface Ethernet1/4
           interface Ethernet1/5
+            logging event port link-status
           interface Ethernet1/6
             no shutdown
           interface loopback0
@@ -359,11 +371,14 @@ class TestNxosInterfacesModule(TestNxosModule):
             "no fabric forwarding mode anycast-gateway",
             "interface Ethernet1/3",
             "description ansible",
+            "no service-policy type qos output test-policy",
             "interface Ethernet1/3.101",
             "shutdown",
             "description test-sub-intf",
             "interface Ethernet1/4",
             "switchport",
+            "interface Ethernet1/5",
+            "no logging event port link-status",
             "interface loopback1",
             "description test-loopback",
         ]
