@@ -40,6 +40,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     normalize_interface,
 )
 
+
 class Interfaces(ResourceModule):
     """
     The nxos_interfaces config class
@@ -83,7 +84,7 @@ class Interfaces(ResourceModule):
             self.generate_commands()
             self.run_commands()
         return self.result
-    
+
     def get_switchport_defaults(self):
         """Wrapper method for `_connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
@@ -96,8 +97,8 @@ class Interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
         for each in wantd, haved:
             self.normalize_interface_names(each)
@@ -165,7 +166,6 @@ class Interfaces(ResourceModule):
                 no_cmd = True if self.defaults.get("default_mode") == "layer3" else False
                 self.addcmd(have, "mode", no_cmd)
 
-
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
@@ -182,7 +182,7 @@ class Interfaces(ResourceModule):
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
         return param
-    
+
     def get_interface_defaults(self):
         """Collect user-defined-default states for 'system default switchport'
         configurations. These configurations determine default L2/L3 modes
@@ -201,7 +201,9 @@ class Interfaces(ResourceModule):
         pat = "(no )*system default switchport$"
         default_mode = re.search(pat, switchport_data, re.MULTILINE)
         if default_mode:
-            interface_defs["default_mode"] = "layer3" if "no " in default_mode.groups() else "layer2"
+            interface_defs["default_mode"] = (
+                "layer3" if "no " in default_mode.groups() else "layer2"
+            )
 
         # Interface enabled state defaults
         pat = "(no )*system default switchport shutdown$"

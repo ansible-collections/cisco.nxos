@@ -59,7 +59,6 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.exec_get_defaults = self.mock_exec_get_defaults_command.start()
         self.maxDiff = None
 
-
     def tearDown(self):
         super(TestNxosInterfacesModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
@@ -134,7 +133,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface loopback1",
             "description test-loopback",
             "interface Ethernet1/3.101",
-            'shutdown',
+            "shutdown",
             "description test-sub-intf",
         ]
 
@@ -340,24 +339,24 @@ class TestNxosInterfacesModule(TestNxosModule):
             state="replaced",
         )
         overridden = [
-            'interface Ethernet1/1', 
-            'description ansible', 
-            'interface Ethernet1/2', 
-            'no description bar', 
-            'speed 10000', 
-            'mtu 1500', 
-            'duplex auto', 
-            'no ip forward', 
-            'no fabric forwarding mode anycast-gateway', 
-            'interface Ethernet1/3', 
-            'description ansible', 
-            'interface Ethernet1/3.101', 
-            'shutdown',
-            'description test-sub-intf', 
-            'interface Ethernet1/4', 
-            'switchport', 
-            'interface loopback1', 
-            'description test-loopback'
+            "interface Ethernet1/1",
+            "description ansible",
+            "interface Ethernet1/2",
+            "no description bar",
+            "speed 10000",
+            "mtu 1500",
+            "duplex auto",
+            "no ip forward",
+            "no fabric forwarding mode anycast-gateway",
+            "interface Ethernet1/3",
+            "description ansible",
+            "interface Ethernet1/3.101",
+            "shutdown",
+            "description test-sub-intf",
+            "interface Ethernet1/4",
+            "switchport",
+            "interface loopback1",
+            "description test-loopback",
         ]
         set_module_args(playbook)
         result = self.execute_module(changed=True)
@@ -391,7 +390,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """,
         )
-        
 
         playbook = dict(
             config=[
@@ -506,7 +504,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """,
         )
-        
 
         playbook = dict(
             config=[
@@ -534,7 +531,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             no shutdown
         """,
         )
-        
 
         playbook = dict()
         deleted = [
@@ -556,7 +552,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "default_mode": "layer3",
             "L2_enabled": False,
         }
-        self.execute_show_command.return_value =  dedent(
+        self.execute_show_command.return_value = dedent(
             """\
           interface nve1
             no shutdown
@@ -570,7 +566,6 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface loopback1
         """,
         )
-        
 
         playbook = dict()
         playbook["state"] = "gathered"
@@ -609,7 +604,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             description sub-intf
         """,
         )
-        
 
         playbook = dict(
             config=[
@@ -676,7 +670,6 @@ class TestNxosInterfacesModule(TestNxosModule):
                 mtu 3456
             """,
         )
-        
 
         playbook = dict(
             config=[

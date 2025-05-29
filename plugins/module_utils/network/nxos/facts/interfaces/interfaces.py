@@ -56,7 +56,7 @@ class InterfacesFacts(object):
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(interfaces_parser.parse().values())
-        ansible_facts['ansible_network_resources'].pop('interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("interfaces", None)
         facts = {"interfaces": []}
         params = utils.remove_empties(
             interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),

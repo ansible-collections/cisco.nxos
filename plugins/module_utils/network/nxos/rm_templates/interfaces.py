@@ -91,7 +91,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+mtu\s(?P<mtu>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "mtu {{ mtu|string }}",
             "result": {
                 '{{ name }}': {
@@ -104,7 +105,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+duplex\s(?P<duplex>full|half|auto)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "duplex {{ duplex }}",
             "result": {
                 '{{ name }}': {
@@ -117,7 +119,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\s(?P<ip_forward>forward)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip forward",
             "result": {
                 '{{ name }}': {
@@ -131,7 +134,8 @@ class InterfacesTemplate(NetworkTemplate):
                 r"""
                 \s+fabric\sforwarding
                 \smode\sanycast-gateway
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "fabric forwarding mode anycast-gateway",
             "result": {
                 '{{ name }}': {
@@ -182,7 +186,7 @@ class InterfacesTemplate(NetworkTemplate):
                 '{{ name }}': {
                     "logging": {
                         "link_status": "{{ True if link_status is defined }}",
-                    }
+                    },
                 },
             },
         },
@@ -199,7 +203,7 @@ class InterfacesTemplate(NetworkTemplate):
                 '{{ name }}': {
                     "logging": {
                         "trunk_status": "{{ True if trunk_status is defined }}",
-                    }
+                    },
                 },
             },
         },
@@ -217,7 +221,7 @@ class InterfacesTemplate(NetworkTemplate):
                         "trap": {
                             "link_status": "{{ True if link_status is defined }}",
                         },
-                    }
+                    },
                 },
             },
         },
@@ -234,7 +238,7 @@ class InterfacesTemplate(NetworkTemplate):
                 '{{ name }}': {
                     "service_policy": {
                         "input":  "{{ service_policy_input }}",
-                    }
+                    },
                 },
             },
         },
@@ -251,7 +255,7 @@ class InterfacesTemplate(NetworkTemplate):
                 '{{ name }}': {
                     "service_policy": {
                         "output":  "{{ service_policy_output }}",
-                    }
+                    },
                 },
             },
         },
@@ -270,9 +274,9 @@ class InterfacesTemplate(NetworkTemplate):
                         "type_options": {
                             "qos": {
                                 "input":  "{{ service_policy_input }}",
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -291,9 +295,9 @@ class InterfacesTemplate(NetworkTemplate):
                         "type_options": {
                             "qos": {
                                 "output":  "{{ service_policy_output }}",
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -312,9 +316,9 @@ class InterfacesTemplate(NetworkTemplate):
                         "type_options": {
                             "queuing": {
                                 "input":  "{{ service_policy_input }}",
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -333,9 +337,9 @@ class InterfacesTemplate(NetworkTemplate):
                         "type_options": {
                             "queuing": {
                                 "output":  "{{ service_policy_output }}",
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
             },
         },
