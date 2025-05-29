@@ -20,8 +20,6 @@ created.
 
 import re
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
