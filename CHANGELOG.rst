@@ -4,6 +4,20 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- hsrp_interfaces - Fixes and enhances capability of the module to deal with entire hsrp configuration under interfaces.
+
+Deprecated Features
+-------------------
+
+- nxos_hsrp - deprecate nxos.nxos.nxos_hsrp in favor of nxos.nxos.nxos_hsrp_interfaces.
+- nxos_vrf_interface - deprecate nxos.nxos.nxos_vrf_interface in favor of nxos.nxos.nxos_vrf_interfaces.
+
 v10.0.0
 =======
 
