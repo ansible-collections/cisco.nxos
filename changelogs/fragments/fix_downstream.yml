@@ -1,3 +1,0 @@
----
-trivial:
-  - "snmp_server - Fixes downstream test caused due to initial config changes."
