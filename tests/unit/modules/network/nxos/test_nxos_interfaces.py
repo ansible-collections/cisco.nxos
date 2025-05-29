@@ -111,6 +111,9 @@ class TestNxosInterfacesModule(TestNxosModule):
                 ),
                 dict(name="Ethernet1/4", mode="layer2", mac_address="00:11:22:33:44:55"),
                 dict(name="Ethernet1/5", logging={"link_status": True}),
+                dict(name="Ethernet1/6", service_policy={
+                    "input": "test-policy",
+                }),
                 dict(name="loopback1", description="test-loopback",logging={"trunk_status": True}),
             ],
             state="merged",
@@ -136,6 +139,8 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface loopback1",
             "description test-loopback",
             "logging event port trunk-status",
+            "interface Ethernet1/6",
+            "service-policy input test-policy",
             "interface Ethernet1/3.101",
             "shutdown",
             "description test-sub-intf",
