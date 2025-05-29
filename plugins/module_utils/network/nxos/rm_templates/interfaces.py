@@ -237,7 +237,7 @@ class InterfacesTemplate(NetworkTemplate):
             "result": {
                 '{{ name }}': {
                     "service_policy": {
-                        "input":  "{{ service_policy_input }}",
+                        "input": "{{ service_policy_input }}",
                     },
                 },
             },
@@ -254,7 +254,7 @@ class InterfacesTemplate(NetworkTemplate):
             "result": {
                 '{{ name }}': {
                     "service_policy": {
-                        "output":  "{{ service_policy_output }}",
+                        "output": "{{ service_policy_output }}",
                     },
                 },
             },
@@ -273,7 +273,7 @@ class InterfacesTemplate(NetworkTemplate):
                     "service_policy": {
                         "type_options": {
                             "qos": {
-                                "input":  "{{ service_policy_input }}",
+                                "input": "{{ service_policy_input }}",
                             },
                         },
                     },
@@ -294,7 +294,7 @@ class InterfacesTemplate(NetworkTemplate):
                     "service_policy": {
                         "type_options": {
                             "qos": {
-                                "output":  "{{ service_policy_output }}",
+                                "output": "{{ service_policy_output }}",
                             },
                         },
                     },
@@ -315,7 +315,7 @@ class InterfacesTemplate(NetworkTemplate):
                     "service_policy": {
                         "type_options": {
                             "queuing": {
-                                "input":  "{{ service_policy_input }}",
+                                "input": "{{ service_policy_input }}",
                             },
                         },
                     },
@@ -336,7 +336,7 @@ class InterfacesTemplate(NetworkTemplate):
                     "service_policy": {
                         "type_options": {
                             "queuing": {
-                                "output":  "{{ service_policy_output }}",
+                                "output": "{{ service_policy_output }}",
                             },
                         },
                     },
