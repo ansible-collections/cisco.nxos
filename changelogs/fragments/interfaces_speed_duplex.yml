@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - interfaces: 'This change avoids error that occurs when duplex is set and speed is auto'
+  - interfaces: "This change avoids error that occurs when duplex is set and speed is auto"
