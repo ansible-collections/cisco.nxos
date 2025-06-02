@@ -106,7 +106,7 @@ class ActionModule(ActionNetworkModule):
                 )
                 return {"failed": True, "msg": msg}
 
-        if persistent_connection in ("network_cli", "httpapi"):
+        if persistent_connection in ("network_cli", "httpapi", "dme"):
             if module_name == "nxos_gir":
                 conn = Connection(self._connection.socket_path)
                 persistent_command_timeout = conn.get_option(
