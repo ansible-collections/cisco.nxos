@@ -281,11 +281,11 @@ class TestNxosInterfacesModule(TestNxosModule):
                     name="Ethernet1/3.101",
                     description="test-sub-intf",
                     enabled=False,
-                    logging={"link_status": True}
+                    logging={"link_status": True},
                 ),
                 dict(name="Ethernet1/4", mode="layer2"),
                 dict(
-                    name="Ethernet1/5", 
+                    name="Ethernet1/5",
                     service_policy={
                         "input": "test-policy",
                     },
@@ -615,7 +615,7 @@ class TestNxosInterfacesModule(TestNxosModule):
 
         gathered_facts = [
             {
-                "name": "nve1", 
+                "name": "nve1",
                 "enabled": True,
                 "logging": {
                     "link_status": True,
@@ -627,8 +627,8 @@ class TestNxosInterfacesModule(TestNxosModule):
                 "description": "interface",
             },
             {
-                "enabled": True, 
-                "name": "Ethernet1/2", 
+                "enabled": True,
+                "name": "Ethernet1/2",
                 "speed": "1000",
                 "service_policy": {
                     "type_options": {
