@@ -588,6 +588,409 @@ Notes
 
 
 
+Examples
+--------
+
+.. code-block:: yaml
+
+    # Using merged
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description testing
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    - name: Merge provided configuration with device configuration
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/1
+            description: Configured by Ansible
+            enabled: true
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - description: testing
+    #   name: Ethernet1/1
+    # - description: mgmt interface
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/1
+    # - description Configured by Ansible
+    # - interface Ethernet1/2
+    # - description Configured by Ansible Network
+    # - shutdown
+    # after:
+    # - description: Configured by Ansible
+    #   name: Ethernet1/1
+    # - description: Configured by Ansible Network
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description Configured by Ansible
+    # interface Ethernet1/2
+    #   description Configured by Ansible Network
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    # Using replaced
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description Updated by Ansible
+    # interface Ethernet1/2
+    #   description Configured by Ansible Network
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    - name: Replaces device configuration of listed interfaces with provided configuration
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/1
+            description: Configured by Ansible
+            enabled: true
+            mtu: 9000
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
+            mode: layer2
+        state: replaced
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - description: Updated by Ansible
+    #   name: Ethernet1/1
+    # - description: Configured by Ansible Network
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/1
+    # - mtu 1500
+    # - interface Ethernet1/2
+    # - description Updated by Ansible
+    # after:
+    # - description: Updated by Ansible
+    #   name: Ethernet1/1
+    # - description: Updated by Ansible
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description Updated by Ansible
+    # interface Ethernet1/2
+    #   description Updated by Ansible
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    # Using overridden
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description Updated by Ansible
+    # interface Ethernet1/2
+    #   description Updated by Ansible
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    - name: Override device configuration of all interfaces with provided configuration
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/1
+            enabled: true
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
+          - description: mgmt interface
+            name: mgmt0
+        state: overridden
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - description: Updated by Ansible
+    #   name: Ethernet1/1
+    # - description: Updated by Ansible
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/1
+    # - no description
+    # - interface Ethernet1/2
+    # - description Configured by Ansible Network
+    # after:
+    # - name: Ethernet1/1
+    # - description: Configured by Ansible Network
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    # interface Ethernet1/2
+    #   description Configured by Ansible Network
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    # Using deleted
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    # interface Ethernet1/2
+    #   description Configured by Ansible Network
+    #   shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    - name: Delete or return interface parameters to default settings
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/2
+        state: deleted
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - name: Ethernet1/1
+    # - description: Configured by Ansible Network
+    #   enabled: false
+    #   name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/2
+    # - no description
+    # - no shutdown
+    # after:
+    # - name: Ethernet1/1
+    # - name: Ethernet1/2
+    # - description: mgmt interface
+    #   name: mgmt0
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    # interface Ethernet1/2
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
+
+    # Using rendered
+
+    - name: Use rendered state to convert task input to device specific commands
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/1
+            description: outbound-intf
+            mode: layer3
+            speed: 100
+          - name: Ethernet1/2
+            mode: layer2
+            enabled: true
+            duplex: full
+        state: rendered
+
+    # Task Output
+    # -----------
+    #
+    # rendered:
+    #   - "interface Ethernet1/1"
+    #   - "description outbound-intf"
+    #   - "speed 100"
+    #   - "interface Ethernet1/2"
+    #   - "switchport"
+    #   - "duplex full"
+    #   - "no shutdown"
+
+    # Using parsed
+
+    # parsed.cfg
+    # ------------
+    #
+    # interface Ethernet1/800
+    #   description test-1
+    #   speed 1000
+    #   shutdown
+    #   no switchport
+    #   duplex half
+    # interface Ethernet1/801
+    #   description test-2
+    #   switchport
+    #   no shutdown
+    #   mtu 1800
+
+    - name: Use parsed state to convert externally supplied config to structured format
+      cisco.nxos.nxos_interfaces:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
+
+    # Task output
+    # -----------
+    #
+    #  parsed:
+    #    - description: "test-1"
+    #      duplex: "half"
+    #      enabled: false
+    #      mode: "layer3"
+    #      name: "Ethernet1/800"
+    #      speed: "1000"
+    #    - description: "test-2"
+    #      enabled: true
+    #      mode: "layer2"
+    #      mtu: "1800"
+    #      name: "Ethernet1/801"
+
+    # Using gathered
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Ethernet1/1
+    #   description outbound-intf
+    #   switchport
+    #   no shutdown
+    # interface Ethernet1/2
+    #   description intf-l3
+    #   speed 1000
+    # interface Ethernet1/3
+    # interface Ethernet1/4
+    # interface Ethernet1/5
+
+    - name: Gather interfaces facts from the device using nxos_interfaces
+      cisco.nxos.nxos_interfaces:
+        state: gathered
+
+    # Task output
+    # -----------
+    #
+    # - name: Ethernet1/1
+    #   description: outbound-intf
+    #   mode: layer2
+    #   enabled: True
+    # - name: Ethernet1/2
+    #   description: intf-l3
+    #   speed: "1000"
+
+    # Using purged
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Vlan1
+    # interface Vlan42
+    #   mtu 1800
+    # interface port-channel10
+    # interface port-channel11
+    # interface Ethernet1/1
+    # interface Ethernet1/2
+    # interface Ethernet1/2.100
+    #   description sub-intf
+
+    - name: Purge virtual interfaces from running-config
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Vlan42
+          - name: port-channel10
+          - name: Ethernet1/2.100
+        state: purged
+
+    # Task output
+    # ------------
+    #
+    # before:
+    #   - name: Vlan1
+    #   - mtu: '1800'
+    #     name: Vlan42
+    #   - name: port-channel10
+    #   - name: port-channel11
+    #   - name: Ethernet1/1
+    #   - name: Ethernet1/2
+    #   - description: sub-intf
+    #     name: Ethernet1/2.100
+    # commands:
+    #   - no interface port-channel10
+    #   - no interface Ethernet1/2.100
+    #   - no interface Vlan42
+    # after:
+    #   - name: Vlan1
+    #   - name: port-channel11
+    #   - name: Ethernet1/1
+    #   - name: Ethernet1/2
+
+    # After state:
+    # -------------
+    #
+    # switch# show running-config | section interface
+    # interface Vlan1
+    # interface port-channel11
+    # interface Ethernet1/1
+    # interface Ethernet1/2
 
 
 
