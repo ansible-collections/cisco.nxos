@@ -281,9 +281,15 @@ class TestNxosInterfacesModule(TestNxosModule):
                     name="Ethernet1/3.101",
                     description="test-sub-intf",
                     enabled=False,
+                    logging={"link_status": True}
                 ),
                 dict(name="Ethernet1/4", mode="layer2"),
-                dict(name="Ethernet1/5"),
+                dict(
+                    name="Ethernet1/5", 
+                    service_policy={
+                        "input": "test-policy",
+                    },
+                ),
                 dict(name="loopback1", description="test-loopback"),
             ],
             state="replaced",
@@ -303,10 +309,13 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface Ethernet1/3",
             "description ansible",
             "interface Ethernet1/3.101",
+            "logging event port link-status",
             "description test-sub-intf",
             "shutdown",
             "interface Ethernet1/4",
             "switchport",
+            "interface Ethernet1/5",
+            "service-policy input test-policy",
             "interface loopback1",
             "description test-loopback",
         ]
@@ -589,11 +598,13 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface nve1
             no shutdown
             source-interface loopback1
+            logging event port link-status
           interface Ethernet1/1
             switchport
             description interface
           interface Ethernet1/2
             speed 1000
+            service-policy type qos output test-policy
             no shutdown
           interface loopback1
         """,
@@ -603,13 +614,30 @@ class TestNxosInterfacesModule(TestNxosModule):
         playbook["state"] = "gathered"
 
         gathered_facts = [
-            {"name": "nve1", "enabled": True},
+            {
+                "name": "nve1", 
+                "enabled": True,
+                "logging": {
+                    "link_status": True,
+                },
+            },
             {
                 "name": "Ethernet1/1",
                 "mode": "layer2",
                 "description": "interface",
             },
-            {"enabled": True, "name": "Ethernet1/2", "speed": "1000"},
+            {
+                "enabled": True, 
+                "name": "Ethernet1/2", 
+                "speed": "1000",
+                "service_policy": {
+                    "type_options": {
+                        "qos": {
+                            "output": "test-policy",
+                        },
+                    },
+                },
+            },
             {"name": "loopback1"},
         ]
         set_module_args(playbook)
