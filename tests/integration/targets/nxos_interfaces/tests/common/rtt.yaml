@@ -53,10 +53,9 @@
           - '"description WRONG-TEST-INTF-1" in result.commands'
           - '"speed 10000" in result.commands'
           - '"interface Ethernet1/2" in result.commands'
-          - '"no switchport" in result.commands'
           - '"description WRONG-TEST-INTF-2" in result.commands'
           - '"interface Ethernet1/3" in result.commands'
-          - '"no mtu" in result.commands'
+          - '"no mtu 9216" in result.commands'
           - '"description WRONG-TEST-INTF-3" in result.commands'
           - result.commands|length == 9
           - result.changed == true

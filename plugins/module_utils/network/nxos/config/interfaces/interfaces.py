@@ -70,7 +70,14 @@ class Interfaces(ResourceModule):
             "service_policy.type_options.queuing.input",
             "service_policy.type_options.queuing.output",
         ]
-        self.defaults = self.get_interface_defaults()
+        if self.state not in ["parsed", "rendered"]:
+            self.defaults = self.get_interface_defaults()
+        else:
+            # For parsed/rendered state, we assume defaults
+            self.defaults = {
+                "default_mode": "layer3",
+                "L2_enabled": True,
+            }
 
     def execute_module(self):
         """Execute the module
@@ -141,7 +148,8 @@ class Interfaces(ResourceModule):
                 else:
                     self.addcmd(want, "enabled", False)
         elif not want and self.state == "overridden":
-            self.addcmd(have, "enabled", False)
+            if have_enabled is not None:
+                self.addcmd(have, "enabled", False)
         elif not want and self.state == "deleted":
             if have_enabled:
                 self.addcmd(have, "enabled", False)
