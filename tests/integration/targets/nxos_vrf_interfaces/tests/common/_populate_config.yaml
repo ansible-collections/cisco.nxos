@@ -25,3 +25,4 @@
         vrf_name: test2
   vars:
     ansible_connection: ansible.netcommon.network_cli
+  when: skip_vrf_config is not defined or not skip_vrf_config
