@@ -2,6 +2,13 @@
 - ansible.builtin.debug:
     msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection }}
 
+- name: Cleanup Ethernet1/3
+  cisco.nxos.nxos_config:
+    lines:
+      - "no switchport trunk allowed vlan"
+    parents: "interface Ethernet1/3"
+  ignore_errors: true
+
 - name: Set a fact for 'test_int1' and 'test_int2'
   ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
