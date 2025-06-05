@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.nxos.nxos_vrf_global: Added support for rd attribute for vrf_global module.
