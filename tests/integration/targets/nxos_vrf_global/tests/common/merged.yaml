@@ -16,6 +16,7 @@
         vrfConfig:
           vrfs:
             - description: this-is-test
+              rd: "6553600000:200"
               ip:
                 auto_discard: true
                 domain_list:
