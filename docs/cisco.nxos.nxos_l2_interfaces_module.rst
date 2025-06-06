@@ -104,7 +104,6 @@ Parameters
                 </td>
                 <td>
                         <div>Mode in which interface needs to be configured.</div>
-                        <div>Access mode is not shown in interface facts, so idempotency will not be maintained for switchport mode access and every time the output will come as changed=True.</div>
                 </td>
             </tr>
             <tr>
