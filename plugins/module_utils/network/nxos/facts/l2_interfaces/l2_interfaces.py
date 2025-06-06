@@ -101,4 +101,8 @@ class L2_interfacesFacts(object):
         )
         config["trunk"]["native_vlan"] = utils.parse_conf_arg(conf, "switchport trunk native vlan")
 
+        if config["mode"] is None:
+            # access is the default and not shown in the running config.
+            config["mode"] = "access"
+
         return utils.remove_empties(config)
