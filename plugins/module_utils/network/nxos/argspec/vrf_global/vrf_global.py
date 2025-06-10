@@ -42,6 +42,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                     "options": {
                         "name": {"required": True, "type": "str"},
                         "description": {"type": "str"},
+                        "rd": {"type": "str"},
                         "ip": {
                             "type": "dict",
                             "options": {

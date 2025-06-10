@@ -77,6 +77,23 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "rd",
+            "getval": re.compile(
+                r"""
+                \s+rd\s(?P<rd>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "rd {{ rd }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        'rd': '{{ rd }}',
+                    },
+                },
+            },
+        },
+        {
             "name": "ip.auto_discard",
             "getval": re.compile(
                 r"""
