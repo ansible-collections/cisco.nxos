@@ -51,7 +51,7 @@ merged:
   after:
     vrfs:
       - description: this-is-test
-        rd: "65000:200"
+        rd: 65000:200
         ip:
           auto_discard: true
           domain_list:
