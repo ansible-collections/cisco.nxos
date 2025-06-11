@@ -269,8 +269,10 @@ class L3_interfaces(ConfigBase):
         # Normalize inputs (add tag key if not present)
         for i in want:
             i["tag"] = i.get("tag")
+            i["secondary"] = i.get("secondary", False)
         for i in have:
             i["tag"] = i.get("tag")
+            i["secondary"] = i.get("secondary", False)
 
         merged = True if state == "merged" else False
         replaced = True if state == "replaced" else False
