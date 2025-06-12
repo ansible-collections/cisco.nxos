@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,23 +21,24 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
-    L2_interfacesTemplate,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
+    L2_interfacesTemplate,
+)
+
 
 class L2_interfacesFacts(object):
-    """ The nxos l2_interfaces facts class
-    """
+    """The nxos l2_interfaces facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = L2_interfacesArgs.argument_spec
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for L2_interfaces network resource
+        """Populate the facts for L2_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -55,13 +57,13 @@ class L2_interfacesFacts(object):
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('l2_interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
-            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts['l2_interfaces'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["l2_interfaces"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
