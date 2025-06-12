@@ -37,6 +37,9 @@ class L2_interfacesFacts(object):
         self._module = module
         self.argument_spec = L2_interfacesArgs.argument_spec
 
+    def _get_interface_config(self, connection):
+        return connection.get("show running-config | section ^interface")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
 
@@ -51,7 +54,7 @@ class L2_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self._get_interface_config(connection)
 
         # parse native config using the L2_interfaces template
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)

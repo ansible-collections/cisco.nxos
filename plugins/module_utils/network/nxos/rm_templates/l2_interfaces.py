@@ -29,26 +29,47 @@ class L2_interfacesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "name",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
+                ^interface\s(?P<name>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": 'interface {{ name }}',
             "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                },
             },
             "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "ip_forward",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
+                \s+ip\s(?P<ip_forward>forward)
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "ip forward",
             "result": {
+                '{{ name }}': {
+                    'ip_forward': "{{ True if ip_forward is defined }}",
+                },
+            },
+        },
+        {  # only applicable for switches
+            "name": "mode",
+            "getval": re.compile(
+                r"""
+                (?P<negate>\s+no)?
+                (?P<switchport>\s+switchport)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport",
+            "result": {
+                '{{ name }}': {
+                    'mode': "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
+                },
             },
         },
     ]
