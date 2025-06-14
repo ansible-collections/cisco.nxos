@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - "nxos_nxapi - Add vrf parameter to nxos_nxapi module"
+bugfixes:
+  - "nxos_nxapi - Fix ssl_strong_ciphers option is not working over version 10"
