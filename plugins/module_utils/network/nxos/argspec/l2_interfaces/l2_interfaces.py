@@ -44,7 +44,17 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 },
                 "mode": {
                     "type": "str",
-                    "choices": ["access", "dot1q-tunnel", "trunk", "fex-fabric", "fabricpath"],
+                    "choices": [
+                        "access",
+                        "dot1q-tunnel",
+                        "trunk",
+                        "fex-fabric",
+                        "fabricpath",
+                        "private-vlan promiscuous",
+                        "private-vlan host",
+                        "private-vlan trunk promiscuous",
+                        "private-vlan trunk secondary",
+                    ],
                 },
                 "name": {"required": True, "type": "str"},
                 "trunk": {
