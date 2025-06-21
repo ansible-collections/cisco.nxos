@@ -6,12 +6,11 @@ __metaclass__ = type
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-
 DOCUMENTATION = """
 module: nxos_hsrp
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages HSRP configuration on NX-OS switches.
+short_description: (deprecated, removed after 2028-06-01) Manages HSRP configuration on NX-OS switches.
 description:
 - Manages HSRP configuration on NX-OS switches.
 version_added: 1.0.0

@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vrf_interface
 *****************************
 
-**Manages interface specific VRF configuration.**
+**(deprecated, removed after 2028-06-01) Manages interface specific VRF configuration.**
 
 
 Version added: 1.0.0
