@@ -50,14 +50,12 @@ options:
             description: Specify that bandwidth is inherited
             type: bool
       ipv4:
-        description:
-        - IPv4 address and attributes of the L3 interface.
+        description: IPv4 address and attributes of the L3 interface.
         type: list
         elements: dict
         suboptions:
           address:
-            description:
-            - IPV4 address of the L3 interface.
+            description: IPV4 address of the L3 interface.
             type: dict
             suboptions:
               dhcp:
@@ -77,9 +75,6 @@ options:
                 type: int
               secondary:
                 description: Configure additional IP addresses on interface
-                type: bool
-              use-bia:
-                description: Use BIA
                 type: bool
           redirects:
             description: Send ICMP Redirect messages.
@@ -109,12 +104,9 @@ options:
                         description: Specify reachability check to apply to the source address.
                         type: dict
                         suboptions:
-                          any:
-                            description: Source is reachable via any interface.
-                            type: bool
-                          rx:
-                            description: Source is reachable via interface on which packet was received.
-                            type: bool
+                          mode:
+                            description: Source is reachable via any/rx interface.
+                            type: str
                           allow_default:
                             description: Loose Default Route Unicast Reverse Path Forwarding.
                             type: bool
@@ -151,31 +143,28 @@ options:
                     description: Configure gateway address for DHCP relay
                     type: dict
                     suboptions:
-                      ip_address:
+                      subnet_ip:
                         description: IP address
                         type: str
                   source_interface:
                     description: Configure gateway address for DHCP relay
                     type: dict
                     suboptions:
-                      ethernet_no:
-                        description: Slot/chassis number
-                        type: int
-                      loopback:
-                        description: Virtual interface number
-                        type: int
-                      port_channel:
-                        description: Port Channel number
-                        type: int
-                      vlan:
-                        description: Vlan interface
-                        type: int
+                      interface_type:
+                        description: Type of interface
+                        type: str
+                      interface_id:
+                        description: Interface ID
+                        type: str
                   address:
                     description: Configure DHCP server to refer to
                     type: dict
                     suboptions:
-                      ip_address:
+                      relay_ip:
                         description: IP address
+                        type: str
+                      vrf_name:
+                        description: Helper address VRF membership
                         type: str
       ipv6:
         description: IPv6 address and attributes of the L3 interface.
@@ -192,7 +181,7 @@ options:
               autoconfig:
                 description: Configure IPv6 Stateless address autoconfig
                 type: bool
-              use-link-local-only:
+              use_link_local_only:
                 description: Enable IPv6 on interface using only a single link-local address
                 type: bool
               ipv6_address:
@@ -201,7 +190,7 @@ options:
               default:
                 description: For SLAAC, adds default route and the nh would be fetched from RA source address
                 type: bool
-              aggregate-prefix-length:
+              aggregate_prefix_length:
                 description: Prefix-Length for AM Route Aggregation
                 type: int
               anycast:
@@ -216,7 +205,7 @@ options:
               tag: 
                 description: URIB route tag value for local/direct routes
                 type: int
-              use-bia:
+              use_bia:
                 description: Use BIA
                 type: bool
           redirects:
@@ -241,12 +230,9 @@ options:
                         description: Specify reachability check to apply to the source address.
                         type: dict
                         suboptions:
-                          any:
-                            description: Source is reachable via any interface.
-                            type: bool
-                          rx:
-                            description: Source is reachable via interface on which packet was received.
-                            type: bool
+                          mode:
+                            description: Source is reachable via any/rx interface.
+                            type: str
                           allow_default:
                             description: Loose Default Route Unicast Reverse Path Forwarding.
                             type: bool
@@ -265,24 +251,27 @@ options:
                     description: Configure source interface for DHCPv6 relay.
                     type: dict
                     suboptions:
-                      ethernet_no:
-                        description: Slot/chassis number
-                        type: int
-                      loopback:
-                        description: Virtual interface number
-                        type: int
-                      port_channel:
-                        description: Port Channel number
-                        type: int
-                      vlan:
-                        description: Vlan interface
-                        type: int
+                      interface_type:
+                        description: Type of interface
+                        type: str
+                      interface_id:
+                        description: Interface ID
+                        type: str
                   address:
                     description: Configure DHCPv6 server relay address
                     type: dict
                     suboptions:
-                      ip_address:
-                        description: IPv6 server address
+                      relay_ip:
+                        description: IP address
+                        type: str
+                      vrf_name:
+                        description: Helper address VRF membership
+                        type: str
+                      interface_type:
+                        description: Type of interface
+                        type: str
+                      interface_id:
+                        description: Interface ID
                         type: str
   running_config:
     description:

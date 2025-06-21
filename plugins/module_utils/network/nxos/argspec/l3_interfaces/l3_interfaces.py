@@ -59,7 +59,6 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "route_preference": {"type": "int"},
                                 "tag": {"type": "int"},
                                 "secondary": {"type": "bool"},
-                                "use-bia": {"type": "bool"},
                             },
                         },
                         "redirects": {"type": "bool"},
@@ -78,8 +77,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                 "reachable_via": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "any": {"type": "bool"},
-                                                        "rx": {"type": "bool"},
+                                                        "mode": {"type": "str"},
                                                         "allow_default": {
                                                             "type": "bool"
                                                         },
@@ -118,22 +116,21 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "subnet_selection": {
                                             "type": "dict",
                                             "options": {
-                                                "ip_address": {"type": "str"}
+                                                "subnet_ip": {"type": "str"}
                                             },
                                         },
                                         "source_interface": {
                                             "type": "dict",
                                             "options": {
-                                                "ethernet_no": {"type": "int"},
-                                                "loopback": {"type": "int"},
-                                                "port_channel": {"type": "int"},
-                                                "vlan": {"type": "int"},
+                                                "interface_type": {"type": "str"},
+                                                "interface_id": {"type": "str"}
                                             },
                                         },
                                         "address": {
                                             "type": "dict",
                                             "options": {
-                                                "ip_address": {"type": "str"}
+                                                "relay_ip": {"type": "str"},
+                                                "vrf_name": {"type": "str"}
                                             },
                                         },
                                     },
@@ -151,15 +148,15 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "dhcp": {"type": "bool"},
                                 "autoconfig": {"type": "bool"},
-                                "use-link-local-only": {"type": "bool"},
+                                "use_link_local_only": {"type": "bool"},
                                 "ipv6_address": {"type": "str"},
                                 "default": {"type": "bool"},
-                                "aggregate-prefix-length": {"type": "int"},
+                                "aggregate_prefix_length": {"type": "int"},
                                 "anycast": {"type": "bool"},
                                 "eui64": {"type": "bool"},
                                 "route_preference": {"type": "int"},
                                 "tag": {"type": "int"},
-                                "use-bia": {"type": "bool"},
+                                "use_bia": {"type": "bool"},
                             },
                         },
                         "redirects": {"type": "bool"},
@@ -176,8 +173,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                 "reachable_via": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "any": {"type": "bool"},
-                                                        "rx": {"type": "bool"},
+                                                        "mode": {"type": "str"},
                                                         "allow_default": {
                                                             "type": "bool"
                                                         },
@@ -199,16 +195,17 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "source_interface": {
                                             "type": "dict",
                                             "options": {
-                                                "ethernet_no": {"type": "int"},
-                                                "loopback": {"type": "int"},
-                                                "port_channel": {"type": "int"},
-                                                "vlan": {"type": "int"},
+                                               "interface_type": {"type": "str"},
+                                               "interface_id": {"type": "str"}
                                             },
                                         },
                                         "address": {
                                             "type": "dict",
                                             "options": {
-                                                "ip_address": {"type": "str"}
+                                                "relay_ip": {"type": "str"},
+                                                "vrf_name": {"type": "str"},
+                                                "interface_type": {"type": "str"},
+                                                "interface_id": {"type": "str"}
                                             },
                                         },
                                     },
