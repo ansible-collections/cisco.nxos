@@ -47,11 +47,11 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "ipv4": {
-                    "type": "list",
-                    "elements": "dict",
+                    "type": "dict",
                     "options": {
                         "address": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "dhcp": {"type": "bool"},
                                 "ip_address": {"type": "str"},
@@ -123,14 +123,15 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "interface_type": {"type": "str"},
-                                                "interface_id": {"type": "str"}
+                                                "interface_id": {"type": "str"},
                                             },
                                         },
                                         "address": {
-                                            "type": "dict",
+                                            "type": "list",
+                                            "elements": "dict",
                                             "options": {
                                                 "relay_ip": {"type": "str"},
-                                                "vrf_name": {"type": "str"}
+                                                "vrf_name": {"type": "str"},
                                             },
                                         },
                                     },
@@ -140,11 +141,11 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "ipv6": {
-                    "type": "list",
-                    "elements": "dict",
+                    "type": "dict",
                     "options": {
                         "address": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "dhcp": {"type": "bool"},
                                 "autoconfig": {"type": "bool"},
@@ -195,17 +196,18 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "source_interface": {
                                             "type": "dict",
                                             "options": {
-                                               "interface_type": {"type": "str"},
-                                               "interface_id": {"type": "str"}
+                                                "interface_type": {"type": "str"},
+                                                "interface_id": {"type": "str"},
                                             },
                                         },
                                         "address": {
-                                            "type": "dict",
+                                            "type": "list",
+                                            "elements": "dict",
                                             "options": {
                                                 "relay_ip": {"type": "str"},
                                                 "vrf_name": {"type": "str"},
                                                 "interface_type": {"type": "str"},
-                                                "interface_id": {"type": "str"}
+                                                "interface_id": {"type": "str"},
                                             },
                                         },
                                     },
