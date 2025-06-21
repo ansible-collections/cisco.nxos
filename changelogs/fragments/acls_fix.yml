@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_acls - Fix issue where Not sufficient TCAM bank error not being captured by error regex.
