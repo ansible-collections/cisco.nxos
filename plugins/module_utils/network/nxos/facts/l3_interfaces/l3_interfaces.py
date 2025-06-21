@@ -35,6 +35,9 @@ class L3_interfacesFacts(object):
         self._module = module
         self.argument_spec = L3_interfacesArgs.argument_spec
 
+    def get_l3_interfaces_data(self, connection):
+        return connection.get("show running-config | section ^interface")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for L3_interfaces network resource
 
@@ -49,7 +52,7 @@ class L3_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_l3_interfaces_data(connection)
 
         # parse native config using the L3_interfaces template
         l3_interfaces_parser = L3_interfacesTemplate(lines=data.splitlines(), module=self._module)

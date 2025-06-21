@@ -51,12 +51,12 @@ options:
             type: bool
       ipv4:
         description: IPv4 address and attributes of the L3 interface.
-        type: list
-        elements: dict
+        type: dict
         suboptions:
           address:
             description: IPV4 address of the L3 interface.
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               dhcp:
                 description: Configure IP address from a dhcp server
@@ -158,7 +158,8 @@ options:
                         type: str
                   address:
                     description: Configure DHCP server to refer to
-                    type: dict
+                    type: list
+                    elements: dict
                     suboptions:
                       relay_ip:
                         description: IP address
@@ -168,12 +169,12 @@ options:
                         type: str
       ipv6:
         description: IPv6 address and attributes of the L3 interface.
-        type: list
-        elements: dict
+        type: dict
         suboptions:
           address:
             description: IPV6 address of the L3 interface.
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               dhcp:
                 description: Configure IPv6 address from a dhcp server
@@ -259,7 +260,8 @@ options:
                         type: str
                   address:
                     description: Configure DHCPv6 server relay address
-                    type: dict
+                    type: list
+                    elements: dict
                     suboptions:
                       relay_ip:
                         description: IP address
