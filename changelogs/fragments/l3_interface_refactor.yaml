@@ -1,0 +1,2 @@
+minor_changes:
+  - cisco.nxos.nxos_l3_interfaces - Identify and Implement Missing Parameters for NXOS l3 interface.
