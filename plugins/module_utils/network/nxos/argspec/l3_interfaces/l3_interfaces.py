@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the nxos_l3_interfaces module
 
 
 class L3_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_l3_interfaces module
-    """
+    """The arg spec for the nxos_l3_interfaces module"""
 
     argument_spec = {
         "config": {
@@ -79,14 +79,14 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "mode": {"type": "str"},
                                                         "allow_default": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
-                                                }
+                                                },
                                             },
-                                        }
+                                        },
                                     },
-                                }
+                                },
                             },
                         },
                         "dhcp": {
@@ -98,9 +98,9 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "suboption": {
                                             "type": "dict",
                                             "options": {
-                                                "circuit_id": {"type": "str"}
+                                                "circuit_id": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "smart_relay": {"type": "bool"},
@@ -110,13 +110,13 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "information": {
                                             "type": "dict",
                                             "options": {
-                                                "trusted": {"type": "bool"}
+                                                "trusted": {"type": "bool"},
                                             },
                                         },
                                         "subnet_selection": {
                                             "type": "dict",
                                             "options": {
-                                                "subnet_ip": {"type": "str"}
+                                                "subnet_ip": {"type": "str"},
                                             },
                                         },
                                         "source_interface": {
@@ -176,14 +176,14 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "mode": {"type": "str"},
                                                         "allow_default": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
-                                                }
+                                                },
                                             },
-                                        }
+                                        },
                                     },
-                                }
+                                },
                             },
                         },
                         "dhcp": {

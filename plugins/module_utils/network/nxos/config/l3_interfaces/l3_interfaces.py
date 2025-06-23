@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,12 +21,13 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
+)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
@@ -61,7 +63,7 @@ class L3_interfaces(ResourceModule):
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -72,11 +74,11 @@ class L3_interfaces(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
         wantd = self.convert_list_to_dict(wantd)
         haved = self.convert_list_to_dict(haved)
@@ -87,9 +89,7 @@ class L3_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -103,9 +103,9 @@ class L3_interfaces(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the L3_interfaces network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the L3_interfaces network resource.
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -131,7 +131,9 @@ class L3_interfaces(ResourceModule):
                 if outer_key is not None:
                     output[outer_key] = entry
                 else:
-                    raise ValueError(f"No matching key found in {entry} for priorities {outer_key_priority}")
+                    raise ValueError(
+                        f"No matching key found in {entry} for priorities {outer_key_priority}"
+                    )
 
             return output
 
@@ -140,27 +142,37 @@ class L3_interfaces(ResourceModule):
         for iface_name, iface_data in data.items():
             iface_result = iface_data.copy()
 
-            ipv4_value = iface_result.get('ipv4', {})
-            ipv6_value = iface_result.get('ipv6', {})
+            ipv4_value = iface_result.get("ipv4", {})
+            ipv6_value = iface_result.get("ipv6", {})
 
-            ipv4_value_address = ipv4_value.get('address', {})
-            ipv4_value_dhcp_relay_address = ipv4_value.get('dhcp', {}).get('relay', {}).get('address', {})
-            ipv6_value_address = ipv6_value.get('address', {})
-            ipv6_value_dhcp_relay_address = ipv6_value.get('dhcp', {}).get('relay', {}).get('address', {})
+            ipv4_value_address = ipv4_value.get("address", {})
+            ipv4_value_dhcp_relay_address = (
+                ipv4_value.get("dhcp", {}).get("relay", {}).get("address", {})
+            )
+            ipv6_value_address = ipv6_value.get("address", {})
+            ipv6_value_dhcp_relay_address = (
+                ipv6_value.get("dhcp", {}).get("relay", {}).get("address", {})
+            )
 
             if ipv4_value_address:
-                ipv4_value['address'] = list_to_dict(ipv4_value_address, ['dhcp', 'ip_address', 'ip_network_mask'])
+                ipv4_value["address"] = list_to_dict(
+                    ipv4_value_address, ["dhcp", "ip_address", "ip_network_mask"]
+                )
             if ipv4_value_dhcp_relay_address:
-                ipv4_value['dhcp']['relay']['address'] = list_to_dict(ipv4_value_dhcp_relay_address, ['relay_ip'])
+                ipv4_value["dhcp"]["relay"]["address"] = list_to_dict(
+                    ipv4_value_dhcp_relay_address, ["relay_ip"]
+                )
             if ipv6_value_address:
-                ipv6_value['address'] = list_to_dict(ipv6_value_address, ['dhcp', 'ipv6_address'])
+                ipv6_value["address"] = list_to_dict(ipv6_value_address, ["dhcp", "ipv6_address"])
             if ipv6_value_dhcp_relay_address:
-                ipv6_value['dhcp']['relay']['address'] = list_to_dict(ipv6_value_dhcp_relay_address, ['relay_ip'])
+                ipv6_value["dhcp"]["relay"]["address"] = list_to_dict(
+                    ipv6_value_dhcp_relay_address, ["relay_ip"]
+                )
 
             result[iface_name] = iface_result
 
         return result
-    
+
     def _compare_complex_attrs(self, want, have):
         """Compare complex attributes"""
         want_ipv4 = want.get("ipv4", {})
@@ -168,22 +180,33 @@ class L3_interfaces(ResourceModule):
         want_ipv6 = want.get("ipv6", {})
         have_ipv6 = have.get("ipv6", {})
 
-        want_ipv4_value_address = want_ipv4.get('address', {})
-        have_ipv4_value_address = have_ipv4.get('address', {})
+        want_ipv4_value_address = want_ipv4.get("address", {})
+        have_ipv4_value_address = have_ipv4.get("address", {})
         self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.address")
 
-        want_ipv6_value_address = want_ipv6.get('address', {})
-        have_ipv6_value_address = have_ipv6.get('address', {})
+        want_ipv6_value_address = want_ipv6.get("address", {})
+        have_ipv6_value_address = have_ipv6.get("address", {})
         self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.address")
 
-        want_ipv4_value_relay_address = want_ipv4.get('dhcp', {}).get('relay', {}).get('address', {})
-        have_ipv4_value_relay_address = have_ipv4.get('dhcp', {}).get('relay', {}).get('address', {})
-        self.compare_lists(want_ipv4_value_relay_address, have_ipv4_value_relay_address, "ipv4.dhcp")
+        want_ipv4_value_relay_address = (
+            want_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})
+        )
+        have_ipv4_value_relay_address = (
+            have_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})
+        )
+        self.compare_lists(
+            want_ipv4_value_relay_address, have_ipv4_value_relay_address, "ipv4.dhcp"
+        )
 
-        want_ipv6_value_relay_address = want_ipv6.get('dhcp', {}).get('relay', {}).get('address', {})
-        have_ipv6_value_relay_address = have_ipv6.get('dhcp', {}).get('relay', {}).get('address', {})
-        self.compare_lists(want_ipv6_value_relay_address, have_ipv6_value_relay_address, "ipv6.dhcp")
-                
+        want_ipv6_value_relay_address = (
+            want_ipv6.get("dhcp", {}).get("relay", {}).get("address", {})
+        )
+        have_ipv6_value_relay_address = (
+            have_ipv6.get("dhcp", {}).get("relay", {}).get("address", {})
+        )
+        self.compare_lists(
+            want_ipv6_value_relay_address, have_ipv6_value_relay_address, "ipv6.dhcp"
+        )
 
     def compare_lists(self, wanted, haved, parser):
         """Compare list items in ipv4 and ipv6"""
@@ -192,9 +215,11 @@ class L3_interfaces(ResourceModule):
             have_value = haved.pop(key, {})
             if have_value and have_value != want_value:
                 self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
-            self.compare(parsers=[parser], want={parser_underscore: want_value}, have={parser_underscore: have_value})
-        
+            self.compare(
+                parsers=[parser],
+                want={parser_underscore: want_value},
+                have={parser_underscore: have_value},
+            )
+
         for key, have_value in haved.items():
             self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
-    
-        

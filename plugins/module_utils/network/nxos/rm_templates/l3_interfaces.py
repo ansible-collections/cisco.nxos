@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class L3_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -88,7 +91,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 )
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "compval": "ipv4_address",
             "setval": "ip address"
@@ -108,7 +111,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                             "route_preference": "{{ route_preference }}",
                             "tag": "{{ tag }}",
                             "secondary": "{{ not not secondary }}",
-                        }]
+                        }],
                     },
                 },
             },
@@ -123,7 +126,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ip redirects",
             "result": {
                 "{{ name }}": {
-                    "ipv4": 
+                    "ipv4":
                         {
                             "redirects": True,
                         },
@@ -140,7 +143,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ip unreachables",
             "result": {
                 "{{ name }}": {
-                    "ipv4": 
+                    "ipv4":
                     {
                         "unreachables": True,
                     },
@@ -174,7 +177,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ip port_unreachable",
             "result": {
                 "{{ name }}": {
-                    "ipv4": 
+                    "ipv4":
                     {
                         "port_unreachable": True,
                     },
@@ -186,11 +189,11 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ip\s+verify\s+unicast\s+source\s+reachable-via
-                \s+(?P<mode>\S+)                 
-                (?:\s+(?P<allow_default>allow-default))?  
+                \s+(?P<mode>\S+)
+                (?:\s+(?P<allow_default>allow-default))?
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "setval": "ip verify unicast source reachable-via"
                       "{{ ' ' + ipv4.verify.mode|string if ipv4.verify.mode else ''}}"
@@ -203,11 +206,11 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "source": {
                                     "reachable_via": {
                                         "mode": "{{ mode }}",
-                                        "allow_default": "{{ not not allow_default }}"
-                                    }
-                                }
-                            }
-                        }
+                                        "allow_default": "{{ not not allow_default }}",
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -241,7 +244,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 )
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "compval": "ipv4_dhcp",
             "setval": "ip dhcp"
@@ -259,27 +262,27 @@ class L3_interfacesTemplate(NetworkTemplate):
                         "dhcp": {
                             "option82": {
                                 "suboption": {
-                                    "circuit_id": "{{ circuit_id }}"
-                                }
+                                    "circuit_id": "{{ circuit_id }}",
+                                },
                             },
                             "smart_relay": "{{ not not smart_relay }}",
                             "relay": {
                                 "address": [{
                                     "relay_ip": "{{ relay_ip }}",
-                                    "vrf_name": "{{ vrf_name }}"
+                                    "vrf_name": "{{ vrf_name }}",
                                 }],
                                 "information": {
-                                    "trusted": "{{ not not trusted }}"
+                                    "trusted": "{{ not not trusted }}",
                                 },
                                 "subnet_selection": {
-                                    "subnet_ip": "{{ subnet_ip }}"
+                                    "subnet_ip": "{{ subnet_ip }}",
                                 },
                                 "source_interface": {
                                     "interface_type": "{{ interface_type }}",
-                                    "interface_id": "{{ interface_id }}"
-                                }
-                            }
-                        }
+                                    "interface_id": "{{ interface_id }}",
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -318,7 +321,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 )
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "compval": "ipv6_address",
             "setval": "ipv6 address"
@@ -347,7 +350,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                             "use_bia": "{{ not not use_bia }}",
                             "eui64": "{{ not not eui64 }}",
                             "anycast": "{{ not not anycast }}",
-                        }]
+                        }],
                     },
                 },
             },
@@ -362,7 +365,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ipv6 redirects",
             "result": {
                 "{{ name }}": {
-                    "ipv6": 
+                    "ipv6":
                     {
                         "redirects": True,
                     },
@@ -391,11 +394,11 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ipv6\s+verify\s+unicast\s+source\s+reachable-via
-                \s+(?P<mode>\S+)                 
-                (?:\s+(?P<allow_default>allow-default))?  
+                \s+(?P<mode>\S+)
+                (?:\s+(?P<allow_default>allow-default))?
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "setval": "ipv6 verify unicast source reachable-via "
                       "{{ ipv6.verify.mode|string + ' ' if ipv6.verify.mode else ''}}"
@@ -408,11 +411,11 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "source": {
                                     "reachable_via": {
                                         "mode": "{{ mode }}",
-                                        "allow_default": "{{ not not allow_default }}"
-                                    }
-                                }
-                            }
-                        }
+                                        "allow_default": "{{ not not allow_default }}",
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -441,7 +444,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 )
                 \s*$
                 """,
-                re.VERBOSE
+                re.VERBOSE,
             ),
             "compval": "ipv6_dhcp",
             "setval": "ipv6 dhcp"
@@ -461,14 +464,14 @@ class L3_interfacesTemplate(NetworkTemplate):
                                     "relay_ip": "{{ relay_ip }}",
                                     "vrf_name": "{{ vrf_name }}",
                                     "interface_type": "{{ interface_type }}",
-                                    "interface_id": "{{ interface_id }}"
+                                    "interface_id": "{{ interface_id }}",
                                 }],
                                 "source_interface": {
                                     "interface_type": "{{ source_interface_type }}",
-                                    "interface_id": "{{ source_interface_id }}"
-                                }
-                            }
-                        }
+                                    "interface_id": "{{ source_interface_id }}",
+                                },
+                            },
+                        },
                     },
                 },
             },

@@ -10,6 +10,7 @@ The module file for nxos_l3_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -17,7 +18,7 @@ module: nxos_l3_interfaces
 short_description: L3 interfaces resource module
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
 version_added: 1.0.0
-author: 
+author:
   - Trishna Guha (@trishnaguha)
   - Nikhil Bhasin (@nickbhasin)
 notes:
@@ -70,7 +71,7 @@ options:
               route_preference:
                 description: URIB route preference for local/direct routes
                 type: int
-              tag: 
+              tag:
                 description: URIB route tag value for local/direct routes
                 type: int
               secondary:
@@ -139,7 +140,7 @@ options:
                       trusted:
                         description: Enable relay trust on this interface.
                         type: bool
-                  subnet_selection: 
+                  subnet_selection:
                     description: Configure gateway address for DHCP relay
                     type: dict
                     suboptions:
@@ -203,7 +204,7 @@ options:
               route_preference:
                 description: URIB route preference for local/direct routes
                 type: int
-              tag: 
+              tag:
                 description: URIB route tag value for local/direct routes
                 type: int
               use_bia:
@@ -828,6 +829,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )
