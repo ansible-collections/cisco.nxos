@@ -132,7 +132,7 @@ class L3_interfaces(ResourceModule):
                     output[outer_key] = entry
                 else:
                     raise ValueError(
-                        f"No matching key found in {entry} for priorities {outer_key_priority}"
+                        f"No matching key found in {entry} for priorities {outer_key_priority}",
                     )
 
             return output
@@ -156,17 +156,20 @@ class L3_interfaces(ResourceModule):
 
             if ipv4_value_address:
                 ipv4_value["address"] = list_to_dict(
-                    ipv4_value_address, ["dhcp", "ip_address", "ip_network_mask"]
+                    ipv4_value_address,
+                    ["dhcp", "ip_address", "ip_network_mask"],
                 )
             if ipv4_value_dhcp_relay_address:
                 ipv4_value["dhcp"]["relay"]["address"] = list_to_dict(
-                    ipv4_value_dhcp_relay_address, ["relay_ip"]
+                    ipv4_value_dhcp_relay_address,
+                    ["relay_ip"],
                 )
             if ipv6_value_address:
                 ipv6_value["address"] = list_to_dict(ipv6_value_address, ["dhcp", "ipv6_address"])
             if ipv6_value_dhcp_relay_address:
                 ipv6_value["dhcp"]["relay"]["address"] = list_to_dict(
-                    ipv6_value_dhcp_relay_address, ["relay_ip"]
+                    ipv6_value_dhcp_relay_address,
+                    ["relay_ip"],
                 )
 
             result[iface_name] = iface_result
@@ -195,7 +198,9 @@ class L3_interfaces(ResourceModule):
             have_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})
         )
         self.compare_lists(
-            want_ipv4_value_relay_address, have_ipv4_value_relay_address, "ipv4.dhcp"
+            want_ipv4_value_relay_address,
+            have_ipv4_value_relay_address,
+            "ipv4.dhcp",
         )
 
         want_ipv6_value_relay_address = (
@@ -205,7 +210,9 @@ class L3_interfaces(ResourceModule):
             have_ipv6.get("dhcp", {}).get("relay", {}).get("address", {})
         )
         self.compare_lists(
-            want_ipv6_value_relay_address, have_ipv6_value_relay_address, "ipv6.dhcp"
+            want_ipv6_value_relay_address,
+            have_ipv6_value_relay_address,
+            "ipv6.dhcp",
         )
 
     def compare_lists(self, wanted, haved, parser):
