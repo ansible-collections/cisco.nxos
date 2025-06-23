@@ -21,6 +21,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+def _allowed_vlans_commands(config):
+    pass
 
 class L2_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -44,31 +46,68 @@ class L2_interfacesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "ip_forward",
-            "getval": re.compile(
-                r"""
-                \s+ip\s(?P<ip_forward>forward)
-                $""", re.VERBOSE,
-            ),
-            "setval": "ip forward",
-            "result": {
-                '{{ name }}': {
-                    'ip_forward': "{{ True if ip_forward is defined }}",
-                },
-            },
-        },
-        {  # only applicable for switches
             "name": "mode",
             "getval": re.compile(
                 r"""
-                (?P<negate>\s+no)?
-                (?P<switchport>\s+switchport)
+                \s+switchport\smode
+                \s+(?P<mode>access|trunk|dot1q-tunnel|fex-fabric|fabricpath)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport",
+            "setval": "switchport mode {{ mode }}",
             "result": {
                 '{{ name }}': {
-                    'mode': "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
+                    'mode': "{{ mode }}",
+                },
+            },
+        },
+        {
+            "name": "access.vlan",
+            "getval": re.compile(
+                r"""
+                \s+switchport\saccess\svlan
+                \s+(?P<vlan>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport access {{ access.vlan }}",
+            "result": {
+                '{{ name }}': {
+                    'access': {
+                        'vlan': "{{ vlan }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "trunk.native_vlan",
+            "getval": re.compile(
+                r"""
+                \s+switchport\strunk\snative\svlan
+                \s+(?P<vlan>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport access {{ trunk.native_vlan }}",
+            "result": {
+                '{{ name }}': {
+                    'trunk': {
+                        'native_vlan': "{{ vlan }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "trunk.allowed_vlans",
+            "getval": re.compile(
+                r"""
+                \s+switchport\strunk\sallowed\svlan
+                \s+(?P<allowed_vlans>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": _allowed_vlans_commands,
+            "result": {
+                '{{ name }}': {
+                    'trunk': {
+                        'allowed_vlans': "{{ allowed_vlans }}",
+                    },
                 },
             },
         },

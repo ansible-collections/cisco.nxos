@@ -34,6 +34,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    normalize_interface,
+    vlan_range_to_list,
+    vlan_list_to_range,
+    generate_switchport_trunk,
+)
 
 
 class L2_interfaces(ResourceModule):
@@ -49,7 +55,11 @@ class L2_interfaces(ResourceModule):
             resource="l2_interfaces",
             tmplt=L2_interfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "mode",
+            "access.vlan",
+            "trunk.native_vlan",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -68,6 +78,9 @@ class L2_interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
+
+        for each in wantd, haved:
+            self.process_list_attrs(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -93,4 +106,50 @@ class L2_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the L2_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want, have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def _compare_lists(self, want, have):
+        """Compare list attributes"""
+        for vlan in ["allowed_vlans"]:
+            cmd_always = list(
+                set(want.get("trunk", {}).get(vlan, [])) - set(have.get("trunk", {}).get(vlan, [])),
+            )  # find vlans to create wrt have
+            if self.state != "merged":
+                rem_vlan = []
+                for vl_no in have.get("trunk", {}).get(vlan, []):
+                    if vl_no not in cmd_always and vl_no not in want.get("trunk", {}).get(vlan, []):
+                        rem_vlan.append(vl_no)
+                if (
+                    not want.get("trunk", {}).get(vlan, []) and rem_vlan
+                ):  # remove vlan all as want blank
+                    self.commands.append(
+                        "no switchport trunk {0} vlan".format(vlan.split("_", maxsplit=1)[0]),
+                    )
+                elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
+                    self.commands.append(
+                        "switchport trunk {0} vlan remove {1}".format(
+                            vlan.split("_", maxsplit=1)[0],
+                            vlan_list_to_range(sorted(rem_vlan)),
+                        ),
+                    )
+            if self.state != "deleted" and cmd_always:  # add configuration needed
+                self.commands.extend(
+                    generate_switchport_trunk(
+                        vlan.split("_", maxsplit=1)[0],
+                        have.get("trunk", {}).get(vlan, []),
+                        vlan_list_to_range(sorted(cmd_always)),
+                    ),
+                )
+
+    def process_list_attrs(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
+                if val.get("trunk"):
+                    for vlan in ["allowed_vlans"]:
+                        if val.get("trunk").get(vlan):
+                            val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))

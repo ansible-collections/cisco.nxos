@@ -40,6 +40,22 @@ class L2_interfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
+    def _fix_allowed_vlans(self, parsed_config):
+        """Fix the allowed vlans from tuple to a string and remove interfaces with only name key"""
+        
+        # Process allowed_vlans
+        for interface in parsed_config:
+            trunk = interface.get("trunk", {})
+            allowed_vlans = trunk.get("allowed_vlans")
+            if allowed_vlans and isinstance(allowed_vlans, tuple):
+                trunk["allowed_vlans"] = ','.join(map(str, allowed_vlans))
+        
+        # Remove interfaces with only "name" key
+        return [
+            interface for interface in parsed_config 
+            if len(interface) > 1 or list(interface.keys()) != ["name"]
+        ]
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
 
@@ -59,14 +75,15 @@ class L2_interfacesFacts(object):
         # parse native config using the L2_interfaces template
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
+        final_objs = self._fix_allowed_vlans(objs)
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
-            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            l2_interfaces_parser.validate_config(self.argument_spec, {"config": final_objs}, redact=True),
         )
 
-        facts["l2_interfaces"] = params["config"]
+        facts["l2_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
