@@ -76,35 +76,34 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              speed 1000
              service-policy type qos output test-policy
              no shutdown
-            """
+            """,
         )
 
         set_module_args(
             dict(
                 state="gathered",
-            )
+            ),
         )
 
         expected = [
             {
-                'access': {'vlan': 20}, 
-                'mode': 'trunk', 
-                'name': 'Ethernet1/6', 
-                'trunk': {
-                    'allowed_vlans': '30-45,47', 
-                    'native_vlan': 40
-                }
-            }, 
+                "access": {"vlan": 20},
+                "mode": "trunk",
+                "name": "Ethernet1/6",
+                "trunk": {
+                    "allowed_vlans": "30-45,47",
+                    "native_vlan": 40,
+                },
+            },
             {
-                'mode': 'trunk', 
-                'name': 'Ethernet1/2', 
-                'trunk': {
-                    'allowed_vlans': '10,20,30', 
-                    'native_vlan': 20
-                }
-            }
+                "mode": "trunk",
+                "name": "Ethernet1/2",
+                "trunk": {
+                    "allowed_vlans": "10,20,30",
+                    "native_vlan": 20,
+                },
+            },
         ]
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected)
-

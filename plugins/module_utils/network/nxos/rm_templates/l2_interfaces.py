@@ -21,8 +21,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 def _allowed_vlans_commands(config):
     pass
+
 
 class L2_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):

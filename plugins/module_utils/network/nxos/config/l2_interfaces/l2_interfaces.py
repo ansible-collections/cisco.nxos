@@ -35,10 +35,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     L2_interfacesTemplate,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    normalize_interface,
-    vlan_range_to_list,
-    vlan_list_to_range,
     generate_switchport_trunk,
+    normalize_interface,
+    vlan_list_to_range,
+    vlan_range_to_list,
 )
 
 

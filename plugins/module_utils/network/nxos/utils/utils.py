@@ -183,6 +183,7 @@ def vlan_list_to_range(cmd):
         ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
     return ",".join(ranges)
 
+
 def generate_switchport_trunk(type, add, vlans_range):
     """
     Generates a list of switchport commands based on the trunk type and VLANs range.
@@ -213,6 +214,7 @@ def generate_switchport_trunk(type, add, vlans_range):
         append_command()
 
     return commands
+
 
 @total_ordering
 class Version:
