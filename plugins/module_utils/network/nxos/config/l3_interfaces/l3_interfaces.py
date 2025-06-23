@@ -26,10 +26,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.facts.facts import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.rm_templates.l3_interfaces import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
 
@@ -48,6 +48,16 @@ class L3_interfaces(ResourceModule):
             tmplt=L3_interfacesTemplate(),
         )
         self.parsers = [
+            "mac_address",
+            "bandwidth",
+            "ipv4.redirects",
+            "ipv4.unreachables",
+            "ipv4.proxy_arp",
+            "ipv4.port_unreachable",
+            "ipv4.verify",
+            "ipv6.redirects",
+            "ipv6.unreachables",
+            "ipv6.verify",
         ]
 
     def execute_module(self):
@@ -67,6 +77,9 @@ class L3_interfaces(ResourceModule):
         """
         wantd = {entry['name']: entry for entry in self.want}
         haved = {entry['name']: entry for entry in self.have}
+
+        wantd = self.convert_list_to_dict(wantd)
+        haved = self.convert_list_to_dict(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -94,4 +107,94 @@ class L3_interfaces(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the L3_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_complex_attrs(want, have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def convert_list_to_dict(self, data):
+        def list_to_dict(dict_list, outer_key_priority):
+            output = {}
+            for entry in dict_list:
+                if not isinstance(entry, dict) or not entry:
+                    continue
+
+                outer_key = None
+
+                for k in outer_key_priority:
+                    if k in entry:
+                        val = entry[k]
+                        outer_key = k if isinstance(val, bool) else str(val)
+                        break
+
+                if outer_key is not None:
+                    output[outer_key] = entry
+                else:
+                    raise ValueError(f"No matching key found in {entry} for priorities {outer_key_priority}")
+
+            return output
+
+        result = {}
+
+        for iface_name, iface_data in data.items():
+            iface_result = iface_data.copy()
+
+            ipv4_value = iface_result.get('ipv4', {})
+            ipv6_value = iface_result.get('ipv6', {})
+
+            ipv4_value_address = ipv4_value.get('address', {})
+            ipv4_value_dhcp_relay_address = ipv4_value.get('dhcp', {}).get('relay', {}).get('address', {})
+            ipv6_value_address = ipv6_value.get('address', {})
+            ipv6_value_dhcp_relay_address = ipv6_value.get('dhcp', {}).get('relay', {}).get('address', {})
+
+            if ipv4_value_address:
+                ipv4_value['address'] = list_to_dict(ipv4_value_address, ['dhcp', 'ip_address', 'ip_network_mask'])
+            if ipv4_value_dhcp_relay_address:
+                ipv4_value['dhcp']['relay']['address'] = list_to_dict(ipv4_value_dhcp_relay_address, ['relay_ip'])
+            if ipv6_value_address:
+                ipv6_value['address'] = list_to_dict(ipv6_value_address, ['dhcp', 'ipv6_address'])
+            if ipv6_value_dhcp_relay_address:
+                ipv6_value['dhcp']['relay']['address'] = list_to_dict(ipv6_value_dhcp_relay_address, ['relay_ip'])
+
+            result[iface_name] = iface_result
+
+        return result
+    
+    def _compare_complex_attrs(self, want, have):
+        """Compare complex attributes"""
+        want_ipv4 = want.get("ipv4", {})
+        have_ipv4 = have.get("ipv4", {})
+        want_ipv6 = want.get("ipv6", {})
+        have_ipv6 = have.get("ipv6", {})
+
+        want_ipv4_value_address = want_ipv4.get('address', {})
+        have_ipv4_value_address = have_ipv4.get('address', {})
+        self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.address")
+
+        want_ipv6_value_address = want_ipv6.get('address', {})
+        have_ipv6_value_address = have_ipv6.get('address', {})
+        self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.address")
+
+        want_ipv4_value_relay_address = want_ipv4.get('dhcp', {}).get('relay', {}).get('address', {})
+        have_ipv4_value_relay_address = have_ipv4.get('dhcp', {}).get('relay', {}).get('address', {})
+        self.compare_lists(want_ipv4_value_relay_address, have_ipv4_value_relay_address, "ipv4.dhcp")
+
+        want_ipv6_value_relay_address = want_ipv6.get('dhcp', {}).get('relay', {}).get('address', {})
+        have_ipv6_value_relay_address = have_ipv6.get('dhcp', {}).get('relay', {}).get('address', {})
+        self.compare_lists(want_ipv6_value_relay_address, have_ipv6_value_relay_address, "ipv6.dhcp")
+                
+
+    def compare_lists(self, wanted, haved, parser):
+        """Compare list items in ipv4 and ipv6"""
+        parser_underscore = parser.replace(".", "_")
+        for key, want_value in wanted.items():
+            have_value = haved.pop(key, {})
+            if have_value and have_value != want_value:
+                self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
+            self.compare(parsers=[parser], want={parser_underscore: want_value}, have={parser_underscore: have_value})
+        
+        for key, have_value in haved.items():
+            self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
+    
+        
