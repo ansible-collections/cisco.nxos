@@ -235,7 +235,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="vlan",
                                             interface_id="51",
                                             vrf_name="abc",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -269,7 +269,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "no ip verify unicast source reachable-via any allow-default",
             "no ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "no ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-            "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+            "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

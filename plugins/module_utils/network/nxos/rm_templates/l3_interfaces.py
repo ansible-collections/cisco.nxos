@@ -115,7 +115,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                 "{% endif %}"
                 "{% if ipv4.address.secondary is defined %}"
                 " secondary"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -248,7 +249,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv4.dhcp.smart_relay is defined %}"
                 "ip dhcp smart-relay"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -275,7 +277,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv4.dhcp.option82.suboption.circuit_id is defined %}"
                 "ip dhcp option82 suboption circuit-id {{ ipv4.dhcp.option82.suboption.circuit_id|string }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -309,7 +312,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv4.dhcp.relay.information.trusted is defined %}"
                 "ip dhcp relay information trusted"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -343,7 +347,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv4.dhcp.relay.subnet_selection.subnet_ip is defined %}"
                 "ip dhcp relay subnet-selection {{ ipv4.dhcp.relay.subnet_selection.subnet_ip }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -380,7 +385,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                 "{% if ipv4.dhcp.relay.source_interface.interface_type is defined %}"
                 "ip dhcp relay source-interface {{ ipv4.dhcp.relay.source_interface.interface_type|string }}"
                 " {{ ipv4.dhcp.relay.source_interface.interface_id|string }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -419,7 +425,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv4.dhcp.relay_ip is defined %}"
                 "ip dhcp relay address {{ ipv4.dhcp.relay_ip|string }} use-vrf {{ ipv4.dhcp.vrf_name|string }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -607,7 +614,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv6.dhcp.smart_relay is defined %}"
                 "ipv6 dhcp smart-relay"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -639,7 +647,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": (
                 "{% if ipv6.dhcp.source_interface_type is defined %}"
                 "ipv6 dhcp relay source-interface {{ ipv6.dhcp.source_interface_type|string }} {{ ipv6.dhcp.source_interface_id|string }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -679,7 +688,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                 "{% endif %}"
                 "{% if ipv6.dhcp.vrf_name is defined %}"
                 " use-vrf {{ ipv6.dhcp.vrf_name|string }}"
-                "{% endif %}"),
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "ipv6": {
