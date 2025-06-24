@@ -44,7 +44,7 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "mac_address",
             "getval": re.compile(
-                r"""^mac-address
+                r"""\s+mac-address
                     (\s(?P<mac_address>\S+))
                     $""",
                 re.VERBOSE,
@@ -56,7 +56,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "bandwidth",
             "getval": re.compile(
                 r"""
-                ^\s*bandwidth
+                \s+bandwidth
                 (?:\s+(?P<inherit>inherit))?
                 \s+(?P<kilobits>\d+)
                 \s*$
@@ -79,7 +79,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.address",
             "getval": re.compile(
                 r"""
-                ^ip\s+address
+                \s+ip\s+address
                 (?:
                     \s+(?P<dhcp>dhcp)
                     |
@@ -94,13 +94,28 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip address"
-                      "{{ ' dhcp' if ipv4.address.dhcp|d(False) else ''}}"
-                      "{{ ' ' + ipv4.address.ip_address|string if ipv4.address.ip_address is defined else ''}}"
-                      "{{ ' ' + ipv4.address.ip_network_mask|string if ipv4.address.ip_network_mask is defined else ''}}"
-                      "{{ ' ' + 'route-preference ' + ipv4.address.route_preference|string if ipv4.address.route_preference is defined else ''}}"
-                      "{{ ' tag ' + ipv4.address.tag|string if ipv4.address.tag is defined else ''}}"
-                      "{{ ' secondary' if ipv4.address.secondary|d(False) else ''}}",
+            "setval": (
+                "{% if ipv4.address.dhcp is defined %}"
+                "ip address dhcp"
+                "{% endif %}"
+                "{% if ipv4.address.ip_address is defined %}"
+                "ip address {{ ipv4.address.ip_address|string }}"
+                "{% endif %}"
+                "{% if ipv4.address.ip_address is not defined and ipv4.address.ip_network_mask is defined %}"
+                "ip address {{ ipv4.address.ip_network_mask|string }}"
+                "{% endif %}"
+                "{% if ipv4.address.ip_address is defined and ipv4.address.ip_network_mask is defined %}"
+                " {{ ipv4.address.ip_network_mask|string }}"
+                "{% endif %}"
+                "{% if ipv4.address.route_preference is defined %}"
+                " route-preference {{ ipv4.address.route_preference|string }}"
+                "{% endif %}"
+                "{% if ipv4.address.tag is defined %}"
+                " tag {{ ipv4.address.tag|string }}"
+                "{% endif %}"
+                "{% if ipv4.address.secondary is defined %}"
+                " secondary"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -188,7 +203,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.verify",
             "getval": re.compile(
                 r"""
-                ^ip\s+verify\s+unicast\s+source\s+reachable-via
+                \s+ip\s+verify\s+unicast\s+source\s+reachable-via
                 \s+(?P<mode>\S+)
                 (?:\s+(?P<allow_default>allow-default))?
                 \s*$
@@ -221,7 +236,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+(?P<smart_relay>smart-relay)
                 )
@@ -230,8 +245,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' ' + 'smart-relay' if ipv4.dhcp.smart_relay|d(False) else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.smart_relay is defined %}"
+                "ip dhcp smart-relay"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -246,7 +263,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp.option82",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+option82\s+suboption\s+circuit-id\s+(?P<circuit_id>\S+)
                 )
@@ -255,9 +272,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' option82 suboption circuit-id ' + ipv4.dhcp.option82.suboption.circuit_id|string"
-                      " if ipv4.dhcp.option82.suboption.circuit_id else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.option82.suboption.circuit_id is defined %}"
+                "ip dhcp option82 suboption circuit-id {{ ipv4.dhcp.option82.suboption.circuit_id|string }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -276,7 +294,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp.information",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+relay
                     (?:
@@ -288,8 +306,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' relay information trusted' if ipv4.dhcp.relay.information.trusted|d(False) else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.relay.information.trusted is defined %}"
+                "ip dhcp relay information trusted"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -308,7 +328,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp.subnet_selection",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+relay
                     (?:
@@ -320,9 +340,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' relay subnet-selection ' +  ipv4.dhcp.relay.subnet_selection.subnet_ip"
-                      " if ipv4.dhcp.relay.subnet_selection.subnet_ip else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.relay.subnet_selection.subnet_ip is defined %}"
+                "ip dhcp relay subnet-selection {{ ipv4.dhcp.relay.subnet_selection.subnet_ip }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -341,7 +362,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp.source_interface",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+relay
                     (?:
@@ -355,10 +376,11 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' relay source-interface ' + ipv4.dhcp.relay.source_interface.interface_type|string"
-                      " if ipv4.dhcp.relay.source_interface.interface_type else ''}}"
-                      "{{ ' ' + ipv4.dhcp.relay.source_interface.interface_id|string if ipv4.dhcp.relay.source_interface.interface_id else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.relay.source_interface.interface_type is defined %}"
+                "ip dhcp relay source-interface {{ ipv4.dhcp.relay.source_interface.interface_type|string }}"
+                " {{ ipv4.dhcp.relay.source_interface.interface_id|string }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -378,7 +400,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.dhcp.address",
             "getval": re.compile(
                 r"""
-                ^ip\s+dhcp
+                \s+ip\s+dhcp
                 (?:
                     \s+relay
                     (?:
@@ -394,9 +416,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv4",
-            "setval": "ip dhcp"
-                      "{{ ' relay address ' + ipv4.dhcp.relay_ip|string if ipv4.dhcp.relay_ip else ''}}"
-                      "{{ ' use-vrf ' + ipv4.dhcp.vrf_name|string if ipv4.dhcp.vrf_name else ''}}",
+            "setval": (
+                "{% if ipv4.dhcp.relay_ip is defined %}"
+                "ip dhcp relay address {{ ipv4.dhcp.relay_ip|string }} use-vrf {{ ipv4.dhcp.vrf_name|string }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -416,7 +439,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.address",
             "getval": re.compile(
                 r"""
-                ^ipv6\s+address
+                \s+ipv6\s+address
                 (?:
                     \s+(?P<dhcp>dhcp)
                     |
@@ -449,19 +472,39 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv6",
-            "setval": "ipv6 address"
-                      "{{ ' dhcp' if ipv6.address.dhcp|d(False) else ''}}"
-                      "{{ ' use-link-local-only' if ipv6.address.use_link_local_only|d(False) else ''}}"
-                      "{{ ' autoconfig' if ipv6.address.autoconfig|d(False) else ''}}"
-                      "{{ ' default' if ipv6.address.default|d(False) else ''}}"
-                      "{{ ' ' + ipv6.address.ipv6_address|string if ipv6.address.ipv6_address is defined else ''}}"
-                      "{{ ' route-preference ' + ipv6.address.route_preference|string if ipv6.address.route_preference is defined else ''}}"
-                      "{{ ' aggregate-prefix-length ' + ipv6.address.aggregate_prefix_length|string "
-                      "if ipv6.address.aggregate_prefix_length is defined else ''}}"
-                      "{{ ' tag ' + ipv6.address.tag|string if ipv6.address.tag is defined else ''}}"
-                      "{{ ' use-bia' if ipv6.address.use_bia|d(False) else ''}}"
-                      "{{ ' eui64' if ipv6.address.eui64|d(False) else ''}}"
-                      "{{ ' anycast' if ipv6.address.anycast|d(False) else ''}}",
+            "setval": "{% if ipv6.address.ipv6_address is defined %}"
+                      "ipv6 address {{ ipv6.address.ipv6_address|string }}"
+                      "{% endif %}"
+                      "{% if ipv6.address.dhcp is defined %}"
+                      "ipv6 address dhcp"
+                      "{% endif %}"
+                      "{% if ipv6.address.use_link_local_only is defined %}"
+                      "ipv6 address use-link-local-only"
+                      "{% endif %}"
+                      "{% if ipv6.address.autoconfig is defined %}"
+                      "ipv6 address autoconfig"
+                      "{% endif %}"
+                      "{% if ipv6.address.default is defined %}"
+                      " default"
+                      "{% endif %}"
+                      "{% if ipv6.address.route_preference is defined %}"
+                      " route-preference {{ ipv6.address.route_preference|string }}"
+                      "{% endif %}"
+                      "{% if ipv6.address.aggregate_prefix_length is defined %}"
+                      " aggregate-prefix-length {{ ipv6.address.aggregate_prefix_length|string }}"
+                      "{% endif %}"
+                      "{% if ipv6.address.tag is defined %}"
+                      " tag {{ ipv6.address.tag|string }}"
+                      "{% endif %}"
+                      "{% if ipv6.address.use_bia is defined %}"
+                      " use-bia"
+                      "{% endif %}"
+                      "{% if ipv6.address.eui64 is defined %}"
+                      " eui64"
+                      "{% endif %}"
+                      "{% if ipv6.address.anycasts is defined %}"
+                      " anycast"
+                      "{% endif %}",
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -519,7 +562,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.verify",
             "getval": re.compile(
                 r"""
-                ^ipv6\s+verify\s+unicast\s+source\s+reachable-via
+                \s+ipv6\s+verify\s+unicast\s+source\s+reachable-via
                 \s+(?P<mode>\S+)
                 (?:\s+(?P<allow_default>allow-default))?
                 \s*$
@@ -552,7 +595,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.dhcp",
             "getval": re.compile(
                 r"""
-                ^ipv6\s+dhcp
+                \s+ipv6\s+dhcp
                 (?:
                     \s+(?P<smart_relay>smart-relay)
                 )
@@ -561,8 +604,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv6",
-            "setval": "ipv6 dhcp"
-                      "{{ ' smart-relay' if ipv6.dhcp.smart_relay|d(False) else ''}}",
+            "setval": (
+                "{% if ipv6.dhcp.smart_relay is defined %}"
+                "ipv6 dhcp smart-relay"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -577,7 +622,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.dhcp.source_interface",
             "getval": re.compile(
                 r"""
-                ^ipv6\s+dhcp
+                \s+ipv6\s+dhcp
                 (?:
                     \s+relay
                     (?:
@@ -591,10 +636,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv6",
-            "setval": "ipv6 dhcp"
-                      "{{ ' relay source-interface ' + ipv6.dhcp.source_interface_type|string"
-                      " if ipv6.dhcp.source_interface_type else ''}}"
-                      "{{ ' ' + ipv6.dhcp.source_interface_id|string if ipv6.dhcp.source_interface_id else ''}}",
+            "setval": (
+                "{% if ipv6.dhcp.source_interface_type is defined %}"
+                "ipv6 dhcp relay source-interface {{ ipv6.dhcp.source_interface_type|string }} {{ ipv6.dhcp.source_interface_id|string }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -614,28 +659,27 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.dhcp.address",
             "getval": re.compile(
                 r"""
-                ^ipv6\s+dhcp
-                (?:
-                    \s+relay
-                    (?:
-                        \s+address
-                        (?:
-                            \s+(?P<relay_ip>\S+)
-                            (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
-                            (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+))?
-                        )?
-                    )
-                )
+                ^\s*ipv6\s+dhcp
+                \s+relay
+                \s+address
+                \s+(?P<relay_ip>\S+)
+                (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+))?
+                (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
                 \s*$
                 """,
                 re.VERBOSE,
             ),
             "compval": "ipv6",
-            "setval": "ipv6 dhcp"
-                      "{{ ' relay address ' + ipv6.dhcp.relay_ip|string if ipv6.dhcp.relay_ip else ''}}"
-                      "{{ ' interface ' + ipv6.dhcp.interface_type|string + ' ' + ipv6.dhcp.interface_id|string"
-                      " if ipv6.dhcp.interface_type else ''}}"
-                      "{{ ' use-vrf ' + ipv6.dhcp.vrf_name|string if ipv6.dhcp.vrf_name else ''}}",
+            "setval": (
+                "{% if ipv6.dhcp.relay_ip is defined %}"
+                "ipv6 dhcp relay address {{ ipv6.dhcp.relay_ip|string }}"
+                "{% endif %}"
+                "{% if ipv6.dhcp.interface_type is defined %}"
+                " interface {{ ipv6.dhcp.interface_type|string }} {{ ipv6.dhcp.interface_id|string }}"
+                "{% endif %}"
+                "{% if ipv6.dhcp.vrf_name is defined %}"
+                " use-vrf {{ ipv6.dhcp.vrf_name|string }}"
+                "{% endif %}"),
             "result": {
                 "{{ name }}": {
                     "ipv6": {

@@ -235,14 +235,11 @@ class L3_interfaces(ResourceModule):
         for key, want_value in wanted.items():
             have_value = haved.pop(key, {})
             if have_value and have_value != want_value:
-                self.compare(
-                    parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}}
-                )
+                self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
             self.compare(
                 parsers=[parser],
                 want={ip_key: {parser_key: want_value}},
                 have={ip_key: {parser_key: have_value}},
             )
-
         for key, have_value in haved.items():
-            self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}})
+            self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
