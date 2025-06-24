@@ -105,7 +105,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             },
             {
                 "name": "Ethernet1/4",
-            }
+            },
         ]
 
         result = self.execute_module(changed=False)
@@ -144,35 +144,35 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 "name": "nve1",
             },
             {
-                'mode': 'dot1q-tunnel', 
-                'name': 'Ethernet1/799'
-            }, 
-            {
-                'access': {
-                    'vlan': 18
-                }, 
-                'name': 'Ethernet1/800', 
-                'trunk': {
-                    'allowed_vlans': '210'
-                }
-            }, 
-            {
-                'name': 'Ethernet1/801', 
-                'trunk': {
-                    'allowed_vlans': '2,4,15'
-                }
-            }, 
-            {
-                'mode': 'fex-fabric', 
-                'name': 'Ethernet1/802'
-            }, 
-            {
-                'mode': 'fabricpath', 
-                'name': 'Ethernet1/803'
+                "mode": "dot1q-tunnel",
+                "name": "Ethernet1/799",
             },
             {
-                'name': 'loopback1',
-            }
+                "access": {
+                    "vlan": 18,
+                },
+                "name": "Ethernet1/800",
+                "trunk": {
+                    "allowed_vlans": "210",
+                },
+            },
+            {
+                "name": "Ethernet1/801",
+                "trunk": {
+                    "allowed_vlans": "2,4,15",
+                },
+            },
+            {
+                "mode": "fex-fabric",
+                "name": "Ethernet1/802",
+            },
+            {
+                "mode": "fabricpath",
+                "name": "Ethernet1/803",
+            },
+            {
+                "name": "loopback1",
+            },
         ]
 
         result = self.execute_module(changed=False)
@@ -197,8 +197,8 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                             "allowed_vlans": "10-12",
                         },
                     },
-                ]
-            )
+                ],
+            ),
         )
 
         expected_commands = [
@@ -255,7 +255,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     },
                 ],
                 state="replaced",
-            )
+            ),
         )
 
         expected_commands = [
@@ -265,7 +265,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/7",
             "no switchport trunk native vlan 15",
             "interface Ethernet1/8",
-            "switchport trunk allowed vlan none"
+            "switchport trunk allowed vlan none",
         ]
 
         result = self.execute_module(changed=True)
@@ -298,7 +298,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     },
                 ],
                 state="overridden",
-            )
+            ),
         )
 
         expected_commands = [
@@ -306,7 +306,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
             "switchport access vlan 6",
-            "switchport trunk allowed vlan 10-12"
+            "switchport trunk allowed vlan 10-12",
         ]
 
         result = self.execute_module(changed=True)
@@ -328,7 +328,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         )
 
         set_module_args(
-            dict(state="deleted")
+            dict(state="deleted"),
         )
 
         expected_commands = [
@@ -336,7 +336,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "no switchport trunk native vlan 10",
             "interface Ethernet1/7",
             "no switchport mode trunk",
-            "no switchport trunk allowed vlan"
+            "no switchport trunk allowed vlan",
         ]
 
         result = self.execute_module(changed=True)

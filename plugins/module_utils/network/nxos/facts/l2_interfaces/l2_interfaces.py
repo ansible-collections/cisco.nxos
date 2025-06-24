@@ -77,7 +77,9 @@ class L2_interfacesFacts(object):
 
         params = utils.remove_empties(
             l2_interfaces_parser.validate_config(
-                self.argument_spec, {"config": final_objs}, redact=True
+                self.argument_spec,
+                {"config": final_objs},
+                redact=True,
             ),
         )
 

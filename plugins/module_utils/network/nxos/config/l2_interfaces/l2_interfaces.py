@@ -129,7 +129,8 @@ class L2_interfaces(ResourceModule):
 
                 # VLANs to be removed (present in have, not in want or not in add list)
                 vlans_to_remove = [
-                    vl_no for vl_no in have_list
+                    vl_no
+                    for vl_no in have_list
                     if vl_no not in vlans_to_add and vl_no not in want_set
                 ]
             else:
@@ -147,10 +148,10 @@ class L2_interfaces(ResourceModule):
                 elif not want_list and vlans_to_remove:
                     # remove vlan all as want blank
                     self.commands.append(f"no switchport trunk {vlan_name} vlan")
-                elif vlans_to_remove: 
+                elif vlans_to_remove:
                     # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
-                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}"
+                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
                     )
 
             if self.state != "deleted" and vlans_to_add:
@@ -159,7 +160,7 @@ class L2_interfaces(ResourceModule):
                         vlan_name,
                         have_list,
                         vlan_list_to_range(sorted(vlans_to_add)),
-                    )
+                    ),
                 )
 
     def process_list_attrs(self, param):
