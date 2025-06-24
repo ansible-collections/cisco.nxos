@@ -93,14 +93,14 @@ class L3_interfacesTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "compval": "ipv4_address",
+            "compval": "ipv4",
             "setval": "ip address"
-                      "{{ ' dhcp' if ipv4_address.dhcp|d(False) else ''}}"
-                      "{{ ' ' + ipv4_address.ip_address|string if ipv4_address.ip_address is defined else ''}}"
-                      "{{ ' ' + ipv4_address.ip_network_mask|string if ipv4_address.ip_network_mask is defined else ''}}"
-                      "{{ ' ' + 'route-preference ' + ipv4_address.route_preference|string if ipv4_address.route_preference is defined else ''}}"
-                      "{{ ' tag ' + ipv4_address.tag|string if ipv4_address.tag is defined else ''}}"
-                      "{{ ' secondary' if ipv4_address.secondary|d(False) else ''}}",
+                      "{{ ' dhcp' if ipv4.address.dhcp|d(False) else ''}}"
+                      "{{ ' ' + ipv4.address.ip_address|string if ipv4.address.ip_address is defined else ''}}"
+                      "{{ ' ' + ipv4.address.ip_network_mask|string if ipv4.address.ip_network_mask is defined else ''}}"
+                      "{{ ' ' + 'route-preference ' + ipv4.address.route_preference|string if ipv4.address.route_preference is defined else ''}}"
+                      "{{ ' tag ' + ipv4.address.tag|string if ipv4.address.tag is defined else ''}}"
+                      "{{ ' secondary' if ipv4.address.secondary|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -171,10 +171,10 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.port_unreachable",
             "getval": re.compile(
                 r"""
-                \s+ip\sport_unreachable
+                \s+ip\sport-unreachable
                 $""", re.VERBOSE,
             ),
-            "setval": "ip port_unreachable",
+            "setval": "ip port-unreachable",
             "result": {
                 "{{ name }}": {
                     "ipv4":
@@ -196,8 +196,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "ip verify unicast source reachable-via"
-                      "{{ ' ' + ipv4.verify.mode|string if ipv4.verify.mode else ''}}"
-                      "{{ ' allow-default' if ipv4.verify.allow_default|d(False) else ''}}",
+                      "{{ ' ' + ipv4.verify.unicast.source.reachable_via.mode|string "
+                      "if ipv4.verify.unicast.source.reachable_via.mode else ''}}"
+                      "{{ ' allow-default'"
+                      " if ipv4.verify.unicast.source.reachable_via.allow_default|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -222,40 +224,40 @@ class L3_interfacesTemplate(NetworkTemplate):
                 ^ip\s+dhcp
                 (?:
                     \s+(?P<smart_relay>smart-relay)
-                    |
-                    \s+option82\s+suboption\s+circuit-id\s+(?P<circuit_id>\S+)
-                    |
-                    \s+relay
-                    (?:
-                        \s+address
-                        (?:
-                            \s+(?P<relay_ip>\S+)
-                            (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
-                        )?
-                        |
-                        \s+information\s+(?P<trusted>trusted)
-                        |
-                        \s+subnet-selection\s+(?P<subnet_ip>\S+)
-                        |
-                        \s+source-interface
-                            \s+(?P<interface_type>ethernet|vlan|port-channel|loopback)
-                            \s+(?P<interface_id>\S+)
-                    )
                 )
                 \s*$
                 """,
                 re.VERBOSE,
             ),
-            "compval": "ipv4_dhcp",
+            "compval": "ipv4",
             "setval": "ip dhcp"
-                      "{{ ' ' + 'smart-relay' if ipv4_dhcp.smart_relay|d(False) else ''}}"
-                      "{{ ' option82 suboption circuit-id ' + ipv4_dhcp.circuit_id|string if ipv4_dhcp.circuit_id else ''}}"
-                      "{{ ' relay address ' + ipv4_dhcp.relay_ip|string if ipv4_dhcp.relay_ip else ''}}"
-                      "{{ ' use-vrf ' + ipv4_dhcp.vrf_name|string if ipv4_dhcp.vrf_name else ''}}"
-                      "{{ ' relay information trusted' if ipv4_dhcp.trusted|d(False) else ''}}"
-                      "{{ ' relay subnet-selection ' +  ipv4_dhcp.subnet_ip if ipv4_dhcp.subnet_ip else ''}}"
-                      "{{ ' relay source-interface ' + ipv4_dhcp.interface_type|string if ipv4_dhcp.interface_type else ''}}"
-                      "{{ ' ' + ipv4_dhcp.interface_id|string if ipv4_dhcp.interface_id else ''}}",
+                      "{{ ' ' + 'smart-relay' if ipv4.dhcp.smart_relay|d(False) else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": {
+                        "dhcp": {
+                            "smart_relay": "{{ not not smart_relay }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv4.dhcp.option82",
+            "getval": re.compile(
+                r"""
+                ^ip\s+dhcp
+                (?:
+                    \s+option82\s+suboption\s+circuit-id\s+(?P<circuit_id>\S+)
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv4",
+            "setval": "ip dhcp"
+                      "{{ ' option82 suboption circuit-id ' + ipv4.dhcp.option82.suboption.circuit_id|string"
+                      " if ipv4.dhcp.option82.suboption.circuit_id else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv4": {
@@ -265,22 +267,145 @@ class L3_interfacesTemplate(NetworkTemplate):
                                     "circuit_id": "{{ circuit_id }}",
                                 },
                             },
-                            "smart_relay": "{{ not not smart_relay }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv4.dhcp.information",
+            "getval": re.compile(
+                r"""
+                ^ip\s+dhcp
+                (?:
+                    \s+relay
+                    (?:
+                        \s+information\s+(?P<trusted>trusted)
+                    )
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv4",
+            "setval": "ip dhcp"
+                      "{{ ' relay information trusted' if ipv4.dhcp.relay.information.trusted|d(False) else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": {
+                        "dhcp": {
+                            "relay": {
+                                "information": {
+                                    "trusted": "{{ not not trusted }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv4.dhcp.subnet_selection",
+            "getval": re.compile(
+                r"""
+                ^ip\s+dhcp
+                (?:
+                    \s+relay
+                    (?:
+                        \s+subnet-selection\s+(?P<subnet_ip>\S+)
+                    )
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv4",
+            "setval": "ip dhcp"
+                      "{{ ' relay subnet-selection ' +  ipv4.dhcp.relay.subnet_selection.subnet_ip"
+                      " if ipv4.dhcp.relay.subnet_selection.subnet_ip else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": {
+                        "dhcp": {
+                            "relay": {
+                                "subnet_selection": {
+                                    "subnet_ip": "{{ subnet_ip }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv4.dhcp.source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\s+dhcp
+                (?:
+                    \s+relay
+                    (?:            
+                        \s+source-interface
+                            \s+(?P<interface_type>ethernet|vlan|port-channel|loopback)
+                            \s+(?P<interface_id>\S+)
+                    )
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv4",
+            "setval": "ip dhcp"
+                      "{{ ' relay source-interface ' + ipv4.dhcp.relay.source_interface.interface_type|string"
+                      " if ipv4.dhcp.relay.source_interface.interface_type else ''}}"
+                      "{{ ' ' + ipv4.dhcp.relay.source_interface.interface_id|string if ipv4.dhcp.relay.source_interface.interface_id else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": {
+                        "dhcp": {
+                            "relay": {
+                                "source_interface": {
+                                    "interface_type": "{{ interface_type }}",
+                                    "interface_id": "{{ interface_id }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv4.dhcp.address",
+            "getval": re.compile(
+                r"""
+                ^ip\s+dhcp
+                (?:
+                    \s+relay
+                    (?:
+                        \s+address
+                        (?:
+                            \s+(?P<relay_ip>\S+)
+                            (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
+                        )?
+                    )
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv4",
+            "setval": "ip dhcp"
+                      "{{ ' relay address ' + ipv4.dhcp.relay_ip|string if ipv4.dhcp.relay_ip else ''}}"
+                      "{{ ' use-vrf ' + ipv4.dhcp.vrf_name|string if ipv4.dhcp.vrf_name else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": {
+                        "dhcp": {
                             "relay": {
                                 "address": [{
                                     "relay_ip": "{{ relay_ip }}",
                                     "vrf_name": "{{ vrf_name }}",
                                 }],
-                                "information": {
-                                    "trusted": "{{ not not trusted }}",
-                                },
-                                "subnet_selection": {
-                                    "subnet_ip": "{{ subnet_ip }}",
-                                },
-                                "source_interface": {
-                                    "interface_type": "{{ interface_type }}",
-                                    "interface_id": "{{ interface_id }}",
-                                },
                             },
                         },
                     },
@@ -299,7 +424,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     |
                     \s+(?P<use_link_local>use-link-local-only)
                     |
-                    \s+(?P<ipv6_prefix>\S+)
+                    \s+(?P<ipv6_address>\S+)
                         (?:
                             \s+aggregate-prefix-length\s+(?P<aggregate_prefix_length>\S+)
                         )?
@@ -323,20 +448,20 @@ class L3_interfacesTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "compval": "ipv6_address",
+            "compval": "ipv6",
             "setval": "ipv6 address"
-                      "{{ ' dhcp' if ipv6_address.dhcp|d(False) else ''}}"
-                      "{{ ' use-link-local-only' if ipv6_address.use_link_local_only|d(False) else ''}}"
-                      "{{ ' autoconfig' if ipv6_address.autoconfig|d(False) else ''}}"
-                      "{{ ' default' if ipv6_address.default|d(False) else ''}}"
-                      "{{ ' ' + ipv6_address.ipv6_address|string if ipv6_address.ipv6_address is defined else ''}}"
-                      "{{ ' route-preference ' + ipv6_address.route_preference|string if ipv6_address.route_preference is defined else ''}}"
-                      "{{ ' aggregate-prefix-length ' + ipv6_address.aggregate_prefix_length|string "
-                      "if ipv6_address.aggregate_prefix_length is defined else ''}}"
-                      "{{ ' tag ' + ipv6_address.tag|string if ipv6_address.tag is defined else ''}}"
-                      "{{ ' use-bia' if ipv6_address.use_bia|d(False) else ''}}"
-                      "{{ ' eui64' if ipv6_address.eui64|d(False) else ''}}"
-                      "{{ ' anycast' if ipv6_address.anycast|d(False) else ''}}",
+                      "{{ ' dhcp' if ipv6.address.dhcp|d(False) else ''}}"
+                      "{{ ' use-link-local-only' if ipv6.address.use_link_local_only|d(False) else ''}}"
+                      "{{ ' autoconfig' if ipv6.address.autoconfig|d(False) else ''}}"
+                      "{{ ' default' if ipv6.address.default|d(False) else ''}}"
+                      "{{ ' ' + ipv6.address.ipv6_address|string if ipv6.address.ipv6_address is defined else ''}}"
+                      "{{ ' route-preference ' + ipv6.address.route_preference|string if ipv6.address.route_preference is defined else ''}}"
+                      "{{ ' aggregate-prefix-length ' + ipv6.address.aggregate_prefix_length|string "
+                      "if ipv6.address.aggregate_prefix_length is defined else ''}}"
+                      "{{ ' tag ' + ipv6.address.tag|string if ipv6.address.tag is defined else ''}}"
+                      "{{ ' use-bia' if ipv6.address.use_bia|d(False) else ''}}"
+                      "{{ ' eui64' if ipv6.address.eui64|d(False) else ''}}"
+                      "{{ ' anycast' if ipv6.address.anycast|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -402,8 +527,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "ipv6 verify unicast source reachable-via "
-                      "{{ ipv6.verify.mode|string + ' ' if ipv6.verify.mode else ''}}"
-                      "{{ 'allow-default' if ipv6.verify.allow_default|d(False) else ''}}",
+                      "{{ ipv6.verify.unicast.source.reachable_via.mode|string + ' '"
+                      " if ipv6.verify.unicast.source.reachable_via.mode else ''}}"
+                      "{{ 'allow-default'"
+                      " if ipv6.verify.unicast.source.reachable_via.allow_default|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv6": {
@@ -428,16 +555,32 @@ class L3_interfacesTemplate(NetworkTemplate):
                 ^ipv6\s+dhcp
                 (?:
                     \s+(?P<smart_relay>smart-relay)
-                    |
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv6",
+            "setval": "ipv6 dhcp"
+                      "{{ ' smart-relay' if ipv6.dhcp.smart_relay|d(False) else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv6": {
+                        "dhcp": {
+                            "smart_relay": "{{ not not smart_relay }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.dhcp.source_interface",
+            "getval": re.compile(
+                r"""
+                ^ipv6\s+dhcp
+                (?:
                     \s+relay
                     (?:
-                        \s+address
-                        (?:
-                            \s+(?P<relay_ip>\S+)
-                            (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
-                            (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+))?
-                        )?
-                        |
                         \s+source-interface
                             \s+(?P<source_interface_type>ethernet|vlan|port-channel|loopback)
                             \s+(?P<source_interface_id>\S+)
@@ -447,19 +590,56 @@ class L3_interfacesTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "compval": "ipv6_dhcp",
+            "compval": "ipv6",
             "setval": "ipv6 dhcp"
-                      "{{ ' smart-relay' if ipv6_dhcp.smart_relay|d(False) else ''}}"
-                      "{{ ' relay address ' + ipv6_dhcp.relay_ip|string if ipv6_dhcp.relay_ip else ''}}"
-                      "{{ ' interface ' + ipv6_dhcp.interface_type|string + ' ' + ipv6_dhcp.interface_id|string if ipv6_dhcp.interface_type else ''}}"
-                      "{{ ' use-vrf ' + ipv6_dhcp.vrf_name|string if ipv6_dhcp.vrf_name else ''}}"
-                      "{{ ' relay source-interface ' + ipv6_dhcp.source_interface_type|string if ipv6_dhcp.source_interface_type else ''}}"
-                      "{{ ' ' + ipv6_dhcp.source_interface_id|string if ipv6_dhcp.source_interface_id else ''}}",
+                      "{{ ' relay source-interface ' + ipv6.dhcp.source_interface_type|string"
+                      " if ipv6.dhcp.source_interface_type else ''}}"
+                      "{{ ' ' + ipv6.dhcp.source_interface_id|string if ipv6.dhcp.source_interface_id else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv6": {
                         "dhcp": {
-                            "smart_relay": "{{ not not smart_relay }}",
+                            "relay": {
+                                "source_interface": {
+                                    "interface_type": "{{ source_interface_type }}",
+                                    "interface_id": "{{ source_interface_id }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.dhcp.address",
+            "getval": re.compile(
+                r"""
+                ^ipv6\s+dhcp
+                (?:
+                    \s+relay
+                    (?:
+                        \s+address
+                        (?:
+                            \s+(?P<relay_ip>\S+)
+                            (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
+                            (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+))?
+                        )?
+                    )
+                )
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "compval": "ipv6",
+            "setval": "ipv6 dhcp"
+                      "{{ ' relay address ' + ipv6.dhcp.relay_ip|string if ipv6.dhcp.relay_ip else ''}}"
+                      "{{ ' interface ' + ipv6.dhcp.interface_type|string + ' ' + ipv6.dhcp.interface_id|string"
+                      " if ipv6.dhcp.interface_type else ''}}"
+                      "{{ ' use-vrf ' + ipv6.dhcp.vrf_name|string if ipv6.dhcp.vrf_name else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv6": {
+                        "dhcp": {
                             "relay": {
                                 "address": [{
                                     "relay_ip": "{{ relay_ip }}",
@@ -467,10 +647,6 @@ class L3_interfacesTemplate(NetworkTemplate):
                                     "interface_type": "{{ interface_type }}",
                                     "interface_id": "{{ interface_id }}",
                                 }],
-                                "source_interface": {
-                                    "interface_type": "{{ source_interface_type }}",
-                                    "interface_id": "{{ source_interface_id }}",
-                                },
                             },
                         },
                     },

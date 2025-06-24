@@ -66,7 +66,7 @@ options:
                 description: IP address in format i.i.i.i or IP prefix and network mask length in format x.x.x.x/m
                 type: str
               ip_network_mask:
-                description: IP network mask in format m.m.m.m
+                description: IP prefix and network mask length in format x.x.x.x/m or IP network mask in format m.m.m.m
                 type: str
               route_preference:
                 description: URIB route preference for local/direct routes

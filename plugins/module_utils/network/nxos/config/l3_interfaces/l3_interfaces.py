@@ -55,9 +55,16 @@ class L3_interfaces(ResourceModule):
             "ipv4.proxy_arp",
             "ipv4.port_unreachable",
             "ipv4.verify",
+            "ipv4.dhcp",
+            "ipv4.dhcp.option82",
+            "ipv4.dhcp.information",
+            "ipv4.dhcp.subnet_selection",
+            "ipv4.dhcp.source_interface",
             "ipv6.redirects",
             "ipv6.unreachables",
             "ipv6.verify",
+            "ipv6.dhcp",
+            "ipv6.dhcp.source_interface",
         ]
 
     def execute_module(self):
@@ -163,7 +170,8 @@ class L3_interfaces(ResourceModule):
                     ["relay_ip"],
                 )
             if ipv6_value_address:
-                ipv6_value["address"] = list_to_dict(ipv6_value_address, ["dhcp", "ipv6_address"])
+                ipv6_value["address"] = list_to_dict(ipv6_value_address, ["dhcp", "ipv6_address", "autoconfig",
+                                                                           "use_link_local_only"])
             if ipv6_value_dhcp_relay_address:
                 ipv6_value["dhcp"]["relay"]["address"] = list_to_dict(
                     ipv6_value_dhcp_relay_address,
@@ -198,7 +206,7 @@ class L3_interfaces(ResourceModule):
         self.compare_lists(
             want_ipv4_value_relay_address,
             have_ipv4_value_relay_address,
-            "ipv4.dhcp",
+            "ipv4.dhcp.address",
         )
 
         want_ipv6_value_relay_address = (
@@ -210,21 +218,22 @@ class L3_interfaces(ResourceModule):
         self.compare_lists(
             want_ipv6_value_relay_address,
             have_ipv6_value_relay_address,
-            "ipv6.dhcp",
+            "ipv6.dhcp.address",
         )
 
     def compare_lists(self, wanted, haved, parser):
         """Compare list items in ipv4 and ipv6"""
-        parser_underscore = parser.replace(".", "_")
+        ip_key = parser.split(".")[0]
+        parser_key = parser.split(".")[1]
         for key, want_value in wanted.items():
             have_value = haved.pop(key, {})
             if have_value and have_value != want_value:
-                self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
+                self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}})
             self.compare(
                 parsers=[parser],
-                want={parser_underscore: want_value},
-                have={parser_underscore: have_value},
+                want={ip_key: {parser_key: want_value}},
+                have={ip_key: {parser_key: have_value}},
             )
 
         for key, have_value in haved.items():
-            self.compare(parsers=[parser], want={}, have={parser_underscore: have_value})
+            self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}})
