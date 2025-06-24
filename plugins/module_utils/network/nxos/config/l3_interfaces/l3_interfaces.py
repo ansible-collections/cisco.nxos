@@ -170,8 +170,15 @@ class L3_interfaces(ResourceModule):
                     ["relay_ip"],
                 )
             if ipv6_value_address:
-                ipv6_value["address"] = list_to_dict(ipv6_value_address, ["dhcp", "ipv6_address", "autoconfig",
-                                                                           "use_link_local_only"])
+                ipv6_value["address"] = list_to_dict(
+                    ipv6_value_address,
+                    [
+                        "dhcp",
+                        "ipv6_address",
+                        "autoconfig",
+                        "use_link_local_only",
+                    ],
+                )
             if ipv6_value_dhcp_relay_address:
                 ipv6_value["dhcp"]["relay"]["address"] = list_to_dict(
                     ipv6_value_dhcp_relay_address,
@@ -228,7 +235,9 @@ class L3_interfaces(ResourceModule):
         for key, want_value in wanted.items():
             have_value = haved.pop(key, {})
             if have_value and have_value != want_value:
-                self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}})
+                self.compare(
+                    parsers=[parser], want={}, have={ip_key: {parser_key: {key: have_value}}}
+                )
             self.compare(
                 parsers=[parser],
                 want={ip_key: {parser_key: want_value}},

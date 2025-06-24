@@ -193,7 +193,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>IP network mask in format m.m.m.m</div>
+                        <div>IP prefix and network mask length in format x.x.x.x/m or IP network mask in format m.m.m.m</div>
                 </td>
             </tr>
             <tr>

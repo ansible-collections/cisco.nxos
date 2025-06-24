@@ -344,7 +344,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 ^ip\s+dhcp
                 (?:
                     \s+relay
-                    (?:            
+                    (?:
                         \s+source-interface
                             \s+(?P<interface_type>ethernet|vlan|port-channel|loopback)
                             \s+(?P<interface_id>\S+)

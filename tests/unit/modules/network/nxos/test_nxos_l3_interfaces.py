@@ -77,15 +77,15 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                         reachable_via=dict(
                                             mode="any",
                                             allow_default=True,
-                                        )
-                                    )
-                                )
+                                        ),
+                                    ),
+                                ),
                             ),
                             dhcp=dict(
                                 option82=dict(
                                     suboption=dict(
-                                        circuit_id="abc"
-                                    )
+                                        circuit_id="abc",
+                                    ),
                                 ),
                                 smart_relay=True,
                                 relay=dict(
@@ -99,7 +99,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                         dict(
                                             relay_ip="11.0.0.1",
                                             vrf_name="xyz",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -134,43 +134,43 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             vrf_name="xyz",
                                             interface_type="vlan",
                                             interface_id="51",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
                         ),
-                    )
+                    ),
                 ],
                 state="merged",
-            )
+            ),
         )
 
         commands = [
-        "interface Ethernet1/1",
-        "mac-address 00:11:22:33:44:55",
-        "ip redirects",
-        "ip unreachables",
-        "ip proxy-arp",
-        "ip port-unreachable",
-        "ip verify unicast source reachable-via any allow-default",
-        "ip dhcp smart-relay",
-        "ip dhcp option82 suboption circuit-id abc",
-        "ip dhcp relay information trusted",
-        "ip dhcp relay subnet-selection 10.0.0.7",
-        "ip dhcp relay source-interface port-channel 455",
-        "ipv6 redirects",
-        "ipv6 unreachables",
-        "ipv6 dhcp smart-relay",
-        "ip address dhcp",
-        "ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
-        "ip address 10.0.0.3/9 secondary",
-        "ipv6 address dhcp",
-        "ipv6 address use-link-local-only",
-        "ipv6 address autoconfig",
-        "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-        "ipv6 address 2001:db8::/64 eui64",
-        "ip dhcp relay address 11.0.0.1 use-vrf xyz",
-        "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf xyz"
+            "interface Ethernet1/1",
+            "mac-address 00:11:22:33:44:55",
+            "ip redirects",
+            "ip unreachables",
+            "ip proxy-arp",
+            "ip port-unreachable",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp smart-relay",
+            "ip dhcp option82 suboption circuit-id abc",
+            "ip dhcp relay information trusted",
+            "ip dhcp relay subnet-selection 10.0.0.7",
+            "ip dhcp relay source-interface port-channel 455",
+            "ipv6 redirects",
+            "ipv6 unreachables",
+            "ipv6 dhcp smart-relay",
+            "ip address dhcp",
+            "ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "ip address 10.0.0.3/9 secondary",
+            "ipv6 address dhcp",
+            "ipv6 address use-link-local-only",
+            "ipv6 address autoconfig",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 address 2001:db8::/64 eui64",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf xyz",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -226,15 +226,15 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                         reachable_via=dict(
                                             mode="any",
                                             allow_default=True,
-                                        )
-                                    )
-                                )
+                                        ),
+                                    ),
+                                ),
                             ),
                             dhcp=dict(
                                 option82=dict(
                                     suboption=dict(
-                                        circuit_id="abc"
-                                    )
+                                        circuit_id="abc",
+                                    ),
                                 ),
                                 smart_relay=True,
                                 relay=dict(
@@ -248,7 +248,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                         dict(
                                             relay_ip="11.0.0.1",
                                             vrf_name="xyz",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -281,15 +281,15 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             vrf_name="xyz",
                                             interface_type="vlan",
                                             interface_id="51",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
                         ),
-                    )
+                    ),
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
