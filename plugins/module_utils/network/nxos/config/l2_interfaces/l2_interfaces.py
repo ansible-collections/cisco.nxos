@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -114,35 +112,54 @@ class L2_interfaces(ResourceModule):
 
     def _compare_lists(self, want, have):
         """Compare list attributes"""
+        trunk_want = want.get("trunk", {})
+        trunk_have = have.get("trunk", {})
+
         for vlan in ["allowed_vlans"]:
-            cmd_always = list(
-                set(want.get("trunk", {}).get(vlan, [])) - set(have.get("trunk", {}).get(vlan, [])),
-            )  # find vlans to create wrt have
+            want_list = trunk_want.get(vlan, [])
+            have_list = trunk_have.get(vlan, [])
+
+            if want_list != "none" and have_list != "none":
+                # Convert VLAN lists to sets for easier comparison
+                want_set = set(want_list)
+                have_set = set(have_list)
+
+                # VLANs to be added (present in want, not in have)
+                vlans_to_add = want_set - have_set
+
+                # VLANs to be removed (present in have, not in want or not in add list)
+                vlans_to_remove = [
+                    vl_no for vl_no in have_list
+                    if vl_no not in vlans_to_add and vl_no not in want_set
+                ]
+            else:
+                want_set = "none" if want_list == "none" else want_list
+                have_set = "none" if have_list == "none" else have_list
+
+                vlans_to_add = [] if want_set == "none" else want_set
+
+            vlan_name = vlan.split("_", maxsplit=1)[0]
+
             if self.state != "merged":
-                rem_vlan = []
-                for vl_no in have.get("trunk", {}).get(vlan, []):
-                    if vl_no not in cmd_always and vl_no not in want.get("trunk", {}).get(vlan, []):
-                        rem_vlan.append(vl_no)
-                if (
-                    not want.get("trunk", {}).get(vlan, []) and rem_vlan
-                ):  # remove vlan all as want blank
+                if want_set == "none":
+                    # if want is none, remove all vlans
+                    self.commands.append(f"switchport trunk {vlan_name} vlan none")
+                elif not want_list and vlans_to_remove:
+                    # remove vlan all as want blank
+                    self.commands.append(f"no switchport trunk {vlan_name} vlan")
+                elif vlans_to_remove: 
+                    # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
-                        "no switchport trunk {0} vlan".format(vlan.split("_", maxsplit=1)[0]),
+                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}"
                     )
-                elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
-                    self.commands.append(
-                        "switchport trunk {0} vlan remove {1}".format(
-                            vlan.split("_", maxsplit=1)[0],
-                            vlan_list_to_range(sorted(rem_vlan)),
-                        ),
-                    )
-            if self.state != "deleted" and cmd_always:  # add configuration needed
+
+            if self.state != "deleted" and vlans_to_add:
                 self.commands.extend(
                     generate_switchport_trunk(
-                        vlan.split("_", maxsplit=1)[0],
-                        have.get("trunk", {}).get(vlan, []),
-                        vlan_list_to_range(sorted(cmd_always)),
-                    ),
+                        vlan_name,
+                        have_list,
+                        vlan_list_to_range(sorted(vlans_to_add)),
+                    )
                 )
 
     def process_list_attrs(self, param):
@@ -151,5 +168,6 @@ class L2_interfaces(ResourceModule):
                 val["name"] = normalize_interface(val["name"])
                 if val.get("trunk"):
                     for vlan in ["allowed_vlans"]:
-                        if val.get("trunk").get(vlan):
+                        vlanList = val.get("trunk").get(vlan, [])
+                        if vlanList and vlanList != "none":
                             val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))

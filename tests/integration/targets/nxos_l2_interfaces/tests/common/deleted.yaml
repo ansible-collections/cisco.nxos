@@ -54,7 +54,7 @@
           - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before)|length == 0
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
-          - "'no switchport trunk native vlan' in result.commands"
+          - "'no switchport trunk native vlan 10' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
           - "'no switchport mode' in result.commands"
           - "'no switchport trunk allowed vlan' in result.commands"

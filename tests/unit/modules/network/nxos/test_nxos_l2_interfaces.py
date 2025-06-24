@@ -103,7 +103,241 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     "native_vlan": 20,
                 },
             },
+            {
+                "name": "Ethernet1/4",
+            }
         ]
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected)
+
+    def test_l2_interfaces_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """
+                    interface nve1
+                     no shutdown
+                     host-reachability protocol bgp
+                     advertise virtual-rmac
+                     source-interface loopback1
+                    interface Ethernet1/799
+                     switchport mode dot1q-tunnel
+                    interface Ethernet1/800
+                     switchport access vlan 18
+                     switchport trunk allowed vlan 210
+                    interface Ethernet1/801
+                     switchport trunk allowed vlan 2,4,15
+                    interface Ethernet1/802
+                     switchport mode fex-fabric
+                    interface Ethernet1/803
+                     switchport mode fabricpath
+                    interface loopback1
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+
+        expected = [
+            {
+                "name": "nve1",
+            },
+            {
+                'mode': 'dot1q-tunnel', 
+                'name': 'Ethernet1/799'
+            }, 
+            {
+                'access': {
+                    'vlan': 18
+                }, 
+                'name': 'Ethernet1/800', 
+                'trunk': {
+                    'allowed_vlans': '210'
+                }
+            }, 
+            {
+                'name': 'Ethernet1/801', 
+                'trunk': {
+                    'allowed_vlans': '2,4,15'
+                }
+            }, 
+            {
+                'mode': 'fex-fabric', 
+                'name': 'Ethernet1/802'
+            }, 
+            {
+                'mode': 'fabricpath', 
+                'name': 'Ethernet1/803'
+            },
+            {
+                'name': 'loopback1',
+            }
+        ]
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], expected)
+
+    def test_l2_interfaces_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            interface Ethernet1/6
+             switchport
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                ]
+            )
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "switchport mode trunk",
+            "switchport trunk allowed vlan 10-12",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            default interface Ethernet1/7
+            default interface Ethernet1/8
+            interface Ethernet1/6
+             switchport
+             switchport access vlan 5
+            interface Ethernet1/7
+             switchport
+             switchport trunk native vlan 15
+             switchport trunk allowed vlan 25-27
+            interface Ethernet1/8
+             switchport
+             switchport trunk allowed vlan 100-200
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "access": {
+                            "vlan": "8",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/7",
+                        "trunk": {
+                            "allowed_vlans": "25-27",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/8",
+                        "trunk": {
+                            "allowed_vlans": "none",
+                        },
+                    },
+                ],
+                state="replaced",
+            )
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "switchport access vlan 8",
+            "switchport trunk allowed vlan 10-12",
+            "interface Ethernet1/7",
+            "no switchport trunk native vlan 15",
+            "interface Ethernet1/8",
+            "switchport trunk allowed vlan none"
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            default interface Ethernet1/7
+            interface Ethernet1/6
+             switchport
+             switchport trunk allowed vlan 11
+            interface Ethernet1/7
+             switchport
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/7",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                ],
+                state="overridden",
+            )
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "no switchport trunk allowed vlan",
+            "interface Ethernet1/7",
+            "switchport access vlan 6",
+            "switchport trunk allowed vlan 10-12"
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            default interface Ethernet1/7
+            interface Ethernet1/6
+             switchport
+             switchport trunk native vlan 10
+            interface Ethernet1/7
+             switchport
+             switchport mode trunk
+             switchport trunk allowed vlan 20
+            """,
+        )
+
+        set_module_args(
+            dict(state="deleted")
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "no switchport trunk native vlan 10",
+            "interface Ethernet1/7",
+            "no switchport mode trunk",
+            "no switchport trunk allowed vlan"
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)

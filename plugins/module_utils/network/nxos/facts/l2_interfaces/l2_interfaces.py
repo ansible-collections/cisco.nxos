@@ -50,12 +50,7 @@ class L2_interfacesFacts(object):
             if allowed_vlans and isinstance(allowed_vlans, tuple):
                 trunk["allowed_vlans"] = ",".join(map(str, allowed_vlans))
 
-        # Remove interfaces with only "name" key
-        return [
-            interface
-            for interface in parsed_config
-            if len(interface) > 1 or list(interface.keys()) != ["name"]
-        ]
+        return parsed_config
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource

@@ -70,7 +70,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+(?P<vlan>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport access {{ access.vlan }}",
+            "setval": "switchport access vlan {{ access.vlan }}",
             "result": {
                 '{{ name }}': {
                     'access': {
@@ -87,7 +87,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+(?P<vlan>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport access {{ trunk.native_vlan }}",
+            "setval": "switchport trunk native vlan {{ trunk.native_vlan }}",
             "result": {
                 '{{ name }}': {
                     'trunk': {
