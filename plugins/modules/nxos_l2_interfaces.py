@@ -117,40 +117,367 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
 
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+# interface Ethernet1/2
+#   switchport trunk native vlan 20
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 10
+          allowed_vlans: 2,4,15
+      - name: Ethernet1/2
+        access:
+          vlan: 30
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Loopback999
+# - name: Ethernet1/2
+# - name: mgmt0
+# - name: Ethernet1/1
+# commands:
+# - interface Ethernet1/1
+# - switchport trunk allowed vlan 2,4,15
+# - switchport trunk native vlan 10
+# - interface Ethernet1/2
+# - switchport access vlan 30
+# after:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: 2,4,15
+#     native_vlan: 10
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+# - name: Loopback999
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport trunk native vlan 10
+#   switchport trunk allowed vlans 2,4,15
+# interface Ethernet1/2
+#   switchport access vlan 30
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport trunk native vlan 10
+#   switchport trunk allowed vlans 2,4,15
+# interface Ethernet1/2
+#   switchport access vlan 30
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+- name: Replace device configuration of specified L2 interfaces with provided configuration.
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 20
+          allowed_vlans: 5-10, 15
+    state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: 2,4,15
+#     native_vlan: 10
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+# commands:
+# - interface Ethernet1/1
+# - no switchport trunk native vlan
+# - switchport trunk allowed vlan 5-10,15
+# - switchport trunk native vlan 20
+# after:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: 5-10,15
+#     native_vlan: 20
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport trunk native vlan 20
+#   switchport trunk allowed vlan 5-10,15
+# interface Ethernet1/2
+#   switchport trunk native vlan 20
+#   switchport mode trunk
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport trunk native vlan 20
+#   switchport trunk allowed vlan 5-10,15
+# interface Ethernet1/2
+#   switchport trunk native vlan 20
+#   switchport mode trunk
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+- name: Override device configuration with provided configuration.
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/2
+        access:
+          vlan: 30
+    state: overridden
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: 5,6,7,8,9,10,15
+#     native_vlan: 20
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+# commands:
+# - interface Ethernet1/1
+# - no switchport trunk allowed vlan
+# - no switchport trunk native vlan
+# after:
+# - name: Ethernet1/1
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+# interface Ethernet1/2
+#   switchport access vlan 30
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport trunk native vlan 10
+#   switchport trunk allowed vlan 2,4,15
+# interface Ethernet1/2
+#   switchport access vlan 30
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+- name: Delete L2 attributes of given interfaces (Note This won't delete the interface
+    itself).
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+      - name: Ethernet1/2
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: 2,4,15
+#     native_vlan: 10
+# - access:
+#     vlan: 30
+#   name: Ethernet1/2
+# - name: mgmt0
+# commands:
+# - interface Ethernet1/1
+# - no switchport trunk allowed vlan
+# - no switchport trunk native vlan
+# - interface Ethernet1/2
+# - no switchport access vlan
+# after:
+# - name: Ethernet1/1
+# - name: Ethernet1/2
+# - name: mgmt0
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+# interface Ethernet1/2
+# interface mgmt0
+#   ip address dhcp
+#   ipv6 address auto-config
+
+# Using rendered
+
+- name: Render platform specific configuration lines (without connecting to the device)
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 10
+          allowed_vlans: 2,4,15
+      - name: Ethernet1/2
+        access:
+          vlan: 30
+      - name: Ethernet1/3
+        trunk:
+          native_vlan: 20
+          allowed_vlans: 5-10, 15
+    state: rendered
+
+# Task Output
+# -----------
+#
+# rendered:
+# - interface Ethernet1/1
+# - switchport trunk allowed vlan 2,4,15
+# - switchport trunk native vlan 10
+# - interface Ethernet1/2
+# - switchport access vlan 30
+# - interface Ethernet1/3
+# - switchport trunk allowed vlan 5-10,15
+# - switchport trunk native vlan 20
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+#
+# interface Ethernet1/800
+#   switchport access vlan 18
+#   switchport trunk allowed vlan 210
+# interface Ethernet1/801
+#   switchport trunk allowed vlan 2,4,15
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_l2_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output
+# -----------
+#
+# parsed:
+#  - name: Ethernet1/800
+#    access:
+#      vlan: 18
+#    trunk:
+#      allowed_vlans: "210"
+#  - name: Ethernet1/801
+#    trunk:
+#      allowed_vlans: "2,4,15"
+
+# Using gathered
+
+# Before state:
+# -------------
+#
+# switch# sh running-config | section ^interface
+# interface Ethernet1/1
+#   switchport access vlan 6
+#   switchport trunk allowed vlan 200
+# interface Ethernet1/2
+#   switchport trunk native vlan 10
+
+- name: Gather l2_interfaces facts from the device using nxos_l2_interfaces
+  cisco.nxos.nxos_l2_interfaces:
+    state: gathered
+
+# Task output
+# -----------
+#
+# gathered:
+#  - name: "Ethernet1/1"
+#    access:
+#      vlan: 6
+#    trunk:
+#      allowed_vlans: "200"
+#  - name: "Ethernet1/2"
+#    trunk:
+#      native_vlan: 10
 """
 
 RETURN = """
 before:
-  description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
+  description: The configuration as structured data prior to module invocation.
+  returned: always
+  type: list
   sample: >
-    This output will always be in the same format as the
-    module argspec.
+    The configuration returned will always be in the same format
+     of the parameters above.
 after:
-  description: The resulting configuration after module execution.
+  description: The configuration as structured data after module completion.
   returned: when changed
-  type: dict
+  type: list
   sample: >
-    This output will always be in the same format as the
-    module argspec.
+    The configuration returned will always be in the same format
+     of the parameters above.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: always
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
-rendered:
-  description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when I(state) is C(rendered)
-  type: list
-  sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "interface Ethernet1/1"
+    - "switchport trunk allowed vlan 2,4,15"
+    - "switchport trunk native vlan 10"
+    - "interface Ethernet1/2"
+    - "switchport access vlan 30"
+    - "interface Ethernet1/3"
+    - "switchport trunk allowed vlan 5,6,7,8,9,10,15"
+    - "switchport trunk native vlan 20"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
