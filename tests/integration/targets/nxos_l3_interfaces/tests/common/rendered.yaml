@@ -9,7 +9,7 @@
       cisco.nxos.nxos_l3_interfaces:
         config:
           - name: Ethernet1/1
-            mac_address: 00:11:22:33:44:55
+            mac_address: 0011.2233.4455
             ipv4:
               verify:
                 unicast:
@@ -31,7 +31,7 @@
               dhcp:
                 relay:
                   address:
-                    - relay_ip: 2001:0db8::1:abcd
+                    - relay_ip: 2001:db8::1:abcd
         state: rendered
 
     - ansible.builtin.assert:
