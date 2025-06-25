@@ -330,7 +330,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="vlan",
                                             interface_id="51",
                                             vrf_name="abc",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -350,7 +350,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip verify unicast source reachable-via any allow-default",
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -414,7 +414,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="vlan",
                                             interface_id="51",
                                             vrf_name="abc",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -432,7 +432,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip verify unicast source reachable-via any allow-default",
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -497,7 +497,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="vlan",
                                             interface_id="51",
                                             vrf_name="abc",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -557,7 +557,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="vlan",
                                             interface_id="51",
                                             vrf_name="abc",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -574,7 +574,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip verify unicast source reachable-via any allow-default",
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
@@ -598,56 +598,56 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         gathered = [
-                {
-                  'name': 'Ethernet1/1',
-                  'mac_address': '00:11:22:33:44:55',
-                  'ipv4': {
-                    'address': [
-                      {'dhcp': True}
+            {
+                "name": "Ethernet1/1",
+                "mac_address": "00:11:22:33:44:55",
+                "ipv4": {
+                    "address": [
+                        {"dhcp": True},
                     ],
-                    'verify': {
-                      'unicast': {
-                        'source': {
-                          'reachable_via': {
-                            'mode': 'any',
-                            'allow_default': True
-                          }
-                        }
-                      }
+                    "verify": {
+                        "unicast": {
+                            "source": {
+                                "reachable_via": {
+                                    "mode": "any",
+                                    "allow_default": True,
+                                },
+                            },
+                        },
                     },
-                    'dhcp': {
-                      'relay': {
-                        'address': [
-                          {
-                            'relay_ip': '11.0.0.1',
-                            'vrf_name': 'xyz'
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  'ipv6': {
-                    'address': [
-                      {
-                        'ipv6_address': '2001:db8::1/32',
-                        'route_preference': 70,
-                        'tag': 97
-                      }
+                    "dhcp": {
+                        "relay": {
+                            "address": [
+                                {
+                                    "relay_ip": "11.0.0.1",
+                                    "vrf_name": "xyz",
+                                },
+                            ],
+                        },
+                    },
+                },
+                "ipv6": {
+                    "address": [
+                        {
+                            "ipv6_address": "2001:db8::1/32",
+                            "route_preference": 70,
+                            "tag": 97,
+                        },
                     ],
-                    'dhcp': {
-                      'relay': {
-                        'address': [
-                          {
-                            'relay_ip': '2001:0db8::1:abcd',
-                            'vrf_name': 'abc',
-                            'interface_type': 'vlan',
-                            'interface_id': '51'
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
+                    "dhcp": {
+                        "relay": {
+                            "address": [
+                                {
+                                    "relay_ip": "2001:0db8::1:abcd",
+                                    "vrf_name": "abc",
+                                    "interface_type": "vlan",
+                                    "interface_id": "51",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
         ]
         self.assertEqual(result["gathered"], gathered)
 
@@ -709,7 +709,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                             interface_type="ethernet",
                                             interface_id="21",
                                             vrf_name="xyz",
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
@@ -722,14 +722,14 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         commands = [
             "interface Ethernet1/1",
             "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
-            'no ipv6 address 2001:db8::1/32 route-preference 24 tag 43',
+            "no ipv6 address 2001:db8::1/32 route-preference 24 tag 43",
             "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
             "mac-address 00:11:22:33:44:55",
             "ip address 10.0.0.1 secondary",
             "ip verify unicast source reachable-via any allow-default",
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 65 tag 200",
-            "ipv6 dhcp relay address 2001:0db8::1:abcd interface ethernet 21 use-vrf xyz"
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface ethernet 21 use-vrf xyz",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
