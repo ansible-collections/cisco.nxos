@@ -1,66 +1,244 @@
 ---
-gathered:
-  - name: "{{ nxos_int1 }}"
-    ipv4:
-      - address: 192.0.2.100/24
-  - name: "{{ nxos_int2 }}"
-    ipv4:
-      - address: 203.0.113.10/24
-    ipv6:
-      - address: 2001:db8::1/32
-    redirects: false
-    unreachables: true
+merged:
+  before:
+    - name: Ethernet1/1
+    - name: Ethernet1/2
+  commands:
+    - interface Ethernet1/1
+    - mac-address 0011.2233.4455
+    - ip verify unicast source reachable-via any allow-default
+    - ip dhcp relay address 11.0.0.1 use-vrf abc
+    - interface Ethernet1/2
+    - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - ipv6 dhcp relay address 2001:db8::1:abcd
+  after:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 2001:db8::1:abcd
 
-rendered:
-  - "interface Ethernet1/800"
-  - "ip address 192.168.1.100/24 tag 5"
-  - "ip address 10.1.1.1/24 secondary tag 10"
-  - "interface Ethernet1/800"
-  - "ipv6 address fd5d:12c9:2201:2::1/64 tag 6"
+replaced:
+  before:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+
+  commands:
+    - interface Ethernet1/2
+    - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - no ipv6 dhcp relay address 2001:db8::1:abcd
+    - ipv6 address 2001:db8::1/32 route-preference 200 tag 22
+    - mac-address 0011.2233.4456
+  after:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      mac_address: 0011.2233.4456
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 200
+            tag: 22
+
+overridden:
+  before:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 2001:db8::1:abcd
+  commands:
+    - interface Ethernet1/1
+    - no mac-address 0011.2233.4455
+    - no ip verify unicast source reachable-via any allow-default
+    - no ip dhcp relay address 11.0.0.1 use-vrf abc
+    - interface Ethernet1/2
+    - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - no ipv6 dhcp relay address 2001:db8::1:abcd
+    - ipv6 address 2001:db8::1/32 route-preference 200 tag 22
+    - mac-address 0011.2233.4456
+  after:
+    - name: Ethernet1/1
+    - name: Ethernet1/2
+      mac_address: 0011.2233.4456
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 200
+            tag: 22
+
+deleted:
+  before:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 2001:db8::1:abcd
+  commands:
+    - interface Ethernet1/1
+    - no mac-address 0011.2233.4455
+    - no ip verify unicast source reachable-via any allow-default
+    - no ip dhcp relay address 11.0.0.1 use-vrf abc
+    - interface Ethernet1/2
+    - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - no ipv6 dhcp relay address 2001:db8::1:abcd
+  after:
+    - name: Ethernet1/1
+    - name: Ethernet1/2
+
+gathered:
+  config:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 2001:db8::1:abcd
 
 parsed:
-  - name: Ethernet1/800
-    ipv4:
-      - address: 192.168.1.100/24
-        tag: 5
-      - address: 10.1.1.1/24
-        secondary: true
-        tag: 10
-    redirects: false
-  - name: Ethernet1/801
-    ipv6:
-      - address: fd5d:12c9:2201:2::1/64
-        tag: 6
-    unreachables: true
-  - name: mgmt0
-    ipv4:
-      - address: dhcp
+  config:
+    - name: Ethernet1/1
+      mac_address: 0011.2233.4455
+      ipv4:
+        verify:
+          unicast:
+            source:
+              reachable_via:
+                mode: any
+                allow_default: true
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 11.0.0.1
+                vrf_name: abc
+    - name: Ethernet1/2
+      ipv6:
+        address:
+          - ipv6_address: 2001:db8::1/32
+            route_preference: 70
+            tag: 97
+        dhcp:
+          relay:
+            address:
+              - relay_ip: 2001:db8::1:abcd
 
-rendered_multi:
-  - "interface Ethernet1/800"
-  - "ip address 192.168.1.100/24 tag 5"
-  - "ip address 10.1.1.1/24 secondary tag 10"
-  - "evpn multisite fabric-tracking"
-  - "interface Ethernet1/800"
-  - "ipv6 address fd5d:12c9:2201:2::1/64 tag 6"
-  - "evpn multisite dci-tracking"
+rtt:
+  commands:
+    - interface Ethernet1/2
+    - no mac-address 0011.2233.4455
+    - mac-address 0011.2233.4456
 
-parsed_multi:
-  - name: Ethernet1/800
-    ipv4:
-      - address: 192.168.1.100/24
-        tag: 5
-      - address: 10.1.1.1/24
-        secondary: true
-        tag: 10
-    redirects: false
-    evpn_multisite_tracking: fabric-tracking
-  - name: Ethernet1/801
-    ipv6:
-      - address: fd5d:12c9:2201:2::1/64
-        tag: 6
-    unreachables: true
-    evpn_multisite_tracking: dci-tracking
-  - name: mgmt0
-    ipv4:
-      - address: dhcp
+rendered:
+  commands:
+    - interface Ethernet1/1
+    - mac-address 0011.2233.4455
+    - ip verify unicast source reachable-via any allow-default
+    - ip dhcp relay address 11.0.0.1 use-vrf abc
+    - interface Ethernet1/2
+    - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - ipv6 dhcp relay address 2001:db8::1:abcd

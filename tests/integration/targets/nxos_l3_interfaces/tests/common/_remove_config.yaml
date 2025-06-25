@@ -1,8 +1,15 @@
 ---
-- name: Remove configuration
-  cisco.nxos.nxos_config:
+- name: L3_interface - remove configuration
+  vars:
     lines:
-      - "default interface {{ nxos_int1 }}"
-      - "default interface {{ nxos_int2 }}"
-      - "default interface {{ nxos_int3 }}"
-  ignore_errors: true
+      "interface Ethernet 1/1\nno mac-address 0011.2233.4455
+      \nno ip verify unicast source reachable-via any allow-default
+      \nno ip dhcp relay address 11.0.0.1 use-vrf abc
+      \nno ip dhcp relay address 11.0.0.1 use-vrf xyz
+      \ninterface Ethernet 1/2
+      \nno ipv6 dhcp relay address 2001:db8::1:abcd
+      \nno ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+      \nno ipv6 address 2001:db8::1/32 route-preference 200 tag 22
+      \nno mac-address 00:11:22:33:44:56"
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"

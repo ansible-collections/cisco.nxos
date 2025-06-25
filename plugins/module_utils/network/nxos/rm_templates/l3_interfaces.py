@@ -672,7 +672,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 \s+relay
                 \s+address
                 \s+(?P<relay_ip>\S+)
-                (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+))?
+                (?:\s+interface\s+(?P<interface_type>ethernet|vlan|port-channel)\s+(?P<interface_id>\S+))?
                 (?:\s+use-vrf\s+(?P<vrf_name>\S+))?
                 \s*$
                 """,
