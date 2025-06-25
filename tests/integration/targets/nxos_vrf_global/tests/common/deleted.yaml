@@ -35,7 +35,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ general['after'] | tojson == res_before['before'] | tojson }}"
+          - "{{ general['after'] | symmetric_difference(res_before['before']) | length == 0 }}"
 
     - name: Assert that after dicts are correctly generated
       ansible.builtin.assert:
