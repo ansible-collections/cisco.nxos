@@ -141,7 +141,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                         'error_disable': {
                             'count': "{{ count }}",
                             'interval': "{{ interval }}",
-                        }
+                        },
                     },
                 },
             },
