@@ -619,3 +619,94 @@ class TestNxosPrefixListsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_prefix_lists_idempotency_with_prefix_notation_discrepancy(self):
+        self.get_config.return_value = dedent(
+            """\
+              ipv6 prefix-list plist1 seq 10 permit 0::/0
+              ipv6 prefix-list plist1 seq 15 permit 2001:db8::1/128
+              ipv6 prefix-list plist1 seq 20 permit 2001:db8::2:1/128
+              ipv6 prefix-list plist1 seq 25 permit 2001:db8:1:1:1::/128
+              ipv6 prefix-list plist1 seq 30 permit 2001:db8:0:1:1:1:1:1/128
+              ipv6 prefix-list plist1 seq 35 permit 2001:0:0:1::1/128
+              ipv6 prefix-list plist1 seq 40 permit 2001:db8::1:0:0:1/128
+              ipv6 prefix-list plist1 seq 45 permit 2001:db8::abcd:ef12/128
+              ip prefix-list plist2 seq 10 permit 10.0.0.0/24
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv6",
+                        prefix_lists=[
+                            dict(
+                                name="plist1",
+                                entries=[
+                                    dict(
+                                        sequence=10,
+                                        action="permit",
+                                        prefix="::/0",
+                                    ),
+                                    dict(
+                                        sequence=15,
+                                        action="permit",
+                                        prefix="2001:0db8::0001/128",
+                                    ),
+                                    dict(
+                                        sequence=20,
+                                        action="permit",
+                                        prefix="2001:db8:0:0:0:0:2:1/128",
+                                    ),
+                                    dict(
+                                        sequence=25,
+                                        action="permit",
+                                        prefix="2001:db8:1:1:1::0/128",
+                                    ),
+                                    dict(
+                                        sequence=30,
+                                        action="permit",
+                                        prefix="2001:db8::1:1:1:1:1/128",
+                                    ),
+                                    dict(
+                                        sequence=35,
+                                        action="permit",
+                                        prefix="2001::1:0:0:0:1/128",
+                                    ),
+                                    dict(
+                                        sequence=40,
+                                        action="permit",
+                                        prefix="2001:db8:0:0:1::1/128",
+                                    ),
+                                    dict(
+                                        sequence=45,
+                                        action="permit",
+                                        prefix="2001:DB8::ABCD:EF12/128",
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    dict(
+                        afi="ipv4",
+                        prefix_lists=[
+                            dict(
+                                name="plist2",
+                                entries=[
+                                    dict(
+                                        sequence=10,
+                                        action="permit",
+                                        prefix="10.0.0.8/24",
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = []
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["commands"]), set(commands))
