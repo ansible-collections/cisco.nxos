@@ -23,7 +23,7 @@
           - name: mgmt0
             ipv4:
               address:
-                - dhcp: True
+                - dhcp: true
         state: overridden
 
     - name: L3_interface overridden - assert that correct set of commands were generated
