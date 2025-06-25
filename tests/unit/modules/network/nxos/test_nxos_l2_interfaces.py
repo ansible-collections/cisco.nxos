@@ -69,9 +69,9 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              switchport trunk native vlan 40
              switchport trunk allowed vlan 30-45,47
             interface Ethernet1/2
-              switchport mode trunk
-              switchport trunk native vlan 20
-              switchport trunk allowed vlan 10,20,30
+             switchport mode trunk
+             switchport trunk native vlan 20
+             switchport trunk allowed vlan 10,20,30
             interface Ethernet1/4
              speed 1000
              service-policy type qos output test-policy
