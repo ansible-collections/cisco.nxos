@@ -44,7 +44,7 @@
           - ansible_facts.network_resources.interfaces|symmetric_difference(result.before) == []
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
-          - "'no description' in result.commands"
+          - "'no description Test-interface1' in result.commands"
 
     - ansible.builtin.assert:
         that:
