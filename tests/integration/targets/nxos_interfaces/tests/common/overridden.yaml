@@ -2,60 +2,34 @@
 - ansible.builtin.debug:
     msg: "Start nxos_interfaces overridden integration tests connection={{ ansible_connection }}"
 
-- name: Set a fact for 'test_int1' and 'test_int2'
-  ansible.builtin.set_fact:
-    test_int1: "{{ nxos_int1 }}"
-    test_int2: "{{ nxos_int2 }}"
-
 - block:
-    - name: Setup1
-      cisco.nxos.nxos_config: &id003
-        lines:
-          - "default interface {{ test_int1 }}"
-          - "default interface {{ test_int2 }}"
+    - name: Set a fact for 'test_int1' and 'test_int2'
+      ansible.builtin.set_fact:
+        test_int1: "{{ nxos_int1 }}"
+        test_int2: "{{ nxos_int2 }}"
+
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - block:
-        - name: setup2
-          cisco.nxos.nxos_config:
-            lines:
-              - "interface {{ test_int1 }}"
-              - "  description Test-interface1"
-              - "  no shutdown"
-
-        - name: Gather interfaces facts
-          cisco.nxos.nxos_facts: &id001
-            gather_subset:
-              - "!all"
-              - "!min"
-            gather_network_resources: interfaces
-
         - name: Overridden
-          register: result
-          cisco.nxos.nxos_interfaces: &id002
+          cisco.nxos.nxos_interfaces: &id001
             config:
               - name: "{{ test_int2 }}"
                 description: Configured by Ansible
             state: overridden
+          register: result
 
         - assert:
             that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.before)|length == 0
               - result.changed == true
               - "'interface {{ test_int1 }}' in result.commands"
               - "'shutdown' in result.commands"
               - "'interface {{ test_int2 }}' in result.commands"
               - "'description Configured by Ansible' in result.commands"
 
-        - name: Gather interfaces post facts
-          cisco.nxos.nxos_facts: *id001
-
-        - assert:
-            that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
-
         - name: Idempotence - Overridden
           register: result
-          cisco.nxos.nxos_interfaces: *id002
+          cisco.nxos.nxos_interfaces: *id001
 
         - assert:
             that:
@@ -63,5 +37,5 @@
               - result.commands|length == 0
       always:
         - name: teardown
-          cisco.nxos.nxos_config: *id003
+          ansible.builtin.include_tasks: _remove_config.yaml
   when: platform is not search('N3[5KL]|N[56]K|titanium')

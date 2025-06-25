@@ -83,12 +83,12 @@
         - assert:
             that:
               - "'interface {{ test_int1 }}' in result.commands"
-              - "'no description' in result.commands"
-              - "'no speed' in result.commands"
+              - "'no description TEST-INTF-1' in result.commands"
+              - "'no speed 1000' in result.commands"
               - "'interface {{ test_int2 }}' in result.commands"
               - "'description TEST-INTF-2' in result.commands"
               - "'no shutdown' in result.commands"
-              - result.commands|length == 6
+              - result.commands|length == 7
 
       always:
         - name: teardown

@@ -22,8 +22,9 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from unittest.mock import patch
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vpc
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
@@ -89,6 +90,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_dest="192.168.100.4",
                 pkl_src="10.1.100.20",
                 peer_gw=True,
+                peer_sw=True,
                 auto_recovery=True,
             ),
         )
@@ -97,10 +99,12 @@ class TestNxosVpcModule(TestNxosModule):
             commands=[
                 "vpc domain 100",
                 "terminal dont-ask",
+                "terminal dont-ask",
                 "role priority 32667",
                 "system-priority 2000",
                 "peer-keepalive destination 192.168.100.4 source 10.1.100.20",
                 "peer-gateway",
+                "peer-switch",
                 "auto-recovery",
             ],
         )
@@ -214,3 +218,31 @@ class TestNxosVpcModule(TestNxosModule):
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
         set_module_args(dict(domain=100, pkl_dest="192.168.1.1", pkl_vrf="my_vrf"))
         self.execute_module(changed=False, device="_vrf_test")
+
+    def test_nxos_vpc_present_disabled(self):
+        set_module_args(
+            dict(
+                domain=100,
+                role_priority=32667,
+                system_priority=2000,
+                pkl_dest="192.168.100.4",
+                pkl_src="10.1.100.20",
+                peer_gw=False,
+                peer_sw=False,
+                auto_recovery=True,
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "vpc domain 100",
+                "terminal dont-ask",
+                "terminal dont-ask",
+                "role priority 32667",
+                "system-priority 2000",
+                "peer-keepalive destination 192.168.100.4 source 10.1.100.20",
+                "no peer-gateway",
+                "no peer-switch",
+                "auto-recovery",
+            ],
+        )

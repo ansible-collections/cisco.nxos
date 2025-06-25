@@ -187,6 +187,15 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "local_as": {"type": "str"},
+                        "local_as_config": {
+                            "type": "dict",
+                            "options": {
+                                "as_number": {"type": "str"},
+                                "no_prepend": {"type": "bool"},
+                                "replace_as": {"type": "bool"},
+                                "dual_as": {"type": "bool"},
+                            },
+                        },
                         "log_neighbor_changes": {
                             "type": "dict",
                             "options": {
@@ -423,6 +432,15 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "local_as": {"type": "str"},
+                                "local_as_config": {
+                                    "type": "dict",
+                                    "options": {
+                                        "as_number": {"type": "str"},
+                                        "no_prepend": {"type": "bool"},
+                                        "replace_as": {"type": "bool"},
+                                        "dual_as": {"type": "bool"},
+                                    },
+                                },
                                 "log_neighbor_changes": {
                                     "type": "dict",
                                     "options": {

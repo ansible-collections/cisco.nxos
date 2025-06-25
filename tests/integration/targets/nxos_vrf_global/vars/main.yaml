@@ -1,0 +1,337 @@
+general:
+  after:
+    vrfs:
+      - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+merged:
+  commands:
+    - vrf context VRF7
+    - description this-is-test
+    - ip auto-discard
+    - ip domain-name example.org
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip icmp-errors source-interface port-channel 1
+    - ip multicast multipath resilient
+    - ip multicast multipath legacy
+    - ip name-server 192.168.0.1 use-vrf temp
+    - vni 5
+    - ipv6 multicast group-range prefix-list temp
+    - ipv6 multicast multipath resilient
+    - ipv6 multicast multipath none
+    - ip domain-list example.net
+    - ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+    - ip igmp ssm-translate 239.1.2.0/24 192.168.1.1
+    - ip mroute 192.168.1.0/24 192.168.1.1
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+    - ip multicast rpf select vrf temp group-list 238.1.0.0/24
+    - ip multicast rpf select vrf temp group-list 239.1.0.0/24
+    - ip route 192.0.0.0/24 192.0.2.22
+    - ip route 192.0.0.0/24 192.0.2.22 vrf temp
+    - ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+    - multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+    - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+    - "ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+  after:
+    vrfs:
+      - description: this-is-test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.net
+          domain_name: example.org
+          icmp_err:
+            source_interface:
+              interface: port-channel
+              interface_value: "1"
+          igmp:
+            ssm_translate:
+              - group: 232.0.0.0/8
+                source: 10.1.1.1
+              - group: 239.1.2.0/24
+                source: 192.168.1.1
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp
+          multicast:
+            multipath:
+              resilient: true
+            rpf:
+              - group_list_range: 238.1.0.0/24
+                vrf_name: temp
+              - group_list_range: 239.1.0.0/24
+                vrf_name: temp
+          name_server:
+            address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+            use_vrf:
+              source_address: 192.168.0.1
+              vrf: temp
+          route:
+            - destination: 192.0.2.22
+              source: 192.0.0.0/24
+            - destination: 192.0.2.22
+              source: 192.0.0.0/24
+              vrf: temp
+            - destination: 192.0.2.22
+              source: 192.0.2.0/24
+              tags:
+                route_pref: 4
+                tag_value: 2
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+          multicast:
+            multipath:
+              resilient: true
+              splitting_type:
+                none: true
+        name: VRF7
+        vni:
+          vni_number: 5
+deleted:
+  commands:
+    - vrf context testvrf
+    - no description testvrfhere
+    - no ip auto-discard
+    - no ip domain-name example.com
+    - no vni 5
+    - no ip mroute 192.168.1.0/24 192.168.1.1
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+  after:
+    vrfs:
+      - name: temp
+      - name: testvrf
+gathered:
+  after:
+    vrfs:
+      # - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+overridden:
+  commands:
+    - vrf context testvrf
+    - description Test
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip name-server 192.168.0.1 use-vrf temp
+    - no vni 5
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+  after:
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.net
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp
+          name_server:
+            address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+            use_vrf:
+              source_address: 192.168.0.1
+              vrf: temp
+        name: testvrf
+  before:
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+replaced:
+  after:
+    vrfs:
+      - "{{ management[0] }}"
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.org
+        name: temp
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.net
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp
+          name_server:
+            address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+            use_vrf:
+              source_address: 192.168.0.1
+              vrf: temp
+        name: testvrf
+  before:
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+  commands:
+    - vrf context temp
+    - description Test
+    - ip auto-discard
+    - ip domain-name example.org
+    - ip domain-list example.com
+    - vrf context testvrf
+    - description Test
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip name-server 192.168.0.1 use-vrf temp
+    - no vni 5
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+parsed:
+  after:
+    vrfs:
+      - ip:
+          name_server:
+            address_list:
+              - 192.168.255.1
+          route:
+            - destination: 192.168.255.1
+              source: 0.0.0.0/0
+        name: management
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.org
+          multicast:
+            rpf:
+              - group_list_range: 238.1.0.0/24
+                vrf_name: temp1
+              - group_list_range: 239.1.0.0/24
+                vrf_name: temp1
+        name: temp
+rendered:
+  commands:
+    - vrf context testvrf
+    - description Test
+    - ip auto-discard
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip name-server 192.168.0.1 use-vrf temp
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.1
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+rtt:
+  commands:
+    - vrf context VRF7
+    - no description Test
+    - no ip auto-discard
+    - no ip domain-name example.net
+    - no ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - no ip domain-list example.com
+    - no ip mroute 192.168.1.0/24 192.168.1.1
+    - vrf context testvrf
+    - description testing
+    - ip auto-discard
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip domain-list example.com
+  revert:
+    - vrf context VRF7
+    - description Test
+    - ip auto-discard
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.1

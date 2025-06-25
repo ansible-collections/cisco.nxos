@@ -1,0 +1,33 @@
+---
+- name: Get vrf data
+  cisco.nxos.nxos_command:
+    commands: show running | section '^vrf'
+  register: result
+
+- name: Set management fact
+  ansible.builtin.set_fact:
+    management:
+      - ip:
+          route:
+            - destination: "{{ result.stdout[0] | regex_search('ip route [0-9.]+/[0-9]+ ([0-9.]+)', '\\1') | first }}"
+              source: "{{ result.stdout[0] | regex_search('ip route ([0-9.]+/[0-9]+)', '\\1') | first }}"
+        name: management
+  when: result.stdout[0] | regex_search('ip name-server') is none
+
+- name: Update vrf fact if name-server in result
+  ansible.builtin.set_fact:
+    management:
+      - ip:
+          name_server:
+            address_list:
+              - "{{ result.stdout[0] | regex_search('ip name-server ([0-9.]+)', '\\1') | first }}"
+          route:
+            - destination: "{{ result.stdout[0] | regex_search('ip route [0-9.]+/[0-9]+ ([0-9.]+)', '\\1') | first }}"
+              source: "{{ result.stdout[0] | regex_search('ip route ([0-9.]+/[0-9]+)', '\\1') | first }}"
+        name: management
+  when: result.stdout[0] | regex_search('ip name-server') is not none
+
+- name: Main task for vrf_global module
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - network_cli

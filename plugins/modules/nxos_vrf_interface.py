@@ -25,7 +25,7 @@ DOCUMENTATION = """
 module: nxos_vrf_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages interface specific VRF configuration.
+short_description: (deprecated, removed after 2028-06-01) Manages interface specific VRF configuration.
 description:
 - Manages interface specific VRF configuration.
 version_added: 1.0.0

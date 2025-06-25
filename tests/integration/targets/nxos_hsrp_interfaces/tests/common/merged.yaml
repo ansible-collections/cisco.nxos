@@ -36,13 +36,25 @@
       cisco.nxos.nxos_hsrp_interfaces: &id001
         config:
           - name: "{{ test_int1 }}"
-            bfd: "{{ bfd_disable|default(omit)}}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_string: SECUREKEY10
+                group_name: VLAN10-GROUP
+                group_no: 10
+                ip:
+                  - secondary: true
+                    virtual_ip: 10.10.10.2
+                mac_address: 00CC.10DD.10EE
         state: merged
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no hsrp bfd' in result.commands"
+          - - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Gather hsrp_interfaces facts

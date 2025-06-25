@@ -78,7 +78,11 @@ def _tmplt_users_auth(data):
 
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Snmp_serverTemplate, self).__init__(
+            lines=lines,
+            tmplt=self,
+            module=module,
+        )
 
     # fmt: off
     PARSERS = [
@@ -415,10 +419,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_fan_status_change>entity-fan-status-change)
+                \sentity\s(?P<entity_fan_status_change>entity_fan_status_change)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-fan-status-change",
+            "setval": "snmp-server enable traps entity entity_fan_status_change",
             "result": {
                 "traps": {
                     "entity": {
@@ -433,10 +437,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_mib_change>entity-mib-change)
+                \sentity\s(?P<entity_mib_change>entity_mib_change)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-mib-change",
+            "setval": "snmp-server enable traps entity entity_mib_change",
             "result": {
                 "traps": {
                     "entity": {
@@ -451,10 +455,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_module_inserted>entity-module-inserted)
+                \sentity\s(?P<entity_module_inserted>entity_module_inserted)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-module-inserted",
+            "setval": "snmp-server enable traps entity entity_module_inserted",
             "result": {
                 "traps": {
                     "entity": {
@@ -469,10 +473,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_module_status_change>entity-module-status-change)
+                \sentity\s(?P<entity_module_status_change>entity_module_status_change)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-module-status-change",
+            "setval": "snmp-server enable traps entity entity_module_status_change",
             "result": {
                 "traps": {
                     "entity": {
@@ -487,10 +491,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_power_out_change>entity-power-out-change)
+                \sentity\s(?P<entity_power_out_change>entity_power_out_change)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-power-out-change",
+            "setval": "snmp-server enable traps entity entity_power_out_change",
             "result": {
                 "traps": {
                     "entity": {
@@ -508,7 +512,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 \sentity\s(?P<entity_power_status_change>entity_power_status_change)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-power-status-change",
+            "setval": "snmp-server enable traps entity entity_power_status_change",
             "result": {
                 "traps": {
                     "entity": {
@@ -523,10 +527,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_sensor>entity-sensor)
+                \sentity\s(?P<entity_sensor>entity_sensor)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-sensor",
+            "setval": "snmp-server enable traps entity entity_sensor",
             "result": {
                 "traps": {
                     "entity": {
@@ -541,10 +545,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sentity\s(?P<entity_unrecognised_module>entity-unrecognised-module)
+                \sentity\s(?P<entity_unrecognised_module>entity_unrecognised_module)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps entity entity-unrecognised-module",
+            "setval": "snmp-server enable traps entity entity_unrecognised_module",
             "result": {
                 "traps": {
                     "entity": {

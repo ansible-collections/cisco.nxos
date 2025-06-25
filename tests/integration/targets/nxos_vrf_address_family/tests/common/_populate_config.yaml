@@ -1,0 +1,22 @@
+---
+- name: Merge provided vrf configuration with device configuration
+  cisco.nxos.nxos_config:
+    lines:
+      - vrf context VRF1
+      - address-family ipv4 unicast
+      - route-target import 64512:200
+      - address-family ipv6 unicast
+      - route-target import 554832:500
+    match: none
+  retries: 3
+  delay: 20
+
+- name: Merge another vrf
+  cisco.nxos.nxos_config:
+    lines:
+      - vrf context temp
+    match: none
+
+- name: Wait for 5 seconds
+  ansible.builtin.wait_for:
+    timeout: 5

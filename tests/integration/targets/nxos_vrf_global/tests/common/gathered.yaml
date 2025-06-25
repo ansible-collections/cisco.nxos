@@ -1,0 +1,30 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vrf_global gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+  vars:
+    isGathered: true
+
+- block:
+    - name: Gather the provided configuration with the existing running configuration
+      register: result
+      cisco.nxos.nxos_vrf_global:
+        config:
+        state: gathered
+
+    - name: Remove management from list of result
+      set_fact:
+        res_parsed:
+          gathered:
+            vrfs: "{{ result['gathered']['vrfs'] | rejectattr('name', '==', 'management') }}"
+
+    - name: Assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['after'] == res_parsed['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

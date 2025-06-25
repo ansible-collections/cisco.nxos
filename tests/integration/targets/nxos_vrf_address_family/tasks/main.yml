@@ -1,0 +1,6 @@
+---
+- name: Main task for vrf_global module
+  when: not nxos_skip_marked | default(true)
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - network_cli

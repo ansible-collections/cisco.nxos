@@ -38,5 +38,5 @@
 - name: Assert that correct set of commands were rendered
   ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
+      - "{{ rendered['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

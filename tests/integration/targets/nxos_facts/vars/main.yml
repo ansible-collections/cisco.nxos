@@ -28,3 +28,6 @@ available_network_resources:
   - static_routes
   - telemetry
   - vlans
+  - vrf_address_family
+  - vrf_global
+  - vrf_interfaces

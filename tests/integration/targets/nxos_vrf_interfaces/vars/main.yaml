@@ -1,0 +1,93 @@
+---
+gathered:
+  config:
+    - name: "Ethernet1/2"
+      vrf_name: "test"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
+
+merged:
+  commands:
+    - interface Ethernet1/2
+    - vrf member test
+    - interface Ethernet1/6
+    - vrf member test2
+  before:
+    - name: "Ethernet1/2"
+    - name: "Ethernet1/6"
+  after:
+    - name: "Ethernet1/2"
+      vrf_name: "test"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
+
+overridden:
+  commands:
+    - interface Ethernet1/2
+    - vrf member VRF8
+    - interface Ethernet1/6
+    - vrf member VRF9
+  before:
+    - name: "Ethernet1/2"
+      vrf_name: "test"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
+  after:
+    - name: "Ethernet1/2"
+      vrf_name: "VRF8"
+    - name: "Ethernet1/6"
+      vrf_name: "VRF9"
+
+parsed:
+  after:
+    - name: "Ethernet1/2"
+      vrf_name: "VRF1"
+    - name: "Ethernet1/6"
+      vrf_name: "TEST_VRF"
+
+replaced:
+  commands:
+    - interface Ethernet1/2
+    - vrf member TEST_VRF2
+    - interface Ethernet1/6
+    - vrf member TEST_VRF3
+  before:
+    - name: "Ethernet1/2"
+      vrf_name: "test"
+    - name: "Ethernet1/6"
+      vrf_name: "test2"
+  after:
+    - name: "Ethernet1/2"
+      vrf_name: "TEST_VRF2"
+    - name: "Ethernet1/6"
+      vrf_name: "TEST_VRF3"
+
+deleted:
+  commands:
+    - interface Ethernet1/2
+    - no vrf member test
+    - interface Ethernet1/6
+    - no vrf member test2
+  before:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+      vrf_name: "vrf_B"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/4"
+  after:
+    - name: "Ethernet1/1"
+    - name: "Ethernet1/2"
+    - name: "Ethernet1/3"
+    - name: "Ethernet1/4"
+
+rtt:
+  commands:
+    - interface Ethernet1/6
+    - vrf member test
+    - interface Ethernet1/2
+    - no vrf member test2
+  commands_no_revert:
+    - interface Ethernet1/2
+    - vrf member test2
+    - interface Ethernet1/6
+    - no vrf member test

@@ -1,0 +1,56 @@
+---
+- ansible.builtin.debug:
+    msg: START Replaced nxos_vrf_interfaces state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace provided VRF interfaces configuration
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: &id001
+        config:
+          - name: Ethernet1/2
+            vrf_name: TEST_VRF2
+          - name: Ethernet1/6
+            vrf_name: TEST_VRF3
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(replaced['before'])
+              | length == 0
+            }}
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+              | symmetric_difference(replaced['after'])
+              | length == 0
+            }}
+
+    - name: Replace provided VRF interfaces configuration (idempotent)
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: *id001
+
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,28 @@
+---
+- name: Put interface in layer 3 Ethernet1/2
+  cisco.nxos.nxos_config:
+    commands:
+      - no switchport
+    parents:
+      - interface Ethernet1/2
+    match: none
+
+- name: Put interface in layer 3 Ethernet1/6
+  cisco.nxos.nxos_config:
+    commands:
+      - no switchport
+    parents:
+      - interface Ethernet1/6
+    match: none
+
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_vrf_interfaces:
+    state: overridden
+    config:
+      - name: Ethernet1/2
+        vrf_name: test
+      - name: Ethernet1/6
+        vrf_name: test2
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+  when: skip_vrf_config is not defined or not skip_vrf_config

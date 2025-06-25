@@ -1,0 +1,30 @@
+---
+- name: Merge provided vrf configuration with device configuration
+  cisco.nxos.nxos_config:
+    lines:
+      - vrf context testvrf
+      - description testvrfhere
+      - ip auto-discard
+      - ip domain-name example.com
+      - vni 5
+      - ip mroute 192.168.1.0/24 192.168.1.1
+      - ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+      - ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+    match: none
+  retries: 3
+  delay: 20
+
+- name: Wait for 5 seconds (waiting for vrf creation)
+  ansible.builtin.wait_for:
+    timeout: 5
+
+- name: Merge another vrf
+  cisco.nxos.nxos_config:
+    lines:
+      - vrf context temp
+    match: none
+  when: isGathered is not defined
+
+- name: Wait for 5 seconds (waiting for vrf creation)
+  ansible.builtin.wait_for:
+    timeout: 5

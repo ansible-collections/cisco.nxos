@@ -9,9 +9,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_static_routes
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -90,7 +90,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.16/28",
                             },
                             {
-                                "next_hops": [{"forward_router_address": "192.0.2.26", "tag": 12}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.0.2.26", "tag": 12},
+                                ],
                                 "dest": "192.0.2.80/28",
                             },
                         ],
@@ -124,7 +126,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                         "afi": "ipv4",
                         "routes": [
                             {
-                                "next_hops": [{"forward_router_address": "192.168.255.1"}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.168.255.1"},
+                                ],
                                 "dest": "0.0.0.0/0",
                             },
                         ],
@@ -268,7 +272,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.26", "tag": 12},
+                                            {
+                                                "forward_router_address": "192.0.2.26",
+                                                "tag": 12,
+                                            },
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
@@ -303,7 +310,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "afi": "ipv4",
                                 "routes": [
                                     {
-                                        "next_hops": [{"forward_router_address": "192.168.255.1"}],
+                                        "next_hops": [
+                                            {"forward_router_address": "192.168.255.1"},
+                                        ],
                                         "dest": "0.0.0.0/0",
                                     },
                                 ],
@@ -352,6 +361,16 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         ],
                                         "dest": "192.0.2.48/28",
                                     },
+                                    {
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.15",
+                                                "track": 1,
+                                                "route_name": "new_route",
+                                            },
+                                        ],
+                                        "dest": "192.0.2.49/28",
+                                    },
                                 ],
                             },
                             {
@@ -395,7 +414,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.22", "tag": 4},
+                                            {
+                                                "forward_router_address": "192.0.2.22",
+                                                "tag": 4,
+                                            },
                                             {
                                                 "forward_router_address": "192.0.2.23",
                                                 "admin_distance": 1,
@@ -420,6 +442,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             "ip route 10.0.11.0/25 10.0.11.10 tag 22 11",
             "ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11",
             "ip route 192.0.2.48/28 loopback22 192.0.2.13",
+            "ip route 192.0.2.49/28 192.0.2.15 track 1 name new_route",
             "ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5",
             "ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11",
             "ipv6 route 2200:10::/36 port-channel22 2048:ae12::1",
@@ -487,7 +510,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.27", "tag": 13},
+                                            {
+                                                "forward_router_address": "192.0.2.27",
+                                                "tag": 13,
+                                            },
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
@@ -582,7 +608,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.27", "tag": 13},
+                                            {
+                                                "forward_router_address": "192.0.2.27",
+                                                "tag": 13,
+                                            },
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
@@ -749,7 +778,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 config=[
                     dict(
                         vrf="Test",
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.48/28")])],
+                        address_families=[
+                            dict(afi="ipv4", routes=[dict(dest="192.0.2.48/28")]),
+                        ],
                     ),
                 ],
                 state="deleted",
@@ -815,7 +846,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.26", "tag": 12},
+                                            {
+                                                "forward_router_address": "192.0.2.26",
+                                                "tag": 12,
+                                            },
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
@@ -948,7 +982,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.16/28",
                             },
                             {
-                                "next_hops": [{"forward_router_address": "192.0.2.26", "tag": 12}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.0.2.26", "tag": 12},
+                                ],
                                 "dest": "192.0.2.80/28",
                             },
                         ],
@@ -964,7 +1000,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                             {
                                 "next_hops": [
                                     {"forward_router_address": "192.0.2.13"},
-                                    {"forward_router_address": "192.0.2.14", "admin_distance": 5},
+                                    {
+                                        "forward_router_address": "192.0.2.14",
+                                        "admin_distance": 5,
+                                    },
                                 ],
                                 "dest": "192.0.2.48/28",
                             },
@@ -979,7 +1018,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                         "afi": "ipv4",
                         "routes": [
                             {
-                                "next_hops": [{"forward_router_address": "192.168.255.1"}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.168.255.1"},
+                                ],
                                 "dest": "0.0.0.0/0",
                             },
                         ],
@@ -1138,7 +1179,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.17/28",
                             },
                             {
-                                "next_hops": [{"forward_router_address": "192.0.2.26", "tag": 12}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.0.2.26", "tag": 12},
+                                ],
                                 "dest": "192.0.2.79/28",
                             },
                         ],
@@ -1154,7 +1197,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                             {
                                 "next_hops": [
                                     {"forward_router_address": "192.0.2.13"},
-                                    {"forward_router_address": "192.0.2.14", "admin_distance": 5},
+                                    {
+                                        "forward_router_address": "192.0.2.14",
+                                        "admin_distance": 5,
+                                    },
                                 ],
                                 "dest": "192.0.2.48/28",
                             },
@@ -1169,7 +1215,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                         "afi": "ipv4",
                         "routes": [
                             {
-                                "next_hops": [{"forward_router_address": "192.168.255.1"}],
+                                "next_hops": [
+                                    {"forward_router_address": "192.168.255.1"},
+                                ],
                                 "dest": "0.0.0.0/0",
                             },
                         ],

@@ -1,0 +1,228 @@
+{
+  "TABLE_cdp_neighbor_detail_info": {
+    "ROW_cdp_neighbor_detail_info": [
+      {
+        "ifindex": "83886080",
+        "device_id": "aayushNXOS.local(9SK3R366Z42)",
+        "sysname": "aayushNXOS",
+        "numaddr": "1",
+        "v4addr": "192.168.255.24",
+        "platform_id": "N9K-C9300v",
+        "capability": [
+          "router",
+          "switch",
+          "Supports-STP-Dispute"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "mgmt0",
+        "ttl": "150",
+        "version": "Cisco Nexus Operating System (NX-OS) Software, Version 10.4(2)",
+        "version_no": "v2",
+        "mtu": "1500",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.24",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "xe9k.ansible.com",
+        "numaddr": "1",
+        "v4addr": "192.168.255.49",
+        "platform_id": "cisco C9KV-Q200-8P",
+        "capability": [
+          "switch",
+          "IGMP_cnd_filtering"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/0",
+        "ttl": "131",
+        "version": "Cisco IOS Software [Dublin], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.12.1prd9, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 15-Aug-23 16:44 by mcpre",
+        "version_no": "v2",
+        "duplexmode": "full",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.49",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "R2.ansible.lab",
+        "numaddr": "1",
+        "v4addr": "192.168.255.124",
+        "platform_id": "Cisco",
+        "capability": [
+          "router",
+          "sr-bridge"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/0",
+        "ttl": "161",
+        "version": "Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M8, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 08-Aug-23 10:17 by mcpre",
+        "version_no": "v2",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.124",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "R2.ansible.lab",
+        "numaddr": "1",
+        "v4addr": "192.168.255.252",
+        "platform_id": "Cisco",
+        "capability": [
+          "router",
+          "sr-bridge"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/3",
+        "ttl": "163",
+        "version": "Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M8, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 08-Aug-23 10:17 by mcpre",
+        "version_no": "v2",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.252",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "switch(9NACHVOTVYG)",
+        "sysname": "switch",
+        "numaddr": "1",
+        "v4addr": "192.168.255.219",
+        "platform_id": "N9K-C9300v",
+        "capability": [
+          "router",
+          "switch",
+          "Supports-STP-Dispute"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "mgmt0",
+        "ttl": "156",
+        "version": "Cisco Nexus Operating System (NX-OS) Software, Version 10.4(2)",
+        "version_no": "v2",
+        "duplexmode": "full",
+        "mtu": "1500",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.219",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "vat9k.ansible.com",
+        "numaddr": "1",
+        "v4addr": "192.168.255.153",
+        "platform_id": "cisco C9KV-Q200-8P",
+        "capability": [
+          "switch",
+          "IGMP_cnd_filtering"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/0",
+        "ttl": "177",
+        "version": "Cisco IOS Software [Dublin], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.12.1prd9, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 15-Aug-23 16:44 by mcpre",
+        "version_no": "v2",
+        "duplexmode": "full",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.153",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "R1.ansible.lab",
+        "numaddr": "1",
+        "v4addr": "192.168.255.170",
+        "platform_id": "Cisco",
+        "capability": [
+          "router",
+          "sr-bridge"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/0",
+        "ttl": "152",
+        "version": "Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M8, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 08-Aug-23 10:17 by mcpre",
+        "version_no": "v2",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.170",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "R1.ansible.lab",
+        "numaddr": "1",
+        "v4addr": "192.168.255.203",
+        "platform_id": "Cisco",
+        "capability": [
+          "router",
+          "sr-bridge"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/3",
+        "ttl": "164",
+        "version": "Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M8, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2023 by Cisco Systems, Inc.\nCompiled Tue 08-Aug-23 10:17 by mcpre",
+        "version_no": "v2",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.203",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "S1.ansible.lab",
+        "numaddr": "1",
+        "v4addr": "192.168.255.178",
+        "platform_id": "Cisco",
+        "capability": [
+          "router",
+          "switch",
+          "IGMP_cnd_filtering"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "GigabitEthernet0/0",
+        "ttl": "135",
+        "version": "Cisco IOS Software, vios_l2 Software (vios_l2-ADVENTERPRISEK9-M), Experimental Version 15.2(20200924:215240) [sweickge-sep24-2020-l2iol-release 135]\nCopyright (c) 1986-2020 by Cisco Systems, Inc.\nCompiled Tue 29-Sep-20 11:53 by sweickge",
+        "version_no": "v2",
+        "nativevlan": "1",
+        "duplexmode": "full",
+        "mtu": "0",
+        "num_mgmtaddr": "1",
+        "v4mgmtaddr": "192.168.255.178",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      },
+      {
+        "ifindex": "83886080",
+        "device_id": "inserthostname-here(9IN2PEOWRR3)",
+        "sysname": "inserthostname-here",
+        "numaddr": "1",
+        "v4addr": "0.0.0.0",
+        "platform_id": "N9K-C9300v",
+        "capability": [
+          "router",
+          "switch",
+          "Supports-STP-Dispute"
+        ],
+        "intf_id": "mgmt0",
+        "port_id": "mgmt0",
+        "ttl": "156",
+        "version": "Cisco Nexus Operating System (NX-OS) Software, Version 10.4(2)",
+        "version_no": "v2",
+        "duplexmode": "full",
+        "mtu": "1500",
+        "num_mgmtaddr": "0",
+        "local_intf_mac": "52:14:c1:04:1b:01",
+        "remote_intf_mac": "52:54:00:0a:a5:d3"
+      }
+    ]
+  }
+}

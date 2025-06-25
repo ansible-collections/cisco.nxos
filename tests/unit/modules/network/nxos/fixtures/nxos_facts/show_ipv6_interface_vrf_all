@@ -1,0 +1,60 @@
+{
+  "TABLE_intf": {
+    "ROW_intf": {
+      "vrf-name-out": "GI",
+      "intf-name": "Ethernet1/1",
+      "iod": "5",
+      "proto-state": "up",
+      "link-state": "up",
+      "admin-state": "up",
+      "TABLE_addr": {
+        "ROW_addr": {
+          "addr": "2001:db8:8086:5554::1/31"
+        }
+      },
+      "prefix": "2001:db8::/31",
+      "linklocal-addr": "fe80::5014:c1ff:fe04:1b08",
+      "linklocal-configured": "FALSE",
+      "mrouting-enabled": "disabled",
+      "report-linklocal-enabled": "disabled",
+      "forwarding-enabled": "disabled",
+      "mgroup-locally-joined": "TRUE",
+      "TABLE_maddr": {
+        "ROW_maddr": [
+          {
+            "m-addr": "ff02::2"
+          },
+          {
+            "m-addr": "ff02::1"
+          },
+          {
+            "m-addr": "ff02::1:ff00:1"
+          },
+          {
+            "m-addr": "ff02::1:ff04:1b08"
+          },
+          {
+            "m-addr": "ff02::1:ff00:0"
+          }
+        ]
+      },
+      "mcast-sgentries-joined": "FALSE",
+      "mtu": "1500",
+      "urpf-mode": "none",
+      "ipv6-lstype": "none",
+      "stats-last-reset": "never",
+      "upkt-fwd": "0",
+      "upkt-orig": "0",
+      "upkt-consumed": "0",
+      "ubyte-fwd": "0",
+      "ubyte-orig": "0",
+      "ubyte-consumed": "0",
+      "mpkt-fwd": "0",
+      "mpkt-orig": "1047",
+      "mpkt-consumed": "0",
+      "mbyte-fwd": "0",
+      "mbyte-orig": "127494",
+      "mbyte-consumed": "0"
+    }
+  }
+}

@@ -17,3 +17,12 @@
     parents: "interface {{ nxos_int2 }}"
   vars:
     ansible_connection: ansible.netcommon.network_cli
+
+- name: Set VLAN trunking properties with "none"
+  cisco.nxos.nxos_config:
+    lines:
+      - "switchport"
+      - "switchport trunk allowed vlan none"
+    parents: "interface {{ nxos_int3 }}"
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
