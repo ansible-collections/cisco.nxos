@@ -273,3 +273,463 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/2",
+                        mac_address="00:11:22:33:44:55",
+                        ipv4=dict(
+                            address=[
+                                dict(ip_network_mask="10.0.0.1", secondary=True),
+                            ],
+                            verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv6=dict(
+                            address=[
+                                dict(
+                                    ipv6_address="2001:db8::1/32",
+                                    route_preference=70,
+                                    tag=97,
+                                ),
+                            ],
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        )
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "no mac-address 00:11:22:33:44:54",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "interface Ethernet1/2",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:50
+              ip address 11.0.0.2 11.0.0.1 route-preference 45 tag 81
+            interface Ethernet1/2
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/2",
+                        mac_address="00:11:22:33:44:55",
+                        ipv4=dict(
+                            address=[
+                                dict(ip_network_mask="10.0.0.1", secondary=True),
+                            ],
+                            verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv6=dict(
+                            address=[
+                                dict(
+                                    ipv6_address="2001:db8::1/32",
+                                    route_preference=70,
+                                    tag=97,
+                                ),
+                            ],
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        )
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/2",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:55
+              ip address dhcp
+              ip verify unicast source reachable-via any allow-default
+              ip dhcp relay address 11.0.0.1 use-vrf xyz
+              ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        ipv4=dict(
+                            address=[
+                                dict(dhcp=True),
+                            ],
+                            verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv6=dict(
+                            address=[
+                                dict(
+                                    ipv6_address="2001:db8::1/32",
+                                    route_preference=70,
+                                    tag=97,
+                                ),
+                            ],
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        )
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_nxos_l3_interface_rendered(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        ipv4=dict(
+                            address=[
+                                dict(dhcp=True),
+                            ],
+                            verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv6=dict(
+                            address=[
+                                dict(
+                                    ipv6_address="2001:db8::1/32",
+                                    route_preference=70,
+                                    tag=97,
+                                ),
+                            ],
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        )
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "mac-address 00:11:22:33:44:55",
+            "ip address dhcp",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc"
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_nxos_l3_interface_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:55
+              ip address dhcp
+              ip verify unicast source reachable-via any allow-default
+              ip dhcp relay address 11.0.0.1 use-vrf xyz
+              ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+            """,
+        )
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        gathered = [
+                {
+                  'name': 'Ethernet1/1',
+                  'mac_address': '00:11:22:33:44:55',
+                  'ipv4': {
+                    'address': [
+                      {'dhcp': True}
+                    ],
+                    'verify': {
+                      'unicast': {
+                        'source': {
+                          'reachable_via': {
+                            'mode': 'any',
+                            'allow_default': True
+                          }
+                        }
+                      }
+                    },
+                    'dhcp': {
+                      'relay': {
+                        'address': [
+                          {
+                            'relay_ip': '11.0.0.1',
+                            'vrf_name': 'xyz'
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  'ipv6': {
+                    'address': [
+                      {
+                        'ipv6_address': '2001:db8::1/32',
+                        'route_preference': 70,
+                        'tag': 97
+                      }
+                    ],
+                    'dhcp': {
+                      'relay': {
+                        'address': [
+                          {
+                            'relay_ip': '2001:0db8::1:abcd',
+                            'vrf_name': 'abc',
+                            'interface_type': 'vlan',
+                            'interface_id': '51'
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+        ]
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_l3_interface_overridden_same_value(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              ipv6 address 2001:db8::1/32 route-preference 24 tag 43
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        ipv4=dict(
+                            address=[
+                                dict(ip_network_mask="10.0.0.1", secondary=True),
+                            ],
+                            verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv6=dict(
+                            address=[
+                                dict(
+                                    ipv6_address="2001:db8::1/32",
+                                    route_preference=65,
+                                    tag=200,
+                                ),
+                            ],
+                            dhcp=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="ethernet",
+                                            interface_id="21",
+                                            vrf_name="xyz",
+                                        )
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            'no ipv6 address 2001:db8::1/32 route-preference 24 tag 43',
+            "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 65 tag 200",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface ethernet 21 use-vrf xyz"
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
