@@ -437,7 +437,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_nxos_l3_interface_replaced(self):
+    def test_nxos_l3_interface_replaced_idem(self):
         self.execute_show_command.return_value = dedent(
             """\
             interface Ethernet1/1
