@@ -22,10 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _allowed_vlans_commands(config):
-    pass
-
-
 class L2_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L2_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -104,12 +100,63 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+(?P<allowed_vlans>.+)
                 $""", re.VERBOSE,
             ),
-            "setval": _allowed_vlans_commands,
+            "setval": "",
             "result": {
                 '{{ name }}': {
                     'trunk': {
                         'allowed_vlans': "{{ allowed_vlans }}",
                     },
+                },
+            },
+        },
+        {
+            "name": "beacon",
+            "getval": re.compile(
+                r"""
+                \s+(?P<beacon>beacon)
+                $""", re.VERBOSE,
+            ),
+            "setval": "beacon",
+            "result": {
+                '{{ name }}': {
+                    'beacon': "{{ True if beacon }}",
+                },
+            },
+        },
+        {
+            "name": "link_flap.error_disable",
+            "getval": re.compile(
+                r"""
+                \s+link-flap\serror-disable
+                (\s+count\s(?P<count>\d+))?
+                (\s+interval\s(?P<interval>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "link-flap error-disable"
+            "{{ ' count ' + count|string if count is defined else '' }}"
+            "{{ ' interval ' + interval|string if interval is defined else '' }}",
+            "result": {
+                '{{ name }}': {
+                    'link_flap': {
+                        'error_disable': {
+                            'count': "{{ count }}",
+                            'interval': "{{ interval }}",
+                        }
+                    },
+                },
+            },
+        },
+        {
+            "name": "cdp_enable",
+            "getval": re.compile(
+                r"""
+                \s+cdp\s+(?P<cdp_enable>enable)
+                $""", re.VERBOSE,
+            ),
+            "setval": "cdp enable",
+            "result": {
+                '{{ name }}': {
+                    'cdp_enable': "{{ True if cdp_enable }}",
                 },
             },
         },

@@ -57,6 +57,9 @@ class L2_interfaces(ResourceModule):
             "mode",
             "access.vlan",
             "trunk.native_vlan",
+            "beacon",
+            "link_flap.error_disable",
+            "cdp_enable",
         ]
 
     def execute_module(self):
