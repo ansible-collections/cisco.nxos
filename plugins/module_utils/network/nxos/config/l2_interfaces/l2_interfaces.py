@@ -141,6 +141,7 @@ class L2_interfaces(ResourceModule):
                 have_set = "none" if have_list == "none" else have_list
 
                 vlans_to_add = [] if want_set == "none" else want_set
+                vlans_to_remove = [] if have_set == "none" else have_set
 
             vlan_name = vlan.split("_", maxsplit=1)[0]
 
