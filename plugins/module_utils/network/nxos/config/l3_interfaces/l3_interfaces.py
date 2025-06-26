@@ -148,7 +148,7 @@ class L3_interfaces(ResourceModule):
             iterable = data.items()
         else:
             raise TypeError("Input must be a list or dict")
-        
+
         for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
 
