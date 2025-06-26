@@ -56,7 +56,7 @@
           - "'interface {{ test_int1 }}' in result.commands"
           - "'no switchport trunk native vlan 10' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
-          - "'no switchport mode' in result.commands"
+          - "'no switchport mode trunk' in result.commands"
           - "'no switchport trunk allowed vlan' in result.commands"
           - result.commands|length == 5
 
