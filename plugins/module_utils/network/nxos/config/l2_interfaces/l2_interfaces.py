@@ -146,7 +146,7 @@ class L2_interfaces(ResourceModule):
             vlan_name = vlan.split("_", maxsplit=1)[0]
 
             if self.state != "merged":
-                if want_set == "none":
+                if want_set == "none" and have_set != "none":
                     # if want is none, remove all vlans
                     self.commands.append(f"switchport trunk {vlan_name} vlan none")
                 elif not want_list and vlans_to_remove:
