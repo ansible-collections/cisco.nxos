@@ -1,7 +1,9 @@
 ---
 - name: L3_interface - populate configuration
   vars:
-    lines: "interface Ethernet 1/1\nno switchport
+    lines:
+      "feature dhcp
+      \ninterface Ethernet 1/1\nno switchport
       \nmac-address 0011.2233.4455
       \nip verify unicast source reachable-via any allow-default
       \nip dhcp relay address 11.0.0.1 use-vrf abc
