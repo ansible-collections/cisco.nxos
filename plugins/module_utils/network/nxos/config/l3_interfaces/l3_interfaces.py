@@ -82,11 +82,9 @@ class L3_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
 
-        wantd = self.convert_list_to_dict(wantd)
-        haved = self.convert_list_to_dict(haved)
+        wantd = self.convert_list_to_dict(self.want)
+        haved = self.convert_list_to_dict(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -144,7 +142,14 @@ class L3_interfaces(ResourceModule):
 
         result = {}
 
-        for iface_name, iface_data in data.items():
+        if isinstance(data, list):
+            iterable = ((entry["name"], entry) for entry in data if "name" in entry)
+        elif isinstance(data, dict):
+            iterable = data.items()
+        else:
+            raise TypeError("Input must be a list or dict")
+        
+        for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
 
             ipv4_value = iface_result.get("ipv4", {})

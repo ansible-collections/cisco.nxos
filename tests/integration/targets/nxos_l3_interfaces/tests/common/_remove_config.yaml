@@ -9,6 +9,6 @@
       \nno ipv6 dhcp relay address 2001:db8::1:abcd
       \nno ipv6 address 2001:db8::1/32 route-preference 70 tag 97
       \nno ipv6 address 2001:db8::1/32 route-preference 200 tag 22
-      \nno mac-address 00:11:22:33:44:56"
+      \nno mac-address 0011.2233.4456"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
