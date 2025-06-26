@@ -1926,13 +1926,13 @@ Examples
     # parsed.cfg
     # ----------
     #
-    #interface Ethernet1/1
-    # mac-address 0011.2233.4455
-    # ip verify unicast source reachable-via any allow-default
-    # ip dhcp relay address 11.0.0.1 use-vrf abc
-    #interface Ethernet1/2
-    # ipv6 address 2001:db8::1/32 route-preference 70 tag 97
-    # ipv6 dhcp relay address 2001:db8::1:abcd
+    # interface Ethernet1/1
+    #  mac-address 0011.2233.4455
+    #  ip verify unicast source reachable-via any allow-default
+    #  ip dhcp relay address 11.0.0.1 use-vrf abc
+    # interface Ethernet1/2
+    #  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    #  ipv6 dhcp relay address 2001:db8::1:abcd
 
     - name: Use parsed state to convert externally supplied config to structured format
       cisco.nxos.nxos_l3_interfaces:
