@@ -332,92 +332,89 @@ EXAMPLES = """
 # -------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no shutdown
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet1/1
+# interface Ethernet1/2
 
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
+      - name: Ethernet1/1
+        mac_address: 0011.2233.4455
         ipv4:
-          - address: 192.168.1.1/24
-            tag: 5
-          - address: 10.1.1.1/24
-            secondary: true
-            tag: 10
+          verify:
+            unicast:
+              source:
+                reachable_via:
+                  mode: any
+                  allow_default: true
+          dhcp:
+            relay:
+              address:
+                - relay_ip: 11.0.0.1
+                  vrf_name: abc
+      - name: Ethernet1/2
         ipv6:
-          - address: fd5d:12c9:2201:2::1/64
-            tag: 6
-      - name: Ethernet1/7.42
-        redirects: false
-        unreachables: false
+          address:
+            - ipv6_address: 2001:db8::1/32
+              route_preference: 70
+              tag: 97
+          dhcp:
+            relay:
+              address:
+                - relay_ip: 2001:db8::1:abcd
     state: merged
 
 # Task Output
 # -----------
 #
 # before:
-# - name: Ethernet1/6
-# - name: Ethernet1/7
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+# - name: Ethernet1/1
+# - name: Ethernet1/2
 # commands:
-# - interface Ethernet1/6
-# - ip address 192.168.1.1/24 tag 5
-# - ip address 10.1.1.1/24 secondary tag 10
-# - ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-# - interface Ethernet1/7
-# - no ip redirects
+# - interface Ethernet1/1
+# - mac-address 0011.2233.4455
+# - ip verify unicast source reachable-via any allow-default
+# - ip dhcp relay address 11.0.0.1 use-vrf abc
+# - interface Ethernet1/2
+# - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# - ipv6 dhcp relay address 2001:db8::1:abcd
 # after:
-# - ipv4:
-#   - address: 192.168.1.1/24
-#     tag: 5
-#   - address: 10.1.1.1/24
-#     secondary: true
-#     tag: 10
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 11.0.0.1
+#             vrf_name: abc
+# - name: Ethernet1/2
 #   ipv6:
-#   - address: fd5d:12c9:2201:2::1/64
-#     tag: 6
-#   name: Ethernet1/6
-#   redirects: false
-# - name: Ethernet1/7
-#   redirects: false
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+#     address:
+#       - ipv6_address: 2001:db8::1/32
+#         route_preference: 70
+#         tag: 97
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 2001:db8::1:abcd
 
 # After state:
 # ------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no ip redirects
-#   ip address 192.168.1.1/24 tag 5
-#   ip address 10.1.1.1/24 secondary tag 10
-#   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no ip redirects
-#   no shutdown
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet1/1
+#  mac-address 0011.2233.4455
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet1/2
+#  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+#  ipv6 dhcp relay address 2001:db8::1:abcd
 
 
 # Using replaced
@@ -426,91 +423,102 @@ EXAMPLES = """
 # -------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no ip redirects
-#   ip address 192.168.1.1/24 tag 5
-#   ip address 10.1.1.1/24 secondary tag 10
-#   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no ip redirects
-#   no shutdown
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet 1/1
+#  mac-address 00:11:22:33:44:55
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet 1/2
+#  ipv6 dhcp relay address 2001:0db8::1:abcd
+#  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
 
 - name: Replace device configuration of specified L3 interfaces with provided configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
-        ipv4:
-          - address: 192.168.22.3/24
+      - name: Ethernet1/2
+        mac_address: 0011.2233.4456
+        ipv6:
+          address:
+            - ipv6_address: 2001:db8::1/32
+              route_preference: 200
+              tag: 22
+          dhcp:
+            relay:
+              address:
+                - relay_ip: 2001:db8::1:abcd
     state: replaced
 
 # Task Output
 # -----------
 #
 # before:
-# - ipv4:
-#   - address: 192.168.1.1/24
-#     tag: 5
-#   - address: 10.1.1.1/24
-#     secondary: true
-#     tag: 10
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 11.0.0.1
+#             vrf_name: abc
+# - name: Ethernet1/2
 #   ipv6:
-#   - address: fd5d:12c9:2201:2::1/64
-#     tag: 6
-#   name: Ethernet1/6
-#   redirects: false
-# - name: Ethernet1/7
-#   redirects: false
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+#     address:
+#       - ipv6_address: 2001:db8::1/32
+#         route_preference: 70
+#         tag: 97
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 2001:db8::1:abcd
 # commands:
-# - interface Ethernet1/6
-# - ip address 192.168.22.3/24
-# - no ipv6 address fd5d:12c9:2201:2::1/64
-# - ip redirects
+# - interface Ethernet1/2
+# - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# - ipv6 address 2001:db8::1/32 route-preference 200 tag 22
+# - mac-address 0011.2233.4456
 # after:
-# - ipv4:
-#   - address: 192.168.22.3/24
-#   - address: 10.1.1.1/24
-#     secondary: true
-#     tag: 10
-#   name: Ethernet1/6
-#   redirects: false
-# - name: Ethernet1/7
-#   redirects: false
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 11.0.0.1
+#             vrf_name: abc
+# - name: Ethernet1/2
+#   mac_address: 0011.2233.4456
+#   ipv6:
+#     address:
+#       - ipv6_address: 2001:db8::1/32
+#         route_preference: 200
+#         tag: 22
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 2001:db8::1:abcd
 
 # After state:
 # ------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no ip redirects
-#   ip address 192.168.22.3/24
-#   ip address 10.1.1.1/24 secondary tag 10
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no ip redirects
-#   no shutdown
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet1/1
+#  mac-address 0011.2233.4455
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet1/2
+#  mac-address 0011.2233.4456
+#  ipv6 address 2001:db8::1/32 route-preference 200 tag 22
+#  ipv6 dhcp relay address 2001:db8::1:abcd
 
 # Using overridden
 
@@ -518,97 +526,82 @@ EXAMPLES = """
 # -------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no ip redirects
-#   ip address 192.168.1.1/24 tag 5
-#   ip address 10.1.1.1/24 secondary tag 10
-#   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no ip redirects
-#   no shutdown
-# interface Ethernet1/7.42
-#   no ip redirects
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet 1/1
+#  mac-address 00:11:22:33:44:55
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet 1/2
+#  ipv6 dhcp relay address 2001:0db8::1:abcd
+#  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
 
 - name: Override device configuration with provided configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - ipv4:
-          - address: dhcp
-        name: mgmt0
-      - name: Ethernet1/6
+      - name: Ethernet1/1
+        mac_address: 0011.2233.4455
         ipv4:
-          - address: 192.168.22.3/24
+          verify:
+            unicast:
+              source:
+                reachable_via:
+                  mode: any
+                  allow_default: true
     state: overridden
 
 # Task Output
 # -----------
 #
 # before:
-# - ipv4:
-#   - address: 192.168.1.1/24
-#     tag: 5
-#   - address: 10.1.1.1/24
-#     secondary: true
-#     tag: 10
+# before:
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 11.0.0.1
+#             vrf_name: abc
+# - name: Ethernet1/2
 #   ipv6:
-#   - address: fd5d:12c9:2201:2::1/64
-#     tag: 6
-#   name: Ethernet1/6
-#   redirects: false
-# - name: Ethernet1/7
-#   redirects: false
-# - name: Ethernet1/7.42
-#   redirects: false
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+#     address:
+#       - ipv6_address: 2001:db8::1/32
+#         route_preference: 70
+#         tag: 97
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 2001:db8::1:abcd
 # commands:
-# - interface Ethernet1/6
-# - no ipv6 address fd5d:12c9:2201:2::1/64
-# - no ip address 10.1.1.1/24 secondary
-# - ip address 192.168.22.3/24
-# - ip redirects
-# - interface Ethernet1/7
-# - ip redirects
-# - interface Ethernet1/7.42
-# - ip redirects
+# - interface Ethernet1/1
+# - no ip dhcp relay address 11.0.0.1 use-vrf abc
+# - interface Ethernet1/2
+# - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# - no ipv6 dhcp relay address 2001:db8::1:abcd
 # after:
-# - ipv4:
-#   - address: 192.168.22.3/24
-#   name: Ethernet1/6
-# - name: Ethernet1/7
-# - name: Ethernet1/7.42
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+# - name: Ethernet1/2
 
 # After state:
 # ------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   ip address 192.168.22.3/24
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no shutdown
-# interface Ethernet1/7.42
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet1/1
+#  mac-address 0011.2233.4455
+#  ip verify unicast source reachable-via any allow-default
 
 # Using deleted
 
@@ -616,26 +609,19 @@ EXAMPLES = """
 # -------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   ip address 192.168.22.3/24
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no shutdown
-# interface Ethernet1/7.42
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet 1/1
+#  mac-address 00:11:22:33:44:55
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet 1/2
+#  ipv6 dhcp relay address 2001:0db8::1:abcd
+#  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
 
 - name: Delete L3 attributes of given interfaces (This won't delete the interface
     itself).
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
+      - name: Ethernet1/1
       - name: Ethernet1/2
     state: deleted
 
@@ -643,87 +629,104 @@ EXAMPLES = """
 # -----------
 #
 # before:
+# - name: Ethernet1/1
+#   mac_address: 0011.2233.4455
+#   ipv4:
+#     verify:
+#       unicast:
+#         source:
+#           reachable_via:
+#             mode: any
+#             allow_default: true
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 11.0.0.1
+#             vrf_name: abc
 # - name: Ethernet1/2
-# - ipv4:
-#   - address: 192.168.22.3/24
-#   name: Ethernet1/6
-# - name: Ethernet1/7
-# - name: Ethernet1/7.42
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
+#   ipv6:
+#     address:
+#       - ipv6_address: 2001:db8::1/32
+#         route_preference: 70
+#         tag: 97
+#     dhcp:
+#       relay:
+#         address:
+#           - relay_ip: 2001:db8::1:abcd
 # commands:
-# - interface Ethernet1/6
-# - no ip address
+# - interface Ethernet1/1
+# - no mac-address 0011.2233.4455
+# - no ip verify unicast source reachable-via any allow-default
+# - no ip dhcp relay address 11.0.0.1 use-vrf abc
+# - interface Ethernet1/2
+# - no ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# - no ipv6 dhcp relay address 2001:db8::1:abcd
 # after:
+# - name: Ethernet1/1
 # - name: Ethernet1/2
-# - name: Ethernet1/7
-# - name: Ethernet1/7.42
-# - ipv4:
-#   - address: dhcp
-#   name: mgmt0
 
 # After state:
 # ------------
 #
 # router# show running-config | section interface
-# interface Ethernet1/6
-#   description Configured by Ansible Network
-#   no switchport
-#   no shutdown
-# interface Ethernet1/7
-#   description Configured by Ansible
-#   no switchport
-#   no shutdown
-# interface Ethernet1/7.42
-# interface mgmt0
-#   description mgmt interface
-#   ip address dhcp
-#   vrf member management
+# interface Ethernet1/1
+# interface Ethernet1/2
 
 # Using rendered
 
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/800
+      - name: Ethernet1/1
+        mac_address: 0011.2233.4455
         ipv4:
-          - address: 192.168.1.100/24
-            tag: 5
-          - address: 10.1.1.1/24
-            secondary: true
-            tag: 10
-      - name: Ethernet1/800
+          verify:
+            unicast:
+              source:
+                reachable_via:
+                  mode: any
+                  allow_default: true
+          dhcp:
+            relay:
+              address:
+                - relay_ip: 11.0.0.1
+                  vrf_name: abc
+      - name: Ethernet1/2
         ipv6:
-          - address: fd5d:12c9:2201:2::1/64
-            tag: 6
+          address:
+            - ipv6_address: 2001:db8::1/32
+              route_preference: 70
+              tag: 97
+          dhcp:
+            relay:
+              address:
+                - relay_ip: 2001:db8::1:abcd
     state: rendered
 
 # Task Output
 # -----------
 #
 # rendered:
-#   - interface Ethernet1/800
-#   - ip address 192.168.1.100/24 tag 5
-#   - ip address 10.1.1.1/24 secondary tag 10
-#   - interface Ethernet1/800
-#   - ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+# - interface Ethernet1/1
+# - mac-address 0011.2233.4455
+# - ip verify unicast source reachable-via any allow-default
+# - ip dhcp relay address 11.0.0.1 use-vrf abc
+# - interface Ethernet1/2
+# - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# - ipv6 dhcp relay address 2001:db8::1:abcd
 
 # Using parsed
 
 # parsed.cfg
 # ----------
 #
-# interface Ethernet1/800
-#   ip address 192.168.1.100/24 tag 5
-#   ip address 10.1.1.1/24 secondary tag 10
-#   no ip redirects
-# interface Ethernet1/801
-#   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-#   ip unreachables
-# interface mgmt0
-#   ip address dhcp
-#   vrf member management
+#interface Ethernet1/1
+# mac-address 0011.2233.4455
+# ip verify unicast source reachable-via any allow-default
+# ip dhcp relay address 11.0.0.1 use-vrf abc
+#interface Ethernet1/2
+# ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+# ipv6 dhcp relay address 2001:db8::1:abcd
 
 - name: Use parsed state to convert externally supplied config to structured format
   cisco.nxos.nxos_l3_interfaces:
@@ -734,32 +737,43 @@ EXAMPLES = """
 # -----------
 #
 # parsed:
-#   - name: Ethernet1/800
+#   - name: Ethernet1/1
+#     mac_address: 0011.2233.4455
 #     ipv4:
-#       - address: 192.168.1.100/24
-#         tag: 5
-#       - address: 10.1.1.1/24
-#         secondary: True
-#         tag: 10
-#     redirects: False
-#   - name: Ethernet1/801
+#       verify:
+#         unicast:
+#           source:
+#             reachable_via:
+#               mode: any
+#               allow_default: true
+#       dhcp:
+#         relay:
+#           address:
+#             - relay_ip: 11.0.0.1
+#               vrf_name: abc
+#   - name: Ethernet1/2
 #     ipv6:
-#      - address: fd5d:12c9:2201:2::1/64
-#        tag: 6
-#     unreachables: True
+#       address:
+#         - ipv6_address: 2001:db8::1/32
+#           route_preference: 70
+#           tag: 97
+#       dhcp:
+#         relay:
+#           address:
+#             - relay_ip: 2001:db8::1:abcd
 
 # Using gathered
 
 # Before state:
 # -------------
 #
-# interface Ethernet1/1
-#   ip address 192.0.2.100/24
-# interface Ethernet1/2
-#   no ip redirects
-#   ip address 203.0.113.10/24
-#   ip unreachables
-#   ipv6 address 2001:db8::1/32
+# interface Ethernet 1/1
+#  mac-address 00:11:22:33:44:55
+#  ip verify unicast source reachable-via any allow-default
+#  ip dhcp relay address 11.0.0.1 use-vrf abc
+# interface Ethernet 1/2
+#  ipv6 dhcp relay address 2001:0db8::1:abcd
+#  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
 
 - name: Gather l3_interfaces facts from the device using nxos_l3_interfaces
   cisco.nxos.nxos_l3_interfaces:
@@ -770,15 +784,29 @@ EXAMPLES = """
 #
 # gathered:
 #   - name: Ethernet1/1
+#     mac_address: 0011.2233.4455
 #     ipv4:
-#       - address: 192.0.2.100/24
+#       verify:
+#         unicast:
+#           source:
+#             reachable_via:
+#               mode: any
+#               allow_default: true
+#       dhcp:
+#         relay:
+#           address:
+#             - relay_ip: 11.0.0.1
+#               vrf_name: abc
 #   - name: Ethernet1/2
-#     ipv4:
-#       - address: 203.0.113.10/24
 #     ipv6:
-#       - address: 2001:db8::1/32
-#     redirects: False
-#     unreachables: True
+#       address:
+#         - ipv6_address: 2001:db8::1/32
+#           route_preference: 70
+#           tag: 97
+#       dhcp:
+#         relay:
+#           address:
+#             - relay_ip: 2001:db8::1:abcd
 """
 
 RETURN = """
@@ -801,17 +829,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ip dhcp relay address 11.0.0.1 use-vrf abc
+    - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - ipv6 dhcp relay address 2001:db8::1:abcd
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ip dhcp relay address 11.0.0.1 use-vrf abc
+    - ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+    - ipv6 dhcp relay address 2001:db8::1:abcd
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
