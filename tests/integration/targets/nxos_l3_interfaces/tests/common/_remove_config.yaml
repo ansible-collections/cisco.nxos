@@ -2,7 +2,7 @@
 - name: L3_interface - remove configuration
   vars:
     lines: "interface Ethernet 1/1\nno mac-address 0011.2233.4455
-      \nno ip verify unicast source reachable-via any allow-default
+      \nno ip verify unicast source reachable-via any
       \nno ip dhcp relay address 11.0.0.1 use-vrf abc
       \nno ip dhcp relay address 11.0.0.1 use-vrf xyz
       \ninterface Ethernet 1/2
