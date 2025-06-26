@@ -1,8 +1,7 @@
 ---
 - name: L3_interface - populate configuration
   vars:
-    lines:
-      "feature dhcp
+    lines: "feature dhcp
       \ninterface Ethernet 1/1\nno switchport
       \nmac-address 0011.2233.4455
       \nip verify unicast source reachable-via any allow-default
