@@ -1,69 +1,53 @@
 ---
 - ansible.builtin.debug:
-    msg: Start nxos_l3_interfaces deleted integration tests connection={{ ansible_connection }}
-
-- name: Set a fact for 'subint3' and 'test_int3'
-  ansible.builtin.set_fact:
-    test_int3: "{{ nxos_int3 }}"
-    subint3: "{{ nxos_int3 }}.42"
+    msg: Start Deleted integration state for nxos_l3_interfaces ansible_connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: Setup1
-  ignore_errors: true
-  cisco.nxos.nxos_config:
-    lines:
-      - "no system default switchport"
-      - "default interface {{ test_int3 }}"
-      - "interface {{ test_int3 }}"
-      - "  no switchport"
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Setup3
-      cisco.nxos.nxos_config:
-        lines:
-          - "interface {{ subint3 }}"
-          - "  encapsulation dot1q 42"
-          - "  ip address 192.168.10.2/24"
-          - "  no ip redirects"
-          - "  ip unreachables"
-
-    - name: Gather l3_interfaces facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
-        gather_network_resources: l3_interfaces
-
-    - name: Deleted
+    - name: L3_interface deleted - delete attributes of provided configured interfaces
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
-          - name: "{{ subint3 }}"
+          - name: Ethernet1/1
+          - name: Ethernet1/2
         state: deleted
 
-    - ansible.builtin.assert:
+    - name: L3_interface deleted - assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
-          - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
-          - result.changed == true
-          - "'interface {{ subint3 }}' in result.commands"
-          - "'no encapsulation dot1q' in result.commands"
-          - "'ip redirects' in result.commands"
-          - "'no ip unreachables' in result.commands"
-          - "'no ip address' in result.commands"
-          - result.commands|length == 5
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Idempotence - deleted
+    - name: l3_interface deleted - assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
+              | symmetric_difference(deleted['before'])
+              | length == 0
+            }}
+
+    - name: L3_interface deleted - assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
+              | symmetric_difference(deleted['after'])
+              | length == 0
+            }}
+
+    - name: L3_interface deleted - delete attributes of all configured interfaces (idempotent)
       register: result
       cisco.nxos.nxos_l3_interfaces: *id001
-
-    - ansible.builtin.assert:
+    - name: L3_interface deleted - assert that the previous task was idempotent
+      ansible.builtin.assert:
         that:
           - result.changed == false
-          - result.commands|length == 0
   always:
-    - name: Teardown
-      ignore_errors: true
-      cisco.nxos.nxos_config:
-        lines:
-          - "no interface {{ subint3 }}"
+    - ansible.builtin.include_tasks: _remove_config.yaml
