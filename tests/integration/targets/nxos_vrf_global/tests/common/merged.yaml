@@ -133,8 +133,8 @@
       cisco.nxos.nxos_vrf_global: &id001
         config: "{{ vrfConfig }}"
         state: merged
-      retries: 3
-      delay: 20
+      retries: 5
+      delay: 25
 
     - name: Remove management from list of result
       set_fact:
@@ -169,8 +169,8 @@
         that:
           - result['changed'] == false
 
-    - name: Wait for 20 seconds after merging
+    - name: Wait for 30 seconds after merging
       ansible.builtin.wait_for:
-        timeout: 20
+        timeout: 30
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
