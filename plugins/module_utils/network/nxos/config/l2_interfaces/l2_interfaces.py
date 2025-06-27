@@ -1,70 +1,66 @@
 #
 # -*- coding: utf-8 -*-
-# Copyright 2019 Red Hat
+# Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-"""
-The nxos_l2_interfaces class
-It is in this file where the current configuration (as dict)
-is compared to the provided configuration (as dict) and the command set
-necessary to bring the current configuration to it's desired end-state is
-created
-"""
+#
 
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
-import re
+"""
+The nxos_l2_interfaces config file.
+It is in this file where the current configuration (as dict)
+is compared to the provided configuration (as dict) and the command set
+necessary to bring the current configuration to its desired end-state is
+created.
+"""
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
-    ConfigBase,
+from ansible.module_utils.six import iteritems
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
+    ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_diff,
-    remove_empties,
+    dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
+    L2_interfacesTemplate,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    flatten_dict,
+    generate_switchport_trunk,
     normalize_interface,
-    search_obj_in_list,
     vlan_list_to_range,
     vlan_range_to_list,
 )
 
 
-class L2_interfaces(ConfigBase):
+class L2_interfaces(ResourceModule):
     """
-    The nxos_l2_interfaces class
+    The nxos_l2_interfaces config class
     """
-
-    gather_subset = ["!all", "!min"]
-
-    gather_network_resources = ["l2_interfaces"]
-
-    exclude_params = ["vlan", "allowed_vlans", "native_vlans"]
 
     def __init__(self, module):
-        super(L2_interfaces, self).__init__(module)
-
-    def get_l2_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
-
-        :rtype: A dictionary
-        :returns: The current configuration as a dictionary
-        """
-        facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset,
-            self.gather_network_resources,
-            data=data,
+        super(L2_interfaces, self).__init__(
+            empty_fact_val={},
+            facts_module=Facts(module),
+            module=module,
+            resource="l2_interfaces",
+            tmplt=L2_interfacesTemplate(),
         )
-        l2_interfaces_facts = facts["ansible_network_resources"].get("l2_interfaces")
-        if not l2_interfaces_facts:
-            return []
-        return l2_interfaces_facts
+        self.parsers = [
+            "mode",
+            "access.vlan",
+            "trunk.native_vlan",
+            "beacon",
+            "link_flap.error_disable",
+            "cdp_enable",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -72,287 +68,111 @@ class L2_interfaces(ConfigBase):
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        result = {"changed": False}
-        commands = []
-        warnings = []
+        if self.state not in ["parsed", "gathered"]:
+            self.generate_commands()
+            self.run_commands()
+        return self.result
 
-        if self.state in self.ACTION_STATES:
-            existing_l2_interfaces_facts = self.get_l2_interfaces_facts()
-        else:
-            existing_l2_interfaces_facts = []
-
-        if self.state in self.ACTION_STATES or self.state == "rendered":
-            commands.extend(self.set_config(existing_l2_interfaces_facts))
-
-        if commands and self.state in self.ACTION_STATES:
-            if not self._module.check_mode:
-                self._connection.edit_config(commands)
-            result["changed"] = True
-
-        if self.state in self.ACTION_STATES:
-            result["commands"] = commands
-
-        if self.state in self.ACTION_STATES or self.state == "gathered":
-            changed_l2_interfaces_facts = self.get_l2_interfaces_facts()
-
-        elif self.state == "rendered":
-            result["rendered"] = commands
-
-        elif self.state == "parsed":
-            running_config = self._module.params["running_config"]
-            if not running_config:
-                self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed",
-                )
-            result["parsed"] = self.get_l2_interfaces_facts(data=running_config)
-
-        if self.state in self.ACTION_STATES:
-            result["before"] = existing_l2_interfaces_facts
-            if result["changed"]:
-                result["after"] = changed_l2_interfaces_facts
-
-        elif self.state == "gathered":
-            result["gathered"] = changed_l2_interfaces_facts
-
-        result["warnings"] = warnings
-        return result
-
-    def set_config(self, existing_l2_interfaces_facts):
-        """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
-
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+    def generate_commands(self):
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
-        config = self._module.params.get("config")
-        want = []
-        if config:
-            for w in config:
-                w.update({"name": normalize_interface(w["name"])})
-                self.expand_trunk_allowed_vlans(w)
-                want.append(remove_empties(w))
-        have = existing_l2_interfaces_facts
-        for h in have:
-            self.expand_trunk_allowed_vlans(h)
-        resp = self.set_state(want, have) or []
-        self._reconstruct_commands(resp)
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
-        return resp
+        for each in wantd, haved:
+            self.process_list_attrs(each)
 
-    def expand_trunk_allowed_vlans(self, d):
-        if not d:
-            return None
-        if "trunk" in d and d["trunk"]:
-            if "allowed_vlans" in d["trunk"]:
-                if d["trunk"]["allowed_vlans"]:
-                    if d["trunk"]["allowed_vlans"].lower() == "none":
-                        return
-                    else:
-                        allowed_vlans = vlan_range_to_list(d["trunk"]["allowed_vlans"])
-                        vlans_list = [str(line) for line in sorted(allowed_vlans)]
-                        d["trunk"]["allowed_vlans"] = ",".join(vlans_list)
+        # if state is merged, merge want onto have and then compare
+        if self.state == "merged":
+            wantd = dict_merge(haved, wantd)
 
-    def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        # if state is deleted, empty out wantd and set haved to wantd
+        if self.state == "deleted":
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            wantd = {}
 
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+        # remove superfluous config for overridden and deleted
+        if self.state in ["overridden", "deleted"]:
+            for k, have in iteritems(haved):
+                if k not in wantd:
+                    self._compare(want={}, have=have)
+
+        for k, want in iteritems(wantd):
+            self._compare(want=want, have=haved.pop(k, {}))
+
+    def _compare(self, want, have):
+        """Leverages the base class `compare()` method and
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the L2_interfaces network resource.
         """
-        state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced", "rendered") and not want:
-            self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
-            )
+        begin = len(self.commands)
+        self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want, have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
-        commands = list()
-        if state == "overridden":
-            commands.extend(self._state_overridden(want, have))
-        elif state == "deleted":
-            commands.extend(self._state_deleted(want, have))
-        else:
-            for w in want:
-                if state in ["merged", "rendered"]:
-                    commands.extend(self._state_merged(flatten_dict(w), have))
-                elif state == "replaced":
-                    commands.extend(self._state_replaced(flatten_dict(w), have))
-        return commands
+    def _compare_lists(self, want, have):
+        """Compare list attributes"""
+        trunk_want = want.get("trunk", {})
+        trunk_have = have.get("trunk", {})
 
-    def _state_replaced(self, w, have):
-        """The command generator when state is replaced
+        for vlan in ["allowed_vlans"]:
+            want_list = trunk_want.get(vlan, [])
+            have_list = trunk_have.get(vlan, [])
 
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
-        obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
-        if obj_in_have:
-            diff = dict_diff(w, obj_in_have)
-        else:
-            diff = w
-        merged_commands = self.set_commands(w, have, True)
-        if "name" not in diff:
-            diff["name"] = w["name"]
+            if want_list != "none" and have_list != "none":
+                # Convert VLAN lists to sets for easier comparison
+                want_set = set(want_list)
+                have_set = set(have_list)
 
-        dkeys = diff.keys()
-        for k in w.copy():
-            if k in self.exclude_params and k in dkeys:
-                del diff[k]
-        replaced_commands = self.del_attribs(diff)
+                # VLANs to be added (present in want, not in have)
+                vlans_to_add = want_set - have_set
 
-        if merged_commands or replaced_commands:
-            cmds = set(replaced_commands).intersection(set(merged_commands))
-            for cmd in cmds:
-                merged_commands.remove(cmd)
-            commands.extend(replaced_commands)
-            commands.extend(merged_commands)
-        return commands
-
-    def _state_overridden(self, want, have):
-        """The command generator when state is overridden
-
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
-        for h in have:
-            h = flatten_dict(h)
-            obj_in_want = flatten_dict(search_obj_in_list(h["name"], want, "name"))
-            if h == obj_in_want:
-                continue
-            for w in want:
-                w = flatten_dict(w)
-                if h["name"] == w["name"]:
-                    wkeys = w.keys()
-                    hkeys = h.keys()
-                    for k in wkeys:
-                        if k in self.exclude_params and k in hkeys:
-                            del h[k]
-            commands.extend(self.del_attribs(h))
-        for w in want:
-            commands.extend(self.set_commands(flatten_dict(w), have, True))
-        return commands
-
-    def _state_merged(self, w, have):
-        """The command generator when state is merged
-
-        :rtype: A list
-        :returns: the commands necessary to merge the provided into
-                  the current configuration
-        """
-        return self.set_commands(w, have)
-
-    def _state_deleted(self, want, have):
-        """The command generator when state is deleted
-
-        :rtype: A list
-        :returns: the commands necessary to remove the current configuration
-                  of the provided objects
-        """
-        commands = []
-        if want:
-            for w in want:
-                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
-                commands.extend(self.del_attribs(obj_in_have))
-        else:
-            if not have:
-                return commands
-            for h in have:
-                commands.extend(self.del_attribs(flatten_dict(h)))
-        return commands
-
-    def del_attribs(self, obj):
-        commands = []
-        if not obj or len(obj.keys()) == 1:
-            return commands
-
-        cmd = "no switchport "
-        if "vlan" in obj:
-            commands.append(cmd + "access vlan")
-        if "mode" in obj:
-            commands.append(cmd + "mode")
-        if "allowed_vlans" in obj:
-            commands.append(cmd + "trunk allowed vlan")
-        if "native_vlan" in obj:
-            commands.append(cmd + "trunk native vlan")
-        if commands:
-            commands.insert(0, "interface " + obj["name"])
-        return commands
-
-    def diff_of_dicts(self, w, obj):
-        diff = set(w.items()) - set(obj.items())
-        diff = dict(diff)
-        if diff and w["name"] == obj["name"]:
-            diff.update({"name": w["name"]})
-        return diff
-
-    def add_commands(self, d, vlan_exists=False):
-        commands = []
-        if not d:
-            return commands
-
-        cmd = "switchport "
-        if "mode" in d:
-            commands.append(cmd + "mode {0}".format(d["mode"]))
-        if "vlan" in d:
-            commands.append(cmd + "access vlan " + str(d["vlan"]))
-        if "allowed_vlans" in d:
-            if vlan_exists:
-                commands.append(cmd + "trunk allowed vlan add " + str(d["allowed_vlans"]))
+                # VLANs to be removed (present in have, not in want or not in add list)
+                vlans_to_remove = [
+                    vl_no
+                    for vl_no in have_list
+                    if vl_no not in vlans_to_add and vl_no not in want_set
+                ]
             else:
-                commands.append(cmd + "trunk allowed vlan " + str(d["allowed_vlans"]))
-        if "native_vlan" in d:
-            commands.append(cmd + "trunk native vlan " + str(d["native_vlan"]))
-        if commands:
-            commands.insert(0, "interface " + d["name"])
-        return commands
+                want_set = "none" if want_list == "none" else want_list
+                have_set = "none" if have_list == "none" else have_list
 
-    def set_commands(self, w, have, replace=False):
-        commands = []
+                vlans_to_add = [] if want_set == "none" else want_set
+                vlans_to_remove = [] if have_set == "none" else have_set
 
-        obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
-        if not obj_in_have:
-            commands = self.add_commands(w)
-        else:
-            diff = self.diff_of_dicts(w, obj_in_have)
-            if diff and not replace:
-                if "mode" in diff.keys() and diff["mode"]:
-                    commands = self.add_commands(diff)
-                if "allowed_vlans" in diff.keys() and diff["allowed_vlans"]:
-                    vlan_tobe_added = diff["allowed_vlans"].split(",")
-                    vlan_list = vlan_tobe_added[:]
-                    if obj_in_have.get("allowed_vlans"):
-                        have_vlans = obj_in_have["allowed_vlans"].split(",")
-                    else:
-                        have_vlans = []
-                    for w_vlans in vlan_list:
-                        if w_vlans in have_vlans:
-                            vlan_tobe_added.pop(vlan_tobe_added.index(w_vlans))
-                    if vlan_tobe_added:
-                        diff.update({"allowed_vlans": ",".join(vlan_tobe_added)})
-                        if have_vlans:
-                            commands = self.add_commands(diff, True)
-                        else:
-                            commands = self.add_commands(diff)
-                    return commands
-            commands = self.add_commands(diff)
-        return commands
+            vlan_name = vlan.split("_", maxsplit=1)[0]
 
-    def _reconstruct_commands(self, cmds):
-        for idx, cmd in enumerate(cmds):
-            match = re.search(
-                r"^(?P<cmd>(no\s)?switchport trunk allowed vlan(\sadd)?)\s(?P<vlans>.+)",
-                cmd,
-            )
-            if match:
-                data = match.groupdict()
-                if data["vlans"].lower() != "none":
-                    unparsed = vlan_list_to_range(data["vlans"].split(","))
-                else:
-                    unparsed = "none"
-                cmds[idx] = data["cmd"] + " " + unparsed
+            if self.state != "merged":
+                if want_set == "none" and have_set != "none":
+                    # if want is none, remove all vlans
+                    self.commands.append(f"switchport trunk {vlan_name} vlan none")
+                elif not want_list and vlans_to_remove:
+                    # remove vlan all as want blank
+                    self.commands.append(f"no switchport trunk {vlan_name} vlan")
+                elif vlans_to_remove:
+                    # remove excess vlans for replaced overridden with vlan entries
+                    self.commands.append(
+                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
+                    )
+
+            if self.state != "deleted" and vlans_to_add:
+                self.commands.extend(
+                    generate_switchport_trunk(
+                        vlan_name,
+                        have_list,
+                        vlan_list_to_range(sorted(vlans_to_add)),
+                    ),
+                )
+
+    def process_list_attrs(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
+                if val.get("trunk"):
+                    for vlan in ["allowed_vlans"]:
+                        vlanList = val.get("trunk").get(vlan, [])
+                        if vlanList and vlanList != "none":
+                            val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
