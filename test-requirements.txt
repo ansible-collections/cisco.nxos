@@ -5,3 +5,4 @@ virl2-client==2.6.1
 pytest-ansible
 pytest-xdist
 pytest-cov
+typing-extensions
