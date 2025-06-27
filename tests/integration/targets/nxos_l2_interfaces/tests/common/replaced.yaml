@@ -72,7 +72,7 @@
           - "'switchport access vlan 8' in result.commands"
           - "'switchport trunk allowed vlan 10-12' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
-          - "'no switchport trunk native vlan' in result.commands"
+          - "'no switchport trunk native vlan 15' in result.commands"
           - "'interface {{ test_int3 }}' in result.commands"
           - "'switchport trunk allowed vlan none' in result.commands"
           - result.commands|length == 7
