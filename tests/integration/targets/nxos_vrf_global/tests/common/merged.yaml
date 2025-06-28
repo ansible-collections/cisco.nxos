@@ -169,8 +169,8 @@
         that:
           - result['changed'] == false
 
-    - name: Wait for 30 seconds after merging
+    - name: Wait for 40 seconds after merging
       ansible.builtin.wait_for:
-        timeout: 30
+        timeout: 40
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
