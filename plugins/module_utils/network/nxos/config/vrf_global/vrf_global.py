@@ -48,6 +48,7 @@ class Vrf_global(ResourceModule):
         )
         self.parsers = [
             "description",
+            "rd",
             "ip.auto_discard",
             "ip.domain_name",
             "ip.name_server.address_list",
