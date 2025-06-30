@@ -54,7 +54,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(dhcp=True),
                                 dict(
                                     ip_address="10.0.0.2",
@@ -105,7 +105,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(dhcp=True),
                                 dict(use_link_local_only=True),
                                 dict(autoconfig=True),
@@ -195,7 +195,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(dhcp=True),
                             ],
                             verify=dict(
@@ -220,7 +220,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=70,
@@ -290,7 +290,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/2",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(ip_network_mask="10.0.0.1", secondary=True),
                             ],
                             verify=dict(
@@ -315,7 +315,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=70,
@@ -374,7 +374,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/2",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(ip_network_mask="10.0.0.1", secondary=True),
                             ],
                             verify=dict(
@@ -399,7 +399,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=70,
@@ -457,7 +457,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(dhcp=True),
                             ],
                             verify=dict(
@@ -482,7 +482,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=70,
@@ -517,7 +517,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(dhcp=True),
                             ],
                             verify=dict(
@@ -542,7 +542,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=70,
@@ -602,7 +602,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 "name": "Ethernet1/1",
                 "mac_address": "00:11:22:33:44:55",
                 "ipv4": {
-                    "address": [
+                    "addresses": [
                         {"dhcp": True},
                     ],
                     "verify": {
@@ -627,7 +627,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     },
                 },
                 "ipv6": {
-                    "address": [
+                    "addresses": [
                         {
                             "ipv6_address": "2001:db8::1/32",
                             "route_preference": 70,
@@ -669,7 +669,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
                         ipv4=dict(
-                            address=[
+                            addresses=[
                                 dict(ip_network_mask="10.0.0.1", secondary=True),
                             ],
                             verify=dict(
@@ -694,7 +694,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ),
                         ),
                         ipv6=dict(
-                            address=[
+                            addresses=[
                                 dict(
                                     ipv6_address="2001:db8::1/32",
                                     route_preference=65,

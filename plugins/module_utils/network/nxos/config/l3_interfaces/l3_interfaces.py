@@ -50,6 +50,8 @@ class L3_interfaces(ResourceModule):
         self.parsers = [
             "mac_address",
             "bandwidth",
+            "dotiq",
+            "evpn_multisite_tracking",
             "ipv4.redirects",
             "ipv4.unreachables",
             "ipv4.proxy_arp",
@@ -146,17 +148,17 @@ class L3_interfaces(ResourceModule):
             ipv4_value = iface_result.get("ipv4", {})
             ipv6_value = iface_result.get("ipv6", {})
 
-            ipv4_value_address = ipv4_value.get("address", {})
+            ipv4_value_address = ipv4_value.get("addresses", {})
             ipv4_value_dhcp_relay_address = (
                 ipv4_value.get("dhcp", {}).get("relay", {}).get("address", {})
             )
-            ipv6_value_address = ipv6_value.get("address", {})
+            ipv6_value_address = ipv6_value.get("addresses", {})
             ipv6_value_dhcp_relay_address = (
                 ipv6_value.get("dhcp", {}).get("relay", {}).get("address", {})
             )
 
             if ipv4_value_address:
-                ipv4_value["address"] = list_to_dict(
+                ipv4_value["addresses"] = list_to_dict(
                     ipv4_value_address,
                     ["dhcp", "ip_address", "ip_network_mask"],
                 )
@@ -166,7 +168,7 @@ class L3_interfaces(ResourceModule):
                     ["relay_ip"],
                 )
             if ipv6_value_address:
-                ipv6_value["address"] = list_to_dict(
+                ipv6_value["addresses"] = list_to_dict(
                     ipv6_value_address,
                     [
                         "dhcp",
@@ -192,13 +194,13 @@ class L3_interfaces(ResourceModule):
         want_ipv6 = want.get("ipv6", {})
         have_ipv6 = have.get("ipv6", {})
 
-        want_ipv4_value_address = want_ipv4.get("address", {})
-        have_ipv4_value_address = have_ipv4.get("address", {})
-        self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.address")
+        want_ipv4_value_address = want_ipv4.get("addresses", {})
+        have_ipv4_value_address = have_ipv4.get("addresses", {})
+        self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.addresses")
 
-        want_ipv6_value_address = want_ipv6.get("address", {})
-        have_ipv6_value_address = have_ipv6.get("address", {})
-        self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.address")
+        want_ipv6_value_address = want_ipv6.get("addresses", {})
+        have_ipv6_value_address = have_ipv6.get("addresses", {})
+        self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.addresses")
 
         want_ipv4_value_relay_address = (
             want_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})

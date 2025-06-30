@@ -76,7 +76,46 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv4.address",
+            "name": "dotiq",
+            "getval": re.compile(
+                r"""
+                \s+encapsulation
+                \s+dot1Q         
+                \s+(?P<vlan_id>\d+)   
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "encapsulation dot1Q"
+                      "{{ ' ' + dotiq.vlan_id|string if dotiq.vlan_id is defined else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "dotiq": "{{ vlan_id }}",
+                },
+            },
+        },
+        {
+            "name": "evpn_multisite_tracking",
+            "getval": re.compile(
+                r"""
+                \s+evpn\s+multisite
+                \s+
+                (?P<tracking_type>dci-tracking|fabric-tracking)
+                \s*$
+                """,
+                re.VERBOSE | re.IGNORECASE
+            ),
+            "setval": "even multisite"
+                      "{{ ' ' + evpn_multisite_tracking.tracking_type|string "
+                      "if evpn_multisite_tracking.tracking_type is defined else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "evpn_multisite_tracking": "{{ tracking_type }}",
+                },
+            },
+        },
+        {
+            "name": "ipv4.addresses",
             "getval": re.compile(
                 r"""
                 \s+ip\s+address
@@ -95,32 +134,32 @@ class L3_interfacesTemplate(NetworkTemplate):
             ),
             "compval": "ipv4",
             "setval": (
-                "{% if ipv4.address.dhcp is defined %}"
+                "{% if ipv4.addresses.dhcp is defined %}"
                 "ip address dhcp"
                 "{% endif %}"
-                "{% if ipv4.address.ip_address is defined %}"
-                "ip address {{ ipv4.address.ip_address|string }}"
+                "{% if ipv4.addresses.ip_address is defined %}"
+                "ip address {{ ipv4.addresses.ip_address|string }}"
                 "{% endif %}"
-                "{% if ipv4.address.ip_address is not defined and ipv4.address.ip_network_mask is defined %}"
-                "ip address {{ ipv4.address.ip_network_mask|string }}"
+                "{% if ipv4.addresses.ip_address is not defined and ipv4.addresses.ip_network_mask is defined %}"
+                "ip address {{ ipv4.addresses.ip_network_mask|string }}"
                 "{% endif %}"
-                "{% if ipv4.address.ip_address is defined and ipv4.address.ip_network_mask is defined %}"
-                " {{ ipv4.address.ip_network_mask|string }}"
+                "{% if ipv4.addresses.ip_address is defined and ipv4.addresses.ip_network_mask is defined %}"
+                " {{ ipv4.addresses.ip_network_mask|string }}"
                 "{% endif %}"
-                "{% if ipv4.address.route_preference is defined %}"
-                " route-preference {{ ipv4.address.route_preference|string }}"
+                "{% if ipv4.addresses.route_preference is defined %}"
+                " route-preference {{ ipv4.addresses.route_preference|string }}"
                 "{% endif %}"
-                "{% if ipv4.address.tag is defined %}"
-                " tag {{ ipv4.address.tag|string }}"
+                "{% if ipv4.addresses.tag is defined %}"
+                " tag {{ ipv4.addresses.tag|string }}"
                 "{% endif %}"
-                "{% if ipv4.address.secondary is defined %}"
+                "{% if ipv4.addresses.secondary is defined %}"
                 " secondary"
                 "{% endif %}"
             ),
             "result": {
                 "{{ name }}": {
                     "ipv4": {
-                        "address": [{
+                        "addresses": [{
                             "dhcp": "{{ not not dhcp }}",
                             "ip_address": "{{ ip_address }}",
                             "ip_network_mask": "{{ ip_network_mask }}",
@@ -443,7 +482,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv6.address",
+            "name": "ipv6.addresses",
             "getval": re.compile(
                 r"""
                 \s+ipv6\s+address
@@ -479,43 +518,43 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "ipv6",
-            "setval": "{% if ipv6.address.ipv6_address is defined %}"
-                      "ipv6 address {{ ipv6.address.ipv6_address|string }}"
+            "setval": "{% if ipv6.addresses.ipv6_address is defined %}"
+                      "ipv6 address {{ ipv6.addresses.ipv6_address|string }}"
                       "{% endif %}"
-                      "{% if ipv6.address.dhcp is defined %}"
+                      "{% if ipv6.addresses.dhcp is defined %}"
                       "ipv6 address dhcp"
                       "{% endif %}"
-                      "{% if ipv6.address.use_link_local_only is defined %}"
+                      "{% if ipv6.addresses.use_link_local_only is defined %}"
                       "ipv6 address use-link-local-only"
                       "{% endif %}"
-                      "{% if ipv6.address.autoconfig is defined %}"
+                      "{% if ipv6.addresses.autoconfig is defined %}"
                       "ipv6 address autoconfig"
                       "{% endif %}"
-                      "{% if ipv6.address.default is defined %}"
+                      "{% if ipv6.addresses.default is defined %}"
                       " default"
                       "{% endif %}"
-                      "{% if ipv6.address.route_preference is defined %}"
-                      " route-preference {{ ipv6.address.route_preference|string }}"
+                      "{% if ipv6.addresses.route_preference is defined %}"
+                      " route-preference {{ ipv6.addresses.route_preference|string }}"
                       "{% endif %}"
-                      "{% if ipv6.address.aggregate_prefix_length is defined %}"
-                      " aggregate-prefix-length {{ ipv6.address.aggregate_prefix_length|string }}"
+                      "{% if ipv6.addresses.aggregate_prefix_length is defined %}"
+                      " aggregate-prefix-length {{ ipv6.addresses.aggregate_prefix_length|string }}"
                       "{% endif %}"
-                      "{% if ipv6.address.tag is defined %}"
-                      " tag {{ ipv6.address.tag|string }}"
+                      "{% if ipv6.addresses.tag is defined %}"
+                      " tag {{ ipv6.addresses.tag|string }}"
                       "{% endif %}"
-                      "{% if ipv6.address.use_bia is defined %}"
+                      "{% if ipv6.addresses.use_bia is defined %}"
                       " use-bia"
                       "{% endif %}"
-                      "{% if ipv6.address.eui64 is defined %}"
+                      "{% if ipv6.addresses.eui64 is defined %}"
                       " eui64"
                       "{% endif %}"
-                      "{% if ipv6.address.anycasts is defined %}"
+                      "{% if ipv6.addresses.anycasts is defined %}"
                       " anycast"
                       "{% endif %}",
             "result": {
                 "{{ name }}": {
                     "ipv6": {
-                        "address": [{
+                        "addresses": [{
                             "dhcp": "{{ not not dhcp }}",
                             "use_link_local_only": "{{ not not use_link_local_only }}",
                             "autoconfig": "{{ not not autoconfig }}",

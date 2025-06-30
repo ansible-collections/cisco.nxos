@@ -63,7 +63,7 @@ class L3_interfacesFacts(object):
             l3_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["l3_interfaces"] = params["config"]
+        facts["l3_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

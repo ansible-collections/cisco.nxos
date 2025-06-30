@@ -46,10 +46,21 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                         "inherit": {"type": "bool"},
                     },
                 },
+                "dot1q": {"type": "int"},
+                "evpn_multisite_tracking": {
+                    "type": "str",
+                    "choices": ["fabric-tracking", "dci-tracking"],
+                },
+                "redirects": {"type": "bool"},
+                "ipv6_redirects": {"type": "bool"},
+                "unreachables": {"type": "bool"},
                 "ipv4": {
                     "type": "dict",
                     "options": {
-                        "address": {
+                        "address": {"type": "str"},
+                        "secondary": {"type": "bool"},
+                        "tag": {"type": "int"},
+                        "addresses": {
                             "type": "list",
                             "elements": "dict",
                             "options": {
@@ -143,7 +154,9 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "ipv6": {
                     "type": "dict",
                     "options": {
-                        "address": {
+                        "address": {"type": "str"},
+                        "tag": {"type": "int"},
+                        "addresses": {
                             "type": "list",
                             "elements": "dict",
                             "options": {

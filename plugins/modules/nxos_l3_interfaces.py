@@ -50,11 +50,34 @@ options:
           inherit:
             description: Specify that bandwidth is inherited
             type: bool
+      dot1q:
+        description:
+        - Configures IEEE 802.1Q VLAN encapsulation on a subinterface.
+        type: int
+      evpn_multisite_tracking:
+        description:
+        -  VxLAN evpn multisite Interface tracking. Supported only on selected model.
+        type: str
+        version_added: 1.1.0
+        choices:
+        - fabric-tracking
+        - dci-tracking
       ipv4:
         description: IPv4 address and attributes of the L3 interface.
         type: dict
         suboptions:
           address:
+            description:
+            - IPV4 address of the L3 interface.
+            type: str
+          tag:
+            description:
+            - URIB route tag value for local/direct routes.
+            type: int
+          secondary:
+            description:
+            - A boolean attribute to manage addition of secondary IP address.
+          addresses:
             description: IPV4 address of the L3 interface.
             type: list
             elements: dict
@@ -173,6 +196,26 @@ options:
         type: dict
         suboptions:
           address:
+            description:
+            - IPV6 address of the L3 interface.
+            type: str
+          tag:
+            description:
+            - URIB route tag value for local/direct routes.
+            type: int
+          redirects:
+            description:
+            - Enables/disables ipv4 redirects.
+            type: bool
+          ipv6_redirects:
+            description:
+            - Enables/disables ipv6 redirects.
+            type: bool
+          unreachables:
+            description:
+            - Enables/disables ip redirects.
+            type: bool
+          addresses:
             description: IPV6 address of the L3 interface.
             type: list
             elements: dict
