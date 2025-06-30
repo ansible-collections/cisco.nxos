@@ -133,21 +133,12 @@ class L3_interfaces(ResourceModule):
 
                 if outer_key is not None:
                     output[outer_key] = entry
-                else:
-                    raise ValueError(
-                        f"No matching key found in {entry} for priorities {outer_key_priority}",
-                    )
 
             return output
 
         result = {}
 
-        if isinstance(data, list):
-            iterable = ((entry["name"], entry) for entry in data if "name" in entry)
-        elif isinstance(data, dict):
-            iterable = data.items()
-        else:
-            raise TypeError("Input must be a list or dict")
+        iterable = ((entry["name"], entry) for entry in data if "name" in entry)
 
         for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
