@@ -80,8 +80,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+encapsulation
-                \s+dot1Q         
-                \s+(?P<vlan_id>\d+)   
+                \s+dot1Q
+                \s+(?P<vlan_id>\d+)
                 \s*$
                 """,
                 re.VERBOSE,
@@ -103,7 +103,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 (?P<tracking_type>dci-tracking|fabric-tracking)
                 \s*$
                 """,
-                re.VERBOSE | re.IGNORECASE
+                re.VERBOSE | re.IGNORECASE,
             ),
             "setval": "even multisite"
                       "{{ ' ' + evpn_multisite_tracking.tracking_type|string "
