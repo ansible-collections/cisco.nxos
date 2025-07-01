@@ -249,13 +249,13 @@ class L3_interfaces(ResourceModule):
             iface_result = iface_data.copy()
             ipv4_value = iface_result.get("ipv4", {})
             ipv6_value = iface_result.get("ipv6", {})
-            
+
             ipv4_address = ipv4_value.get("address", None)
             ipv4_secondary = ipv4_value.get("secondary", None)
             ipv4_tag = ipv4_value.get("tag", None)
             if ipv4_address:
                 entry = {
-                    "ip_address": ipv4_address
+                    "ip_address": ipv4_address,
                 }
                 if ipv4_secondary is not None:
                     entry["secondary"] = ipv4_secondary
@@ -274,7 +274,7 @@ class L3_interfaces(ResourceModule):
             ipv6_tag = ipv6_value.get("tag", None)
             if ipv6_address:
                 entry = {
-                    "ipv6_address": ipv6_address
+                    "ipv6_address": ipv6_address,
                 }
                 if ipv6_tag is not None:
                     entry["tag"] = ipv6_tag
@@ -288,7 +288,7 @@ class L3_interfaces(ResourceModule):
 
             ipv4_redirects = iface_result.get("redirects", None)
             ipv4_unreachables = iface_result.get("unreachables", None)
-            ipv6_redirects = iface_result.get("ipv6_redirects", None) 
+            ipv6_redirects = iface_result.get("ipv6_redirects", None)
             if ipv4_redirects:
                 ipv4_value["redirects"] = True
                 del iface_result["redirects"]
@@ -300,4 +300,4 @@ class L3_interfaces(ResourceModule):
                 del iface_result["ipv6_redirects"]
 
             result[iface_name] = iface_result
-        return result       
+        return result
