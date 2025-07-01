@@ -50,7 +50,7 @@ class L3_interfaces(ResourceModule):
         self.parsers = [
             "mac_address",
             "bandwidth",
-            "dotiq",
+            "dot1q",
             "evpn_multisite_tracking",
             "ipv4.redirects",
             "ipv4.unreachables",
@@ -103,6 +103,9 @@ class L3_interfaces(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
+        # handle deprecated attributes
+        wantd = self.handle_deprecated(wantd)
+
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
@@ -148,18 +151,18 @@ class L3_interfaces(ResourceModule):
             ipv4_value = iface_result.get("ipv4", {})
             ipv6_value = iface_result.get("ipv6", {})
 
-            ipv4_value_address = ipv4_value.get("addresses", {})
+            ipv4_value_addresses = ipv4_value.get("addresses", {})
             ipv4_value_dhcp_relay_address = (
                 ipv4_value.get("dhcp", {}).get("relay", {}).get("address", {})
             )
-            ipv6_value_address = ipv6_value.get("addresses", {})
+            ipv6_value_addresses = ipv6_value.get("addresses", {})
             ipv6_value_dhcp_relay_address = (
                 ipv6_value.get("dhcp", {}).get("relay", {}).get("address", {})
             )
 
-            if ipv4_value_address:
+            if ipv4_value_addresses:
                 ipv4_value["addresses"] = list_to_dict(
-                    ipv4_value_address,
+                    ipv4_value_addresses,
                     ["dhcp", "ip_address", "ip_network_mask"],
                 )
             if ipv4_value_dhcp_relay_address:
@@ -167,9 +170,9 @@ class L3_interfaces(ResourceModule):
                     ipv4_value_dhcp_relay_address,
                     ["relay_ip"],
                 )
-            if ipv6_value_address:
+            if ipv6_value_addresses:
                 ipv6_value["addresses"] = list_to_dict(
-                    ipv6_value_address,
+                    ipv6_value_addresses,
                     [
                         "dhcp",
                         "ipv6_address",
@@ -232,8 +235,6 @@ class L3_interfaces(ResourceModule):
         parser_key = parser.split(".")[1]
         for key, want_value in wanted.items():
             have_value = haved.pop(key, {})
-            if have_value and have_value != want_value:
-                self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
             self.compare(
                 parsers=[parser],
                 want={ip_key: {parser_key: want_value}},
@@ -241,3 +242,62 @@ class L3_interfaces(ResourceModule):
             )
         for key, have_value in haved.items():
             self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
+
+    def handle_deprecated(self, wantd):
+        result = {}
+        for iface_name, iface_data in wantd.items():
+            iface_result = iface_data.copy()
+            ipv4_value = iface_result.get("ipv4", {})
+            ipv6_value = iface_result.get("ipv6", {})
+            
+            ipv4_address = ipv4_value.get("address", None)
+            ipv4_secondary = ipv4_value.get("secondary", None)
+            ipv4_tag = ipv4_value.get("tag", None)
+            if ipv4_address:
+                entry = {
+                    "ip_address": ipv4_address
+                }
+                if ipv4_secondary is not None:
+                    entry["secondary"] = ipv4_secondary
+                    del ipv4_value["secondary"]
+                if ipv4_tag is not None:
+                    entry["tag"] = ipv4_tag
+                    del ipv4_value["tag"]
+                result_ipv4 = {ipv4_address: entry}
+                if ipv4_value.get("addresses", {}):
+                    ipv4_value["addresses"].update(result_ipv4)
+                else:
+                    ipv4_value["addresses"] = result_ipv4
+                del ipv4_value["address"]
+
+            ipv6_address = ipv6_value.get("address", None)
+            ipv6_tag = ipv6_value.get("tag", None)
+            if ipv6_address:
+                entry = {
+                    "ipv6_address": ipv6_address
+                }
+                if ipv6_tag is not None:
+                    entry["tag"] = ipv6_tag
+                    del ipv6_value["tag"]
+                result_ipv6 = {ipv6_address: entry}
+                if ipv6_value.get("addresses", {}):
+                    ipv6_value["addresses"].update(result_ipv6)
+                else:
+                    ipv6_value["addresses"] = result_ipv6
+                del ipv6_value["address"]
+
+            ipv4_redirects = iface_result.get("redirects", None)
+            ipv4_unreachables = iface_result.get("unreachables", None)
+            ipv6_redirects = iface_result.get("ipv6_redirects", None) 
+            if ipv4_redirects:
+                ipv4_value["redirects"] = True
+                del iface_result["redirects"]
+            if ipv4_unreachables:
+                ipv4_value["unreachables"] = True
+                del iface_result["unreachables"]
+            if ipv6_redirects:
+                ipv6_value["redirects"] = True
+                del iface_result["ipv6_redirects"]
+
+            result[iface_name] = iface_result
+        return result       

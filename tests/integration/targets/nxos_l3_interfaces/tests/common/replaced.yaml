@@ -14,7 +14,7 @@
           - name: Ethernet1/2
             mac_address: 0011.2233.4456
             ipv6:
-              address:
+              addresses:
                 - ipv6_address: 2001:db8::1/32
                   route_preference: 200
                   tag: 22

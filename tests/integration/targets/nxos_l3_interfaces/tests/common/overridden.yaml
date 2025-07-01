@@ -22,7 +22,7 @@
                       allow_default: true
           - name: mgmt0
             ipv4:
-              address:
+              addresses:
                 - dhcp: true
         state: overridden
 

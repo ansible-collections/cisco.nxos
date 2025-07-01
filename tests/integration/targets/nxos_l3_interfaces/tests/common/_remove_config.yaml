@@ -1,7 +1,8 @@
 ---
 - name: L3_interface - remove configuration
   vars:
-    lines: "interface Ethernet 1/1\nno mac-address 0011.2233.4455
+    lines: "feature dhcp
+      \ninterface Ethernet 1/1\nno mac-address 0011.2233.4455
       \nno ip verify unicast source reachable-via any
       \nno ip dhcp relay address 11.0.0.1
       \ninterface Ethernet 1/2

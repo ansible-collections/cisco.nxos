@@ -5,7 +5,7 @@
       \ninterface Ethernet 1/1\nno switchport
       \nmac-address 0011.2233.4455
       \nip verify unicast source reachable-via any allow-default
-      \nip dhcp relay address 11.0.0.1 use-vrf abc
+      \nip dhcp relay address 11.0.0.1
       \ninterface Ethernet 1/2\nno switchport
       \nipv6 dhcp relay address 2001:0db8::1:abcd
       \nipv6 address 2001:db8::1/32 route-preference 70 tag 97"

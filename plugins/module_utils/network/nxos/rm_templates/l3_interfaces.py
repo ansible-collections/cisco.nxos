@@ -76,21 +76,18 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "dotiq",
+            "name": "dot1q",
             "getval": re.compile(
                 r"""
-                \s+encapsulation
-                \s+dot1Q
-                \s+(?P<vlan_id>\d+)
-                \s*$
+                \s+encapsulation dot1Q\s+(?P<vlan_id>\d+)\s*$
                 """,
                 re.VERBOSE,
             ),
             "setval": "encapsulation dot1Q"
-                      "{{ ' ' + dotiq.vlan_id|string if dotiq.vlan_id is defined else ''}}",
+                      "{{ ' ' + dot1q|string if dot1q is defined else ''}}",
             "result": {
                 "{{ name }}": {
-                    "dotiq": "{{ vlan_id }}",
+                    "dot1q": "{{ vlan_id }}",
                 },
             },
         },
@@ -103,11 +100,11 @@ class L3_interfacesTemplate(NetworkTemplate):
                 (?P<tracking_type>dci-tracking|fabric-tracking)
                 \s*$
                 """,
-                re.VERBOSE | re.IGNORECASE,
+                re.VERBOSE,
             ),
             "setval": "even multisite"
-                      "{{ ' ' + evpn_multisite_tracking.tracking_type|string "
-                      "if evpn_multisite_tracking.tracking_type is defined else ''}}",
+                      "{{ ' ' + evpn_multisite_tracking|string "
+                      "if evpn_multisite_tracking is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "evpn_multisite_tracking": "{{ tracking_type }}",
@@ -463,7 +460,10 @@ class L3_interfacesTemplate(NetworkTemplate):
             "compval": "ipv4",
             "setval": (
                 "{% if ipv4.dhcp.relay_ip is defined %}"
-                "ip dhcp relay address {{ ipv4.dhcp.relay_ip|string }} use-vrf {{ ipv4.dhcp.vrf_name|string }}"
+                "ip dhcp relay address {{ ipv4.dhcp.relay_ip|string }}"
+                "{% endif %}"
+                "{% if ipv4.dhcp.vrf_name is defined %}"
+                " use-vrf {{ ipv4.dhcp.vrf_name|string }}"
                 "{% endif %}"
             ),
             "result": {
