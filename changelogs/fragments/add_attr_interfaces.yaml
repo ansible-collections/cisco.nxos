@@ -1,3 +1,0 @@
----
-minor_changes:
-  - nxos_interfaces - Added service-policy, logging, mac-address and snmp configuration options for interface.

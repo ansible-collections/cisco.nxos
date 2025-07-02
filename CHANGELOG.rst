@@ -4,6 +4,20 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v10.2.0
+=======
+
+Minor Changes
+-------------
+
+- nxos_interfaces - Added service-policy, logging, mac-address and snmp configuration options for interface.
+- nxos_l2_interfaces - Enhances capability of the module to deal with addition attributes under l2 interfaces. Adds support for CDP, Link flap and beacon.
+
+Bugfixes
+--------
+
+- nxos_acls - Fix issue where Not sufficient TCAM bank error not being captured by error regex.
+
 v10.1.0
 =======
 

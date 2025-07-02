@@ -1,3 +1,0 @@
----
-trivial:
-  - add missing dependency typing-extensions to test-requirements.txt
