@@ -62,6 +62,21 @@ options:
         choices:
         - fabric-tracking
         - dci-tracking
+      ipv6_redirects:
+            description:
+            - Enables/disables ipv6 redirects.
+            - This option will be DEPRECATED
+            type: bool
+      redirects:
+            description:
+            - Enables/disables ipv4 redirects.
+            - This option will be DEPRECATED
+            type: bool
+      unreachables:
+            description:
+            - Enables/disables ip redirects.
+            - This option will be DEPRECATED
+            type: bool
       ipv4:
         description: IPv4 address and attributes of the L3 interface.
         type: dict
@@ -69,14 +84,18 @@ options:
           address:
             description:
             - IPV4 address of the L3 interface.
+            - This option will be DEPRECATED
             type: str
           tag:
             description:
             - URIB route tag value for local/direct routes.
+            - This option will be DEPRECATED
             type: int
           secondary:
             description:
             - A boolean attribute to manage addition of secondary IP address.
+            - This option will be DEPRECATED
+            type: bool
           addresses:
             description: IPV4 address of the L3 interface.
             type: list
@@ -198,18 +217,16 @@ options:
           address:
             description:
             - IPV6 address of the L3 interface.
+            - This option will be DEPRECATED
             type: str
           tag:
             description:
             - URIB route tag value for local/direct routes.
+            - This option will be DEPRECATED
             type: int
           redirects:
             description:
             - Enables/disables ipv4 redirects.
-            type: bool
-          ipv6_redirects:
-            description:
-            - Enables/disables ipv6 redirects.
             type: bool
           unreachables:
             description:
@@ -253,12 +270,6 @@ options:
               use_bia:
                 description: Use BIA
                 type: bool
-          redirects:
-            description: Send ICMP Redirect messages.
-            type: bool
-          unreachables:
-            description: Enable sending ICMP unreachables (other than port-unreachable).
-            type: bool
           verify:
             description: Unicast Reverse Path Forwarding.
             type: dict
@@ -397,7 +408,7 @@ EXAMPLES = """
                   vrf_name: abc
       - name: Ethernet1/2
         ipv6:
-          address:
+          addresses:
             - ipv6_address: 2001:db8::1/32
               route_preference: 70
               tag: 97
@@ -438,7 +449,7 @@ EXAMPLES = """
 #             vrf_name: abc
 # - name: Ethernet1/2
 #   ipv6:
-#     address:
+#     addresses:
 #       - ipv6_address: 2001:db8::1/32
 #         route_preference: 70
 #         tag: 97
@@ -480,7 +491,7 @@ EXAMPLES = """
       - name: Ethernet1/2
         mac_address: 0011.2233.4456
         ipv6:
-          address:
+          addresses:
             - ipv6_address: 2001:db8::1/32
               route_preference: 200
               tag: 22
@@ -510,7 +521,7 @@ EXAMPLES = """
 #             vrf_name: abc
 # - name: Ethernet1/2
 #   ipv6:
-#     address:
+#     addresses:
 #       - ipv6_address: 2001:db8::1/32
 #         route_preference: 70
 #         tag: 97
@@ -541,7 +552,7 @@ EXAMPLES = """
 # - name: Ethernet1/2
 #   mac_address: 0011.2233.4456
 #   ipv6:
-#     address:
+#     addresses:
 #       - ipv6_address: 2001:db8::1/32
 #         route_preference: 200
 #         tag: 22
@@ -612,7 +623,7 @@ EXAMPLES = """
 #             vrf_name: abc
 # - name: Ethernet1/2
 #   ipv6:
-#     address:
+#     addresses:
 #       - ipv6_address: 2001:db8::1/32
 #         route_preference: 70
 #         tag: 97
@@ -688,7 +699,7 @@ EXAMPLES = """
 #             vrf_name: abc
 # - name: Ethernet1/2
 #   ipv6:
-#     address:
+#     addresses:
 #       - ipv6_address: 2001:db8::1/32
 #         route_preference: 70
 #         tag: 97
@@ -736,7 +747,7 @@ EXAMPLES = """
                   vrf_name: abc
       - name: Ethernet1/2
         ipv6:
-          address:
+          addresses:
             - ipv6_address: 2001:db8::1/32
               route_preference: 70
               tag: 97
@@ -796,7 +807,7 @@ EXAMPLES = """
 #               vrf_name: abc
 #   - name: Ethernet1/2
 #     ipv6:
-#       address:
+#       addresses:
 #         - ipv6_address: 2001:db8::1/32
 #           route_preference: 70
 #           tag: 97
@@ -842,7 +853,7 @@ EXAMPLES = """
 #               vrf_name: abc
 #   - name: Ethernet1/2
 #     ipv6:
-#       address:
+#       addresses:
 #         - ipv6_address: 2001:db8::1/32
 #           route_preference: 70
 #           tag: 97

@@ -79,11 +79,11 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "dot1q",
             "getval": re.compile(
                 r"""
-                \s+encapsulation dot1Q\s+(?P<vlan_id>\d+)\s*$
+                ^\s*encapsulation\s+dot1q\s+(?P<vlan_id>\d+)\s*$
                 """,
                 re.VERBOSE,
             ),
-            "setval": "encapsulation dot1Q"
+            "setval": "encapsulation dot1q"
                       "{{ ' ' + dot1q|string if dot1q is defined else ''}}",
             "result": {
                 "{{ name }}": {
@@ -102,7 +102,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "setval": "even multisite"
+            "setval": "evpn multisite"
                       "{{ ' ' + evpn_multisite_tracking|string "
                       "if evpn_multisite_tracking is defined else ''}}",
             "result": {
@@ -120,10 +120,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                     \s+(?P<dhcp>dhcp)
                     |
                     \s+(?P<ip_address>\S+)
-                    (?:\s+(?P<ip_network_mask>\S+))?
+                    (?:\s+(?P<ip_network_mask>(?!secondary\b)\S+))?
+                    (?:\s+(?P<secondary>secondary))?
                     (?:\s+route-preference\s+(?P<route_preference>\d+))?
                     (?:\s+tag\s+(?P<tag>\d+))?
-                    (?:\s+(?P<secondary>secondary))?
                 )
                 \s*$
                 """,
@@ -143,14 +143,14 @@ class L3_interfacesTemplate(NetworkTemplate):
                 "{% if ipv4.addresses.ip_address is defined and ipv4.addresses.ip_network_mask is defined %}"
                 " {{ ipv4.addresses.ip_network_mask|string }}"
                 "{% endif %}"
+                "{% if ipv4.addresses.secondary is defined %}"
+                " secondary"
+                "{% endif %}"
                 "{% if ipv4.addresses.route_preference is defined %}"
                 " route-preference {{ ipv4.addresses.route_preference|string }}"
                 "{% endif %}"
                 "{% if ipv4.addresses.tag is defined %}"
                 " tag {{ ipv4.addresses.tag|string }}"
-                "{% endif %}"
-                "{% if ipv4.addresses.secondary is defined %}"
-                " secondary"
                 "{% endif %}"
             ),
             "result": {
@@ -181,6 +181,23 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv4":
                         {
                             "redirects": True,
+                        },
+                },
+            },
+        },
+        {
+            "name": "ipv4.no_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\sip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv4":
+                        {
+                            "redirects": False,
                         },
                 },
             },
@@ -584,6 +601,23 @@ class L3_interfacesTemplate(NetworkTemplate):
                     {
                         "redirects": True,
                     },
+                },
+            },
+        },
+        {
+            "name": "ipv6.no_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\sipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6":
+                        {
+                            "redirects": False,
+                        },
                 },
             },
         },

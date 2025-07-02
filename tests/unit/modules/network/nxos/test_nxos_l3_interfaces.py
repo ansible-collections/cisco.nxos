@@ -69,7 +69,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     secondary=True,
                                 ),
                             ],
-                            redirects=True,
+                            redirects=False,
                             unreachables=True,
                             proxy_arp=True,
                             port_unreachable=True,
@@ -150,9 +150,9 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         commands = [
             "interface Ethernet1/1",
             "mac-address 00:11:22:33:44:55",
-            "encapsulation dot1Q 100",
-            "even multisite fabric-tracking",
-            "ip redirects",
+            "encapsulation dot1q 100",
+            "evpn multisite fabric-tracking",
+            "no ip redirects",
             "ip unreachables",
             "ip proxy-arp",
             "ip port-unreachable",
@@ -261,6 +261,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
               ip dhcp relay address 11.0.0.1 use-vrf xyz
               ipv6 address 2001:db8::1/32 route-preference 70 tag 97
               ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              no ip redirects
             """,
         )
 
@@ -284,6 +285,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             interface Ethernet1/1
               mac-address 00:11:22:33:44:54
               ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+            interface Ethernet1/2
             """,
         )
 
@@ -348,6 +350,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "interface Ethernet1/1",
             "no mac-address 00:11:22:33:44:54",
             "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "no ip redirects",
             "interface Ethernet1/2",
             "mac-address 00:11:22:33:44:55",
             "ip address 10.0.0.1 secondary",
@@ -355,6 +358,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
             "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
+            "no ip redirects",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -437,6 +441,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
             "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
+            "no ip redirects"
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -451,6 +456,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
               ip dhcp relay address 11.0.0.1 use-vrf xyz
               ipv6 address 2001:db8::1/32 route-preference 70 tag 97
               ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              no ip redirects
             """,
         )
 
@@ -726,6 +732,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         commands = [
             "interface Ethernet1/1",
             "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "no ip redirects",
             "mac-address 00:11:22:33:44:55",
             "ip address 10.0.0.1 secondary",
             "ip verify unicast source reachable-via any allow-default",
@@ -851,9 +858,8 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         commands = [
             "interface Ethernet1/1",
             "mac-address 00:11:22:33:44:55",
-            "encapsulation dot1Q 100",
-            "even multisite fabric-tracking",
-            "ip redirects",
+            "encapsulation dot1q 100",
+            "evpn multisite fabric-tracking",
             "ip unreachables",
             "ip proxy-arp",
             "ip port-unreachable",

@@ -56,7 +56,6 @@ class L3_interfacesFacts(object):
         # parse native config using the L3_interfaces template
         l3_interfaces_parser = L3_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l3_interfaces_parser.parse().values())
-
         ansible_facts["ansible_network_resources"].pop("l3_interfaces", None)
 
         params = utils.remove_empties(

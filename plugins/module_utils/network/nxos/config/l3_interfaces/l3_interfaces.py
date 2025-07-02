@@ -88,6 +88,9 @@ class L3_interfaces(ResourceModule):
         wantd = self.convert_list_to_dict(self.want)
         haved = self.convert_list_to_dict(self.have)
 
+        # handle deprecated attributes
+        wantd = self.handle_deprecated(wantd)
+        
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -103,9 +106,6 @@ class L3_interfaces(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        # handle deprecated attributes
-        wantd = self.handle_deprecated(wantd)
-
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
@@ -116,7 +116,44 @@ class L3_interfaces(ResourceModule):
         for the L3_interfaces network resource.
         """
         begin = len(self.commands)
+        want_redirects = want.get("ipv4", {}).pop("redirects", None)
+        have_redirects = have.get("ipv4", {}).pop("redirects", None)
+        if want_redirects is None and have_redirects is None:
+            if self.state in ["overridden", "deleted", "replaced"]:
+                self.addcmd({"redirects": True}, "ipv4.redirects", True)
+        else:
+            if want_redirects == True and have_redirects == False:
+                self.addcmd({"redirects": want_redirects}, "ipv4.redirects", not want_redirects)
+            elif want_redirects == False and have_redirects is None:
+                self.addcmd({"redirects": not want_redirects}, "ipv4.redirects", not want_redirects)
+        
+        # if want.get("name", "") != "mgmt0":
+        #     want_redirects = want.get("ipv4", {}).pop("redirects", None)
+        #     have_redirects = have.get("ipv4", {}).pop("redirects", None)
+        #     if want_redirects is not None:
+        #         if want_redirects != have_redirects:
+        #             if want_redirects == False:
+        #                 self.addcmd({"redirects": True}, "ipv4.redirects", True)
+        #             else:
+        #                 self.addcmd({"redirects": True}, "ipv4.redirects", False)
+        #     elif not want_redirects and self.state in ["overridden", "deleted", "replaced"]:
+        #         if have_redirects is None or have_redirects == True:
+        #             self.addcmd({"redirects": True}, "ipv4.redirects", True)
+        #repeat for ipv6 redirects
         self.compare(parsers=self.parsers, want=want, have=have)
+        # if want_redirects is not None:
+        #     if want_redirects != have_redirects:
+        #         if want_redirects == False:
+        #             self.addcmd(want, "ipv4.redirects", True)
+        # elif not want and self.state in ["overridden", "deleted"]:
+        #     if have_redirects == None:
+        #         self.addcmd({"ipv4": {"redirects": False}}, "ipv4.redirects", True)
+        # want_redirects = want.get("ipv6", {}).get("redirects", None)
+        # have_redirects = have.get("ipv6", {}).get("redirects", None)
+        # if want_redirects is not None:
+        #     if want_redirects != have_redirects:
+        #         if want_redirects == False:
+        #             self.addcmd(want, "ipv6.redirects", True)
         self._compare_complex_attrs(want, have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -244,6 +281,7 @@ class L3_interfaces(ResourceModule):
             self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
 
     def handle_deprecated(self, wantd):
+        # handling to be deprecated attributes
         result = {}
         for iface_name, iface_data in wantd.items():
             iface_result = iface_data.copy()
@@ -288,16 +326,17 @@ class L3_interfaces(ResourceModule):
 
             ipv4_redirects = iface_result.get("redirects", None)
             ipv4_unreachables = iface_result.get("unreachables", None)
-            ipv6_redirects = iface_result.get("ipv6_redirects", None)
-            if ipv4_redirects:
-                ipv4_value["redirects"] = True
+            ipv6_redirects = iface_result.get("ipv6_redirects", None) 
+            if ipv4_redirects != None:
+                ipv4_value["redirects"] = ipv4_redirects
                 del iface_result["redirects"]
-            if ipv4_unreachables:
-                ipv4_value["unreachables"] = True
+            if ipv4_unreachables != None:
+                ipv4_value["unreachables"] = ipv4_unreachables
                 del iface_result["unreachables"]
-            if ipv6_redirects:
-                ipv6_value["redirects"] = True
+            if ipv6_redirects != None:
+                ipv6_value["redirects"] = ipv6_redirects
                 del iface_result["ipv6_redirects"]
 
             result[iface_name] = iface_result
+        return result
         return result

@@ -1,72 +1,71 @@
 ---
 - ansible.builtin.debug:
-    msg: START Merged nxos_l3_interface state for integration tests on connection={{ ansible_connection }}
+    msg: Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection }}
+
+- name: Set a fact for 'subint3' and 'test_int3'
+  ansible.builtin.set_fact:
+    test_int3: "{{ nxos_int3 }}"
+    subint3: "{{ nxos_int3 }}.42"
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
+- name: Setup1
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - "no system default switchport"
+      - "default interface {{ test_int3 }}"
+      - "interface {{ test_int3 }}"
+      - "  no switchport"
+
 - block:
-    - name: L3_interface merged - merge provided configuration with device configuration
+    - name: Merged
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
-          - name: Ethernet1/1
-            mac_address: 0011.2233.4455
+          - name: "{{ subint3 }}"
+            dot1q: 42
             ipv4:
-              verify:
-                unicast:
-                  source:
-                    reachable_via:
-                      mode: any
-                      allow_default: true
-              dhcp:
-                relay:
-                  address:
-                    - relay_ip: 11.0.0.1
-          - name: Ethernet1/2
-            ipv6:
+              redirects: false
+              unreachables: true
               addresses:
-                - ipv6_address: 2001:db8::1/32
-                  route_preference: 70
-                  tag: 97
-              dhcp:
-                relay:
-                  address:
-                    - relay_ip: 2001:db8::1:abcd
+                - ip_address: 192.168.10.2/24
         state: merged
 
-    - name: L3_interface merged - assert that correct set of commands were generated
-      ansible.builtin.assert:
+    - ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - result.changed == true
+          - "'interface {{ subint3 }}' in result.commands"
+          - "'encapsulation dot1q 42' in result.commands"
+          - "'no ip redirects' in result.commands"
+          - "'ip unreachables' in result.commands"
+          - "'ip address 192.168.10.2/24' in result.commands"
+          - result.commands|length == 5
 
-    - name: L3_interface merged - assert that before dicts are correctly generated
-      ansible.builtin.assert:
+    - name: Gather l3_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: l3_interfaces
+
+    - ansible.builtin.assert:
         that:
-          - >
-            {{
-              result['before']
-              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
-              | symmetric_difference(merged['before'])
-              | length == 0
-            }}
+          - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: L3_interface merged - assert that after dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - >
-            {{
-              result['after']
-              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
-              | symmetric_difference(merged['after'])
-              | length == 0
-            }}
-
-    - name: L3_interface merged - merge provided configuration with device configuration (idempotent)
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_l3_interfaces: *id001
-    - name: L3_interface merged - assert that the previous task was idempotent
-      ansible.builtin.assert:
+
+    - ansible.builtin.assert:
         that:
-          - result['changed'] == false
+          - result.changed == false
+          - result.commands|length == 0
   always:
+    - name: Teardown sub-interface
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "no interface {{ subint3 }}"
+
     - ansible.builtin.include_tasks: _remove_config.yaml

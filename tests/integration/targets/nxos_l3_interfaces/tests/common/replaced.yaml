@@ -1,62 +1,108 @@
 ---
 - ansible.builtin.debug:
-    msg: START Replaced nxos_l3_interfaces state for integration tests on connection={{ ansible_connection }}
+    msg: Start nxos_l3_interfaces replaced integration tests connection={{ ansible_connection }}
+
+- name: Set a fact for 'subint3' and 'test_int3'
+  ansible.builtin.set_fact:
+    test_int3: "{{ nxos_int3 }}"
+    subint3: "{{ nxos_int3 }}.42"
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- ansible.builtin.include_tasks: _populate_config.yaml
+- name: Setup1
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - "no system default switchport"
+      - "default interface {{ test_int3 }}"
+      - "interface {{ test_int3 }}"
+      - "  no switchport"
 
 - block:
-    - name: L3_interface replaced - replaces device configuration of listed interfaces with provided configuration
+    - name: Setup3
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ subint3 }}"
+          - "  encapsulation dot1q 42"
+          - "  ip address 192.168.10.2/24"
+          - "  no ip redirects"
+          - "  ip unreachables"
+
+    - name: Gather l3_interfaces facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: l3_interfaces
+
+    - name: Replaced
       register: result
-      cisco.nxos.nxos_l3_interfaces: &id001
+      cisco.nxos.nxos_l3_interfaces: &id002
         config:
-          - name: Ethernet1/2
-            mac_address: 0011.2233.4456
-            ipv6:
+          - name: "{{ subint3 }}"
+            dot1q: 442
+            redirects: false
+            unreachables: false
+            ipv4:
               addresses:
-                - ipv6_address: 2001:db8::1/32
-                  route_preference: 200
-                  tag: 22
-              dhcp:
-                relay:
-                  address:
-                    - relay_ip: 2001:db8::1:abcd
+                - ip_address: 192.168.20.2/24
+                  tag: 5
+                - ip_address: 192.168.200.2/24
+                  secondary: true
         state: replaced
 
-    - name: L3_interface replaced - assert that correct set of commands were generated
-      ansible.builtin.assert:
+    - ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
+          - result.changed == true
+          - "'interface {{ subint3 }}' in result.commands"
+          - "'encapsulation dot1q 442' in result.commands"
+          - "'no ip unreachables' in result.commands"
+          - "'ip address 192.168.20.2/24 tag 5' in result.commands"
+          - "'ip address 192.168.200.2/24 secondary' in result.commands"
+          - "'no ip address 192.168.10.2/24' in result.commands"
+          - result.commands|length == 6
 
-    - name: L3_interface replaced - assert that before dicts are correctly generated
-      ansible.builtin.assert:
+    - name: Gather l3_interfaces post facts
+      cisco.nxos.nxos_facts: *id001
+
+    - ansible.builtin.assert:
         that:
-          - >
-            {{
-              result['before']
-              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
-              | symmetric_difference(replaced['before'])
-              | length == 0
-            }}
+          - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: L3_interface replaced - assert that after dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - >
-            {{
-              result['after']
-              | selectattr('name', 'in', 'Ethernet1/1,Ethernet1/2')
-              | symmetric_difference(replaced['after'])
-              | length == 0
-            }}
-
-    - name: L3_interface replaced - replaces device configuration of listed interfaces with provided configuration (idempotent)
+    - name: Idempotence - replaced
       register: result
-      cisco.nxos.nxos_l3_interfaces: *id001
-    - name: L3_interface replaced - assert that task was idempotent
-      ansible.builtin.assert:
+      cisco.nxos.nxos_l3_interfaces: *id002
+
+    - ansible.builtin.assert:
         that:
-          - result['changed'] == false
+          - result.changed == false
+          - result.commands|length == 0
+
+    - name: Replaced with no optional attrs specified
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id003
+        config:
+          - name: "{{ subint3 }}"
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface {{ subint3 }}' in result.commands"
+          - "'no encapsulation dot1q 442' in result.commands"
+          - "'no ip address 192.168.20.2/24 tag 5' in result.commands"
+
+    - ansible.builtin.assert:
+        that:
+          - "'ip redirects' in result.commands"
+      when: platform is match('N[3567]')
+
   always:
+    - name: Teardown sub-interface
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "no interface {{ subint3 }}"
+
     - ansible.builtin.include_tasks: _remove_config.yaml
