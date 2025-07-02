@@ -441,7 +441,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
             "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
-            "no ip redirects"
+            "no ip redirects",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

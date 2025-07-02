@@ -172,6 +172,7 @@ Parameters
                 </td>
                 <td>
                         <div>IPV4 address of the L3 interface.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
             <tr>
@@ -703,13 +704,18 @@ Parameters
                     <b>secondary</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>A boolean attribute to manage addition of secondary IP address.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
             <tr>
@@ -727,6 +733,7 @@ Parameters
                 </td>
                 <td>
                         <div>URIB route tag value for local/direct routes.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
             <tr>
@@ -906,6 +913,7 @@ Parameters
                 </td>
                 <td>
                         <div>IPV6 address of the L3 interface.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
             <tr>
@@ -1378,27 +1386,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_redirects</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enables/disables ipv6 redirects.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>redirects</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1412,7 +1399,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Send ICMP Redirect messages.</div>
+                        <div>Enables/disables ipv4 redirects.</div>
                 </td>
             </tr>
             <tr>
@@ -1430,6 +1417,7 @@ Parameters
                 </td>
                 <td>
                         <div>URIB route tag value for local/direct routes.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
             <tr>
@@ -1450,7 +1438,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enable sending ICMP unreachables (other than port-unreachable).</div>
+                        <div>Enables/disables ip redirects.</div>
                 </td>
             </tr>
             <tr>
@@ -1582,6 +1570,27 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ipv6_redirects</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables/disables ipv6 redirects.</div>
+                        <div>This option will be DEPRECATED</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mac_address</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1609,6 +1618,48 @@ Parameters
                 </td>
                 <td>
                         <div>Full name of L3 interface, i.e. Ethernet1/1.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>redirects</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables/disables ipv4 redirects.</div>
+                        <div>This option will be DEPRECATED</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>unreachables</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables/disables ip redirects.</div>
+                        <div>This option will be DEPRECATED</div>
                 </td>
             </tr>
 
@@ -1703,7 +1754,7 @@ Examples
                       vrf_name: abc
           - name: Ethernet1/2
             ipv6:
-              address:
+              addresses:
                 - ipv6_address: 2001:db8::1/32
                   route_preference: 70
                   tag: 97
@@ -1744,7 +1795,7 @@ Examples
     #             vrf_name: abc
     # - name: Ethernet1/2
     #   ipv6:
-    #     address:
+    #     addresses:
     #       - ipv6_address: 2001:db8::1/32
     #         route_preference: 70
     #         tag: 97
@@ -1786,7 +1837,7 @@ Examples
           - name: Ethernet1/2
             mac_address: 0011.2233.4456
             ipv6:
-              address:
+              addresses:
                 - ipv6_address: 2001:db8::1/32
                   route_preference: 200
                   tag: 22
@@ -1816,7 +1867,7 @@ Examples
     #             vrf_name: abc
     # - name: Ethernet1/2
     #   ipv6:
-    #     address:
+    #     addresses:
     #       - ipv6_address: 2001:db8::1/32
     #         route_preference: 70
     #         tag: 97
@@ -1847,7 +1898,7 @@ Examples
     # - name: Ethernet1/2
     #   mac_address: 0011.2233.4456
     #   ipv6:
-    #     address:
+    #     addresses:
     #       - ipv6_address: 2001:db8::1/32
     #         route_preference: 200
     #         tag: 22
@@ -1918,7 +1969,7 @@ Examples
     #             vrf_name: abc
     # - name: Ethernet1/2
     #   ipv6:
-    #     address:
+    #     addresses:
     #       - ipv6_address: 2001:db8::1/32
     #         route_preference: 70
     #         tag: 97
@@ -1994,7 +2045,7 @@ Examples
     #             vrf_name: abc
     # - name: Ethernet1/2
     #   ipv6:
-    #     address:
+    #     addresses:
     #       - ipv6_address: 2001:db8::1/32
     #         route_preference: 70
     #         tag: 97
@@ -2042,7 +2093,7 @@ Examples
                       vrf_name: abc
           - name: Ethernet1/2
             ipv6:
-              address:
+              addresses:
                 - ipv6_address: 2001:db8::1/32
                   route_preference: 70
                   tag: 97
@@ -2102,7 +2153,7 @@ Examples
     #               vrf_name: abc
     #   - name: Ethernet1/2
     #     ipv6:
-    #       address:
+    #       addresses:
     #         - ipv6_address: 2001:db8::1/32
     #           route_preference: 70
     #           tag: 97
@@ -2148,7 +2199,7 @@ Examples
     #               vrf_name: abc
     #   - name: Ethernet1/2
     #     ipv6:
-    #       address:
+    #       addresses:
     #         - ipv6_address: 2001:db8::1/32
     #           route_preference: 70
     #           tag: 97
