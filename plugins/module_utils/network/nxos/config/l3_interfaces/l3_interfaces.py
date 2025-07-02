@@ -118,42 +118,11 @@ class L3_interfaces(ResourceModule):
         begin = len(self.commands)
         want_redirects = want.get("ipv4", {}).pop("redirects", None)
         have_redirects = have.get("ipv4", {}).pop("redirects", None)
-        if want_redirects is None and have_redirects is None:
-            if self.state in ["overridden", "deleted", "replaced"]:
-                self.addcmd({"redirects": True}, "ipv4.redirects", True)
-        else:
-            if want_redirects == True and have_redirects == False:
-                self.addcmd({"redirects": want_redirects}, "ipv4.redirects", not want_redirects)
-            elif want_redirects == False and have_redirects is None:
-                self.addcmd({"redirects": not want_redirects}, "ipv4.redirects", not want_redirects)
-
-        # if want.get("name", "") != "mgmt0":
-        #     want_redirects = want.get("ipv4", {}).pop("redirects", None)
-        #     have_redirects = have.get("ipv4", {}).pop("redirects", None)
-        #     if want_redirects is not None:
-        #         if want_redirects != have_redirects:
-        #             if want_redirects == False:
-        #                 self.addcmd({"redirects": True}, "ipv4.redirects", True)
-        #             else:
-        #                 self.addcmd({"redirects": True}, "ipv4.redirects", False)
-        #     elif not want_redirects and self.state in ["overridden", "deleted", "replaced"]:
-        #         if have_redirects is None or have_redirects == True:
-        #             self.addcmd({"redirects": True}, "ipv4.redirects", True)
-        # repeat for ipv6 redirects
+        self.handle_redirects(want_redirects, have_redirects, "ipv4.redirects")
+        want_redirects = want.get("ipv6", {}).pop("redirects", None)
+        have_redirects = have.get("ipv6", {}).pop("redirects", None)
+        self.handle_redirects(want_redirects, have_redirects, "ipv6.redirects")
         self.compare(parsers=self.parsers, want=want, have=have)
-        # if want_redirects is not None:
-        #     if want_redirects != have_redirects:
-        #         if want_redirects == False:
-        #             self.addcmd(want, "ipv4.redirects", True)
-        # elif not want and self.state in ["overridden", "deleted"]:
-        #     if have_redirects == None:
-        #         self.addcmd({"ipv4": {"redirects": False}}, "ipv4.redirects", True)
-        # want_redirects = want.get("ipv6", {}).get("redirects", None)
-        # have_redirects = have.get("ipv6", {}).get("redirects", None)
-        # if want_redirects is not None:
-        #     if want_redirects != have_redirects:
-        #         if want_redirects == False:
-        #             self.addcmd(want, "ipv6.redirects", True)
         self._compare_complex_attrs(want, have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -280,6 +249,16 @@ class L3_interfaces(ResourceModule):
         for key, have_value in haved.items():
             self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
 
+    def handle_redirects(self, want_redirects, have_redirects, parser):
+        if want_redirects is None and have_redirects is None:
+            if self.state in ["overridden", "deleted", "replaced"]:
+                self.addcmd({"redirects": True}, parser, True)
+        else:
+            if want_redirects == True and have_redirects == False:
+                self.addcmd({"redirects": want_redirects}, parser, not want_redirects)
+            elif want_redirects == False and have_redirects is None:
+                self.addcmd({"redirects": not want_redirects}, parser, not want_redirects)
+
     def handle_deprecated(self, wantd):
         # handling to be deprecated attributes
         result = {}
@@ -338,5 +317,4 @@ class L3_interfaces(ResourceModule):
                 del iface_result["ipv6_redirects"]
 
             result[iface_name] = iface_result
-        return result
         return result
