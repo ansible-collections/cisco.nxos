@@ -72,11 +72,11 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                 "mode": {"type": "str"},
                                                 "allow_default": {"type": "bool"},
                                             },
-                                        }
+                                        },
                                     },
-                                }
+                                },
                             },
-                        }
+                        },
                     },
                 },
                 "ipv6_verify": {
@@ -94,11 +94,11 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                                 "mode": {"type": "str"},
                                                 "allow_default": {"type": "bool"},
                                             },
-                                        }
+                                        },
                                     },
-                                }
+                                },
                             },
-                        }
+                        },
                     },
                 },
                 "dhcp": {
@@ -113,9 +113,9 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "suboption": {
                                             "type": "dict",
                                             "options": {
-                                                "circuit_id": {"type": "str"}
+                                                "circuit_id": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "smart_relay": {"type": "bool"},
@@ -125,13 +125,13 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "information": {
                                             "type": "dict",
                                             "options": {
-                                                "trusted": {"type": "bool"}
+                                                "trusted": {"type": "bool"},
                                             },
                                         },
                                         "subnet_selection": {
                                             "type": "dict",
                                             "options": {
-                                                "subnet_ip": {"type": "str"}
+                                                "subnet_ip": {"type": "str"},
                                             },
                                         },
                                         "source_interface": {

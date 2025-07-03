@@ -62,66 +62,66 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         ipv6_redirects=True,
                         ipv6_unreachables=True,
                         dhcp=dict(
-                                ipv4=dict(
-                                    option82=dict(
-                                        suboption=dict(
-                                            circuit_id="abc",
-                                        ),
-                                    ),
-                                    smart_relay=True,
-                                    relay=dict(
-                                        information=dict(trusted=True),
-                                        subnet_selection=dict(subnet_ip="10.0.0.7"),
-                                        source_interface=dict(
-                                            interface_type="port-channel",
-                                            interface_id="455",
-                                        ),
-                                        address=[
-                                            dict(
-                                                relay_ip="11.0.0.1",
-                                                vrf_name="xyz",
-                                            ),
-                                        ],
+                            ipv4=dict(
+                                option82=dict(
+                                    suboption=dict(
+                                        circuit_id="abc",
                                     ),
                                 ),
-                                ipv6=dict(
-                                    smart_relay=True,
-                                    relay=dict(
-                                        source_interface=dict(
-                                            interface_type="port-channel",
-                                            interface_id="455",
-                                        ),
-                                        address=[
-                                            dict(
-                                                relay_ip="2001:0db8::1:abcd",
-                                                vrf_name="xyz",
-                                                interface_type="vlan",
-                                                interface_id="51",
-                                            ),
-                                        ],
+                                smart_relay=True,
+                                relay=dict(
+                                    information=dict(trusted=True),
+                                    subnet_selection=dict(subnet_ip="10.0.0.7"),
+                                    source_interface=dict(
+                                        interface_type="port-channel",
+                                        interface_id="455",
                                     ),
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
                                 ),
                             ),
+                            ipv6=dict(
+                                smart_relay=True,
+                                relay=dict(
+                                    source_interface=dict(
+                                        interface_type="port-channel",
+                                        interface_id="455",
+                                    ),
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            vrf_name="xyz",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
                         verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
+                        ),
                         ipv6_verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
+                        ),
                         ipv4=[
                             dict(address="dhcp"),
                             dict(
@@ -345,7 +345,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 route_preference=70,
                                 tag=97,
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="overridden",
@@ -742,4 +742,3 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        

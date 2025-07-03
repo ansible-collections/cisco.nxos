@@ -162,7 +162,7 @@ class L3_interfaces(ResourceModule):
             )
 
             if ipv4_value_addresses:
-                iface_result['ipv4'] = list_to_dict(
+                iface_result["ipv4"] = list_to_dict(
                     ipv4_value_addresses,
                     ["address", "ip_network_mask"],
                 )
@@ -172,7 +172,7 @@ class L3_interfaces(ResourceModule):
                     ["relay_ip"],
                 )
             if ipv6_value_addresses:
-                iface_result['ipv6'] = list_to_dict(
+                iface_result["ipv6"] = list_to_dict(
                     ipv6_value_addresses,
                     [
                         "address",
