@@ -241,7 +241,7 @@ class L3_interfaces(ResourceModule):
             if self.state in ["overridden", "deleted", "replaced"]:
                 self.addcmd({"redirects": True}, parser, True)
         else:
-            if want_redirects == True and have_redirects == False:
+            if want_redirects is True and have_redirects is False:
                 self.addcmd({"redirects": want_redirects}, parser, not want_redirects)
-            elif want_redirects == False and have_redirects is None:
+            elif want_redirects is False and have_redirects is None:
                 self.addcmd({"redirects": not want_redirects}, parser, not want_redirects)
