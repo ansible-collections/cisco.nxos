@@ -27,8 +27,7 @@
         config:
           - name: Ethernet1/1
             ipv6:
-              address:
-                - ipv6_address: 2001:db8::2/32
+              - address: 2001:db8::2/32
 
     - name: Gather interface facts
       cisco.nxos.nxos_facts:
@@ -46,8 +45,7 @@
         config:
           - name: Ethernet1/2
             ipv6:
-              address:
-                - ipv6_address: 2001:db8::3/32
+              - address: 2001:db8::3/32
 
     - name: Gather interface facts
       cisco.nxos.nxos_facts:
