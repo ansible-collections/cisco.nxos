@@ -51,56 +51,60 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     "type": "str",
                     "choices": ["fabric-tracking", "dci-tracking"],
                 },
-                "redirects": {"type": "bool"},
                 "ipv6_redirects": {"type": "bool"},
+                "ipv6_unreachables": {"type": "bool"},
+                "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
-                "ipv4": {
+                "proxy_arp": {"type": "bool"},
+                "port_unreachable": {"type": "bool"},
+                "verify": {
                     "type": "dict",
                     "options": {
-                        "address": {"type": "str"},
-                        "secondary": {"type": "bool"},
-                        "tag": {"type": "int"},
-                        "addresses": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {
-                                "dhcp": {"type": "bool"},
-                                "ip_address": {"type": "str"},
-                                "ip_network_mask": {"type": "str"},
-                                "route_preference": {"type": "int"},
-                                "tag": {"type": "int"},
-                                "secondary": {"type": "bool"},
-                            },
-                        },
-                        "redirects": {"type": "bool"},
-                        "unreachables": {"type": "bool"},
-                        "proxy_arp": {"type": "bool"},
-                        "port_unreachable": {"type": "bool"},
-                        "verify": {
+                        "unicast": {
                             "type": "dict",
                             "options": {
-                                "unicast": {
+                                "source": {
                                     "type": "dict",
                                     "options": {
-                                        "source": {
+                                        "reachable_via": {
                                             "type": "dict",
                                             "options": {
-                                                "reachable_via": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "mode": {"type": "str"},
-                                                        "allow_default": {
-                                                            "type": "bool",
-                                                        },
-                                                    },
-                                                },
+                                                "mode": {"type": "str"},
+                                                "allow_default": {"type": "bool"},
                                             },
-                                        },
+                                        }
                                     },
-                                },
+                                }
                             },
-                        },
-                        "dhcp": {
+                        }
+                    },
+                },
+                "ipv6_verify": {
+                    "type": "dict",
+                    "options": {
+                        "unicast": {
+                            "type": "dict",
+                            "options": {
+                                "source": {
+                                    "type": "dict",
+                                    "options": {
+                                        "reachable_via": {
+                                            "type": "dict",
+                                            "options": {
+                                                "mode": {"type": "str"},
+                                                "allow_default": {"type": "bool"},
+                                            },
+                                        }
+                                    },
+                                }
+                            },
+                        }
+                    },
+                },
+                "dhcp": {
+                    "type": "dict",
+                    "options": {
+                        "ipv4": {
                             "type": "dict",
                             "options": {
                                 "option82": {
@@ -109,9 +113,9 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "suboption": {
                                             "type": "dict",
                                             "options": {
-                                                "circuit_id": {"type": "str"},
+                                                "circuit_id": {"type": "str"}
                                             },
-                                        },
+                                        }
                                     },
                                 },
                                 "smart_relay": {"type": "bool"},
@@ -121,13 +125,13 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                         "information": {
                                             "type": "dict",
                                             "options": {
-                                                "trusted": {"type": "bool"},
+                                                "trusted": {"type": "bool"}
                                             },
                                         },
                                         "subnet_selection": {
                                             "type": "dict",
                                             "options": {
-                                                "subnet_ip": {"type": "str"},
+                                                "subnet_ip": {"type": "str"}
                                             },
                                         },
                                         "source_interface": {
@@ -149,57 +153,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
-                    },
-                },
-                "ipv6": {
-                    "type": "dict",
-                    "options": {
-                        "address": {"type": "str"},
-                        "tag": {"type": "int"},
-                        "addresses": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {
-                                "dhcp": {"type": "bool"},
-                                "autoconfig": {"type": "bool"},
-                                "use_link_local_only": {"type": "bool"},
-                                "ipv6_address": {"type": "str"},
-                                "default": {"type": "bool"},
-                                "aggregate_prefix_length": {"type": "int"},
-                                "anycast": {"type": "bool"},
-                                "eui64": {"type": "bool"},
-                                "route_preference": {"type": "int"},
-                                "tag": {"type": "int"},
-                                "use_bia": {"type": "bool"},
-                            },
-                        },
-                        "redirects": {"type": "bool"},
-                        "unreachables": {"type": "bool"},
-                        "verify": {
-                            "type": "dict",
-                            "options": {
-                                "unicast": {
-                                    "type": "dict",
-                                    "options": {
-                                        "source": {
-                                            "type": "dict",
-                                            "options": {
-                                                "reachable_via": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "mode": {"type": "str"},
-                                                        "allow_default": {
-                                                            "type": "bool",
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                        "dhcp": {
+                        "ipv6": {
                             "type": "dict",
                             "options": {
                                 "smart_relay": {"type": "bool"},
@@ -227,6 +181,30 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
+                    },
+                },
+                "ipv4": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "address": {"type": "str"},
+                        "tag": {"type": "int"},
+                        "secondary": {"type": "bool"},
+                        "ip_network_mask": {"type": "str"},
+                        "route_preference": {"type": "int"},
+                    },
+                },
+                "ipv6": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "address": {"type": "str"},
+                        "tag": {"type": "int"},
+                        "aggregate_prefix_length": {"type": "int"},
+                        "anycast": {"type": "bool"},
+                        "eui64": {"type": "bool"},
+                        "route_preference": {"type": "int"},
+                        "use_bia": {"type": "bool"},
                     },
                 },
             },

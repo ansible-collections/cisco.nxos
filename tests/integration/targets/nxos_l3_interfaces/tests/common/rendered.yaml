@@ -19,16 +19,14 @@
         config:
           - name: Ethernet1/800
             ipv4:
-              addresses:
-                - ip_address: 192.168.1.100/24
-                  tag: 5
-                - ip_address: 10.1.1.1/24
-                  tag: 10
-                  secondary: true
+              - address: 192.168.1.100/24
+                tag: 5
+              - address: 10.1.1.1/24
+                tag: 10
+                secondary: true
             ipv6:
-              addresses:
-                - ipv6_address: fd5d:12c9:2201:2::1/64
-                  tag: 6
+              - address: fd5d:12c9:2201:2::1/64
+                tag: 6
         state: rendered
 
     - ansible.builtin.assert:

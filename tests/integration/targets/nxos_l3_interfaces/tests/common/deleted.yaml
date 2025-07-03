@@ -50,7 +50,8 @@
           - "'no encapsulation dot1q 42' in result.commands"
           - "'no ip unreachables' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
-          - result.commands|length == 4
+          - "'no ipv6 redirects' in result.commands"
+          - result.commands|length == 5
 
     - name: Idempotence - deleted
       register: result

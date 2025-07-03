@@ -65,96 +65,75 @@ options:
       ipv6_redirects:
             description:
             - Enables/disables ipv6 redirects.
-            - This option will be DEPRECATED
+            type: bool
+      ipv6_unreachables:
+            description:
+            - Enables/disables ip redirects.
             type: bool
       redirects:
             description:
             - Enables/disables ipv4 redirects.
-            - This option will be DEPRECATED
             type: bool
       unreachables:
             description:
             - Enables/disables ip redirects.
-            - This option will be DEPRECATED
             type: bool
-      ipv4:
-        description: IPv4 address and attributes of the L3 interface.
-        type: dict
-        suboptions:
-          address:
-            description:
-            - IPV4 address of the L3 interface.
-            - This option will be DEPRECATED
-            type: str
-          tag:
-            description:
-            - URIB route tag value for local/direct routes.
-            - This option will be DEPRECATED
-            type: int
-          secondary:
-            description:
-            - A boolean attribute to manage addition of secondary IP address.
-            - This option will be DEPRECATED
-            type: bool
-          addresses:
-            description: IPV4 address of the L3 interface.
-            type: list
-            elements: dict
-            suboptions:
-              dhcp:
-                description: Configure IP address from a dhcp server
-                type: bool
-              ip_address:
-                description: IP address in format i.i.i.i or IP prefix and network mask length in format x.x.x.x/m
-                type: str
-              ip_network_mask:
-                description: IP prefix and network mask length in format x.x.x.x/m or IP network mask in format m.m.m.m
-                type: str
-              route_preference:
-                description: URIB route preference for local/direct routes
-                type: int
-              tag:
-                description: URIB route tag value for local/direct routes
-                type: int
-              secondary:
-                description: Configure additional IP addresses on interface
-                type: bool
-          redirects:
-            description: Send ICMP Redirect messages.
-            type: bool
-          unreachables:
-            description: Enable sending ICMP unreachables (other than port-unreachable).
-            type: bool
-          proxy_arp:
+      proxy_arp:
             description: Configure proxy ARP.
             type: bool
-          port_unreachable:
-            description: Enable sending ICMP port-unreachable.
-            type: bool
-          verify:
-            description: Configure Unicast Reverse Path Forwarding or IP Source Guard.
+      port_unreachable:
+        description: Enable sending ICMP port-unreachable.
+        type: bool
+      verify:
+        description: Configure Unicast Reverse Path Forwarding or IP Source Guard.
+        type: dict
+        suboptions:
+          unicast:
+            description: Unicast Reverse Path Forwarding.
             type: dict
             suboptions:
-              unicast:
-                description: Unicast Reverse Path Forwarding.
+              source:
+                description: Validation of source address.
                 type: dict
                 suboptions:
-                  source:
-                    description: Validation of source address.
+                  reachable_via:
+                    description: Specify reachability check to apply to the source address.
                     type: dict
                     suboptions:
-                      reachable_via:
-                        description: Specify reachability check to apply to the source address.
-                        type: dict
-                        suboptions:
-                          mode:
-                            description: Source is reachable via any/rx interface.
-                            type: str
-                          allow_default:
-                            description: Loose Default Route Unicast Reverse Path Forwarding.
-                            type: bool
-          dhcp:
-            description: Configure DHCP snooping or relay
+                      mode:
+                        description: Source is reachable via any/rx interface.
+                        type: str
+                      allow_default:
+                        description: Loose Default Route Unicast Reverse Path Forwarding.
+                        type: bool
+      ipv6_verify:
+        description: Unicast Reverse Path Forwarding.
+        type: dict
+        suboptions:
+          unicast:
+            description: Unicast Reverse Path Forwarding.
+            type: dict
+            suboptions:
+              source:
+                description: Validation of source address.
+                type: dict
+                suboptions:
+                  reachable_via:
+                    description: Specify reachability check to apply to the source address.
+                    type: dict
+                    suboptions:
+                      mode:
+                        description: Source is reachable via any/rx interface.
+                        type: str
+                      allow_default:
+                        description: Loose Default Route Unicast Reverse Path Forwarding.
+                        type: bool
+      dhcp:
+        description: Configure DHCP snooping or relay
+        type: dict
+        suboptions:
+          ipv4:
+            description: DHCP snooping for ipv4
             type: dict
             suboptions:
               option82:
@@ -200,7 +179,7 @@ options:
                         description: Interface ID
                         type: str
                   address:
-                    description: Configure DHCP server to refer to
+                    description: List of ipv4 relay addresses
                     type: list
                     elements: dict
                     suboptions:
@@ -210,90 +189,8 @@ options:
                       vrf_name:
                         description: Helper address VRF membership
                         type: str
-      ipv6:
-        description: IPv6 address and attributes of the L3 interface.
-        type: dict
-        suboptions:
-          address:
-            description:
-            - IPV6 address of the L3 interface.
-            - This option will be DEPRECATED
-            type: str
-          tag:
-            description:
-            - URIB route tag value for local/direct routes.
-            - This option will be DEPRECATED
-            type: int
-          redirects:
-            description:
-            - Enables/disables ipv4 redirects.
-            type: bool
-          unreachables:
-            description:
-            - Enables/disables ip redirects.
-            type: bool
-          addresses:
-            description: IPV6 address of the L3 interface.
-            type: list
-            elements: dict
-            suboptions:
-              dhcp:
-                description: Configure IPv6 address from a dhcp server
-                type: bool
-              autoconfig:
-                description: Configure IPv6 Stateless address autoconfig
-                type: bool
-              use_link_local_only:
-                description: Enable IPv6 on interface using only a single link-local address
-                type: bool
-              ipv6_address:
-                description: IPv6 prefix format - xxxx:xxxx/ml, xxxx:xxxx::/ml, xxxx::xx/128
-                type: str
-              default:
-                description: For SLAAC, adds default route and the nh would be fetched from RA source address
-                type: bool
-              aggregate_prefix_length:
-                description: Prefix-Length for AM Route Aggregation
-                type: int
-              anycast:
-                description: Configure IPv6 anycast address on interface
-                type: bool
-              eui64:
-                description: Configure Extended Unique Identifier for the low-order 64 bits
-                type: bool
-              route_preference:
-                description: URIB route preference for local/direct routes
-                type: int
-              tag:
-                description: URIB route tag value for local/direct routes
-                type: int
-              use_bia:
-                description: Use BIA
-                type: bool
-          verify:
-            description: Unicast Reverse Path Forwarding.
-            type: dict
-            suboptions:
-              unicast:
-                description: Unicast Reverse Path Forwarding.
-                type: dict
-                suboptions:
-                  source:
-                    description: Validation of source address.
-                    type: dict
-                    suboptions:
-                      reachable_via:
-                        description: Specify reachability check to apply to the source address.
-                        type: dict
-                        suboptions:
-                          mode:
-                            description: Source is reachable via any/rx interface.
-                            type: str
-                          allow_default:
-                            description: Loose Default Route Unicast Reverse Path Forwarding.
-                            type: bool
-          dhcp:
-            description: Configure DHCP snooping or relay
+          ipv6:
+            description: DHCP snooping for ipv6
             type: dict
             suboptions:
               smart_relay:
@@ -330,6 +227,55 @@ options:
                       interface_id:
                         description: Interface ID
                         type: str
+      ipv4:
+        description: IPv4 address and attributes of the L3 interface.
+        type: list
+        elements: dict
+        suboptions:
+          address:
+            description:
+            - IPV4 address of the L3 interface.
+            type: str
+          tag:
+            description:
+            - URIB route tag value for local/direct routes.
+            type: int
+          secondary:
+            description:
+            - A boolean attribute to manage addition of secondary IP address.
+            type: bool
+          ip_network_mask:
+                description: IP prefix and network mask length in format x.x.x.x/m or IP network mask in format m.m.m.m
+                type: str
+          route_preference:
+                description: URIB route preference for local/direct routes
+                type: int
+      ipv6:
+        description: IPv6 address and attributes of the L3 interface.
+        type: list
+        elements: dict
+        suboptions:
+          address:
+            description: IPV6 address of the L3 interface.
+            type: str
+          tag:
+            description: URIB route tag value for local/direct routes.
+            type: int
+          aggregate_prefix_length:
+            description: Prefix-Length for AM Route Aggregation
+            type: int
+          anycast:
+            description: Configure IPv6 anycast address on interface
+            type: bool
+          eui64:
+            description: Configure Extended Unique Identifier for the low-order 64 bits
+            type: bool
+          route_preference:
+            description: URIB route preference for local/direct routes
+            type: int
+          use_bia:
+            description: Use BIA
+            type: bool
   running_config:
     description:
       - This option is used only with state I(parsed).

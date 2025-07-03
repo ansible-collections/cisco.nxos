@@ -44,11 +44,10 @@
             redirects: false
             unreachables: false
             ipv4:
-              addresses:
-                - ip_address: 192.168.20.2/24
-                  tag: 5
-                - ip_address: 192.168.200.2/24
-                  secondary: true
+              - address: 192.168.20.2/24
+                tag: 5
+              - address: 192.168.200.2/24
+                secondary: true
         state: replaced
 
     - ansible.builtin.assert:
@@ -58,10 +57,11 @@
           - "'interface {{ subint3 }}' in result.commands"
           - "'encapsulation dot1q 442' in result.commands"
           - "'no ip unreachables' in result.commands"
+          - "'no ipv6 redirects' in result.commands"
           - "'ip address 192.168.20.2/24 tag 5' in result.commands"
           - "'ip address 192.168.200.2/24 secondary' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
-          - result.commands|length == 6
+          - result.commands|length == 7
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001

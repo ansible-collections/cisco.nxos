@@ -45,8 +45,7 @@
         overriden_config:
           - name: "{{ test_int3 }}"
             ipv4:
-              addresses:
-                - ip_address: 10.1.1.3/24
+              - address: 10.1.1.3/24
 
     - name: Overridden
       register: result

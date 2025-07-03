@@ -55,25 +55,54 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         mac_address="00:11:22:33:44:55",
                         dot1q=100,
                         evpn_multisite_tracking="fabric-tracking",
-                        ipv4=dict(
-                            addresses=[
-                                dict(dhcp=True),
-                                dict(
-                                    ip_address="10.0.0.2",
-                                    ip_network_mask="10.0.0.1",
-                                    route_preference=70,
-                                    tag=97,
+                        redirects=False,
+                        unreachables=True,
+                        proxy_arp=True,
+                        port_unreachable=True,
+                        ipv6_redirects=True,
+                        ipv6_unreachables=True,
+                        dhcp=dict(
+                                ipv4=dict(
+                                    option82=dict(
+                                        suboption=dict(
+                                            circuit_id="abc",
+                                        ),
+                                    ),
+                                    smart_relay=True,
+                                    relay=dict(
+                                        information=dict(trusted=True),
+                                        subnet_selection=dict(subnet_ip="10.0.0.7"),
+                                        source_interface=dict(
+                                            interface_type="port-channel",
+                                            interface_id="455",
+                                        ),
+                                        address=[
+                                            dict(
+                                                relay_ip="11.0.0.1",
+                                                vrf_name="xyz",
+                                            ),
+                                        ],
+                                    ),
                                 ),
-                                dict(
-                                    ip_network_mask="10.0.0.3/9",
-                                    secondary=True,
+                                ipv6=dict(
+                                    smart_relay=True,
+                                    relay=dict(
+                                        source_interface=dict(
+                                            interface_type="port-channel",
+                                            interface_id="455",
+                                        ),
+                                        address=[
+                                            dict(
+                                                relay_ip="2001:0db8::1:abcd",
+                                                vrf_name="xyz",
+                                                interface_type="vlan",
+                                                interface_id="51",
+                                            ),
+                                        ],
+                                    ),
                                 ),
-                            ],
-                            redirects=False,
-                            unreachables=True,
-                            proxy_arp=True,
-                            port_unreachable=True,
-                            verify=dict(
+                            ),
+                        verify=dict(
                                 unicast=dict(
                                     source=dict(
                                         reachable_via=dict(
@@ -83,64 +112,43 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
-                                option82=dict(
-                                    suboption=dict(
-                                        circuit_id="abc",
-                                    ),
-                                ),
-                                smart_relay=True,
-                                relay=dict(
-                                    information=dict(trusted=True),
-                                    subnet_selection=dict(subnet_ip="10.0.0.7"),
-                                    source_interface=dict(
-                                        interface_type="port-channel",
-                                        interface_id="455",
-                                    ),
-                                    address=[
-                                        dict(
-                                            relay_ip="11.0.0.1",
-                                            vrf_name="xyz",
+                        ipv6_verify=dict(
+                                unicast=dict(
+                                    source=dict(
+                                        reachable_via=dict(
+                                            mode="any",
+                                            allow_default=True,
                                         ),
-                                    ],
+                                    ),
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(dhcp=True),
-                                dict(use_link_local_only=True),
-                                dict(autoconfig=True),
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                                dict(
-                                    ipv6_address="2001:db8::/64",
-                                    eui64=True,
-                                ),
-                            ],
-                            redirects=True,
-                            unreachables=True,
-                            dhcp=dict(
-                                smart_relay=True,
-                                relay=dict(
-                                    source_interface=dict(
-                                        interface_type="port-channel",
-                                        interface_id="455",
-                                    ),
-                                    address=[
-                                        dict(
-                                            relay_ip="2001:0db8::1:abcd",
-                                            vrf_name="xyz",
-                                            interface_type="vlan",
-                                            interface_id="51",
-                                        ),
-                                    ],
-                                ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                            dict(
+                                address="10.0.0.2",
+                                ip_network_mask="10.0.0.1",
+                                route_preference=70,
+                                tag=97,
                             ),
-                        ),
+                            dict(
+                                ip_network_mask="10.0.0.3/9",
+                                secondary=True,
+                            ),
+                        ],
+                        ipv6=[
+                            dict(address="dhcp"),
+                            dict(address="use-link-local-only"),
+                            dict(address="autoconfig"),
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                            dict(
+                                address="2001:db8::/64",
+                                eui64=True,
+                            ),
+                        ],
                     ),
                 ],
                 state="merged",
@@ -174,6 +182,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ipv6 address 2001:db8::/64 eui64",
             "ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf xyz",
+            "ipv6 verify unicast source reachable-via any allow-default",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -197,21 +206,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(dhcp=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -221,16 +227,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -243,6 +240,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
                     ),
                 ],
                 state="merged",
@@ -295,21 +302,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/2",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(ip_network_mask="10.0.0.1", secondary=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -319,16 +323,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -341,6 +336,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ]
                     ),
                 ],
                 state="overridden",
@@ -383,21 +388,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/2",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(ip_network_mask="10.0.0.1", secondary=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -407,16 +409,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -429,6 +422,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
                     ),
                 ],
                 state="replaced",
@@ -470,21 +473,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(dhcp=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -494,16 +494,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -516,6 +507,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
                     ),
                 ],
                 state="replaced",
@@ -530,21 +531,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(dhcp=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -554,16 +552,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -576,6 +565,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
                     ),
                 ],
                 state="rendered",
@@ -615,21 +614,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             {
                 "name": "Ethernet1/1",
                 "mac_address": "00:11:22:33:44:55",
-                "ipv4": {
-                    "addresses": [
-                        {"dhcp": True},
-                    ],
-                    "verify": {
-                        "unicast": {
-                            "source": {
-                                "reachable_via": {
-                                    "mode": "any",
-                                    "allow_default": True,
-                                },
+                "verify": {
+                    "unicast": {
+                        "source": {
+                            "reachable_via": {
+                                "mode": "any",
+                                "allow_default": True,
                             },
                         },
                     },
-                    "dhcp": {
+                },
+                "dhcp": {
+                    "ipv4": {
                         "relay": {
                             "address": [
                                 {
@@ -639,16 +635,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                             ],
                         },
                     },
-                },
-                "ipv6": {
-                    "addresses": [
-                        {
-                            "ipv6_address": "2001:db8::1/32",
-                            "route_preference": 70,
-                            "tag": 97,
-                        },
-                    ],
-                    "dhcp": {
+                    "ipv6": {
                         "relay": {
                             "address": [
                                 {
@@ -661,6 +648,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         },
                     },
                 },
+                "ipv4": [
+                    {"address": "dhcp"},
+                ],
+                "ipv6": [
+                    {
+                        "address": "2001:db8::1/32",
+                        "route_preference": 70,
+                        "tag": 97,
+                    },
+                ],
             },
         ]
         self.assertEqual(result["gathered"], gathered)
@@ -682,21 +679,18 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         mac_address="00:11:22:33:44:55",
-                        ipv4=dict(
-                            addresses=[
-                                dict(ip_network_mask="10.0.0.1", secondary=True),
-                            ],
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
                                     ),
                                 ),
                             ),
-                            dhcp=dict(
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -706,16 +700,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                     ],
                                 ),
                             ),
-                        ),
-                        ipv6=dict(
-                            addresses=[
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=65,
-                                    tag=200,
-                                ),
-                            ],
-                            dhcp=dict(
+                            ipv6=dict(
                                 relay=dict(
                                     address=[
                                         dict(
@@ -728,6 +713,16 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ),
                             ),
                         ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=65,
+                                tag=200,
+                            ),
+                        ],
                     ),
                 ],
                 state="overridden",
@@ -747,147 +742,4 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_nxos_l3_interface_merged_old_attributes(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface Ethernet1/1
-              bandwidth inherit 1000
-            """,
-        )
-
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        mac_address="00:11:22:33:44:55",
-                        dot1q=100,
-                        evpn_multisite_tracking="fabric-tracking",
-                        redirects=True,
-                        unreachables=True,
-                        ipv6_redirects=True,
-                        ipv4=dict(
-                            address="10.0.0.8",
-                            secondary=True,
-                            addresses=[
-                                dict(dhcp=True),
-                                dict(
-                                    ip_address="10.0.0.2",
-                                    ip_network_mask="10.0.0.1",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                                dict(
-                                    ip_network_mask="10.0.0.3/9",
-                                    secondary=True,
-                                ),
-                            ],
-                            proxy_arp=True,
-                            port_unreachable=True,
-                            verify=dict(
-                                unicast=dict(
-                                    source=dict(
-                                        reachable_via=dict(
-                                            mode="any",
-                                            allow_default=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dhcp=dict(
-                                option82=dict(
-                                    suboption=dict(
-                                        circuit_id="abc",
-                                    ),
-                                ),
-                                smart_relay=True,
-                                relay=dict(
-                                    information=dict(trusted=True),
-                                    subnet_selection=dict(subnet_ip="10.0.0.7"),
-                                    source_interface=dict(
-                                        interface_type="port-channel",
-                                        interface_id="455",
-                                    ),
-                                    address=[
-                                        dict(
-                                            relay_ip="11.0.0.1",
-                                            vrf_name="xyz",
-                                        ),
-                                    ],
-                                ),
-                            ),
-                        ),
-                        ipv6=dict(
-                            address="2001:db8::1/21",
-                            tag=24,
-                            addresses=[
-                                dict(dhcp=True),
-                                dict(use_link_local_only=True),
-                                dict(autoconfig=True),
-                                dict(
-                                    ipv6_address="2001:db8::1/32",
-                                    route_preference=70,
-                                    tag=97,
-                                ),
-                                dict(
-                                    ipv6_address="2001:db8::/64",
-                                    eui64=True,
-                                ),
-                            ],
-                            unreachables=True,
-                            dhcp=dict(
-                                smart_relay=True,
-                                relay=dict(
-                                    source_interface=dict(
-                                        interface_type="port-channel",
-                                        interface_id="455",
-                                    ),
-                                    address=[
-                                        dict(
-                                            relay_ip="2001:0db8::1:abcd",
-                                            vrf_name="xyz",
-                                            interface_type="vlan",
-                                            interface_id="51",
-                                        ),
-                                    ],
-                                ),
-                            ),
-                        ),
-                    ),
-                ],
-                state="merged",
-            ),
-        )
-
-        commands = [
-            "interface Ethernet1/1",
-            "mac-address 00:11:22:33:44:55",
-            "encapsulation dot1q 100",
-            "evpn multisite fabric-tracking",
-            "ip unreachables",
-            "ip proxy-arp",
-            "ip port-unreachable",
-            "ip verify unicast source reachable-via any allow-default",
-            "ip dhcp smart-relay",
-            "ip dhcp option82 suboption circuit-id abc",
-            "ip dhcp relay information trusted",
-            "ip dhcp relay subnet-selection 10.0.0.7",
-            "ip dhcp relay source-interface port-channel 455",
-            "ipv6 unreachables",
-            "ipv6 dhcp smart-relay",
-            "ip address dhcp",
-            "ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
-            "ip address 10.0.0.3/9 secondary",
-            "ip address 10.0.0.8 secondary",
-            "ipv6 address dhcp",
-            "ipv6 address use-link-local-only",
-            "ipv6 address autoconfig",
-            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
-            "ipv6 address 2001:db8::/64 eui64",
-            "ipv6 address 2001:db8::1/21 tag 24",
-            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
-            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf xyz",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        

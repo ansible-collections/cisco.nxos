@@ -25,11 +25,10 @@
         config:
           - name: "{{ subint3 }}"
             dot1q: 42
+            redirects: false
+            unreachables: true
             ipv4:
-              redirects: false
-              unreachables: true
-              addresses:
-                - ip_address: 192.168.10.2/24
+              - address: 192.168.10.2/24
         state: merged
 
     - ansible.builtin.assert:

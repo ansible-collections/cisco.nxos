@@ -52,21 +52,21 @@ class L3_interfaces(ResourceModule):
             "bandwidth",
             "dot1q",
             "evpn_multisite_tracking",
-            "ipv4.redirects",
-            "ipv4.unreachables",
-            "ipv4.proxy_arp",
-            "ipv4.port_unreachable",
-            "ipv4.verify",
-            "ipv4.dhcp",
-            "ipv4.dhcp.option82",
-            "ipv4.dhcp.information",
-            "ipv4.dhcp.subnet_selection",
-            "ipv4.dhcp.source_interface",
-            "ipv6.redirects",
-            "ipv6.unreachables",
-            "ipv6.verify",
-            "ipv6.dhcp",
-            "ipv6.dhcp.source_interface",
+            "redirects",
+            "unreachables",
+            "proxy_arp",
+            "port_unreachable",
+            "verify",
+            "dhcp.ipv4",
+            "dhcp.ipv4.option82",
+            "dhcp.ipv4.information",
+            "dhcp.ipv4.subnet_selection",
+            "dhcp.ipv4.source_interface",
+            "ipv6_redirects",
+            "ipv6_unreachables",
+            "ipv6_verify",
+            "dhcp.ipv6",
+            "dhcp.ipv6.source_interface",
         ]
 
     def execute_module(self):
@@ -87,9 +87,6 @@ class L3_interfaces(ResourceModule):
 
         wantd = self.convert_list_to_dict(self.want)
         haved = self.convert_list_to_dict(self.have)
-
-        # handle deprecated attributes
-        wantd = self.handle_deprecated(wantd)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -116,12 +113,12 @@ class L3_interfaces(ResourceModule):
         for the L3_interfaces network resource.
         """
         begin = len(self.commands)
-        want_redirects = want.get("ipv4", {}).pop("redirects", None)
-        have_redirects = have.get("ipv4", {}).pop("redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "ipv4.redirects")
-        want_redirects = want.get("ipv6", {}).pop("redirects", None)
-        have_redirects = have.get("ipv6", {}).pop("redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "ipv6.redirects")
+        want_redirects = want.pop("redirects", None)
+        have_redirects = have.pop("redirects", None)
+        self.handle_redirects(want_redirects, have_redirects, "redirects")
+        want_redirects = want.pop("ipv6_redirects", None)
+        have_redirects = have.pop("ipv6_redirects", None)
+        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects")
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_complex_attrs(want, have)
         if len(self.commands) != begin:
@@ -154,40 +151,35 @@ class L3_interfaces(ResourceModule):
         for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
 
-            ipv4_value = iface_result.get("ipv4", {})
-            ipv6_value = iface_result.get("ipv6", {})
+            ipv4_value_addresses = iface_result.get("ipv4", [])
+            ipv6_value_addresses = iface_result.get("ipv6", [])
 
-            ipv4_value_addresses = ipv4_value.get("addresses", {})
             ipv4_value_dhcp_relay_address = (
-                ipv4_value.get("dhcp", {}).get("relay", {}).get("address", {})
+                iface_result.get("dhcp", {}).get("ipv4", {}).get("relay", {}).get("address", [])
             )
-            ipv6_value_addresses = ipv6_value.get("addresses", {})
             ipv6_value_dhcp_relay_address = (
-                ipv6_value.get("dhcp", {}).get("relay", {}).get("address", {})
+                iface_result.get("dhcp", {}).get("ipv6", {}).get("relay", {}).get("address", [])
             )
 
             if ipv4_value_addresses:
-                ipv4_value["addresses"] = list_to_dict(
+                iface_result['ipv4'] = list_to_dict(
                     ipv4_value_addresses,
-                    ["dhcp", "ip_address", "ip_network_mask"],
+                    ["address", "ip_network_mask"],
                 )
             if ipv4_value_dhcp_relay_address:
-                ipv4_value["dhcp"]["relay"]["address"] = list_to_dict(
+                iface_result["dhcp"]["ipv4"]["relay"]["address"] = list_to_dict(
                     ipv4_value_dhcp_relay_address,
                     ["relay_ip"],
                 )
             if ipv6_value_addresses:
-                ipv6_value["addresses"] = list_to_dict(
+                iface_result['ipv6'] = list_to_dict(
                     ipv6_value_addresses,
                     [
-                        "dhcp",
-                        "ipv6_address",
-                        "autoconfig",
-                        "use_link_local_only",
+                        "address",
                     ],
                 )
             if ipv6_value_dhcp_relay_address:
-                ipv6_value["dhcp"]["relay"]["address"] = list_to_dict(
+                iface_result["dhcp"]["ipv6"]["relay"]["address"] = list_to_dict(
                     ipv6_value_dhcp_relay_address,
                     ["relay_ip"],
                 )
@@ -198,41 +190,36 @@ class L3_interfaces(ResourceModule):
 
     def _compare_complex_attrs(self, want, have):
         """Compare complex attributes"""
-        want_ipv4 = want.get("ipv4", {})
-        have_ipv4 = have.get("ipv4", {})
-        want_ipv6 = want.get("ipv6", {})
-        have_ipv6 = have.get("ipv6", {})
+        want_ipv4_value_address = want.get("ipv4", {})
+        have_ipv4_value_address = have.get("ipv4", {})
+        want_ipv6_value_address = want.get("ipv6", {})
+        have_ipv6_value_address = have.get("ipv6", {})
 
-        want_ipv4_value_address = want_ipv4.get("addresses", {})
-        have_ipv4_value_address = have_ipv4.get("addresses", {})
-        self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.addresses")
-
-        want_ipv6_value_address = want_ipv6.get("addresses", {})
-        have_ipv6_value_address = have_ipv6.get("addresses", {})
-        self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.addresses")
+        self.compare_lists(want_ipv4_value_address, have_ipv4_value_address, "ipv4.address")
+        self.compare_lists(want_ipv6_value_address, have_ipv6_value_address, "ipv6.address")
 
         want_ipv4_value_relay_address = (
-            want_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})
+            want.get("dhcp", {}).get("ipv4", {}).get("relay", {}).get("address", {})
         )
         have_ipv4_value_relay_address = (
-            have_ipv4.get("dhcp", {}).get("relay", {}).get("address", {})
+            have.get("dhcp", {}).get("ipv4", {}).get("relay", {}).get("address", {})
         )
         self.compare_lists(
             want_ipv4_value_relay_address,
             have_ipv4_value_relay_address,
-            "ipv4.dhcp.address",
+            "dhcp.ipv4.address",
         )
 
         want_ipv6_value_relay_address = (
-            want_ipv6.get("dhcp", {}).get("relay", {}).get("address", {})
+            want.get("dhcp", {}).get("ipv6", {}).get("relay", {}).get("address", {})
         )
         have_ipv6_value_relay_address = (
-            have_ipv6.get("dhcp", {}).get("relay", {}).get("address", {})
+            have.get("dhcp", {}).get("ipv6", {}).get("relay", {}).get("address", {})
         )
         self.compare_lists(
             want_ipv6_value_relay_address,
             have_ipv6_value_relay_address,
-            "ipv6.dhcp.address",
+            "dhcp.ipv6.address",
         )
 
     def compare_lists(self, wanted, haved, parser):
@@ -258,63 +245,3 @@ class L3_interfaces(ResourceModule):
                 self.addcmd({"redirects": want_redirects}, parser, not want_redirects)
             elif want_redirects == False and have_redirects is None:
                 self.addcmd({"redirects": not want_redirects}, parser, not want_redirects)
-
-    def handle_deprecated(self, wantd):
-        # handling to be deprecated attributes
-        result = {}
-        for iface_name, iface_data in wantd.items():
-            iface_result = iface_data.copy()
-            ipv4_value = iface_result.get("ipv4", {})
-            ipv6_value = iface_result.get("ipv6", {})
-
-            ipv4_address = ipv4_value.get("address", None)
-            ipv4_secondary = ipv4_value.get("secondary", None)
-            ipv4_tag = ipv4_value.get("tag", None)
-            if ipv4_address:
-                entry = {
-                    "ip_address": ipv4_address,
-                }
-                if ipv4_secondary is not None:
-                    entry["secondary"] = ipv4_secondary
-                    del ipv4_value["secondary"]
-                if ipv4_tag is not None:
-                    entry["tag"] = ipv4_tag
-                    del ipv4_value["tag"]
-                result_ipv4 = {ipv4_address: entry}
-                if ipv4_value.get("addresses", {}):
-                    ipv4_value["addresses"].update(result_ipv4)
-                else:
-                    ipv4_value["addresses"] = result_ipv4
-                del ipv4_value["address"]
-
-            ipv6_address = ipv6_value.get("address", None)
-            ipv6_tag = ipv6_value.get("tag", None)
-            if ipv6_address:
-                entry = {
-                    "ipv6_address": ipv6_address,
-                }
-                if ipv6_tag is not None:
-                    entry["tag"] = ipv6_tag
-                    del ipv6_value["tag"]
-                result_ipv6 = {ipv6_address: entry}
-                if ipv6_value.get("addresses", {}):
-                    ipv6_value["addresses"].update(result_ipv6)
-                else:
-                    ipv6_value["addresses"] = result_ipv6
-                del ipv6_value["address"]
-
-            ipv4_redirects = iface_result.get("redirects", None)
-            ipv4_unreachables = iface_result.get("unreachables", None)
-            ipv6_redirects = iface_result.get("ipv6_redirects", None)
-            if ipv4_redirects != None:
-                ipv4_value["redirects"] = ipv4_redirects
-                del iface_result["redirects"]
-            if ipv4_unreachables != None:
-                ipv4_value["unreachables"] = ipv4_unreachables
-                del iface_result["unreachables"]
-            if ipv6_redirects != None:
-                ipv6_value["redirects"] = ipv6_redirects
-                del iface_result["ipv6_redirects"]
-
-            result[iface_name] = iface_result
-        return result

@@ -2,17 +2,14 @@
 gathered:
   - name: "{{ nxos_int1 }}"
     ipv4:
-      addresses:
-        - ip_address: 192.0.2.100/24
+      - address: 192.0.2.100/24
   - name: "{{ nxos_int2 }}"
     ipv4:
-      addresses:
-        - ip_address: 203.0.113.10/24
-      redirects: false
-      unreachables: true
+      - address: 203.0.113.10/24
+    redirects: false
+    unreachables: true
     ipv6:
-      addresses:
-        - ipv6_address: 2001:db8::1/32
+      - address: 2001:db8::1/32
 
 rendered:
   - "interface Ethernet1/800"
@@ -22,25 +19,21 @@ rendered:
 
 parsed:
   - name: Ethernet1/800
+    redirects: false
     ipv4:
-      addresses:
-        - ip_address: 192.168.1.100/24
-          tag: 5
-        - ip_address: 10.1.1.1/24
-          secondary: true
-          tag: 10
-      redirects: false
+      - address: 192.168.1.100/24
+        tag: 5
+      - address: 10.1.1.1/24
+        secondary: true
+        tag: 10
   - name: Ethernet1/801
-    ipv4:
-      unreachables: true
+    unreachables: true
     ipv6:
-      addresses:
-        - ipv6_address: fd5d:12c9:2201:2::1/64
-          tag: 6
+      - address: fd5d:12c9:2201:2::1/64
+        tag: 6
   - name: mgmt0
     ipv4:
-      addresses:
-        - dhcp: true
+      - address: dhcp
 
 rendered_multi:
   - "interface Ethernet1/800"
@@ -54,23 +47,19 @@ rendered_multi:
 parsed_multi:
   - name: Ethernet1/800
     ipv4:
-      addresses:
-        - ip_address: 192.168.1.100/24
-          tag: 5
-        - ip_address: 10.1.1.1/24
-          secondary: true
-          tag: 10
-      redirects: false
+      - address: 192.168.1.100/24
+        tag: 5
+      - address: 10.1.1.1/24
+        secondary: true
+        tag: 10
+    redirects: false
     evpn_multisite_tracking: fabric-tracking
   - name: Ethernet1/801
-    ipv4:
-      unreachables: true
+    unreachables: true
     ipv6:
-      addresses:
-        - ipv6_address: fd5d:12c9:2201:2::1/64
-          tag: 6
+      - address: fd5d:12c9:2201:2::1/64
+        tag: 6
     evpn_multisite_tracking: dci-tracking
   - name: mgmt0
     ipv4:
-      addresses:
-        - dhcp: true
+      - address: dhcp
