@@ -6,9 +6,9 @@
   ignore_errors: true
   register: testvrf
 
-- name: Wait for 20 seconds if VRF removal was successful
+- name: Wait for 25 seconds if VRF removal was successful
   ansible.builtin.wait_for:
-    timeout: 20
+    timeout: 25
   when: not testvrf.failed
 
 - name: Remove VRF global configurations
@@ -18,9 +18,9 @@
   ignore_errors: true
   register: temp
 
-- name: Wait for 20 seconds if VRF removal was successful
+- name: Wait for 25 seconds if VRF removal was successful
   ansible.builtin.wait_for:
-    timeout: 20
+    timeout: 25
   when: not temp.failed
 
 - name: Remove VRF global configurations
@@ -30,7 +30,7 @@
   ignore_errors: true
   register: vrf7
 
-- name: Wait for 20 seconds if VRF removal was successful
+- name: Wait for 25 seconds if VRF removal was successful
   ansible.builtin.wait_for:
-    timeout: 20
+    timeout: 25
   when: not vrf7.failed

@@ -22,6 +22,7 @@ merged:
   commands:
     - vrf context VRF7
     - description this-is-test
+    - rd 65000:200
     - ip auto-discard
     - ip domain-name example.org
     - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
@@ -50,6 +51,7 @@ merged:
   after:
     vrfs:
       - description: this-is-test
+        rd: 65000:200
         ip:
           auto_discard: true
           domain_list:
@@ -212,6 +214,7 @@ replaced:
     vrfs:
       - "{{ management[0] }}"
       - description: Test
+        rd: auto
         ip:
           auto_discard: true
           domain_list:
@@ -264,6 +267,7 @@ replaced:
   commands:
     - vrf context temp
     - description Test
+    - rd auto
     - ip auto-discard
     - ip domain-name example.org
     - ip domain-list example.com
