@@ -1,3 +1,0 @@
----
-minor_changes:
-  - "nxos_l2_interfaces - Enhances capability of the module to deal with addition attributes under l2 interfaces. Adds support for CDP, Link flap and beacon."
