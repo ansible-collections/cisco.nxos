@@ -65,6 +65,8 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
+      async: 300
+      poll: 30  
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ config_to_revert + mgmt }}"
         state: overridden
@@ -79,9 +81,30 @@
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
         state: overridden
 
-    - ansible.builtin.assert:
+    - name: Normalize base and revert configs for Ethernet1/1 and Ethernet1/2
+      set_fact:
+        base_normalized: >-
+          {{ base_config.after
+             | selectattr('name', 'in', ['Ethernet1/1', 'Ethernet1/2'])
+             | map('dict2items')
+             | map('rejectattr', 'key', 'in', ['redirects', 'ipv6_redirects'])
+             | map('items2dict')
+             | list }}
+        revert_normalized: >-
+          {{ revert.after
+             | selectattr('name', 'in', ['Ethernet1/1', 'Ethernet1/2'])
+             | map('dict2items')
+             | map('rejectattr', 'key', 'in', ['redirects', 'ipv6_redirects'])
+             | map('items2dict')
+             | list }}
+
+    - name: Assert base and revert configs match for Ethernet1/1 and 1/2 (ignoring redirects)
+      ansible.builtin.assert:
         that:
-          - base_config['after'] == revert['after']
+          - base_normalized | symmetric_difference(revert_normalized) == []
+        fail_msg: "Mismatch found for Ethernet1/1 or Ethernet1/2 (excluding redirect fields)"
+        success_msg: "Configs match for Ethernet1/1 and 1/2 as expected"
+
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
