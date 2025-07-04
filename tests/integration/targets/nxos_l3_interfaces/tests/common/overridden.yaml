@@ -52,7 +52,6 @@
       cisco.nxos.nxos_l3_interfaces: &id002
         config: "{{ overriden_config + mgmt }}"
         state: overridden
-        timeout: 120
 
     - ansible.builtin.assert:
         that:
