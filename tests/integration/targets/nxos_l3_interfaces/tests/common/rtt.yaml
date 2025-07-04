@@ -64,9 +64,7 @@
                 tag: 6
 
     - name: Apply the provided configuration (config to be reverted)
-      register: result
-      async: 300
-      poll: 30
+      register: result 
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ config_to_revert + mgmt }}"
         state: overridden
