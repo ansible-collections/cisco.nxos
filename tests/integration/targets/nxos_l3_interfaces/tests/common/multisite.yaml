@@ -70,9 +70,10 @@
           - result.changed == true
           - "'interface {{ test_int3 }}' in result.commands"
           - "'no ip unreachables' in result.commands"
+          - "'no ipv6 redirects' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
           - "'no evpn multisite dci-tracking' in result.commands"
-          - result.commands|length == 4
+          - result.commands|length == 5
 
     - name: Idempotence - deleted
       register: result

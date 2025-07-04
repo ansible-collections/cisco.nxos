@@ -43,6 +43,15 @@
             dot1q: 442
             redirects: false
             unreachables: false
+            dhcp:
+              ipv4:
+                relay:
+                  address:
+                    - relay_ip: 10.0.0.1
+              ipv6:
+                relay:
+                  address:
+                    - relay_ip: 2001:db8::1:abcd
             ipv4:
               - address: 192.168.20.2/24
                 tag: 5
@@ -59,9 +68,11 @@
           - "'no ip unreachables' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - "'ip address 192.168.20.2/24 tag 5' in result.commands"
+          - "'ip dhcp relay address 10.0.0.1' in result.commands"
+          - "'ipv6 dhcp relay address 2001:db8::1:abcd' in result.commands"
           - "'ip address 192.168.200.2/24 secondary' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
-          - result.commands|length == 7
+          - result.commands|length == 9
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
