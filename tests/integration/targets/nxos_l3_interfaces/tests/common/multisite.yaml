@@ -254,6 +254,7 @@
       cisco.nxos.nxos_l3_interfaces: &id006
         config: "{{ overriden_config + mgmt }}"
         state: overridden
+        timeout: 120
 
     - name: Filter commands for Ethernet1/1, Ethernet1/2, and Ethernet1/3
       ansible.builtin.set_fact:
