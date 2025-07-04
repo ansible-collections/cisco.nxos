@@ -59,11 +59,17 @@
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
           - "'no ip address 192.168.10.2/24 tag 5' in result.commands"
+          - "'no ipv6 redirects' in result.commands"
+          - "'no ip redirects' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
           - "'no ip address 10.1.1.1/24' in result.commands"
+          - "'no ipv6 redirects' in result.commands"
+          - "'no ip redirects' in result.commands"
           - "'interface {{ test_int3 }}' in result.commands"
           - "'ip address 10.1.1.3/24' in result.commands"
-          - result.commands|length == 6
+          - "'no ipv6 redirects' in result.commands"
+          - "'no ip redirects' in result.commands"
+          - result.commands|length == 12
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
