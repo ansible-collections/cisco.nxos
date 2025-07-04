@@ -27,6 +27,7 @@
           - "  ip address 192.168.10.2/24"
           - "  no ip redirects"
           - "  ip unreachables"
+          - "  feature dhcp"
 
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts: &id001
