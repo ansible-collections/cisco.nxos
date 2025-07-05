@@ -113,12 +113,13 @@ class L3_interfaces(ResourceModule):
         for the L3_interfaces network resource.
         """
         begin = len(self.commands)
+        pre_pop_want = bool(want)
         want_redirects = want.pop("redirects", None)
         have_redirects = have.pop("redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "redirects")
+        self.handle_redirects(want_redirects, have_redirects, "redirects", pre_pop_want)
         want_redirects = want.pop("ipv6_redirects", None)
         have_redirects = have.pop("ipv6_redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects")
+        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_complex_attrs(want, have)
         if len(self.commands) != begin:
@@ -236,12 +237,15 @@ class L3_interfaces(ResourceModule):
         for key, have_value in haved.items():
             self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
 
-    def handle_redirects(self, want_redirects, have_redirects, parser):
+    def handle_redirects(self, want_redirects, have_redirects, parser, want):
         if want_redirects is None and have_redirects is None:
-            if self.state in ["overridden", "deleted", "replaced"]:
+            if self.state == "replaced" or (self.state == "overridden" and want):
                 self.addcmd({"redirects": True}, parser, True)
         else:
             if want_redirects is True and have_redirects is False:
                 self.addcmd({"redirects": want_redirects}, parser, not want_redirects)
             elif want_redirects is False and have_redirects is None:
                 self.addcmd({"redirects": not want_redirects}, parser, not want_redirects)
+            elif want_redirects is None and have_redirects is False:
+                if (self.state in ["overridden", "deleted"] and not want):
+                    self.addcmd({"redirects": not have_redirects}, parser, have_redirects)

@@ -275,13 +275,13 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
         commands = [
             "interface Ethernet1/1",
+            'ip redirects',
             "no mac-address 00:11:22:33:44:55",
             "no ip address dhcp",
             "no ip verify unicast source reachable-via any allow-default",
             "no ip dhcp relay address 11.0.0.1 use-vrf xyz",
             "no ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
             "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
-            "no ipv6 redirects",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -355,8 +355,6 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "interface Ethernet1/1",
             "no mac-address 00:11:22:33:44:54",
             "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
-            "no ip redirects",
-            "no ipv6 redirects",
             "interface Ethernet1/2",
             "mac-address 00:11:22:33:44:55",
             "ip address 10.0.0.1 secondary",

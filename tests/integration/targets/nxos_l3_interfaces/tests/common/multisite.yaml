@@ -70,7 +70,7 @@
           - result.changed == true
           - "'interface {{ test_int3 }}' in result.commands"
           - "'no ip unreachables' in result.commands"
-          - "'no ipv6 redirects' in result.commands"
+          - "'ip redirects' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
           - "'no evpn multisite dci-tracking' in result.commands"
           - result.commands|length == 5
@@ -209,6 +209,98 @@
           - result.commands|length == 0
 
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Setup1 - overidden
+      ignore_errors: true
+      cisco.nxos.nxos_config: &id007
+        lines:
+          - "no system default switchport"
+          - "default interface {{ item }}"
+          - "interface {{ item }}"
+          - "  no switchport"
+      loop:
+        - "{{ test_int1 }}"
+        - "{{ test_int2 }}"
+        - "{{ test_int3 }}"
+
+    - name: Setup3 - overidden
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ test_int1 }}"
+          - "  ip address 192.168.10.2/24 tag 5"
+          - "  evpn multisite fabric-tracking"
+          - "interface {{ test_int2 }}"
+          - "  ip address 10.1.1.1/24"
+          - "  evpn multisite dci-tracking"
+
+    - name: Gather l3_interfaces facts
+      cisco.nxos.nxos_facts: &id005
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: l3_interfaces
+
+    - name: Store reserved interface IP configuration
+      ansible.builtin.set_fact:
+        mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
+        overriden_config:
+          - name: "{{ test_int3 }}"
+            ipv4:
+              - address: 10.1.1.3/24
+            evpn_multisite_tracking: dci-tracking
+
+    - name: Overridden
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id006
+        config: "{{ overriden_config + mgmt }}"
+        state: overridden
+
+    - name: Filter commands for Ethernet1/1, Ethernet1/2, and Ethernet1/3
+      ansible.builtin.set_fact:
+        filtered_commands: >-
+          {{ result.commands | select('search', '^interface Ethernet1/(1|2|3)$|^no |^ip |^evpn ') | list }}
+    - name: Assert only relevant commands are present
+      ansible.builtin.assert:
+        that:
+          - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in filtered_commands"
+          - "'no ip address 192.168.10.2/24 tag 5' in filtered_commands"
+          - "'no evpn multisite fabric-tracking' in filtered_commands"
+          - "'interface {{ test_int2 }}' in filtered_commands"
+          - "'no ip address 10.1.1.1/24' in filtered_commands"
+          - "'no evpn multisite dci-tracking' in filtered_commands"
+          - "'interface {{ test_int3 }}' in filtered_commands"
+          - "'ip address 10.1.1.3/24' in filtered_commands"
+          - "'evpn multisite dci-tracking' in filtered_commands"
+          - "'no ipv6 redirects' in filtered_commands"
+          - "'no ip redirects' in filtered_commands"
+          - filtered_commands | length == 11
+
+    - name: Gather l3_interfaces post facts
+      cisco.nxos.nxos_facts: *id005
+
+    - ansible.builtin.assert:
+        that:
+          - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id006
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+
+    - name: Teardown - overdidden
+      ignore_errors: true
+      cisco.nxos.nxos_config: *id007
+      loop:
+        - "{{ test_int1 }}"
+        - "{{ test_int2 }}"
+        - "{{ test_int3 }}"
+
 
     - name: Gather pre-facts
       cisco.nxos.nxos_facts:
