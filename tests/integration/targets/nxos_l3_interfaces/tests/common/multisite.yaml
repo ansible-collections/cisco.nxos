@@ -255,27 +255,22 @@
         config: "{{ overriden_config + mgmt }}"
         state: overridden
 
-    - name: Filter commands for Ethernet1/1, Ethernet1/2, and Ethernet1/3
-      ansible.builtin.set_fact:
-        filtered_commands: >-
-          {{ result.commands | select('search', '^interface Ethernet1/(1|2|3)$|^no |^ip |^evpn ') | list }}
-    - name: Assert only relevant commands are present
-      ansible.builtin.assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
-          - "'interface {{ test_int1 }}' in filtered_commands"
-          - "'no ip address 192.168.10.2/24 tag 5' in filtered_commands"
-          - "'no evpn multisite fabric-tracking' in filtered_commands"
-          - "'interface {{ test_int2 }}' in filtered_commands"
-          - "'no ip address 10.1.1.1/24' in filtered_commands"
-          - "'no evpn multisite dci-tracking' in filtered_commands"
-          - "'interface {{ test_int3 }}' in filtered_commands"
-          - "'ip address 10.1.1.3/24' in filtered_commands"
-          - "'evpn multisite dci-tracking' in filtered_commands"
-          - "'no ipv6 redirects' in filtered_commands"
-          - "'no ip redirects' in filtered_commands"
-          - filtered_commands | length == 11
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no ip address 192.168.10.2/24 tag 5' in result.commands"
+          - "'no evpn multisite fabric-tracking' in result.commands"
+          - "'interface {{ test_int2 }}' in result.commands"
+          - "'no ip address 10.1.1.1/24' in result.commands"
+          - "'no evpn multisite dci-tracking' in result.commands"
+          - "'interface {{ test_int3 }}' in result.commands"
+          - "'ip address 10.1.1.3/24' in result.commands"
+          - "'evpn multisite dci-tracking' in result.commands"
+          - "'no ipv6 redirects' in result.commands"
+          - "'no ip redirects' in result.commands"
+          - result.commands|length == 14
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id005
