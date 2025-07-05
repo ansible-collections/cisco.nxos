@@ -275,7 +275,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
         commands = [
             "interface Ethernet1/1",
-            'ip redirects',
+            "ip redirects",
             "no mac-address 00:11:22:33:44:55",
             "no ip address dhcp",
             "no ip verify unicast source reachable-via any allow-default",

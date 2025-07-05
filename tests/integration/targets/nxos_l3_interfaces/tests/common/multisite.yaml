@@ -301,7 +301,6 @@
         - "{{ test_int2 }}"
         - "{{ test_int3 }}"
 
-
     - name: Gather pre-facts
       cisco.nxos.nxos_facts:
         gather_subset:
