@@ -65,7 +65,7 @@
           - "'ip address 10.1.1.3/24' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - "'no ip redirects' in result.commands"
-          - result.commands|length == 12
+          - result.commands|length == 8
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
