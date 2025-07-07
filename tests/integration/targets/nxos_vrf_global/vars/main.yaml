@@ -214,7 +214,7 @@ replaced:
     vrfs:
       - "{{ management[0] }}"
       - description: Test
-      - rd: auto
+        rd: auto
         ip:
           auto_discard: true
           domain_list:

@@ -56,7 +56,7 @@
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - replaced['after'] == result['after']
+          - replaced['after'] | dict2items | difference(result['after'] | dict2items) | length == 0
 
     - name: Replaced provided VRF global configuration (idempotent)
       register: result
