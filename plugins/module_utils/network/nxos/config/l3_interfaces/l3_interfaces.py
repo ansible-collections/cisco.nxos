@@ -113,7 +113,9 @@ class L3_interfaces(ResourceModule):
         for the L3_interfaces network resource.
         """
         begin = len(self.commands)
-        pre_pop_want = bool(want)
+        want_without_name = want.copy()
+        want_without_name.pop("name", None)
+        pre_pop_want = bool(want_without_name)
         want_redirects = want.pop("redirects", None)
         have_redirects = have.pop("redirects", None)
         self.handle_redirects(want_redirects, have_redirects, "redirects", pre_pop_want)
