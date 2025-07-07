@@ -7,7 +7,7 @@ ci:
 
 repos:
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.1
+    rev: 1.1.2
     hooks:
       - id: update-docs
 
@@ -51,6 +51,6 @@ repos:
       - id: black
 
   - repo: https://github.com/pycqa/flake8
-    rev: 7.2.0
+    rev: 7.3.0
     hooks:
       - id: flake8
