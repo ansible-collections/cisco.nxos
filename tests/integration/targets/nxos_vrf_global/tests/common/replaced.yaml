@@ -11,6 +11,7 @@
         config:
           vrfs:
             - name: temp
+              rd: auto
               description: Test
               ip:
                 auto_discard: true

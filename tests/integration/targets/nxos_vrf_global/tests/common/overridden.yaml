@@ -49,7 +49,7 @@
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ overridden['after'] | symmetric_difference(result['after']) |length == 0 }}"
+          - "{{ overridden['after'] | dict2items | symmetric_difference(result['after'] | dict2items) | length == 0 }}"
 
     - name: Idempotency check
       cisco.nxos.nxos_vrf_global: *overridden
@@ -64,7 +64,7 @@
     - name: Assert that before dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ overridden['after'] | symmetric_difference(result['before']) |length == 0 }}"
+          - "{{ overridden['after'] | dict2items | symmetric_difference(result['before'] | dict2items) | length == 0 }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

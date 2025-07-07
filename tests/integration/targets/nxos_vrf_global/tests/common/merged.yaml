@@ -15,8 +15,8 @@
           - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
         vrfConfig:
           vrfs:
-            - description: this-is-test
-              rd: 65000:200
+            - rd: 65000:200
+              description: this-is-test
               ip:
                 auto_discard: true
                 domain_list:
@@ -133,8 +133,8 @@
       cisco.nxos.nxos_vrf_global: &id001
         config: "{{ vrfConfig }}"
         state: merged
-      retries: 5
-      delay: 25
+      retries: 3
+      delay: 20
 
     - name: Remove management from list of result
       set_fact:
@@ -169,8 +169,8 @@
         that:
           - result['changed'] == false
 
-    - name: Wait for 40 seconds after merging
+    - name: Wait for 20 seconds after merging
       ansible.builtin.wait_for:
-        timeout: 40
+        timeout: 20
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
