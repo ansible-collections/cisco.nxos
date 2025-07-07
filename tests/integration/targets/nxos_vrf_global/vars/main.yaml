@@ -214,7 +214,6 @@ replaced:
     vrfs:
       - "{{ management[0] }}"
       - description: Test
-        rd: auto
         ip:
           auto_discard: true
           domain_list:
@@ -267,7 +266,6 @@ replaced:
   commands:
     - vrf context temp
     - description Test
-    - rd auto
     - ip auto-discard
     - ip domain-name example.org
     - ip domain-list example.com

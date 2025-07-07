@@ -12,7 +12,6 @@
           vrfs:
             - name: temp
               description: Test
-              rd: auto
               ip:
                 auto_discard: true
                 domain_list:
