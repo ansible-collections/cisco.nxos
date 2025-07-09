@@ -12,8 +12,14 @@
       cisco.nxos.nxos_l3_interfaces:
         state: gathered
 
-    - ansible.builtin.assert:
-        that: "{{ result['gathered'][:2] | symmetric_difference(gathered) |length == 0 }}"
+    - name: Filter actual gathered Ethernet interfaces by name
+      set_fact:
+        filtered_actual: "{{ result['gathered'] | selectattr('name', 'in', [nxos_int1, nxos_int2]) | list }}"
+
+    - name: Assert gathered Ethernet interface facts match expected
+      ansible.builtin.assert:
+        that:
+          - filtered_actual | symmetric_difference(gathered) | length == 0
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
