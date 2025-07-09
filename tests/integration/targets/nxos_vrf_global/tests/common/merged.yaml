@@ -15,8 +15,7 @@
           - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
         vrfConfig:
           vrfs:
-            - rd: 65000:200
-              description: this-is-test
+            - description: this-is-test
               ip:
                 auto_discard: true
                 domain_list:
