@@ -42,6 +42,8 @@
                     source_address: 192.168.0.1
                     vrf: temp
         state: replaced
+      retries: 5
+      delay: 25
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
