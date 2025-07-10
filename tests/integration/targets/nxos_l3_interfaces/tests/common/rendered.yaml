@@ -22,9 +22,8 @@
               - address: 192.168.1.100/24
                 tag: 5
               - address: 10.1.1.1/24
-                secondary: true
                 tag: 10
-          - name: Ethernet1/800
+                secondary: true
             ipv6:
               - address: fd5d:12c9:2201:2::1/64
                 tag: 6

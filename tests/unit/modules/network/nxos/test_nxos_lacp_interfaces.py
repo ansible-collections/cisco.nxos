@@ -55,7 +55,8 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.edit_config",
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l3_interfaces.l3_interfaces."
+            "L3_interfacesFacts.get_l3_interfaces_data",
         )
         self.edit_config = self.mock_edit_config.start()
 

@@ -47,10 +47,10 @@
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
           - "'interface {{ subint3 }}' in result.commands"
-          - "'no encapsulation dot1q' in result.commands"
-          - "'ip redirects' in result.commands"
+          - "'no encapsulation dot1q 42' in result.commands"
           - "'no ip unreachables' in result.commands"
-          - "'no ip address' in result.commands"
+          - "'no ip address 192.168.10.2/24' in result.commands"
+          - "'ip redirects' in result.commands"
           - result.commands|length == 5
 
     - name: Idempotence - deleted
