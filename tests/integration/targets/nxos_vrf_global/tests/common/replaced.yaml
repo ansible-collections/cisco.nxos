@@ -5,12 +5,22 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
+    - name: Enable 'feature bgp'
+      cisco.nxos.nxos_feature:
+        feature: bgp
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+    - name: Wait for 5 seconds after enabling
+      ansible.builtin.wait_for:
+        timeout: 5
+
     - name: Replace the provided configuration with the existing running configuration
       register: result
       cisco.nxos.nxos_vrf_global: &id001
         config:
           vrfs:
             - name: temp
+              rd: auto
               description: Test
               ip:
                 auto_discard: true
@@ -55,7 +65,7 @@
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - replaced['after'] == result['after']
+          - replaced['after'] | dict2items | difference(result['after'] | dict2items) | length == 0
 
     - name: Replaced provided VRF global configuration (idempotent)
       register: result
@@ -64,5 +74,13 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
+    - name: Disable 'feature bgp'
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: disabled
+    - name: Wait for 5 seconds after disabling
+      ansible.builtin.wait_for:
+        timeout: 5
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

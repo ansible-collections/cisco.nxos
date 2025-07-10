@@ -40,6 +40,9 @@ options:
           description:
             description: Description of the VRF.
             type: str
+          rd:
+            description: VPN Route Distinguisher
+            type: str
           ip:
             description: Configure IP features for the specified vrf.
             type: dict

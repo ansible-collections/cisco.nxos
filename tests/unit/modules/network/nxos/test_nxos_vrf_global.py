@@ -54,6 +54,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                     "vrfs": [
                         {
                             "description": "this is descrition",
+                            "rd": "auto",
                             "ip": {
                                 "auto_discard": True,
                                 "domain_list": [
@@ -188,6 +189,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         commands = [
             "vrf context test1",
             "description this is descrition",
+            "rd auto",
             "ip auto-discard",
             "ip domain-name redx.com",
             "ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3",
@@ -498,6 +500,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
             vrf context management
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
+              rd auto
             vrf context test1
               description this is descrition
               ip domain-name redx.com
@@ -555,6 +558,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
             "vrf context management",
             "no ip name-server 192.168.255.1",
             "no ip route 0.0.0.0/0 192.168.255.1",
+            "no rd auto",
             "vrf context test1",
             "description test description",
             "no ip auto-discard",
@@ -615,6 +619,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                     "vrfs": [
                         {
                             "name": "test1",
+                            "rd": "6553600000:200",
                             "vni": {
                                 "vni_number": 6,
                             },
@@ -654,6 +659,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         commands = [
             "vrf context test1",
             "description test description",
+            "rd 6553600000:200",
             "no ip auto-discard",
             "ip domain-name redblue.com",
             "ip icmp-errors source-interface port-channel 3",
@@ -840,6 +846,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                     vrf context management
                       ip name-server 192.168.255.1
                       ip route 0.0.0.0/0 192.168.255.1
+                      rd 192.168.1.1:300
                     vrf context test1
                       description this is descrition
                       ip domain-name redx.com
@@ -860,6 +867,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
             "vrfs": [
                 {
                     "name": "management",
+                    "rd": "192.168.1.1:300",
                     "ip": {
                         "name_server": {
                             "address_list": [
