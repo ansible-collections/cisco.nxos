@@ -40,11 +40,11 @@
     - name: Merge provided vrf configuration with device configuration
       cisco.nxos.nxos_config:
         lines:
-          - vrf context nextvrf
           - description testvrfhere
+        parents: "vrf context nextvrf"
         match: none
-      retries: 3
-      delay: 20
+      retries: 5
+      delay: 25
 
     - name: Remove VRF global configurations
       cisco.nxos.nxos_config:
@@ -52,9 +52,9 @@
           - no vrf context nextvrf
       ignore_errors: true
 
-    - name: Wait for 20 seconds after merging
+    - name: Wait for 25 seconds after merging
       ansible.builtin.wait_for:
-        timeout: 20
+        timeout: 25
 
     # Actual test restarts here
     - name: Overridden the provided configuration with the existing running configuration
