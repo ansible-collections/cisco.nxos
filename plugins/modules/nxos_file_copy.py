@@ -248,6 +248,8 @@ class FilePush(FileCopy):
     def __init__(self, module):
         super(FilePush, self).__init__(module)
         self.result = {}
+        warnings = list()
+        self.result["warnings"] = warnings
 
     def md5sum_check(self, dst, file_system):
         command = "show file {0}{1} md5sum".format(file_system, dst)
@@ -348,6 +350,9 @@ class FilePush(FileCopy):
 
         if not self._module.check_mode and not file_exists:
             self.transfer_file_to_device(remote_file)
+        else:
+            self.result["warnings"].append("File is not copied when using check mode")
+            self.result["changed"] = False
 
         self.result["local_file"] = local_file
         if remote_file is None:
@@ -362,6 +367,8 @@ class FilePull(FileCopy):
     def __init__(self, module):
         super(FilePull, self).__init__(module)
         self.result = {}
+        warnings = list()
+        self.result["warnings"] = warnings
 
     def mkdir(self, directory):
         local_dir_root = "/"
@@ -434,6 +441,12 @@ class FilePull(FileCopy):
 
         if not self._module.check_mode:
             self.copy_file_from_remote(local_file, local_file_dir, file_system)
+        
+            if not self.result["failed"]:
+                self.result["changed"] = True
+        else:
+            self.result["warnings"].append("File is not copied when using check mode")
+            self.result["changed"] = False
 
         self.result["remote_file"] = remote_file
         if local_file_dir:
@@ -444,9 +457,7 @@ class FilePull(FileCopy):
         self.result["remote_scp_server"] = self._module.params["remote_scp_server"]
         self.result["file_system"] = self._module.params["file_system"]
 
-        if not self.result["failed"]:
-            self.result["changed"] = True
-
+        
         return self.result
 
 
@@ -481,14 +492,10 @@ def main():
 
     file_pull = module.params["file_pull"]
 
-    warnings = list()
-
     if file_pull:
         result = FilePull(module).run()
     else:
         result = FilePush(module).run()
-
-    result["warnings"] = warnings
 
     module.exit_json(**result)
 
