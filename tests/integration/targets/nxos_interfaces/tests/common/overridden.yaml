@@ -9,7 +9,7 @@
         test_int2: "{{ nxos_int2 }}"
 
     - ansible.builtin.include_tasks: _remove_config.yaml
-    
+
     - ansible.builtin.include_tasks: _populate_config.yaml
 
     - block:
