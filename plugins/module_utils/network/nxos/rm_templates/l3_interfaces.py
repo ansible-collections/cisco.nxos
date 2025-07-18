@@ -45,7 +45,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""\s+mac-address
                     (\s(?P<mac_address>\S+))
-                    $""",re.VERBOSE,
+                    $""", re.VERBOSE,
             ),
             "setval": "mac-address {{ mac_address }}",
             "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
@@ -57,7 +57,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 \s+bandwidth
                 (\s+(?P<inherit>inherit))?
                 (\s+(?P<kilobits>\d+))?
-                \s*$""",re.VERBOSE,
+                \s*$""", re.VERBOSE,
             ),
             "setval": "bandwidth"
                       "{{ ' inherit' if bandwidth.inherit|d(False) else ''}}"
