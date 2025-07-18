@@ -441,7 +441,7 @@ class FilePull(FileCopy):
 
         if not self._module.check_mode:
             self.copy_file_from_remote(local_file, local_file_dir, file_system)
-        
+
             if not self.result["failed"]:
                 self.result["changed"] = True
         else:
@@ -457,7 +457,6 @@ class FilePull(FileCopy):
         self.result["remote_scp_server"] = self._module.params["remote_scp_server"]
         self.result["file_system"] = self._module.params["file_system"]
 
-        
         return self.result
 
 
