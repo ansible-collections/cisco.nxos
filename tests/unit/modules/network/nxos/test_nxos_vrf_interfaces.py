@@ -44,7 +44,7 @@ class TestNxosVrfInterfacesModule(TestNxosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_interfaces.vrf_interfaces."
-            "Vrf_interfacesFacts.get_device_data",
+            "Vrf_interfacesFacts.get_config",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 

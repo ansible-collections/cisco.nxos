@@ -1,1046 +1,742 @@
-# (c) 2019 Red Hat Inc.
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-
-# Make coding more python3-ish
+# (c) 2024, Ansible by Red Hat, inc
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
-from unittest.mock import PropertyMock, patch
+from unittest.mock import patch
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces import (
-    L3_interfaces,
-)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interfaces
 
 from .nxos_module import TestNxosModule, set_module_args
 
 
-ignore_provider_arg = True
+class TestNxosL3InterfaceModule(TestNxosModule):
+    """Test the nxos_l3_interfaces module."""
 
-
-class TestNxosL3InterfacesModule(TestNxosModule):
     module = nxos_l3_interfaces
 
     def setUp(self):
-        super(TestNxosL3InterfacesModule, self).setUp()
-
-        self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
-        )
-        self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
+        """Set up for nxos_l3_interfaces module tests."""
+        super(TestNxosL3InterfaceModule, self).setUp()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.edit_config",
+        self.mock_execute_show_command = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l3_interfaces.l3_interfaces."
+            "L3_interfacesFacts.get_l3_interfaces_data",
         )
-        self.edit_config = self.mock_edit_config.start()
+        self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestNxosL3InterfacesModule, self).tearDown()
-        self.mock_FACT_LEGACY_SUBSETS.stop()
-        self.mock_get_resource_connection_config.stop()
+        super(TestNxosL3InterfaceModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
+        self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None, device="N9K"):
-        self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
-        self.get_resource_connection_config.return_value = None
-        self.edit_config.return_value = None
-        L3_interfaces.platform = PropertyMock(return_value=device)
-
-    # ---------------------------
-    # L3_interfaces Test Cases
-    # ---------------------------
-
-    # 'state' logic behaviors
-    #
-    # - 'merged'    : Update existing device state with any differences in the play.
-    # - 'deleted'   : Reset existing device state to default values. Ignores any
-    #                 play attrs other than 'name'. Scope is limited to interfaces
-    #                 in the play.
-    # - 'overridden': The play is the source of truth. Similar to replaced but the
-    #                 scope includes all interfaces; ie. it will also reset state
-    #                 on interfaces not found in the play.
-    # - 'replaced'  : Scope is limited to the interfaces in the play.
-
-    SHOW_CMD = "show running-config | section ^interface"
-
-    def test_2(self):
-        # basic tests
-        existing = dedent(
+    def test_nxos_l3_interface_merged(self):
+        self.execute_show_command.return_value = dedent(
             """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Ethernet1/1
-            ip address 10.1.1.1/24
-          interface Ethernet1/2
-            ip address 10.1.2.1/24
-          interface Ethernet1/3
-            ip address 10.1.3.1/24
-          interface port-channel336
-          interface port-channel337
-            no ipv6 redirects
-        """,
+            interface Ethernet1/1
+              bandwidth inherit 1000
+            """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
-                dict(name="Ethernet1/1", ipv4=[{"address": "192.168.1.1/24"}]),
-                dict(name="Ethernet1/2"),
-                dict(name="port-channel355", ipv6_redirects=False),
-                dict(name="port-channel336", ipv6_redirects=False, ipv6=[{"address": "10::5/128"}]),
-                # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
-                # replaced should ignore Eth1/3.
-            ],
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        dot1q=100,
+                        evpn_multisite_tracking="fabric-tracking",
+                        redirects=False,
+                        unreachables=True,
+                        proxy_arp=True,
+                        port_unreachable=True,
+                        ipv6_redirects=True,
+                        ipv6_unreachables=True,
+                        dhcp=dict(
+                            ipv4=dict(
+                                option82=dict(
+                                    suboption=dict(
+                                        circuit_id="abc",
+                                    ),
+                                ),
+                                smart_relay=True,
+                                relay=dict(
+                                    information=dict(trusted=True),
+                                    subnet_selection=dict(subnet_ip="10.0.0.7"),
+                                    source_interface=dict(
+                                        interface_type="port-channel",
+                                        interface_id="455",
+                                    ),
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                smart_relay=True,
+                                relay=dict(
+                                    source_interface=dict(
+                                        interface_type="port-channel",
+                                        interface_id="455",
+                                    ),
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            vrf_name="xyz",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        ipv6_verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                            dict(
+                                address="10.0.0.2",
+                                ip_network_mask="10.0.0.1",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                            dict(
+                                ip_network_mask="10.0.0.3/9",
+                                secondary=True,
+                            ),
+                        ],
+                        ipv6=[
+                            dict(address="dhcp"),
+                            dict(address="use-link-local-only"),
+                            dict(address="autoconfig"),
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                            dict(
+                                address="2001:db8::/64",
+                                eui64=True,
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
         )
-        # Expected result commands for each 'state'
-        merged = [
+
+        commands = [
             "interface Ethernet1/1",
-            "ip address 192.168.1.1/24",
-            "interface port-channel355",
-            "no ipv6 redirects",
-            "interface port-channel336",
-            "ipv6 address 10::5/128",
-            "no ipv6 redirects",
-        ]
-        deleted = [
-            "interface mgmt0",
-            "no ip address",
-            "interface Ethernet1/1",
-            "no ip address",
-            "interface Ethernet1/2",
-            "no ip address",
-        ]
-        replaced = [
-            "interface Ethernet1/1",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface port-channel355",
-            "no ipv6 redirects",
-            "interface port-channel336",
-            "ipv6 address 10::5/128",
-            "no ipv6 redirects",
-        ]
-        overridden = [
-            "interface Ethernet1/1",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface port-channel355",
-            "no ipv6 redirects",
-            "interface port-channel336",
-            "ipv6 address 10::5/128",
-            "no ipv6 redirects",
-            "interface port-channel337",
-            "ipv6 redirects",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_3(self):
-        # encap testing
-        existing = dedent(
-            """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Ethernet1/1.41
-            encapsulation dot1q 4100
-            ip address 10.1.1.1/24
-          interface Ethernet1/1.42
-            encapsulation dot1q 42
-          interface Ethernet1/1.44
-            encapsulation dot1q 44
-          interface Ethernet1/1.45
-            encapsulation dot1q 45
-            ip address 10.5.5.5/24
-            ipv6 address 10::5/128
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
-                dict(
-                    name="Ethernet1/1.41",
-                    dot1q=41,
-                    ipv4=[{"address": "10.2.2.2/24"}],
-                ),
-                dict(name="Ethernet1/1.42", dot1q=42),
-                dict(
-                    name="Ethernet1/1.43",
-                    dot1q=43,
-                    ipv6=[{"address": "10::2/128"}],
-                ),
-                dict(name="Ethernet1/1.44"),
-            ],
-        )
-        # Expected result commands for each 'state'
-        merged = [
-            "interface Ethernet1/1.41",
-            "encapsulation dot1q 41",
-            "ip address 10.2.2.2/24",
-            "interface Ethernet1/1.43",
-            "encapsulation dot1q 43",
-            "ipv6 address 10::2/128",
-        ]
-        deleted = [
-            "interface mgmt0",
-            "no ip address",
-            "interface Ethernet1/1.41",
-            "no encapsulation dot1q",
-            "no ip address",
-            "interface Ethernet1/1.42",
-            "no encapsulation dot1q",
-            "interface Ethernet1/1.44",
-            "no encapsulation dot1q",
-        ]
-        replaced = [
-            "interface Ethernet1/1.41",
-            "encapsulation dot1q 41",
-            "ip address 10.2.2.2/24",
-            # 42 no chg
-            "interface Ethernet1/1.43",
-            "encapsulation dot1q 43",
-            "ipv6 address 10::2/128",
-            "interface Ethernet1/1.44",
-            "no encapsulation dot1q",
-        ]
-        overridden = [
-            "interface Ethernet1/1.41",
-            "encapsulation dot1q 41",
-            "ip address 10.2.2.2/24",
-            # 42 no chg
-            "interface Ethernet1/1.44",
-            "no encapsulation dot1q",
-            "interface Ethernet1/1.45",
-            "no encapsulation dot1q",
-            "no ip address",
-            "no ipv6 address",
-            "interface Ethernet1/1.43",
-            "encapsulation dot1q 43",
-            "ipv6 address 10::2/128",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_4(self):
-        # IPv4-centric testing
-        existing = dedent(
-            """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Ethernet1/1
-            no ip redirects
-            ip address 10.1.1.1/24 tag 11
-            ip address 10.2.2.2/24 secondary tag 12
-            ip address 10.3.3.3/24 secondary
-            ip address 10.4.4.4/24 secondary tag 14
-            ip address 10.5.5.5/24 secondary tag 15
-            ip address 10.6.6.6/24 secondary tag 16
-          interface Ethernet1/2
-            ip address 10.12.12.12/24
-          interface Ethernet1/3
-            ip address 10.13.13.13/24
-          interface Ethernet1/5
-            no ip redirects
-            ip address 10.15.15.15/24
-            ip address 10.25.25.25/24 secondary
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
-                dict(
-                    name="Ethernet1/1",
-                    ipv4=[
-                        {
-                            "address": "10.1.1.1/24",
-                            "secondary": True,
-                        },  # prim->sec
-                        {
-                            "address": "10.2.2.2/24",
-                            "secondary": True,
-                        },  # rmv tag
-                        {"address": "10.3.3.3/24", "tag": 3},  # become prim
-                        {
-                            "address": "10.4.4.4/24",
-                            "secondary": True,
-                            "tag": 14,
-                        },  # no chg
-                        {
-                            "address": "10.5.5.5/24",
-                            "secondary": True,
-                            "tag": 55,
-                        },  # chg tag
-                        {
-                            "address": "10.7.7.7/24",
-                            "secondary": True,
-                            "tag": 77,
-                        },
-                    ],
-                ),  # new ip
-                dict(name="Ethernet1/2"),
-                dict(
-                    name="Ethernet1/4",
-                    ipv4=[
-                        {"address": "10.40.40.40/24"},
-                        {"address": "10.41.41.41/24", "secondary": True},
-                    ],
-                ),
-                dict(name="Ethernet1/5"),
-            ],
-        )
-        # Expected result commands for each 'state'
-        merged = [
-            "interface Ethernet1/1",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-        ]
-        deleted = [
-            "interface mgmt0",
-            "no ip address",
-            "interface Ethernet1/1",
-            "no ip address",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/5",
-            "no ip address",
-        ]
-        replaced = [
-            "interface Ethernet1/1",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-            "interface Ethernet1/5",
-            "no ip address",
-        ]
-        overridden = [
-            "interface Ethernet1/1",
-            "no ip address 10.6.6.6/24 secondary",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-            "interface Ethernet1/5",
-            "no ip address",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_5(self):
-        # IPv6-centric testing
-        existing = dedent(
-            """\
-          interface Ethernet1/1
-            ipv6 address 10::1/128
-            ipv6 address 10::2/128 tag 12
-            ipv6 address 10::3/128 tag 13
-            ipv6 address 10::4/128 tag 14
-          interface Ethernet1/2
-            ipv6 address 10::12/128
-          interface Ethernet1/3
-            ipv6 address 10::13/128
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="Ethernet1/1",
-                    ipv6=[
-                        {"address": "10::1/128"},  # no chg
-                        {"address": "10::3/128"},  # tag rmv
-                        {"address": "10::4/128", "tag": 44},  # tag chg
-                        {"address": "10::5/128"},  # new addr
-                        {"address": "10::6/128", "tag": 66},
-                    ],
-                ),  # new addr+tag
-                dict(name="Ethernet1/2"),
-            ],
-        )
-        # Expected result commands for each 'state'
-        merged = [
-            "interface Ethernet1/1",
-            "ipv6 address 10::4/128 tag 44",
-            "ipv6 address 10::5/128",
-            "ipv6 address 10::6/128 tag 66",
-        ]
-        deleted = [
-            "interface Ethernet1/1",
-            "no ipv6 address",
-            "interface Ethernet1/2",
-            "no ipv6 address",
-        ]
-        replaced = [
-            "interface Ethernet1/1",
-            "no ipv6 address 10::3/128",
-            "no ipv6 address 10::2/128",
-            "ipv6 address 10::4/128 tag 44",
-            "ipv6 address 10::3/128",
-            "ipv6 address 10::5/128",
-            "ipv6 address 10::6/128 tag 66",
-            "interface Ethernet1/2",
-            "no ipv6 address 10::12/128",
-        ]
-        overridden = [
-            "interface Ethernet1/1",
-            "no ipv6 address 10::3/128",
-            "no ipv6 address 10::2/128",
-            "ipv6 address 10::4/128 tag 44",
-            "ipv6 address 10::3/128",
-            "ipv6 address 10::5/128",
-            "ipv6 address 10::6/128 tag 66",
-            "interface Ethernet1/2",
-            "no ipv6 address 10::12/128",
-            "interface Ethernet1/3",
-            "no ipv6 address",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-        #
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-        #
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_6(self):
-        # misc tests
-        existing = dedent(
-            """\
-          interface Ethernet1/1
-            ip address 10.1.1.1/24
-            no ip redirects
-            ip unreachables
-          interface Ethernet1/2
-          interface Ethernet1/3
-          interface Ethernet1/4
-          interface Ethernet1/5
-            no ip redirects
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="Ethernet1/1",
-                    redirects=True,
-                    unreachables=False,
-                    ipv4=[{"address": "192.168.1.1/24"}],
-                ),
-                dict(name="Ethernet1/2"),
-                dict(name="Ethernet1/3", redirects=True, unreachables=False),  # defaults
-                dict(name="Ethernet1/4", redirects=False, unreachables=True),
-            ],
-        )
-        merged = [
-            "interface Ethernet1/1",
-            "ip redirects",
-            "no ip unreachables",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/4",
+            "mac-address 00:11:22:33:44:55",
+            "encapsulation dot1q 100",
+            "evpn multisite fabric-tracking",
             "no ip redirects",
             "ip unreachables",
+            "ip proxy-arp",
+            "ip port-unreachable",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp smart-relay",
+            "ip dhcp option82 suboption circuit-id abc",
+            "ip dhcp relay information trusted",
+            "ip dhcp relay subnet-selection 10.0.0.7",
+            "ip dhcp relay source-interface port-channel 455",
+            "ipv6 unreachables",
+            "ipv6 dhcp smart-relay",
+            "ip address dhcp",
+            "ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "ip address 10.0.0.3/9 secondary",
+            "ipv6 address dhcp",
+            "ipv6 address use-link-local-only",
+            "ipv6 address autoconfig",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 address 2001:db8::/64 eui64",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf xyz",
+            "ipv6 verify unicast source reachable-via any allow-default",
         ]
-        deleted = [
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_merged_idemp(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/1
+             mac-address 00:11:22:33:44:55
+             ip address dhcp
+             ip verify unicast source reachable-via any allow-default
+             ip dhcp relay address 11.0.0.1 use-vrf xyz
+             ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+             ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_nxos_l3_interface_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:55
+              ip address dhcp
+              ip verify unicast source reachable-via any allow-default
+              ip dhcp relay address 11.0.0.1 use-vrf xyz
+              ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              no ip redirects
+            """,
+        )
+
+        set_module_args(dict(state="deleted"))
+
+        commands = [
             "interface Ethernet1/1",
             "ip redirects",
-            "no ip unreachables",
-            "no ip address",
+            "no mac-address 00:11:22:33:44:55",
+            "no ip address dhcp",
+            "no ip verify unicast source reachable-via any allow-default",
+            "no ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "no ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "no ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
-        replaced = [
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+            interface Ethernet1/2
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/2",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
             "interface Ethernet1/1",
-            "ip redirects",
-            "no ip unreachables",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/4",
+            "no mac-address 00:11:22:33:44:54",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "interface Ethernet1/2",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
             "no ip redirects",
-            "ip unreachables",
+            "no ipv6 redirects",
         ]
-        overridden = [
-            "interface Ethernet1/1",
-            "ip redirects",
-            "no ip unreachables",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/5",
-            "ip redirects",
-            "interface Ethernet1/4",
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:50
+              ip address 11.0.0.2 11.0.0.1 route-preference 45 tag 81
+            interface Ethernet1/2
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/2",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/2",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
             "no ip redirects",
-            "ip unreachables",
+            "no ipv6 redirects",
         ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_7(self):
-        # idempotence
-        existing = dedent(
+    def test_nxos_l3_interface_replaced_idem(self):
+        self.execute_show_command.return_value = dedent(
             """\
-          interface Ethernet1/1
-            ip address 10.1.1.1/24
-            ip address 10.2.2.2/24 secondary tag 2
-            ip address 10.3.3.3/24 secondary tag 3
-            ip address 10.4.4.4/24 secondary
-            ipv6 address 10::1/128
-            ipv6 address 10::2/128 tag 2
-            no ip redirects
-            ip unreachables
-          interface Ethernet1/2
-        """,
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:55
+              ip address dhcp
+              ip verify unicast source reachable-via any allow-default
+              ip dhcp relay address 11.0.0.1 use-vrf xyz
+              ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              no ip redirects
+              no ipv6 redirects
+            """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="Ethernet1/1",
-                    redirects=False,
-                    unreachables=True,
-                    ipv4=[
-                        {"address": "10.1.1.1/24"},
-                        {
-                            "address": "10.2.2.2/24",
-                            "secondary": True,
-                            "tag": 2,
-                        },
-                        {
-                            "address": "10.3.3.3/24",
-                            "secondary": True,
-                            "tag": 3,
-                        },
-                        {"address": "10.4.4.4/24", "secondary": True},
-                    ],
-                    ipv6=[
-                        {"address": "10::1/128"},
-                        {"address": "10::2/128", "tag": 2},
-                    ],
-                ),
-                dict(name="Ethernet1/2"),
-            ],
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
         )
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=False)
+        self.execute_module(changed=False, commands=[])
 
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=False)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=False)
-
-        # Modify output for deleted idempotence test
-        existing = dedent(
-            """\
-          interface Ethernet1/1
-          interface Ethernet1/2
-        """,
+    def test_nxos_l3_interface_rendered(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="vlan",
+                                            interface_id="51",
+                                            vrf_name="abc",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(address="dhcp"),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=70,
+                                tag=97,
+                            ),
+                        ],
+                    ),
+                ],
+                state="rendered",
+            ),
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=False)
-
-    def test_8(self):
-        # no 'config' key in playbook
-        existing = dedent(
-            """\
-          interface Ethernet1/1
-            ip address 10.1.1.1/24
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict()
-
-        for i in ["merged", "replaced", "overridden"]:
-            playbook["state"] = i
-            set_module_args(playbook, ignore_provider_arg)
-            self.execute_module(failed=True)
-
-        deleted = ["interface Ethernet1/1", "no ip address"]
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-    def test_9(self):
-        # Platform specific checks
-        # 'ip redirects' has platform-specific behaviors
-        existing = dedent(
-            """\
-          interface Ethernet1/3
-            ip address 10.13.13.13/24
-          interface Ethernet1/5
-            no ip redirects
-            ip address 10.15.15.15/24
-            ip address 10.25.25.25/24 secondary
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(config=[dict(name="Ethernet1/3"), dict(name="Ethernet1/5")])
-        # Expected result commands for each 'state'
-        deleted = [
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface Ethernet1/5",
-            "no ip address",
-            "ip redirects",
-        ]
-        replaced = [
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface Ethernet1/5",
-            "no ip address",
-            "ip redirects",
-        ]
-        overridden = [
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface Ethernet1/5",
-            "no ip address",
-            "ip redirects",
-        ]
-        platform = "N3K"
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=False, device=platform)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted, device=platform)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced, device=platform)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden, device=platform)
-
-    def test_10(self):
-        # basic tests
-        existing = dedent(
-            """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Ethernet1/1
-            ip address 10.1.1.1/24
-          interface Ethernet1/2
-            ip address 10.1.2.1/24
-            evpn multisite fabric-tracking
-          interface Ethernet1/3
-            ip address 10.1.3.1/24
-            evpn multisite dci-tracking
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
-                dict(name="Ethernet1/1", ipv4=[{"address": "192.168.1.1/24"}]),
-                dict(name="Ethernet1/2"),
-                # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
-                # replaced should ignore Eth1/3.
-            ],
-        )
-        # Expected result commands for each 'state'
-        merged = ["interface Ethernet1/1", "ip address 192.168.1.1/24"]
-        deleted = [
-            "interface mgmt0",
-            "no ip address",
+        commands = [
             "interface Ethernet1/1",
-            "no ip address",
-            "interface Ethernet1/2",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
+            "mac-address 00:11:22:33:44:55",
+            "ip address dhcp",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 70 tag 97",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc",
         ]
-        replaced = [
-            "interface Ethernet1/1",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/2",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
-        ]
-        overridden = [
-            "interface Ethernet1/1",
-            "ip address 192.168.1.1/24",
-            "interface Ethernet1/2",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
-            "interface Ethernet1/3",
-            "no ip address",
-            "no evpn multisite dci-tracking",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_11(self):
-        # IPv4-centric testing
-        existing = dedent(
-            """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Ethernet1/1
-            no ip redirects
-            ip address 10.1.1.1/24 tag 11
-            ip address 10.2.2.2/24 secondary tag 12
-            ip address 10.3.3.3/24 secondary
-            ip address 10.4.4.4/24 secondary tag 14
-            ip address 10.5.5.5/24 secondary tag 15
-            ip address 10.6.6.6/24 secondary tag 16
-          interface Ethernet1/2
-            ip address 10.12.12.12/24
-          interface Ethernet1/3
-            ip address 10.13.13.13/24
-          interface Ethernet1/5
-            no ip redirects
-            ip address 10.15.15.15/24
-            ip address 10.25.25.25/24 secondary
-            evpn multisite fabric-tracking
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
-                dict(
-                    name="Ethernet1/1",
-                    ipv4=[
-                        {
-                            "address": "10.1.1.1/24",
-                            "secondary": True,
-                        },  # prim->sec
-                        {
-                            "address": "10.2.2.2/24",
-                            "secondary": True,
-                        },  # rmv tag
-                        {"address": "10.3.3.3/24", "tag": 3},  # become prim
-                        {
-                            "address": "10.4.4.4/24",
-                            "secondary": True,
-                            "tag": 14,
-                        },  # no chg
-                        {
-                            "address": "10.5.5.5/24",
-                            "secondary": True,
-                            "tag": 55,
-                        },  # chg tag
-                        {
-                            "address": "10.7.7.7/24",
-                            "secondary": True,
-                            "tag": 77,
-                        },
-                    ],
-                ),  # new ip
-                dict(name="Ethernet1/2"),
-                dict(
-                    name="Ethernet1/4",
-                    ipv4=[
-                        {"address": "10.40.40.40/24"},
-                        {"address": "10.41.41.41/24", "secondary": True},
-                    ],
-                    evpn_multisite_tracking="dci-tracking",
-                ),
-                dict(name="Ethernet1/5"),
-            ],
-        )
-        # Expected result commands for each 'state'
-        merged = [
-            "interface Ethernet1/1",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-            "evpn multisite dci-tracking",
-        ]
-        deleted = [
-            "interface mgmt0",
-            "no ip address",
-            "interface Ethernet1/1",
-            "no ip address",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/5",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
-        ]
-        replaced = [
-            "interface Ethernet1/1",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-            "evpn multisite dci-tracking",
-            "interface Ethernet1/5",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
-        ]
-        overridden = [
-            "interface Ethernet1/1",
-            "no ip address 10.6.6.6/24 secondary",
-            "no ip address 10.5.5.5/24 secondary",
-            "no ip address 10.2.2.2/24 secondary",
-            "no ip address 10.3.3.3/24 secondary",
-            "ip address 10.3.3.3/24 tag 3",  # Changes primary
-            "ip address 10.1.1.1/24 secondary",
-            "ip address 10.2.2.2/24 secondary",
-            "ip address 10.7.7.7/24 secondary tag 77",
-            "ip address 10.5.5.5/24 secondary tag 55",
-            "interface Ethernet1/2",
-            "no ip address",
-            "interface Ethernet1/3",
-            "no ip address",
-            "interface Ethernet1/4",
-            "ip address 10.40.40.40/24",
-            "ip address 10.41.41.41/24 secondary",
-            "evpn multisite dci-tracking",
-            "interface Ethernet1/5",
-            "no ip address",
-            "no evpn multisite fabric-tracking",
-        ]
-
-        playbook["state"] = "merged"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=merged)
-
-        playbook["state"] = "deleted"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=deleted)
-
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=replaced)
-
-        playbook["state"] = "overridden"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=overridden)
-
-    def test_12(self):
-        # Use case specific
-        existing = dedent(
-            """\
-          interface mgmt0
-            ip address 10.0.0.254/24
-          interface Vlan99
-            no shutdown
-            ip address 192.168.1.1/24
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="Vlan99",
-                    ipv4=[{"address": "192.168.1.1/24", "tag": 500}],  # adding a tag
-                ),
-            ],
-            state="replaced",
-        )
-        cmds = ["interface Vlan99", "ip address 192.168.1.1/24 tag 500"]
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=cmds)
-
-    def test_12_gathered(self):
-        # check for parsing correct contexts
-        existing = dedent(
-            """\
-          interface nve1
-            no shutdown
-            source-interface loopback1
-          interface Ethernet1/1
-            description
-            ip address 192.168.1.1/24
-          interface Ethernet1/2
-            ip address 192.168.2.1/24
-          interface loopback1
-        """,
-        )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(state="gathered")
-        gathered_facts = [
-            {"name": "nve1"},
-            {"name": "Ethernet1/1", "ipv4": [{"address": "192.168.1.1/24"}]},
-            {"name": "Ethernet1/2", "ipv4": [{"address": "192.168.2.1/24"}]},
-            {"name": "loopback1"},
-        ]
-        set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered_facts)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
-    def test_replaced_tag(self):
-        existing = dedent(
+    def test_nxos_l3_interface_gathered(self):
+        self.execute_show_command.return_value = dedent(
             """\
-          interface Vlan10
-            ip address 192.168.1.10/24 tag 20
-        """,
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:55
+              ip address dhcp
+              ip verify unicast source reachable-via any allow-default
+              ip dhcp relay address 11.0.0.1 use-vrf xyz
+              ipv6 address 2001:db8::1/32 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+            """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="Vlan10",
-                    ipv4=[{"address": "192.168.1.11/24", "tag": 20}],
-                ),
-            ],
-            state="replaced",
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        gathered = [
+            {
+                "name": "Ethernet1/1",
+                "mac_address": "00:11:22:33:44:55",
+                "verify": {
+                    "unicast": {
+                        "source": {
+                            "reachable_via": {
+                                "mode": "any",
+                                "allow_default": True,
+                            },
+                        },
+                    },
+                },
+                "dhcp": {
+                    "ipv4": {
+                        "relay": {
+                            "address": [
+                                {
+                                    "relay_ip": "11.0.0.1",
+                                    "vrf_name": "xyz",
+                                },
+                            ],
+                        },
+                    },
+                    "ipv6": {
+                        "relay": {
+                            "address": [
+                                {
+                                    "relay_ip": "2001:0db8::1:abcd",
+                                    "vrf_name": "abc",
+                                    "interface_type": "vlan",
+                                    "interface_id": "51",
+                                },
+                            ],
+                        },
+                    },
+                },
+                "ipv4": [
+                    {"address": "dhcp"},
+                ],
+                "ipv6": [
+                    {
+                        "address": "2001:db8::1/32",
+                        "route_preference": 70,
+                        "tag": 97,
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_l3_interface_overridden_same_value(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              mac-address 00:11:22:33:44:54
+              ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97
+              ipv6 dhcp relay address 2001:0db8::1:abcd interface vlan 51 use-vrf abc
+              ipv6 address 2001:db8::1/32 route-preference 24 tag 43
+            """,
         )
 
-        commands = ["interface Vlan10", "ip address 192.168.1.11/24 tag 20"]
-        playbook["state"] = "replaced"
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(changed=True, commands=commands)
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        mac_address="00:11:22:33:44:55",
+                        verify=dict(
+                            unicast=dict(
+                                source=dict(
+                                    reachable_via=dict(
+                                        mode="any",
+                                        allow_default=True,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="11.0.0.1",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            ipv6=dict(
+                                relay=dict(
+                                    address=[
+                                        dict(
+                                            relay_ip="2001:0db8::1:abcd",
+                                            interface_type="ethernet",
+                                            interface_id="21",
+                                            vrf_name="xyz",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                        ipv4=[
+                            dict(ip_network_mask="10.0.0.1", secondary=True),
+                        ],
+                        ipv6=[
+                            dict(
+                                address="2001:db8::1/32",
+                                route_preference=65,
+                                tag=200,
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "no ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
+            "no ip redirects",
+            "no ipv6 redirects",
+            "mac-address 00:11:22:33:44:55",
+            "ip address 10.0.0.1 secondary",
+            "ip verify unicast source reachable-via any allow-default",
+            "ip dhcp relay address 11.0.0.1 use-vrf xyz",
+            "ipv6 address 2001:db8::1/32 route-preference 65 tag 200",
+            "ipv6 dhcp relay address 2001:0db8::1:abcd interface ethernet 21 use-vrf xyz",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

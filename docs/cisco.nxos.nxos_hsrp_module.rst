@@ -5,7 +5,7 @@
 cisco.nxos.nxos_hsrp
 ********************
 
-**Manages HSRP configuration on NX-OS switches.**
+**(deprecated, removed after 2028-06-01) Manages HSRP configuration on NX-OS switches.**
 
 
 Version added: 1.0.0

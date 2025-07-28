@@ -1,0 +1,2 @@
+minor_changes:
+  - cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and enhancements.

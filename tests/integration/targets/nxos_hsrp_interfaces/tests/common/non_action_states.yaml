@@ -1,0 +1,64 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_hsrp_interfaces non action integration tests on connection={{ ansible_connection }}
+
+- block:
+    # Interfaces used in the task don't actually exist on the appliance
+    - name: Use parsed state to convert externally supplied configuration to structured format
+      register: result_parsed
+      cisco.nxos.nxos_hsrp_interfaces:
+        running_config: |
+          interface Vlan1
+            hsrp version 2
+            hsrp 10
+              timers msec 250  255
+          interface Vlan10
+            hsrp bfd
+            hsrp version 2
+            hsrp mac-refresh 400
+            hsrp 10
+              name VLAN10-GROUP
+              mac-address 00CC.10DD.10EE
+              preempt delay minimum 15 reload 120 sync 10
+              ip 10.10.10.2 secondary
+          interface Vlan14
+            bandwidth 99999
+            hsrp bfd
+            hsrp version 2
+            hsrp delay minimum 22 reload 123
+            hsrp mac-refresh 300
+            hsrp 14
+              follow VLAN14-GROUP
+              mac-address 00AA.14BB.14CC
+              ip 192.168.14.1 secondary
+              ip 192.168.14.2 secondary
+            hsrp 15
+              mac-address 00BB.14CC.15DD
+              preempt delay minimum 10 reload 100 sync 5
+              priority 22 forwarding-threshold lower 12 upper 22
+              timers msec 456  33
+          interface Vlan1000
+            hsrp 10
+              noauthentication md5 key-string testmesecurte
+              name testhsr
+              mac-address 0423.4567.89AB
+              preempt delay minimum 33 reload 23 sync 22
+              priority 22 forwarding-threshold lower 12 upper 22
+              timers msec 456  33
+              ip 10.15.8.1 secondary
+        state: parsed
+
+    - ansible.builtin.assert:
+        that: "{{ parsed | symmetric_difference(result_parsed['parsed']) |length==0 }}"
+
+    - name: Render the provided configuration
+      cisco.nxos.nxos_hsrp_interfaces:
+        config: "{{ result_parsed.parsed }}"
+        state: rendered
+      register: result_rendered
+
+    - ansible.builtin.assert:
+        that: "{{ rendered | symmetric_difference(result_rendered['rendered']) |length==0 }}"
+
+- ansible.builtin.debug:
+    msg: END nxos_hsrp_interfaces non action integration tests on connection={{ ansible_connection }}

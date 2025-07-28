@@ -40,18 +40,20 @@
                 authentication:
                   algorithm: md5
                   password: "{{ admin_snmp_passwd }}"
-                  localized_key: true
+                  localizedv2_key: true
                   priv:
+                    aes_128: true
                     privacy_password: "{{ admin_snmp_passwd }}"
 
-              - user: admin
+              - user: ansible
+                group: network-admin
                 authentication:
                   algorithm: md5
-                  engine_id: "{{ admin_snmp_engineid_2 }}"
-                  localized_key: true
-                  password: "{{ admin_snmp_passwd_2 }}"
+                  localizedv2_key: true
+                  password: "{{ ansible_snmp_passwd }}"
                   priv:
-                    privacy_password: "{{ admin_snmp_passwd_2 }}"
+                    aes_128: true
+                    privacy_password: "{{ ansible_snmp_passwd }}"
 
               - user: snmp_user_1
                 group: network-operator
@@ -69,15 +71,6 @@
                   priv:
                     privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
                     aes_128: true
-
-              - authentication:
-                  algorithm: md5
-                  localized_key: true
-                  password: "{{ zuul_snmp_passwd }}"
-                  priv:
-                    privacy_password: "{{ zuul_snmp_passwd }}"
-                group: network-admin
-                user: zuul
 
             use_acls:
               - user: snmp_user_1

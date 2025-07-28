@@ -3,30 +3,24 @@ merged:
   before:
     users:
       auth:
-        - user: admin
-          group: network-admin
-          authentication:
-            algorithm: md5
-            password: "{{ admin_snmp_passwd }}"
-            localized_key: true
-            priv:
-              privacy_password: "{{ admin_snmp_passwd }}"
         - authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ admin_snmp_passwd }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
+              aes_128: true
+              privacy_password: "{{ admin_snmp_passwd }}"
+          group: network-admin
           user: admin
         - authentication:
             algorithm: md5
-            localized_key: true
-            password: "{{ zuul_snmp_passwd }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd }}"
             priv:
-              privacy_password: "{{ zuul_snmp_passwd }}"
+              aes_128: true
+              privacy_password: "{{ ansible_snmp_passwd }}"
           group: network-admin
-          user: zuul
+          user: ansible
   commands:
     - snmp-server contact nxosswitchadmin@localhost
     - snmp-server location serverroom-1
@@ -72,20 +66,22 @@ merged:
       auth:
         - authentication:
             algorithm: md5
-            localized_key: true
+            localizedv2_key: true
             password: "{{ admin_snmp_passwd }}"
             priv:
+              aes_128: true
               privacy_password: "{{ admin_snmp_passwd }}"
           group: network-admin
           user: admin
         - authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
-          user: admin
+              aes_128: true
+              privacy_password: "{{ ansible_snmp_passwd }}"
+          group: network-admin
+          user: ansible
         - authentication:
             algorithm: md5
             localized_key: true
@@ -101,14 +97,6 @@ merged:
               privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
           group: network-operator
           user: snmp_user_2
-        - authentication:
-            algorithm: md5
-            localized_key: true
-            password: "{{ zuul_snmp_passwd }}"
-            priv:
-              privacy_password: "{{ zuul_snmp_passwd }}"
-          group: network-admin
-          user: zuul
       use_acls:
         - ipv4: acl1
           ipv6: acl2
@@ -158,18 +146,20 @@ replaced:
           authentication:
             algorithm: md5
             password: "{{ admin_snmp_passwd }}"
-            localized_key: true
+            localizedv2_key: true
             priv:
+              aes_128: true
               privacy_password: "{{ admin_snmp_passwd }}"
 
-        - user: admin
+        - user: ansible
+          group: network-admin
           authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
+              aes_128: true
+              privacy_password: "{{ ansible_snmp_passwd }}"
 
         - user: snmp_user_1
           group: network-operator
@@ -187,15 +177,6 @@ replaced:
             priv:
               privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
               aes_128: true
-
-        - authentication:
-            algorithm: md5
-            localized_key: true
-            password: "{{ zuul_snmp_passwd }}"
-            priv:
-              privacy_password: "{{ zuul_snmp_passwd }}"
-          group: network-admin
-          user: zuul
 
       use_acls:
         - user: snmp_user_1

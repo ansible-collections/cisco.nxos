@@ -4,6 +4,34 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v10.2.0
+=======
+
+Minor Changes
+-------------
+
+- nxos_interfaces - Added service-policy, logging, mac-address and snmp configuration options for interface.
+- nxos_l2_interfaces - Enhances capability of the module to deal with addition attributes under l2 interfaces. Adds support for CDP, Link flap and beacon.
+
+Bugfixes
+--------
+
+- nxos_acls - Fix issue where Not sufficient TCAM bank error not being captured by error regex.
+
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- hsrp_interfaces - Fixes and enhances capability of the module to deal with entire hsrp configuration under interfaces.
+
+Deprecated Features
+-------------------
+
+- nxos_hsrp - deprecate nxos.nxos.nxos_hsrp in favor of nxos.nxos.nxos_hsrp_interfaces.
+- nxos_vrf_interface - deprecate nxos.nxos.nxos_vrf_interface in favor of nxos.nxos.nxos_vrf_interfaces.
+
 v10.0.0
 =======
 

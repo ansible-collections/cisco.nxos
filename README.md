@@ -35,10 +35,8 @@ For more information about communication, see the [Ansible communication guide](
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.16.0**.
+This collection has been tested against the following Ansible versions: **>=2.16.0**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -90,7 +88,7 @@ Name | Description
 [cisco.nxos.nxos_gir](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_module.rst)|Trigger a graceful removal or insertion (GIR) of the switch.
 [cisco.nxos.nxos_gir_profile_management](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_profile_management_module.rst)|Create a maintenance-mode or normal-mode profile for GIR.
 [cisco.nxos.nxos_hostname](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hostname_module.rst)|Hostname resource module.
-[cisco.nxos.nxos_hsrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_module.rst)|Manages HSRP configuration on NX-OS switches.
+[cisco.nxos.nxos_hsrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_module.rst)|(deprecated, removed after 2028-06-01) Manages HSRP configuration on NX-OS switches.
 [cisco.nxos.nxos_hsrp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst)|HSRP interfaces resource module
 [cisco.nxos.nxos_igmp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_module.rst)|Manages IGMP global configuration.
 [cisco.nxos.nxos_igmp_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_interface_module.rst)|Manages IGMP interface configuration.
@@ -135,7 +133,7 @@ Name | Description
 [cisco.nxos.nxos_vrf_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_address_family_module.rst)|Resource module to configure VRF address family definitions.
 [cisco.nxos.nxos_vrf_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_af_module.rst)|Manages VRF AF.
 [cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|Resource module to configure VRF definitions.
-[cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|Manages interface specific VRF configuration.
+[cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|(deprecated, removed after 2028-06-01) Manages interface specific VRF configuration.
 [cisco.nxos.nxos_vrf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interfaces_module.rst)|Resource module to configure VRF interfaces.
 [cisco.nxos.nxos_vrrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrrp_module.rst)|Manages VRRP configuration on NX-OS switches.
 [cisco.nxos.nxos_vsan](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vsan_module.rst)|Configuration of vsan for Cisco NXOS MDS Switches.

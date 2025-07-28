@@ -152,40 +152,17 @@ overridden:
   commands:
     - vrf context testvrf
     - description Test
-    - ip domain-name example.net
-    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
-    - ip name-server 192.168.0.1 use-vrf temp
+    - no ip auto-discard
+    - no ip domain-name example.com
+    - no ip mroute 192.168.1.0/24 192.168.1.1
+    - no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+    - no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
     - no vni 5
-    - ip domain-list example.com
-    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
-    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
-    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
   after:
     vrfs:
       - "{{ management[0] }}"
       - name: temp
       - description: Test
-        ip:
-          auto_discard: true
-          domain_list:
-            - example.com
-          domain_name: example.net
-          mroutes:
-            - group: 192.168.1.0/24
-              source: 192.168.1.1
-            - group: 192.168.1.0/24
-              preference: 2
-              source: 192.168.1.2
-              vrf: temp
-          name_server:
-            address_list:
-              - 192.168.0.1
-              - 192.168.0.2
-              - 192.168.1.1
-              - 192.169.1.3
-            use_vrf:
-              source_address: 192.168.0.1
-              vrf: temp
         name: testvrf
   before:
     vrfs:
@@ -212,6 +189,7 @@ replaced:
     vrfs:
       - "{{ management[0] }}"
       - description: Test
+        rd: auto
         ip:
           auto_discard: true
           domain_list:
@@ -264,6 +242,7 @@ replaced:
   commands:
     - vrf context temp
     - description Test
+    - rd auto
     - ip auto-discard
     - ip domain-name example.org
     - ip domain-list example.com

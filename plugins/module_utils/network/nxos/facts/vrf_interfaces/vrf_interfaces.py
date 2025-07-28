@@ -33,8 +33,8 @@ class Vrf_interfacesFacts(object):
         self._module = module
         self.argument_spec = Vrf_interfacesArgs.argument_spec
 
-    def get_device_data(self, connection):
-        return connection.get_config(flags="interface")
+    def get_config(self, connection):
+        return connection.get("show running-config | section '^interface'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Vrf_interfaces network resource
@@ -50,7 +50,7 @@ class Vrf_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = self.get_device_data(connection)
+            data = self.get_config(connection)
 
         # parse native config using the Vrf_interfaces template
         vrf_interfaces_parser = Vrf_interfacesTemplate(lines=data.splitlines(), module=self._module)
