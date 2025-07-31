@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_prefix_lists - Fix idempotency issues caused by IP prefix notation discrepancies"
