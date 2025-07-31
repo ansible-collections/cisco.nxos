@@ -698,7 +698,6 @@ parsed:
     This output will always be in the same format as the
     module argspec.
 """
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ntp_global.ntp_global import (
@@ -716,7 +715,7 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=Ntp_globalArgs.argument_spec,
+        argument_spec=Ntp_globalArgs(redact_sensitive=False).get_argument_spec(),
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],
