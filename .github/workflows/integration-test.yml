@@ -13,13 +13,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true  
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   safe-to-test:
     if: >-
-      (github.event.label.name == 'safe to test' || github.event.action != 'labeled') &&
+      (github.event.label.name == 'safe to test' || github.event.action != 'labeled') &&ß
       github.event.pull_request.draft == false
     uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
     secrets:
