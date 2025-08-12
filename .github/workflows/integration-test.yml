@@ -12,12 +12,10 @@ on:
       - "tests/integration/**"
   workflow_dispatch:
 
-
-
 jobs:
   safe-to-test:
     if: >-
-      (github.event.label.name == 'safe to test' || github.event.action != 'labeled') &&ß
+      (github.event.label.name == 'safe to test' || github.event.action != 'labeled') &&
       github.event.pull_request.draft == false
     uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
     secrets:
