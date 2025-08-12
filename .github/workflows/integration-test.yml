@@ -12,6 +12,10 @@ on:
       - "tests/integration/**"
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true  
+
 jobs:
   safe-to-test:
     if: >-
