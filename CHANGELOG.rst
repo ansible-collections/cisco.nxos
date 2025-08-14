@@ -4,6 +4,19 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.0.0
+=======
+
+Minor Changes
+-------------
+
+- cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and enhancements.
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_vrf_global - Added support for rd attribute for nxos_vrf_global module.
+
 v10.2.0
 =======
 
