@@ -15,8 +15,8 @@ on:
 jobs:
   safe-to-test:
     if: >-
-      github.event.label.name == 'safe to test' ||
-      github.event.action != 'labeled'
+      (github.event.label.name == 'safe to test' || github.event.action != 'labeled') &&
+      github.event.pull_request.draft == false
     uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
     with:
       lab_title: cisco_nxos
       network_os: cisco.nxos.nxos
-      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+      pytest_addopts: "--color=yes -n 1 --log-level WARNING -vvv --role-excludes=snmp_server"
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
