@@ -105,6 +105,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             },
             {
                 "name": "Ethernet1/4",
+                "mode": "access"
             },
         ]
 
@@ -125,8 +126,8 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                      switchport mode dot1q-tunnel
                     interface Ethernet1/800
                      switchport access vlan 18
-                     switchport trunk allowed vlan 210
                     interface Ethernet1/801
+                     switchport mode trunk
                      switchport trunk allowed vlan 2,4,15
                     interface Ethernet1/802
                      switchport mode fex-fabric
@@ -142,22 +143,22 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         expected = [
             {
                 "name": "nve1",
+                "mode": "access",
             },
             {
                 "mode": "dot1q-tunnel",
                 "name": "Ethernet1/799",
             },
             {
+                "mode": "access",
                 "access": {
                     "vlan": 18,
                 },
                 "name": "Ethernet1/800",
-                "trunk": {
-                    "allowed_vlans": "210",
-                },
             },
             {
                 "name": "Ethernet1/801",
+                "mode": "trunk",
                 "trunk": {
                     "allowed_vlans": "2,4,15",
                 },
@@ -172,6 +173,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             },
             {
                 "name": "loopback1",
+                "mode": "access",
             },
         ]
 
@@ -221,10 +223,12 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              switchport access vlan 5
             interface Ethernet1/7
              switchport
+             switchport mode trunk
              switchport trunk native vlan 15
              switchport trunk allowed vlan 25-27
             interface Ethernet1/8
              switchport
+             switchport mode trunk
              switchport trunk allowed vlan 100-200
             """,
         )
@@ -234,21 +238,21 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 config=[
                     {
                         "name": "Ethernet1/6",
-                        "access": {
-                            "vlan": "8",
-                        },
+                        "mode": "trunk",
                         "trunk": {
                             "allowed_vlans": "10-12",
                         },
                     },
                     {
                         "name": "Ethernet1/7",
+                        "mode": "trunk",
                         "trunk": {
                             "allowed_vlans": "25-27",
                         },
                     },
                     {
                         "name": "Ethernet1/8",
+                        "mode": "trunk",
                         "trunk": {
                             "allowed_vlans": "none",
                         },
@@ -260,7 +264,8 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected_commands = [
             "interface Ethernet1/6",
-            "switchport access vlan 8",
+            "switchport mode trunk",
+            "no switchport access vlan 5",
             "switchport trunk allowed vlan 10-12",
             "interface Ethernet1/7",
             "no switchport trunk native vlan 15",
@@ -278,6 +283,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             default interface Ethernet1/7
             interface Ethernet1/6
              switchport
+             switchport mode trunk
              switchport trunk allowed vlan 11
             interface Ethernet1/7
              switchport
@@ -289,11 +295,10 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 config=[
                     {
                         "name": "Ethernet1/7",
-                        "access": {
-                            "vlan": "6",
-                        },
+                        "mode": "trunk",
                         "trunk": {
                             "allowed_vlans": "10-12",
+                            "native_vlan": "6",
                         },
                     },
                 ],
@@ -303,9 +308,11 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected_commands = [
             "interface Ethernet1/6",
+            "no switchport mode trunk",
             "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
-            "switchport access vlan 6",
+            "switchport mode trunk",
+            "switchport trunk native vlan 6",
             "switchport trunk allowed vlan 10-12",
         ]
 
@@ -319,6 +326,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             default interface Ethernet1/7
             interface Ethernet1/6
              switchport
+             switchport mode trunk
              switchport trunk native vlan 10
             interface Ethernet1/7
              switchport
@@ -333,6 +341,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected_commands = [
             "interface Ethernet1/6",
+            "no switchport mode trunk",
             "no switchport trunk native vlan 10",
             "interface Ethernet1/7",
             "no switchport mode trunk",

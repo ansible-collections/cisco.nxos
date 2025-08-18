@@ -49,6 +49,19 @@ class L2_interfacesFacts(object):
 
         return parsed_config
 
+    def _set_default_mode_access(self, parsed_config):
+        """show running-config does not show `switchport mode access` when ports are access ports
+        set the mode to `access` if the mode doesnt exist
+        """
+
+        for interface in parsed_config:
+            mode = interface.get("mode", None)
+            if mode is None:
+                interface["mode"] = "access"
+
+        return parsed_config
+
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
 
@@ -68,14 +81,15 @@ class L2_interfacesFacts(object):
         # parse native config using the L2_interfaces template
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
-        final_objs = self._fix_allowed_vlans(objs)
+        objs = self._fix_allowed_vlans(objs)
+        objs = self._set_default_mode_access(objs)
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
             l2_interfaces_parser.validate_config(
                 self.argument_spec,
-                {"config": final_objs},
+                {"config": objs},
                 redact=True,
             ),
         )
