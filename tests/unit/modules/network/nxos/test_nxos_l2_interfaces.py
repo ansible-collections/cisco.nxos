@@ -105,7 +105,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             },
             {
                 "name": "Ethernet1/4",
-                "mode": "access"
+                "mode": "access",
             },
         ]
 

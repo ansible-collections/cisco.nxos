@@ -61,7 +61,6 @@ class L2_interfacesFacts(object):
 
         return parsed_config
 
-
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
 
