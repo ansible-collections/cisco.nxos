@@ -31,14 +31,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    default_intf_enabled,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
     InterfacesTemplate,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    default_intf_enabled,
 )
 
 
