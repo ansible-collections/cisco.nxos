@@ -525,7 +525,7 @@ releases:
     fragments:
       - l3_interface_refactor.yaml
       - vrf_global_rd_attribute.yaml
-    release_date: "2025-08-18"
+    release_date: "2025-08-19"
   2.0.0:
     changes:
       bugfixes:
