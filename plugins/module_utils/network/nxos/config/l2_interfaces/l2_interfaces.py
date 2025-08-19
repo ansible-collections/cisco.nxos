@@ -19,6 +19,8 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
+from ansible.errors import AnsibleError
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -80,6 +82,16 @@ class L2_interfaces(ResourceModule):
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
 
+        for name in wantd:
+            if name not in haved:
+                raise AnsibleError(
+                    "Interface %s is not available on the target device or it is "
+                    "not configured as a Layer2 interface. Use the nxos_interfaces "
+                    "module to first configure the interface as a layer2 interface"
+                    %(name,)
+                )
+
+
         for each in wantd, haved:
             self.process_list_attrs(each)
 
@@ -110,8 +122,13 @@ class L2_interfaces(ResourceModule):
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists(want, have)
+
+        # remove no `switchport mode access` commands.  mode access is the default
+        self.commands = [c for c in self.commands if c != "no switchport mode access"]
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
 
     def _compare_lists(self, want, have):
         """Compare list attributes"""
