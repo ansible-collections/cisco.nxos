@@ -512,12 +512,12 @@ releases:
       bugfixes:
         - cisco.nxos.nxos_vrf_global - Added support for rd attribute for nxos_vrf_global
           module.
-      minor_changes:
-        - cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and
-          enhancements.
       major_changes:
         - Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions
           of the dependency had compatibility issues with `ansible-core>=2.19`.
+      minor_changes:
+        - cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and
+          enhancements.
       release_summary:
         With this release, the minimum required version of `ansible.netcommon`
         for this collection is `>=8.1.0`. The last version known to be compatible
