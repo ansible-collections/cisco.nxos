@@ -18,9 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible.errors import AnsibleError
-
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -87,10 +86,8 @@ class L2_interfaces(ResourceModule):
                 raise AnsibleError(
                     "Interface %s is not available on the target device or it is "
                     "not configured as a Layer2 interface. Use the nxos_interfaces "
-                    "module to first configure the interface as a layer2 interface"
-                    %(name,)
+                    "module to first configure the interface as a layer2 interface" % (name,),
                 )
-
 
         for each in wantd, haved:
             self.process_list_attrs(each)
@@ -128,7 +125,6 @@ class L2_interfaces(ResourceModule):
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
-
 
     def _compare_lists(self, want, have):
         """Compare list attributes"""

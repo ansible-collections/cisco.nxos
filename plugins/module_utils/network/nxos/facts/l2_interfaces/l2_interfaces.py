@@ -23,12 +23,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
-    L2_interfacesTemplate,
-)
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     default_intf_layer,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
+    L2_interfacesTemplate,
 )
 
 
@@ -77,17 +76,19 @@ class L2_interfacesFacts(object):
         """Only include layer 2 interfaces in layer 2 facts"""
 
         for o in parsed_config:
-            print("detected layer %s for %s" %(
-                o.get('layer', default_intf_layer(o.get("name"), sysdefault)),
-                o.get("name")
-
-            ))
+            print(
+                "detected layer %s for %s"
+                % (
+                    o.get("layer", default_intf_layer(o.get("name"), sysdefault)),
+                    o.get("name"),
+                ),
+            )
 
         return [
-            o for o in parsed_config
+            o
+            for o in parsed_config
             if o.pop("layer", default_intf_layer(o.get("name"), sysdefault)) == "layer2"
         ]
-
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
@@ -112,7 +113,7 @@ class L2_interfacesFacts(object):
         objs = self._fix_allowed_vlans(objs)
         objs = self._set_default_mode_access(objs)
 
-        print("layer 2 objs: %s" %(objs,))
+        print("layer 2 objs: %s" % (objs,))
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
@@ -138,4 +139,3 @@ class L2_interfacesFacts(object):
         match = re.search(pat, switchport_data, re.MULTILINE)
         if match:
             return "layer3" if "no " in match.groups() else "layer2"
-

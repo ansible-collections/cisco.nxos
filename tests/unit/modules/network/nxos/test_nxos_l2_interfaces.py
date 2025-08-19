@@ -68,7 +68,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             """
             system default switchport
             system default switchport shutdown
-            """
+            """,
         )
 
     def tearDown(self):
@@ -114,7 +114,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             ),
         )
 
-        with pytest.raises(AnsibleError, match=r'^Interface Vlan10 is not available.+'):
+        with pytest.raises(AnsibleError, match=r"^Interface Vlan10 is not available.+"):
             self.execute_module(changed=True)
 
     def test_l2_interfaces_gathered(self):

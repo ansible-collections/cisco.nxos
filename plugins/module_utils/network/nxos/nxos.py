@@ -989,6 +989,7 @@ def get_interface_type(interface):
 
     return "unknown"
 
+
 def default_intf_layer(name="", default=None):
     """Get the default layer for an interface based on type and provided system
     default configuration
@@ -1011,6 +1012,7 @@ def default_intf_layer(name="", default=None):
         return "layer3"
 
     return default
+
 
 def default_intf_enabled(name="", sysdefs=None, mode=None):
     """Get device/version/interface-specific default 'enabled' state.
