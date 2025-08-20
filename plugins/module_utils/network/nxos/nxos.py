@@ -986,8 +986,32 @@ def get_interface_type(interface):
         return "portchannel"
     elif interface.upper().startswith("NV"):
         return "nve"
-    else:
-        return "unknown"
+
+    return "unknown"
+
+
+def default_intf_layer(name="", default=None):
+    """Get the default layer for an interface based on type and provided system
+    default configuration
+    """
+
+    if not name:
+        return None
+
+    name = normalize_interface(name)
+    iftype = get_interface_type(name)
+    resubintf = re.compile(r"\d+\.\d+$")
+
+    if iftype in ("ethernet", "portchannel"):
+        if re.search(r"\d+\.\d+$", name):
+            # sub interfaces are layer 3
+            return "layer3"
+        return default
+
+    if iftype in ("svi", "loopback", "management", "nve"):
+        return "layer3"
+
+    return default
 
 
 def default_intf_enabled(name="", sysdefs=None, mode=None):

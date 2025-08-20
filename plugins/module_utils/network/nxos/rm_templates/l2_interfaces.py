@@ -43,6 +43,21 @@ class L2_interfacesTemplate(NetworkTemplate):
             },
             "shared": True,
         },
+        {  # only applicable for switches
+            "name": "layer",
+            "getval": re.compile(
+                r"""
+                (?P<negate>\s+no)?
+                (?P<switchport>\s+switchport)
+                $""", re.VERBOSE,
+            ),
+            "setval": "",
+            "result": {
+                '{{ name }}': {
+                    'layer': "{{ 'layer3' if negate is defined and switchport is defined else 'layer2' if switchport is defined else None }}",
+                },
+            },
+        },
         {
             "name": "mode",
             "getval": re.compile(

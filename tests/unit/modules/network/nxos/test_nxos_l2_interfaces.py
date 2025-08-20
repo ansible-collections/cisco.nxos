@@ -19,6 +19,10 @@
 
 from __future__ import absolute_import, division, print_function
 
+import pytest
+
+from ansible.errors import AnsibleError
+
 
 __metaclass__ = type
 
@@ -52,12 +56,66 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
+        self.mock_execute_system_defaults_command = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces."
+            "L2_interfacesFacts._get_switchport_defaults",
+        )
+        self.execute_system_defaults_command = self.mock_execute_system_defaults_command.start()
+
         self.maxDiff = None
+
+        self.execute_system_defaults_command.return_value = dedent(
+            """
+            system default switchport
+            system default switchport shutdown
+            """,
+        )
 
     def tearDown(self):
         super(TestNxosL2InterfacesModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
+        self.mock_execute_system_defaults_command.stop()
+
+    def test_l2_attempt_to_configure_l3(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport mode trunk
+             switchport access vlan 20
+             switchport trunk native vlan 40
+             switchport trunk allowed vlan 30-45,47
+            interface Vlan10
+             description A layer3 interface
+             no shutdown
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                    {
+                        "name": "Vlan10",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                ],
+                state="merged",
+            ),
+        )
+
+        with pytest.raises(AnsibleError, match=r"^Interface Vlan10 is not available.+"):
+            self.execute_module(changed=True)
 
     def test_l2_interfaces_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -105,6 +163,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             },
             {
                 "name": "Ethernet1/4",
+                "mode": "access",
             },
         ]
 
@@ -125,13 +184,24 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                      switchport mode dot1q-tunnel
                     interface Ethernet1/800
                      switchport access vlan 18
-                     switchport trunk allowed vlan 210
                     interface Ethernet1/801
-                     switchport trunk allowed vlan 2,4,15
+                     switchport mode trunk
+                     switchport trunk allowed vlan 210
                     interface Ethernet1/802
-                     switchport mode fex-fabric
+                     switchport mode trunk
+                     switchport trunk allowed vlan 2,4,15
                     interface Ethernet1/803
+                     switchport mode fex-fabric
+                    interface Ethernet1/804
                      switchport mode fabricpath
+                    interface Ethernet1/810
+                     no switchport
+                    interface Ethernet1/810.10
+                     ip address 10.1.1.1/24
+                     no shutdown
+                    interface Vlan10
+                     ip address 10.1.2.1/24
+                     no shutdown
                     interface loopback1
                     """,
                 ),
@@ -141,37 +211,37 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected = [
             {
-                "name": "nve1",
-            },
-            {
                 "mode": "dot1q-tunnel",
                 "name": "Ethernet1/799",
             },
             {
+                "name": "Ethernet1/800",
+                "mode": "access",
                 "access": {
                     "vlan": 18,
                 },
-                "name": "Ethernet1/800",
+            },
+            {
+                "name": "Ethernet1/801",
+                "mode": "trunk",
                 "trunk": {
                     "allowed_vlans": "210",
                 },
             },
             {
-                "name": "Ethernet1/801",
+                "name": "Ethernet1/802",
+                "mode": "trunk",
                 "trunk": {
                     "allowed_vlans": "2,4,15",
                 },
             },
             {
                 "mode": "fex-fabric",
-                "name": "Ethernet1/802",
-            },
-            {
-                "mode": "fabricpath",
                 "name": "Ethernet1/803",
             },
             {
-                "name": "loopback1",
+                "mode": "fabricpath",
+                "name": "Ethernet1/804",
             },
         ]
 
