@@ -45,6 +45,7 @@ class Bgp_global(ResourceModule):
             resource="bgp_global",
             tmplt=Bgp_globalTemplate(),
         )
+        a = 1
         # VRF parsers = 29
         self.parsers = [
             "allocate_index",
