@@ -451,15 +451,12 @@ class TestNxosInterfacesModule(TestNxosModule):
         )
         merged = [
             "interface Ethernet1/1",
-            "no shutdown",
             "no switchport",
             "interface Ethernet1/2",
             "shutdown",
             "interface loopback1",
             "shutdown",
             "interface loopback2",
-            "no shutdown",
-            "interface loopback3",
             "no shutdown",
             "interface port-channel3",
             "no shutdown",
@@ -474,6 +471,11 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
         # Test with an older image version which has different defaults
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer2",
+            "L2_enabled": False,
+        }
+
         merged_legacy = [
             "interface Ethernet1/1",
             "no shutdown",
@@ -484,8 +486,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             "shutdown",
             "interface loopback2",
             "no shutdown",
-            "interface loopback3",
-            "no shutdown",
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
@@ -493,12 +493,16 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel4",
             "no shutdown",
         ]
-        result = self.execute_module(changed=True, device="legacy")
+        result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(merged_legacy))
 
         deleted = [
             "interface Ethernet1/2",
             "switchport",
+            "shutdown",
+            "interface loopback1",
+            "shutdown",
+            "interface loopback3",
             "shutdown",
         ]
         playbook["state"] = "deleted"
@@ -515,8 +519,6 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface Ethernet1/2",
             "shutdown",
             "interface loopback2",
-            "no shutdown",
-            "interface loopback3",
             "no shutdown",
             "interface port-channel3",
             "no shutdown",
