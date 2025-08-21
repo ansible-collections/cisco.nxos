@@ -50,7 +50,7 @@ class Static_routesTemplate(NetworkTemplate):
                 r"""
                 (^|\s+)ip\sroute
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
+                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel|Vlan)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
                 (\strack\s(?P<track>\d+))?
@@ -91,7 +91,7 @@ class Static_routesTemplate(NetworkTemplate):
                 r"""
                 (^|\s+)ipv6\sroute
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
+                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel|Vlan)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
                 (\strack\s(?P<track>\d+))?
