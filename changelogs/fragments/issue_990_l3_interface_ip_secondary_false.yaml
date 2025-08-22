@@ -1,0 +1,2 @@
+bugfixes:
+  - "cisco.nxos.nxos_l3_interfaces - fix evaluation of explicit `ipv4.secondary: false` which previously evaluated to `True` by virtue of being defined."
