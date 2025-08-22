@@ -129,6 +129,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                                 ip_network_mask="10.0.0.1",
                                 route_preference=70,
                                 tag=97,
+                                secondary=False,
                             ),
                             dict(
                                 ip_network_mask="10.0.0.3/9",
