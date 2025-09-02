@@ -4,6 +4,29 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible.netcommon` for this collection is `>=8.1.0`. The last version known to be compatible with `ansible-core<=2.18.x` is ansible.netcommon `v8.0.1` and cisco.nxos `v10.2.0`.
+
+Major Changes
+-------------
+
+- Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions of the dependency had compatibility issues with `ansible-core>=2.19`.
+
+Minor Changes
+-------------
+
+- cisco.nxos.nxos_l3_interfaces - Rewrite of l3_interfaces with bug fixes and enhancements.
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_vrf_global - Added support for rd attribute for nxos_vrf_global module.
+
 v10.2.0
 =======
 
