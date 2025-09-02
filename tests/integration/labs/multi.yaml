@@ -90,6 +90,8 @@ nodes:
         limit-resource m4route-mem minimum 58 maximum 58
         limit-resource m6route-mem minimum 8 maximum 8
 
+      feature nxapi
+
       no password strength-check
       username admin password 5 $5$AADOBF$GVXUV2cvmlZH42xDu6wnqfBpV9gXF61WGVNrGF5Gk6C  role network-admin
       username ansible password 5 $5$GHBNKA$8ccD8KWjmP6NzxzkIRufl7giaUWjrhAn4SRrVWYZ4R1  role network-admin
@@ -109,6 +111,7 @@ nodes:
       vrf context management
         ip name-server 192.168.255.1
         ip route 0.0.0.0/0 192.168.255.1
+      nxapi http port 80
 
       interface Ethernet1/1
 
@@ -535,7 +538,7 @@ links:
     conditioning: {}
     label: slave-switch-port5<->stable-2.16-mgmt0
 lab:
-  description: ''
-  notes: ''
-  title: Lab at Tue 11:32 AM
+  description: 'Upstream test lab for cisco.nxos'
+  notes: 'Upstream test lab for cisco.nxos'
+  title: cisco.nxos.nxos
   version: 0.2.2
