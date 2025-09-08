@@ -23,7 +23,6 @@ class YamlTestUtils(object):
         """Dump to a py2-unicode or py3-string stream."""
         return yaml.dump(obj, stream, Dumper=dumper)
 
-
     def _dump_string(self, obj, dumper=None):
         """Dump to a py2-unicode or py3-string"""
         return yaml.dump(obj, Dumper=dumper)
@@ -82,7 +81,6 @@ class YamlTestUtils(object):
 
         stream_obj_from_stream = io.StringIO()
         stream_obj_from_string = io.StringIO()
-
 
         yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper)
         yaml.dump(obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper)

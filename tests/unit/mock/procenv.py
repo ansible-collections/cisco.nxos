@@ -43,7 +43,6 @@ def swap_stdin_and_argv(stdin_data="", argv_data=tuple()):
     fake_stream = StringIO(stdin_data)
     fake_stream.buffer = BytesIO(to_bytes(stdin_data))
 
-
     try:
         sys.stdin = fake_stream
         sys.argv = argv_data

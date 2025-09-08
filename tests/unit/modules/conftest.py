@@ -12,7 +12,9 @@ import pytest
 from ansible.module_utils._text import to_bytes
 from ansible.module_utils.common._collections_compat import MutableMapping
 
+
 string_types = (str,)
+
 
 @pytest.fixture
 def patch_ansible_module(request, mocker):
