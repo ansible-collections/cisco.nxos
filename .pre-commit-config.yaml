@@ -6,8 +6,9 @@ ci:
   autofix_commit_msg: "chore: auto fixes from pre-commit.com hooks"
 
 repos:
-  - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.2
+  # not a permanent fix, but to hardcode ansible-core 2.16 as repo dependecy
+  - repo: https://github.com/KB-perByte/collection_prep
+    rev: 7132e381ee7ce66bd9cd0020e7ffb5001c57a62f
     hooks:
       - id: update-docs
 
