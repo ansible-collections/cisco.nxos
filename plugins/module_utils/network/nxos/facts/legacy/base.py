@@ -10,7 +10,6 @@ __metaclass__ = type
 import platform
 import re
 
-from ansible.module_utils.six import iteritems
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
@@ -408,7 +407,7 @@ class Interfaces(FactsBase):
 
     def populate_interfaces(self, interfaces):
         facts = dict()
-        for key, value in iteritems(interfaces):
+        for key, value in interfaces.items():
             intf = dict()
             if get_interface_type(key) == "svi":
                 intf["state"] = self.parse_state(key, value, intf_type="svi")
@@ -562,7 +561,7 @@ class Interfaces(FactsBase):
 
     def populate_ipv6_interfaces(self, interfaces):
         facts = dict()
-        for key, value in iteritems(interfaces):
+        for key, value in interfaces.items():
             intf = dict()
             intf["ipv6"] = self.parse_ipv6_address(value)
             facts[key] = intf
