@@ -20,7 +20,6 @@ created.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -103,7 +102,7 @@ class Ntp_global(ResourceModule):
             wantx = want.get(x, {})
             havex = have.get(x, {})
 
-            for wkey, wentry in iteritems(wantx):
+            for wkey, wentry in wantx.items():
                 hentry = havex.pop(wkey, {})
 
                 # pop aliased keys to preserve idempotence
@@ -120,7 +119,7 @@ class Ntp_global(ResourceModule):
                     self.addcmd(wentry, x)
 
             # remove superfluos config
-            for _hkey, hentry in iteritems(havex):
+            for _hkey, hentry in havex.items():
                 self.addcmd(hentry, x, negate=True)
 
     def _compare_access_group(self, want, have):
@@ -131,7 +130,7 @@ class Ntp_global(ResourceModule):
             wx = want_ag.get(x, {})
             hx = have_ag.get(x, {})
 
-            for wkey, wentry in iteritems(wx):
+            for wkey, wentry in wx.items():
                 hentry = hx.pop(wkey, {})
                 if wentry != hentry:
                     self.addcmd(wentry, x)
