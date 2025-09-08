@@ -10,7 +10,6 @@ __metaclass__ = type
 import platform
 import re
 
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_config,
