@@ -15,7 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
@@ -66,7 +65,7 @@ class Bgp_globalFacts(object):
         # this is only needed for keys that are valid for both global
         # and VRF contexts
         global_vals = vrfs.pop("vrf_", {})
-        for key, value in iteritems(global_vals):
+        for key, value in global_vals.items():
             obj[key] = value
 
         # transform vrfs into a list
