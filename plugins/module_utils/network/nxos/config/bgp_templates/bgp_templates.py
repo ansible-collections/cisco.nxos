@@ -19,7 +19,6 @@ created.
 """
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -130,18 +129,18 @@ class Bgp_templates(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             cmds = []
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     cmds.append("no template peer {0}".format(have["name"]))
             self.commands.extend(cmds)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             begin = len(self.commands)
             self._compare(want=want, have=haved.pop(k, {}))
             if len(self.commands) != begin:
@@ -173,21 +172,21 @@ class Bgp_templates(ResourceModule):
         w_p_attr = want.get("path_attribute", {})
         h_p_attr = have.get("path_attribute", {})
 
-        for wkey, wentry in iteritems(w_p_attr):
+        for wkey, wentry in w_p_attr.items():
             if wentry != h_p_attr.pop(wkey, {}):
                 self.addcmd(wentry, "path_attribute", False)
 
         # remove remaining items in have for replaced
-        for hkey, hentry in iteritems(h_p_attr):
+        for hkey, hentry in h_p_attr.items():
             self.addcmd(hentry, "path_attribute", True)
 
     def _afs_compare(self, want, have):
-        for name, wentry in iteritems(want):
+        for name, wentry in want.items():
             begin = len(self.commands)
             self._af_compare(want=wentry, have=have.pop(name, {}))
             if begin != len(self.commands):
                 self.commands.insert(begin, self._tmplt.render(wentry, "address_family", False))
-        for name, hentry in iteritems(have):
+        for name, hentry in have.items():
             self.commands.append(self._tmplt.render(hentry, "address_family", True))
 
     def _af_compare(self, want, have):
@@ -220,7 +219,7 @@ class Bgp_templates(ResourceModule):
         new_data = {}
         new_data["as_number"] = data.pop("as_number", None)
 
-        for k, v in iteritems(data):
+        for k, v in data.items():
             for entry in v:
                 if "address_family" in entry:
                     entry["address_family"] = {
