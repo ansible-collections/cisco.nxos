@@ -150,13 +150,27 @@ class L2_interfacesTemplate(NetworkTemplate):
             "name": "cdp_enable",
             "getval": re.compile(
                 r"""
-                \s+cdp\s+(?P<cdp_enable>enable)
+                \s+cdp\senable
                 $""", re.VERBOSE,
             ),
             "setval": "cdp enable",
             "result": {
                 '{{ name }}': {
-                    'cdp_enable': "{{ True if cdp_enable }}",
+                    'cdp_enable': True,
+                },
+            },
+        },
+        {
+            "name": "no_cdp_enable",
+            "getval": re.compile(
+                r"""
+                \s+no\scdp\senable
+                $""", re.VERBOSE,
+            ),
+            "setval": "no cdp enable",
+            "result": {
+                '{{ name }}': {
+                    'cdp_enable': False,
                 },
             },
         },
