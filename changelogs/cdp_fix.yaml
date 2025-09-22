@@ -1,3 +1,3 @@
-minor_changes:
+bugfixes:
   - cisco.nxos.nxos_l2_interfaces - Fix cdp_enable config parsing.
   - cisco.nxos.nxos_l3_interfaces - Improved the code logic for handling redirects.
