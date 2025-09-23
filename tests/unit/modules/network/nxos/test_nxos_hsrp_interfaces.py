@@ -598,7 +598,7 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             "no hsrp version 2",
         ]
         self.assertEqual(set(result["commands"]), set(commands))
-    
+
     def test_nxos_hsrp_interfaces_gathered(self):
         self.get_config.return_value = dedent(
             """\
@@ -624,6 +624,6 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
                         "timer": {"hello_interval": 456, "hold_time": 33, "msec": True},
                     },
                 ],
-            }
+            },
         ]
         self.assertEqual(result["gathered"], gathered)
