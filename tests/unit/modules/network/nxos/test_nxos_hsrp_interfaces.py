@@ -606,6 +606,10 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
              hsrp 10 preempt delay minimum 10 reload 100 sync 5
              hsrp 10 priority 100 forwarding-threshold lower 12 upper 22
              hsrp 10 timers msec 456 33
+            interface Vlan2
+             hsrp 11 preempt delay minimum 10 sync 5
+             hsrp 11 priority 100
+             hsrp 11 timers 456 33
             """,
         )
         set_module_args(
@@ -622,6 +626,16 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
                         "preempt": {"minimum": 10, "reload": 100, "sync": 5},
                         "priority": {"level": 100, "lower": 12, "upper": 22},
                         "timer": {"hello_interval": 456, "hold_time": 33, "msec": True},
+                    },
+                ],
+            },
+            {
+                "name": "Vlan2",
+                "standby_options": [
+                    {
+                        "preempt": {"minimum": 10, "sync": 5},
+                        "priority": {"level": 100},
+                        "timer": {"hello_interval": 456, "hold_time": 33},
                     },
                 ],
             },
