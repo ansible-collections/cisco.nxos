@@ -120,7 +120,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
@@ -267,7 +266,7 @@ def parse_domain_name(config, vrf_config):
     if match:
         objects.append({"name": match.group(1), "vrf": None})
 
-    for vrf, cfg in iteritems(vrf_config):
+    for vrf, cfg in vrf_config.items():
         match = re.search(r"ip domain-name (\S+)", cfg, re.M)
         if match:
             objects.append({"name": match.group(1), "vrf": vrf})
@@ -281,7 +280,7 @@ def parse_domain_search(config, vrf_config):
     for item in re.findall(r"^ip domain-list (\S+)", config, re.M):
         objects.append({"name": item, "vrf": None})
 
-    for vrf, cfg in iteritems(vrf_config):
+    for vrf, cfg in vrf_config.items():
         for item in re.findall(r"ip domain-list (\S+)", cfg, re.M):
             objects.append({"name": item, "vrf": vrf})
 
@@ -296,7 +295,7 @@ def parse_name_servers(config, vrf_config, vrfs):
         for addr in match.group(1).split(" "):
             objects.append({"server": addr, "vrf": None})
 
-    for vrf, cfg in iteritems(vrf_config):
+    for vrf, cfg in vrf_config.items():
         vrf_match = re.search("ip name-server (.+)", cfg, re.M)
         if vrf_match:
             for addr in vrf_match.group(1).split(" "):

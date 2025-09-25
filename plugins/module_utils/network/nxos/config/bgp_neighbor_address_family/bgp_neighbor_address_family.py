@@ -19,7 +19,6 @@ created.
 """
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -111,7 +110,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                     "vrfs": {},
                 }
 
-                for k, hvrf in iteritems(haved.get("vrfs", {})):
+                for k, hvrf in haved.get("vrfs", {}).items():
                     wvrf = wantd.get("vrfs", {}).get(k, {})
                     to_del["vrfs"][k] = {
                         "neighbors": self._set_to_delete(hvrf, wvrf),
@@ -138,13 +137,13 @@ class Bgp_neighbor_address_family(ResourceModule):
         if vrf:
             begin_vrf = len(self.commands)
 
-        for k, w_nbr in iteritems(w_nbrs):
+        for k, w_nbr in w_nbrs.items():
             begin = len(self.commands)
             h_nbr = h_nbrs.pop(k, {})
             want_afs = w_nbr.get("address_family", {})
             have_afs = h_nbr.get("address_family", {})
 
-            for k, want_af in iteritems(want_afs):
+            for k, want_af in want_afs.items():
                 begin_af = len(self.commands)
                 have_af = have_afs.pop(k, {})
 
@@ -167,18 +166,18 @@ class Bgp_neighbor_address_family(ResourceModule):
                     )
 
             # remove remaining items in have for replaced
-            for k, have_af in iteritems(have_afs):
+            for k, have_af in have_afs.items():
                 self.addcmd(have_af, "address_family", True)
 
             if len(self.commands) != begin:
                 self.commands.insert(begin, "neighbor {0}".format(w_nbr["neighbor_address"]))
 
         if self.state in ["overridden", "deleted"]:
-            for k, h_nbr in iteritems(h_nbrs):
+            for k, h_nbr in h_nbrs.items():
                 begin = len(self.commands)
                 if not w_nbrs.pop(k, {}):
                     have_afs = h_nbr.get("address_family", {})
-                    for k, have_af in iteritems(have_afs):
+                    for k, have_af in have_afs.items():
                         self.addcmd(have_af, "address_family", True)
                 if len(self.commands) != begin:
                     self.commands.insert(begin, "neighbor {0}".format(h_nbr["neighbor_address"]))
@@ -192,11 +191,11 @@ class Bgp_neighbor_address_family(ResourceModule):
     def _vrfs_compare(self, want, have):
         wvrfs = want.get("vrfs", {})
         hvrfs = have.get("vrfs", {})
-        for k, wvrf in iteritems(wvrfs):
+        for k, wvrf in wvrfs.items():
             h_vrf = hvrfs.pop(k, {})
             self._compare(want=wvrf, have=h_vrf, vrf=k)
         # remove remaining items in have
-        for k, h_vrf in iteritems(hvrfs):
+        for k, h_vrf in hvrfs.items():
             self._compare(want={}, have=h_vrf, vrf=k)
 
     def _bgp_list_to_dict(self, data):
@@ -218,14 +217,14 @@ class Bgp_neighbor_address_family(ResourceModule):
         h_nbrs = haved.get("neighbors", {})
         w_nbrs = wantd.get("neighbors", {})
 
-        for k, h_nbr in iteritems(h_nbrs):
+        for k, h_nbr in h_nbrs.items():
             w_nbr = w_nbrs.pop(k, {})
             if w_nbr:
                 neighbors[k] = h_nbr
                 afs_to_del = {}
                 h_addrs = h_nbr.get("address_family", {})
                 w_addrs = w_nbr.get("address_family", {})
-                for af, h_addr in iteritems(h_addrs):
+                for af, h_addr in h_addrs.items():
                     if af in w_addrs:
                         afs_to_del[af] = h_addr
                 neighbors[k]["address_family"] = afs_to_del

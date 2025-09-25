@@ -20,7 +20,6 @@ created.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -205,22 +204,22 @@ class Snmp_server(ResourceModule):
         for x in ["users.auth", "users.use_acls", "hosts", "communities"]:
             wantx = get_from_dict(want, x) or {}
             havex = get_from_dict(have, x) or {}
-            for wkey, wentry in iteritems(wantx):
+            for wkey, wentry in wantx.items():
                 hentry = havex.pop(wkey, {})
                 if wentry != hentry:
                     self.addcmd(wentry, x)
             # remove superfluous items
-            for _k, hv in iteritems(havex):
+            for _k, hv in havex.items():
                 self.addcmd(hv, x, negate=True)
 
     def _list_to_dict(self, data):
         def _build_key(x):
             key = set()
-            for k, v in iteritems(x):
+            for k, v in x.items():
                 if isinstance(v, dict):
-                    for sk, sv in iteritems(v):
+                    for sk, sv in v.items():
                         if isinstance(sv, dict):
-                            for ssk, ssv in iteritems(sv):
+                            for ssk, ssv in sv.items():
                                 key.add(sk + "_" + ssk + "_" + str(ssv))
                         else:
                             key.add(sk + "_" + str(sv))

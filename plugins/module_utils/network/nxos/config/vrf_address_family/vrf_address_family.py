@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -86,16 +85,16 @@ class Vrf_address_family(ResourceModule):
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have, vrf=k)
 
         if self.state == "purged":
             purge_list = wantd or haved
-            for k, item in iteritems(purge_list):
+            for k, item in purge_list.items():
                 self.purge(k, item)
         else:
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}), vrf=k)
 
     def _compare(self, want, have, vrf):
@@ -126,10 +125,10 @@ class Vrf_address_family(ResourceModule):
 
         for item in address_fam_list:
             begin = len(self.commands)
-            for afk, afv in iteritems(waafs):
+            for afk, afv in waafs.items():
                 if afv.get("afi", "") == item[0] and afv.get("safi", "") == item[1]:
                     self._compare_single_af(wantaf=afv, haveaf=haafs.pop(afk, {}))
-            for afk, afv in iteritems(haafs):
+            for afk, afv in haafs.items():
                 if afv.get("afi", "") == item[0] and afv.get("safi", "") == item[1]:
                     self._compare_single_af(wantaf={}, haveaf=afv)
             if len(self.commands) != begin:
@@ -161,7 +160,7 @@ class Vrf_address_family(ResourceModule):
             wdict = self._convert_to_dict(want.get(parser_split[0], []), parser_split[1])
             hdict = self._convert_to_dict(have.get(parser_split[0], []), parser_split[1])
 
-            for key, entry in iteritems(wdict):
+            for key, entry in wdict.items():
                 if entry != hdict.pop(key, {}):
                     self.addcmd(entry, attrib, False)
             # remove remaining items in have for replaced
@@ -171,7 +170,7 @@ class Vrf_address_family(ResourceModule):
     def purge(self, vrf, item):
         """Purge the VRF configuration"""
         self.commands.append(f"vrf context {vrf}")
-        for i, value in iteritems(item.get("address_families", {})):
+        for i, value in item.get("address_families", {}).items():
             self.commands.append(
                 self._tmplt.render(
                     {"afi": value.get("afi"), "safi": value.get("safi")},

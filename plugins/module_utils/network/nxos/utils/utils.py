@@ -7,8 +7,6 @@ import socket
 from functools import total_ordering
 from itertools import count, groupby
 
-from ansible.module_utils.six import iteritems
-
 
 LOGGING_SEVMAP = {
     0: "emergency",
@@ -34,7 +32,7 @@ def flatten_dict(x):
     if not isinstance(x, dict):
         return result
 
-    for key, value in iteritems(x):
+    for key, value in x.items():
         if isinstance(value, dict):
             result.update(flatten_dict(value))
         else:
@@ -160,7 +158,7 @@ def get_logging_sevmap(invert=False):
     if invert:
         # cannot use dict comprehension yet
         # since we still test with Python 2.6
-        x = dict(map(reversed, iteritems(x)))
+        x = dict(map(reversed, x.items()))
     return x
 
 

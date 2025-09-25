@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -104,21 +103,21 @@ class Vrf_global(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
         if self.state == "purged":
             purge_list = wantd or haved
-            for k, item in iteritems(purge_list):
+            for k, item in purge_list.items():
                 self.purge(item)
         else:
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -148,7 +147,7 @@ class Vrf_global(ResourceModule):
             wdict = get_from_dict(want, attrib) or {}
             hdict = get_from_dict(have, attrib) or {}
 
-            for key, entry in iteritems(wdict):
+            for key, entry in wdict.items():
                 if entry != hdict.pop(key, {}):
                     self.addcmd(entry, attrib, False)
             # remove remaining items in have for replaced
@@ -166,11 +165,11 @@ class Vrf_global(ResourceModule):
         :rtype: dict
         :returns: A dictionary of VRFs with the VRF name as the key
         """
-        items = dict()
+        vrfitems = dict()
         for entry in vrf_list.get("vrfs", []):
-            items.update({(entry["name"]): entry})
+            vrfitems.update({(entry["name"]): entry})
 
-        for vrf, value in iteritems(items):
+        for vrf, value in vrfitems.items():
             domain_list = value.get("ip", {}).get("domain_list", [])
             if domain_list:
                 value["ip"]["domain_list"] = {
@@ -231,4 +230,4 @@ class Vrf_global(ResourceModule):
             address_list = value.get("ip", {}).get("name_server", {}).get("address_list", [])
             if address_list:
                 value["ip"]["name_server"]["address_list"] = " ".join(address_list)
-        return items
+        return vrfitems

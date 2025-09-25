@@ -20,7 +20,6 @@ created.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -119,20 +118,20 @@ class Bgp_address_family(ResourceModule):
                 purge = True if not wantd else False
                 self._remove_af(want_af, have_af, remove=remove, purge=purge)
 
-                for k, hvrf in iteritems(hvrfs):
+                for k, hvrf in hvrfs.items():
                     wvrf = wvrfs.get(k, {})
                     self._remove_af(wvrf, hvrf, vrf=k, remove=remove, purge=purge)
 
         if self.state in ["merged", "replaced", "overridden", "rendered"]:
-            for k, want in iteritems(want_af):
+            for k, want in want_af.items():
                 self._compare(want=want, have=have_af.pop(k, {}))
 
             # handle vrf->af
-            for wk, wvrf in iteritems(wvrfs):
+            for wk, wvrf in wvrfs.items():
                 cur_ptr = len(self.commands)
 
                 hvrf = hvrfs.pop(wk, {})
-                for k, want in iteritems(wvrf):
+                for k, want in wvrf.items():
                     self._compare(want=want, have=hvrf.pop(k, {}))
 
                 # add VRF command at correct position once
@@ -168,7 +167,7 @@ class Bgp_address_family(ResourceModule):
         ]:
             wdict = want.get(attrib, {})
             hdict = have.get(attrib, {})
-            for key, entry in iteritems(wdict):
+            for key, entry in wdict.items():
                 if entry != hdict.pop(key, {}):
                     self.addcmd(entry, attrib.format(attrib), False)
 
@@ -236,7 +235,7 @@ class Bgp_address_family(ResourceModule):
 
     def _remove_af(self, want_af, have_af, vrf=None, remove=False, purge=False):
         cur_ptr = len(self.commands)
-        for k, v in iteritems(have_af):
+        for k, v in have_af.items():
             # first conditional is for deleted with config provided
             # second conditional is for overridden
             # third condition is for deleted with empty config

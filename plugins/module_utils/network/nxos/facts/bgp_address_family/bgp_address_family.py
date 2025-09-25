@@ -15,7 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
@@ -64,7 +63,7 @@ class Bgp_address_familyFacts(object):
             nbr = []
             if "address_family" in objs:
                 # remove neighbor AF entries
-                for k, v in iteritems(objs["address_family"]):
+                for k, v in objs["address_family"].items():
                     if not k.startswith("nbr_"):
                         nbr.append(k)
                 for x in nbr:

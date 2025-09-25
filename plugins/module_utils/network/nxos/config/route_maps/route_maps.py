@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -131,17 +130,17 @@ class Route_maps(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
-                    for _hk, hentry in iteritems(have.get("entries", {})):
+                    for _hk, hentry in have.get("entries", {}).items():
                         self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
-        for wk, want in iteritems(wantd):
+        for wk, want in wantd.items():
             self._compare(want=want, have=haved.pop(wk, {}))
 
     def _compare(self, want, have):
@@ -155,7 +154,7 @@ class Route_maps(ResourceModule):
         self._compare_entries(want=w_entries, have=h_entries)
 
     def _compare_entries(self, want, have):
-        for wk, wentry in iteritems(want):
+        for wk, wentry in want.items():
             hentry = have.pop(wk, {})
             begin = len(self.commands)
 
@@ -172,7 +171,7 @@ class Route_maps(ResourceModule):
                         pos += 1
                 self.commands.insert(begin, self._tmplt.render(wentry, "route_map", False))
         # remove superfluos entries from have
-        for _hk, hentry in iteritems(have):
+        for _hk, hentry in have.items():
             self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
     def _compare_extcomm(self, want, have):
@@ -243,7 +242,7 @@ class Route_maps(ResourceModule):
 
     def _route_maps_list_to_dict(self, entry):
         entry = {x["route_map"]: x for x in entry}
-        for rmap, data in iteritems(entry):
+        for rmap, data in entry.items():
             if "entries" in data:
                 for x in data["entries"]:
                     x.update({"route_map": rmap})

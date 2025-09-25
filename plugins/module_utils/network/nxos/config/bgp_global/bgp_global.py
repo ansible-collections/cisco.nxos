@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -229,7 +228,7 @@ class Bgp_global(ResourceModule):
         hnbrs = have.get("neighbors", {})
 
         # neighbors have separate contexts in NX-OS
-        for name, entry in iteritems(wnbrs):
+        for name, entry in wnbrs.items():
             begin = len(self.commands)
             have_nbr = hnbrs.pop(name, {})
 
@@ -243,7 +242,7 @@ class Bgp_global(ResourceModule):
         # but do not negate it entirely
         # instead remove only those attributes
         # that this module manages
-        for name, entry in iteritems(hnbrs):
+        for name, entry in hnbrs.items():
             if self._has_af(vrf=vrf, neighbor=name):
                 self._module.fail_json(
                     msg="Neighbor {0} has address-family configurations. "
@@ -264,12 +263,12 @@ class Bgp_global(ResourceModule):
         w_p_attr = want.get("path_attribute", {})
         h_p_attr = have.get("path_attribute", {})
 
-        for wkey, wentry in iteritems(w_p_attr):
+        for wkey, wentry in w_p_attr.items():
             if wentry != h_p_attr.pop(wkey, {}):
                 self.addcmd(wentry, "path_attribute", False)
 
         # remove remaining items in have for replaced
-        for hkey, hentry in iteritems(h_p_attr):
+        for hkey, hentry in h_p_attr.items():
             self.addcmd(hentry, "path_attribute", True)
 
     def _vrfs_compare(self, want, have):
@@ -280,13 +279,13 @@ class Bgp_global(ResourceModule):
         """
         wvrfs = want.get("vrfs", {})
         hvrfs = have.get("vrfs", {})
-        for name, entry in iteritems(wvrfs):
+        for name, entry in wvrfs.items():
             self._compare(want=entry, have=hvrfs.pop(name, {}), vrf=name)
         # cleanup remaining VRFs
         # but do not negate it entirely
         # instead remove only those attributes
         # that this module manages
-        for name, entry in iteritems(hvrfs):
+        for name, entry in hvrfs.items():
             if self._has_af(vrf=name):
                 self._module.fail_json(
                     msg="VRF {0} has address-family configurations. "
@@ -338,7 +337,7 @@ class Bgp_global(ResourceModule):
 
         if "vrfs" in entry:
             entry["vrfs"] = {x["vrf"]: x for x in entry.get("vrfs", [])}
-            for _k, vrf in iteritems(entry["vrfs"]):
+            for _k, vrf in entry["vrfs"].items():
                 self._bgp_list_to_dict(vrf)
 
     def _get_config(self):

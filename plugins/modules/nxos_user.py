@@ -191,7 +191,6 @@ from copy import deepcopy
 from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     to_list,
@@ -387,7 +386,7 @@ def map_params_to_obj(module):
             },
         )
 
-        for key, value in iteritems(item):
+        for key, value in item.items():
             if value:
                 # validate the param value (if validator func exists)
                 validator = globals().get("validate_%s" % key)
@@ -406,7 +405,7 @@ def update_objects(want, have):
         if all((item is None, entry["state"] == "present")):
             updates.append((entry, {}))
         elif item:
-            for key, value in iteritems(entry):
+            for key, value in entry.items():
                 if value and value != item[key]:
                     updates.append((entry, item))
     return updates

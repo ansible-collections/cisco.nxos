@@ -15,7 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_templates.bgp_templates import (
@@ -65,7 +64,7 @@ class Bgp_templatesFacts(object):
 
         objs = {}
         # pop top-level keys and assign values to them
-        for k, v in iteritems(parsed):
+        for k, v in parsed.items():
             if k == "as_number":
                 objs[k] = v
             else:
