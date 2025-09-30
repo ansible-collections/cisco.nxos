@@ -128,6 +128,15 @@ options:
     required: false
     default: false
     type: bool
+  vrf:
+    description:
+    - Controls the vrf used to be used for NXAPI communication.
+      By default (if not specify this parameter), all Layer 3 interfaces are used for NXAPI communication.
+      If specify this parameter, only the Layer 3 interfaces in the specified VRF are used for NXAPI communication.
+      The nxapi use-vrf feature is introduced in Cisco NX-OS Release 8.2(3) at N7K,
+      and in Cisco NX-OS Release 7.0 at N3K and N9K.
+    required: false
+    type: str
 """
 
 EXAMPLES = """
@@ -178,6 +187,16 @@ def check_args(module, warnings, capabilities):
         module.fail_json(
             msg="sandbox or enable_sandbox is supported on NX-OS 7K series of switches",
         )
+    os_version = extract_major_minor_version(capabilities["device_info"]["network_os_version"])
+    if module.params.get("vrf") and (
+        (os_version < "8.2" and "7K" in os_platform) or os_version < "7.0"
+    ):
+        module.fail_json(
+            msg=(
+                "vrf is supported on NX-OS 7K series of switches starting from 8.2(3)"
+                " and on other platforms starting from 7.0"
+            ),
+        )
 
     state = module.params["state"]
 
@@ -202,6 +221,14 @@ def check_args(module, warnings, capabilities):
     return warnings
 
 
+def extract_major_minor_version(version_string):
+    match = re.match(r"^(\d+\.\d+)", version_string)
+    if match:
+        return Version(match.group(1))
+    else:
+        return None
+
+
 def map_obj_to_commands(want, have, module, warnings, capabilities):
     send_commands = list()
     commands = dict()
@@ -212,7 +239,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
     if device_info:
         os_version = device_info.get("network_os_version")
         if os_version:
-            os_version = os_version[:3]
+            os_version = extract_major_minor_version(os_version)
         os_platform = device_info.get("network_os_platform")
         if os_platform:
             os_platform = os_platform[:3]
@@ -249,8 +276,11 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
         if not want["sandbox"]:
             commands["sandbox"] = "no %s" % commands["sandbox"]
 
+    if needs_update("vrf"):
+        commands["vrf"] = "nxapi use-vrf %s" % want["vrf"]
+
     if os_platform and os_version:
-        if (os_platform == "N9K" or os_platform == "N3K") and Version(os_version) >= "9.2":
+        if (os_platform == "N9K" or os_platform == "N3K") and os_version >= "9.2":
             if needs_update("ssl_strong_ciphers"):
                 commands["ssl_strong_ciphers"] = "nxapi ssl ciphers weak"
                 if want["ssl_strong_ciphers"] is True:
@@ -340,6 +370,11 @@ def parse_ssl_protocols(data):
     return {"tlsv1_0": tlsv1_0, "tlsv1_1": tlsv1_1, "tlsv1_2": tlsv1_2}
 
 
+def parse_vrf(data):
+    vrf = re.search(r"nxapi use-vrf (\w+)", data)
+    return {"vrf": vrf.group(1) if vrf else None}
+
+
 def map_config_to_obj(module):
     out = run_commands(module, ["show run all | inc nxapi"], check_rc=False)[0]
     match = re.search(r"no feature nxapi", out, re.M)
@@ -357,6 +392,7 @@ def map_config_to_obj(module):
     obj.update(parse_sandbox(out))
     obj.update(parse_ssl_strong_ciphers(out))
     obj.update(parse_ssl_protocols(out))
+    obj.update(parse_vrf(out))
 
     return obj
 
@@ -373,6 +409,7 @@ def map_params_to_obj(module):
         "tlsv1_0": module.params["tlsv1_0"],
         "tlsv1_1": module.params["tlsv1_1"],
         "tlsv1_2": module.params["tlsv1_2"],
+        "vrf": module.params.get("vrf", None),
     }
 
     return obj
@@ -391,6 +428,7 @@ def main():
         tlsv1_0=dict(type="bool", default=True),
         tlsv1_1=dict(type="bool", default=False),
         tlsv1_2=dict(type="bool", default=False),
+        vrf=dict(type="str"),
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
