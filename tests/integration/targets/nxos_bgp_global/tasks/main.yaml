@@ -8,6 +8,8 @@
 - name: Enable fabric forwarding
   cisco.nxos.nxos_config:
     lines: feature fabric forwarding
+  vars:
+    ansible_connection: cisco.nxos.nxapis
 
 - name: Run the CLI and NX-API tests
   block:
