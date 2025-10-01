@@ -26,7 +26,7 @@
 
     - name: Configure BGP defaults
       register: result
-      cisco.nxos.nxos_bgp:
+      cisco.nxos.nxos_bgp_global:
         asn: 65535
         router_id: 192.0.2.1
         state: present
