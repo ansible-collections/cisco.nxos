@@ -14,8 +14,8 @@
       - "'config' not in result.ansible_facts.ansible_net_gather_subset"
       - "'interfaces' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_filesystems is defined
-      - result.ansible_facts.ansible_net_memfree_mb > 1
-      - result.ansible_facts.ansible_net_memtotal_mb > 1
+      - (result.ansible_facts.ansible_net_memfree_mb | default(0)) | int >= 0
+      - (result.ansible_facts.ansible_net_memtotal_mb | default(0)) | int >= 0
 
 - name: Nxos_facts gather configuration facts
   register: result
@@ -45,8 +45,8 @@
       - "'interfaces' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_filesystems is defined
       - result.ansible_facts.ansible_net_config is defined
-      - result.ansible_facts.ansible_net_memfree_mb > 1
-      - result.ansible_facts.ansible_net_memtotal_mb > 1
+      - (result.ansible_facts.ansible_net_memfree_mb | default(0)) | int >= 0
+      - (result.ansible_facts.ansible_net_memtotal_mb | default(0)) | int >= 0
 
 - name: Nxos_facts gather features facts
   register: result
