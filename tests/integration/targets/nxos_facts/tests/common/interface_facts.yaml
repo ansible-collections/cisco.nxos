@@ -29,6 +29,10 @@
             ipv6:
               - address: 2001:db8::2/32
 
+    - name: Wait a few seconds for IPv6 to apply
+      ansible.builtin.wait_for:
+        timeout: 5
+
     - name: Gather interface facts
       cisco.nxos.nxos_facts:
         gather_subset:
