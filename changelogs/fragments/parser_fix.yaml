@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.nxos.nxos_hsrp_interfaces - Fix parsers for preempt and priority

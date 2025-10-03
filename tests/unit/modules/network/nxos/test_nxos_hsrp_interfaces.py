@@ -598,3 +598,46 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             "no hsrp version 2",
         ]
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_hsrp_interfaces_gathered(self):
+        self.get_config.return_value = dedent(
+            """\
+            interface Vlan1
+             hsrp 10 preempt delay minimum 10 reload 100 sync 5
+             hsrp 10 priority 100 forwarding-threshold lower 12 upper 22
+             hsrp 10 timers msec 456 33
+            interface Vlan2
+             hsrp 11 preempt delay minimum 10 sync 5
+             hsrp 11 priority 100
+             hsrp 11 timers 456 33
+            """,
+        )
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        gathered = [
+            {
+                "name": "Vlan1",
+                "standby_options": [
+                    {
+                        "preempt": {"minimum": 10, "reload": 100, "sync": 5},
+                        "priority": {"level": 100, "lower": 12, "upper": 22},
+                        "timer": {"hello_interval": 456, "hold_time": 33, "msec": True},
+                    },
+                ],
+            },
+            {
+                "name": "Vlan2",
+                "standby_options": [
+                    {
+                        "preempt": {"minimum": 10, "sync": 5},
+                        "priority": {"level": 100},
+                        "timer": {"hello_interval": 456, "hold_time": 33},
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(result["gathered"], gathered)

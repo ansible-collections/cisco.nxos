@@ -225,12 +225,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "preempt",
             "getval": re.compile(
                 r"""
-                \s*hsrp\s(?P<grp_no>\d+)
-                \s*preempt\sdelay
-                (\sminimum\s(?P<minimum>\d+))
-                (\sreload\s(?P<reload>\d+))
-                (\ssync\s(?P<sync>\d+))
-                $""", re.VERBOSE,
+                ^\s*hsrp\s(?P<grp_no>\d+)
+                \s*preempt
+                (\sdelay
+                    (\sminimum\s(?P<minimum>\d+))?
+                    (\sreload\s(?P<reload>\d+))?
+                    (\ssync\s(?P<sync>\d+))?
+                )?
+                \s*$""", re.VERBOSE,
             ),
             "setval": "preempt delay minimum {{ preempt.minimum|string }}"
             "{{ (' reload ' + preempt.reload|string) if preempt.reload is defined else '' }}"
@@ -253,8 +255,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 r"""
                 \s*hsrp\s(?P<grp_no>\d+)
                 \s*priority\s(?P<priority>\d+)
-                (\sforwarding-threshold\slower\s(?P<lower>\d+))
-                (\supper\s(?P<upper>\d+))
+                (\sforwarding-threshold\slower\s(?P<lower>\d+)\supper\s(?P<upper>\d+))?
                 $""", re.VERBOSE,
             ),
             "setval": "priority {{ priority.level|string }}"
