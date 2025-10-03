@@ -1,0 +1,68 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_bfd_interfaces replaced integration tests connection={{ ansible_connection }}
+
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
+
+- name: Set a fact for 'bfd_disable' and 'bfd_enable'
+  ansible.builtin.set_fact:
+    bfd_enable: enable
+    bfd_disable: disable
+  when: platform is not search('N5K|N6K')
+
+- name: Setup1
+  cisco.nxos.nxos_config: &id002
+    lines:
+      - "no feature bfd"
+      - "default interface {{ test_int1 }}"
+
+- block:
+    - name: Setup2
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature bfd"
+          - "interface {{ test_int1 }}"
+          - "  no switchport"
+
+    - name: Setup initial BFD state
+      cisco.nxos.nxos_bfd_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            bfd: "{{ bfd_disable|default(omit)}}"
+            echo: enable
+        state: merged
+
+    - name: Replaced
+      register: result
+      cisco.nxos.nxos_bfd_interfaces: &id001
+        config:
+          - name: "{{ test_int1 }}"
+            bfd: "{{ bfd_enable|default(omit)}}"
+            echo: disable
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no bfd echo' in result.commands"
+        msg: "Assert failed. 'result.commands': {{ result.commands }}"
+
+    - ansible.builtin.assert:
+        that:
+          - "{{ 'bfd' in result.commands }}"
+        msg: "Assert failed. 'result.commands': {{ result.commands }}"
+      when: bfd_enable is defined
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_bfd_interfaces: *id001
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+    - name: Teardown
+      cisco.nxos.nxos_config: *id002

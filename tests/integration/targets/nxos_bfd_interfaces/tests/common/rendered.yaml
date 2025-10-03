@@ -1,0 +1,36 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_bfd_interfaces rendered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    # Interfaces used here doesn't actually exist on the device
+    - name: Use rendered state to convert task input to device specific commands
+      register: result
+      cisco.nxos.nxos_bfd_interfaces:
+        config:
+          - name: Ethernet1/800
+            bfd: enable
+            echo: enable
+          - name: Ethernet1/801
+            bfd: disable
+            echo: disable
+        state: rendered
+
+    - ansible.builtin.assert:
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
+
+    - name: Gather bfd_interfaces facts from the device and assert that its empty
+      register: result
+      cisco.nxos.nxos_bfd_interfaces:
+        state: gathered
+
+    - name: Make sure that rendered task actually did not make any changes to the device
+      ansible.builtin.assert:
+        that: "{{ result['gathered'] == [] }}"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.debug:
+    msg: END nxos_bfd_interfaces rendered integration tests on connection={{ ansible_connection }}

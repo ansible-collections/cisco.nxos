@@ -1,0 +1,30 @@
+---
+gathered:
+  - name: "Ethernet1/1"
+    bfd: disable
+    echo: enable
+  - name: "Ethernet1/2"
+    echo: disable
+    bfd: enable
+
+parsed:
+  - bfd: disable
+    echo: disable
+    name: Ethernet1/800
+  - bfd: disable
+    echo: enable
+    name: Ethernet1/801
+  - bfd: enable
+    echo: disable
+    name: Ethernet1/802
+  - bfd: enable
+    echo: enable
+    name: mgmt0
+
+rendered:
+  - "interface Ethernet1/800"
+  - "bfd"
+  - "bfd echo"
+  - "interface Ethernet1/801"
+  - "no bfd"
+  - "no bfd echo"

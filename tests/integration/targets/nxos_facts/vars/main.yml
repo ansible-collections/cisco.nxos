@@ -1,0 +1,33 @@
+---
+available_network_resources:
+  - acl_interfaces
+  - acls
+  - bfd_interfaces
+  - bgp_address_family
+  - bgp_global
+  - bgp_neighbor_address_family
+  - bgp_templates
+  - hostname
+  - hsrp_interfaces
+  - interfaces
+  - l2_interfaces
+  - l3_interfaces
+  - lacp
+  - lacp_interfaces
+  - lag_interfaces
+  - lldp_global
+  - lldp_interfaces
+  - logging_global
+  - ntp_global
+  - ospf_interfaces
+  - ospfv2
+  - ospfv3
+  - prefix_lists
+  - route_maps
+  - snmp_server
+  - static_routes
+  - telemetry
+  - vlans
+  - vrf_address_family
+  - vrf_global
+  - vrf_interfaces
