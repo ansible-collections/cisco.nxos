@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/invalid_subset.yaml
+
+- name: Test invalid subset (foobar)
+  register: result
+  ignore_errors: true
+  cisco.nxos.nxos_facts:
+    gather_subset:
+      - foobar
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.failed == true
+      - "'Subset must be one of' in result.msg"
+
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/invalid_subset.yaml

@@ -1,0 +1,9 @@
+---
+- name: Remove configuration
+  cisco.nxos.nxos_config:
+    lines:
+      - "no feature bfd"
+      - "default interface {{ nxos_int1 }}"
+      - "default interface {{ nxos_int2 }}"
+      - "default interface {{ nxos_int3 }}"
+  ignore_errors: true
