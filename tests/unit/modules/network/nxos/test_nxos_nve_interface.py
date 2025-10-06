@@ -60,17 +60,11 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                         address="239.239.239.239",
                         mode="L2",
                     ),
-                    host_reachability_bgp=True,
                     source_interface_hold_time=60,
-                    source_interface_name="loopback1",
                     vnis=[
                         dict(
                             vni_id=11111,
                             suppress_arp=True,
-                        ),
-                        dict(
-                            vni_id=22222,
-                            associate_vrf=True,
                         ),
                         dict(
                             vni_id=33333,
@@ -123,17 +117,11 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                         address="239.239.239.239",
                         mode="L2",
                     ),
-                    host_reachability_bgp=True,
                     source_interface_hold_time=60,
-                    source_interface_name="loopback1",
                     vnis=[
                         dict(
                             vni_id=11111,
                             suppress_arp=True,
-                        ),
-                        dict(
-                            associate_vrf=True,
-                            vni_id=22222,
                         ),
                         dict(
                             suppress_arp=True,
