@@ -1,0 +1,4 @@
+---
+- name: Remove NVE interface configuration.
+  cisco.nxos.nxos_nve_interface:
+    state: deleted
