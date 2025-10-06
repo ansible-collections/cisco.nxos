@@ -17,8 +17,8 @@ DOCUMENTATION = """
 module: nxos_nve_interface
 short_description: NVE interface resource module.
 description:
-- This module provides declarative management of Network Virtualization Endpoint (NVE) overlay interface that terminates
-  VXLAN tunnels.
+- This module provides declarative management of Network Virtualization Endpoint (NVE)
+  overlay interface that terminates VXLAN tunnels.
 version_added: 11.0.0
 author:
 - Jørn Ivar Holland (@jiholland)
