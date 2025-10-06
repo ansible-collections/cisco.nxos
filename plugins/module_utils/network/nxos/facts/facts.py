@@ -123,9 +123,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_interfaces.vrf_interfaces import (
     Vrf_interfacesFacts,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.nve_interface.nve_interface import (
-    Nve_interfaceFacts,
-)
 
 
 FACT_LEGACY_SUBSETS = dict(

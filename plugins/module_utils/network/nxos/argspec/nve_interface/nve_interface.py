@@ -5,11 +5,13 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
 The arg spec for the nxos_nve_interface module.
 """
+
 
 class Nve_interfaceArgs(object):
     """The arg spec for the nxos_nve_interface module"""
@@ -30,7 +32,7 @@ class Nve_interfaceArgs(object):
                 "global_multicast_group": {
                     "type": "dict",
                     "options": {
-                        "address": {"type":"str"},
+                        "address": {"type": "str"},
                         "mode": {
                             "type": "str",
                             "choices": [

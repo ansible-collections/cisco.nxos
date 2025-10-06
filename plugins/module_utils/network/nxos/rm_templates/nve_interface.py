@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,6 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class Nve_interfaceTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Nve_interfaceTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -29,7 +31,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
         {
             "name": "enabled",
             "getval": re.compile(
-                r""" 
+                r"""
                 (?P<negate>\s+no)?
                 (?P<shutdown>\s+shutdown)
                 $""", re.VERBOSE,
@@ -66,7 +68,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
         {
             "name": "advertise_virtual_rmac",
             "getval": re.compile(
-                r""" 
+                r"""
                 (?P<advertise_virtual_rmac>\s+advertise\svirtual-rmac\s*)
                 $""", re.VERBOSE,
             ),

@@ -1,18 +1,14 @@
-.. Created with antsibull-docs 2.21.0
+.. _cisco.nxos.nxos_nve_interface_module:
 
-cisco.nxos.nxos_nve_interface module -- NVE interface resource module.
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `cisco.nxos collection <https://galaxy.ansible.com/ui/repo/published/cisco/nxos/>`_ (version 11.0.0).
+*****************************
+cisco.nxos.nxos_nve_interface
+*****************************
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+**NVE interface resource module.**
 
-To install it, use: :code:`ansible\-galaxy collection install cisco.nxos`.
 
-To use it in a playbook, specify: ``cisco.nxos.nxos_nve_interface``.
-
-New in cisco.nxos 11.0.0
+Version added: 11.0.0
 
 .. contents::
    :local:
@@ -21,13 +17,7 @@ New in cisco.nxos 11.0.0
 
 Synopsis
 --------
-
 - This module provides declarative management of Network Virtualization Endpoint (NVE) overlay interface that terminates VXLAN tunnels.
-
-
-Aliases: nve_interface
-
-
 
 
 
@@ -37,423 +27,441 @@ Parameters
 
 .. raw:: html
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th colspan="3"><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config"></div>
-      <p style="display: inline;"><strong>config</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>A List of NVE interface options.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/advertise_virtual_rmac"></div>
-      <p style="display: inline;"><strong>advertise_virtual_rmac</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/advertise_virtual_rmac" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable virtual RMAC advertisement</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+    <table  border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="3">Parameter</th>
+            <th>Choices/<font color="blue">Defaults</font></th>
+            <th width="100%">Comments</th>
+        </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>config</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>A List of NVE interface options.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>advertise_virtual_rmac</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable virtual RMAC advertisement</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>description</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interface description</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enabled</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Administrative state of the interface. Set the value to <code>true</code> to administratively enable the interface or <code>false</code> to disable it.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>global_ingress_replication_bgp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable global bgp ingress replication</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>global_multicast_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Global multicast group</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Multicast address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>L2</li>
+                                    <li>L3</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>VNI type.</div>
+                </td>
+            </tr>
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/description"></div>
-      <p style="display: inline;"><strong>description</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/description" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Interface description</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/enabled"></div>
-      <p style="display: inline;"><strong>enabled</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/enabled" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Administrative state of the interface. Set the value to <code class='docutils literal notranslate'>true</code> to administratively enable the interface or <code class='docutils literal notranslate'>false</code> to disable it.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/global_ingress_replication_bgp"></div>
-      <p style="display: inline;"><strong>global_ingress_replication_bgp</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/global_ingress_replication_bgp" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable global bgp ingress replication</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/global_multicast_group"></div>
-      <p style="display: inline;"><strong>global_multicast_group</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/global_multicast_group" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Global multicast group</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/global_multicast_group/address"></div>
-      <p style="display: inline;"><strong>address</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/global_multicast_group/address" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Multicast address</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/global_multicast_group/mode"></div>
-      <p style="display: inline;"><strong>mode</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/global_multicast_group/mode" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>VNI type.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;L2&#34;</code></p></li>
-        <li><p><code>&#34;L3&#34;</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/global_suppress_arp"></div>
-      <p style="display: inline;"><strong>global_suppress_arp</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/global_suppress_arp" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable global ARP suppression</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/host_reachability_bgp"></div>
-      <p style="display: inline;"><strong>host_reachability_bgp</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/host_reachability_bgp" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable host reachability with bgp</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/multisite_interface"></div>
-      <p style="display: inline;"><strong>multisite_interface</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/multisite_interface" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Multiste border gateway source interface</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/source_interface_hold_time"></div>
-      <p style="display: inline;"><strong>source_interface_hold_time</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/source_interface_hold_time" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Source loopback interface hold-down-time in seconds</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/source_interface_name"></div>
-      <p style="display: inline;"><strong>source_interface_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/source_interface_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Source loopback interface name</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis"></div>
-      <p style="display: inline;"><strong>vnis</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Configure Virtual Network Identifier membership</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/associate_vrf"></div>
-      <p style="display: inline;"><strong>associate_vrf</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/associate_vrf" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Associate L3VNI with VRF</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/ingress_replication_bgp"></div>
-      <p style="display: inline;"><strong>ingress_replication_bgp</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/ingress_replication_bgp" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable bgp ingress replication for L2VNI</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/multisite_ingress_replication"></div>
-      <p style="display: inline;"><strong>multisite_ingress_replication</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/multisite_ingress_replication" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable multisite ingress replication for L2VNI</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/suppress_arp"></div>
-      <p style="display: inline;"><strong>suppress_arp</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/suppress_arp" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Enable/disable ARP suppression for L2VNI</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/suppress_arp_disable"></div>
-      <p style="display: inline;"><strong>suppress_arp_disable</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/suppress_arp_disable" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Disable/enable the global setting for ARP suppression for L2VNI</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vnis/vni_id"></div>
-      <p style="display: inline;"><strong>vni_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vnis/vni_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Virtual Network Identifier ID</p>
-    </td>
-  </tr>
-
-
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-running_config"></div>
-      <p style="display: inline;"><strong>running_config</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-running_config" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>This option is used only with state <em>parsed</em>.</p>
-      <p>The value of this option should be the output received from the NX-OS device by executing the command <b>show running-config | section &#x27;^router bgp&#x27;</b>.</p>
-      <p>The state <em>parsed</em> reads the configuration from <code class='docutils literal notranslate'>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The state of the configuration after module completion.</p>
-      <p>States <code class='docutils literal notranslate'>replaced</code> and <code class='docutils literal notranslate'>overridden</code> have the same behaviour for this module.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>&#34;merged&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>&#34;replaced&#34;</code></p></li>
-        <li><p><code>&#34;overridden&#34;</code></p></li>
-        <li><p><code>&#34;deleted&#34;</code></p></li>
-        <li><p><code>&#34;parsed&#34;</code></p></li>
-        <li><p><code>&#34;gathered&#34;</code></p></li>
-        <li><p><code>&#34;rendered&#34;</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  </tbody>
-  </table>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>global_suppress_arp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable global ARP suppression</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host_reachability_bgp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable host reachability with bgp</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>multisite_interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Multiste border gateway source interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>source_interface_hold_time</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source loopback interface hold-down-time in seconds</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>source_interface_name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source loopback interface name</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vnis</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure Virtual Network Identifier membership</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>associate_vrf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Associate L3VNI with VRF</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ingress_replication_bgp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable bgp ingress replication for L2VNI</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>multisite_ingress_replication</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable multisite ingress replication for L2VNI</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>suppress_arp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/disable ARP suppression for L2VNI</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>suppress_arp_disable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Disable/enable the global setting for ARP suppression for L2VNI</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni_id</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Virtual Network Identifier ID</div>
+                </td>
+            </tr>
 
 
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>running_config</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>This option is used only with state <em>parsed</em>.</div>
+                        <div>The value of this option should be the output received from the NX-OS device by executing the command <b>show running-config | section &#x27;^router bgp&#x27;</b>.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
+                                    <li>replaced</li>
+                                    <li>overridden</li>
+                                    <li>deleted</li>
+                                    <li>parsed</li>
+                                    <li>gathered</li>
+                                    <li>rendered</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>The state of the configuration after module completion.</div>
+                        <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
+                </td>
+            </tr>
+    </table>
+    <br/>
 
 
 Notes
 -----
 
-- Tested against NXOS 10.3(7)
-- Unsupported for Cisco MDS
+.. note::
+   - Tested against NXOS 10.3(7)
+   - Unsupported for Cisco MDS
+
 
 
 Examples
@@ -861,83 +869,78 @@ Examples
 
 
 
-
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
 
 .. raw:: html
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-after"></div>
-      <p style="display: inline;"><strong>after</strong></p>
-      <a class="ansibleOptionLink" href="#return-after" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The configuration as structured data after module completion.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when changed</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;The configuration returned will always be in the same format of the parameters above.\n&#34;]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-before"></div>
-      <p style="display: inline;"><strong>before</strong></p>
-      <a class="ansibleOptionLink" href="#return-before" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The configuration as structured data prior to module invocation.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;The configuration returned will always be in the same format of the parameters above.\n&#34;]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-commands"></div>
-      <p style="display: inline;"><strong>commands</strong></p>
-      <a class="ansibleOptionLink" href="#return-commands" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The set of commands pushed to the remote device.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;interface nve1&#34;, &#34;no shutdown&#34;, &#34;description vxlan vtep&#34;, &#34;host-reachability protocol bgp&#34;, &#34;advertise virtual-rmac&#34;, &#34;source-interface loopback1&#34;, &#34;global mcast-group 239.239.239.239 L2&#34;, &#34;member vni 11111 associate-vrf&#34;, &#34;member vni 22222&#34;, &#34;suppress-arp&#34;]</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>after</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when changed</td>
+                <td>
+                            <div>The configuration as structured data after module completion.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>before</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>always</td>
+                <td>
+                            <div>The configuration as structured data prior to module invocation.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>always</td>
+                <td>
+                            <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface nve1&#x27;, &#x27;no shutdown&#x27;, &#x27;description vxlan vtep&#x27;, &#x27;host-reachability protocol bgp&#x27;, &#x27;advertise virtual-rmac&#x27;, &#x27;source-interface loopback1&#x27;, &#x27;global mcast-group 239.239.239.239 L2&#x27;, &#x27;member vni 11111 associate-vrf&#x27;, &#x27;member vni 22222&#x27;, &#x27;suppress-arp&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
 
 
+Status
+------
 
 
 Authors
 ~~~~~~~
 
 - Jørn Ivar Holland (@jiholland)
-
-
-Collection links
-~~~~~~~~~~~~~~~~
-
-* `Issue Tracker <https://github.com/ansible\-collections/cisco.nxos/issues>`__
-* `Repository (Sources) <https://github.com/ansible\-collections/cisco.nxos>`__

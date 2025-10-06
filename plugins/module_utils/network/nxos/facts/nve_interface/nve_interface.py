@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,12 +18,14 @@ based on the configuration.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.nve_interface.nve_interface import (
     Nve_interfaceArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.nve_interface import (
     Nve_interfaceTemplate,
 )
+
 
 class Nve_interfaceFacts(object):
     """The nxos_nve_interface fact class"""
@@ -72,7 +75,7 @@ class Nve_interfaceFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """Flatten vni contexts 
+        """Flatten vni contexts
         in the running-config for easier parsing.
         :param obj: dict
         :returns: flattended running config
@@ -103,5 +106,5 @@ class Nve_interfaceFacts(object):
         if vnis:
             obj["vnis"] = sorted(
                 list(vnis.values()),
-                key=lambda k, sk="vni_id": k[sk]
+                key=lambda k, sk="vni_id": k[sk],
             )
