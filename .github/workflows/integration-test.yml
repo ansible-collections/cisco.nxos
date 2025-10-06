@@ -1,4 +1,4 @@
-name: Integration
+name: "Integration - old"
 on:
   pull_request_target:
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
     with:
       lab_title: cisco_nxos
       network_os: cisco.nxos.nxos
-      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+      pytest_addopts: "--color=yes -n 1 --log-level WARNING -vvv --role-excludes=snmp_server"
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
