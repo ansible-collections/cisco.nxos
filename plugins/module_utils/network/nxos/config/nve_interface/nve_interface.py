@@ -19,7 +19,9 @@ created.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
-
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.nve_interface import (
     Nve_interfaceTemplate,
@@ -63,6 +65,10 @@ class Nve_interface(ResourceModule):
         """
         wantd = self.want
         haved = self.have
+
+        # If state is 'merged', merge want onto have before compare.
+        if self.state == "merged":
+            wantd = dict_merge(haved, wantd)
 
         # If state is 'deleted', remove the NVE interface.
         if self.state == "deleted":
