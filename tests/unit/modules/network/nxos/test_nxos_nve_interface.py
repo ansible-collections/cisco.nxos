@@ -14,11 +14,14 @@ This module tests the behavior of nxos_nve_interface including:
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
 from unittest.mock import patch
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_nve_interface
+
 from .nxos_module import TestNxosModule, set_module_args
 
 
@@ -26,6 +29,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
     """
     Unit tests for the nxos_nve_interface.
     """
+
     module = nxos_nve_interface
 
     def setUp(self):
