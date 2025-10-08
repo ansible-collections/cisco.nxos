@@ -8,7 +8,7 @@ ci:
 repos:
   # not a permanent fix, but to hardcode ansible-core 2.16 as repo dependecy
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.2
+    rev: da78082ea59b03ad16cd7dbee267f53e8ff50bb5
     hooks:
       - id: update-docs
 
