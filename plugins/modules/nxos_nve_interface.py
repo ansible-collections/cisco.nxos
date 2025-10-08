@@ -76,6 +76,7 @@ options:
             description:
             - VNI type.
             type: str
+            required: true
             choices:
             - L2
             - L3
