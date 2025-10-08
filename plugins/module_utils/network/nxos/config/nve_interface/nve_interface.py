@@ -3,11 +3,6 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-
-__metaclass__ = type
-
 """
 The nxos_nve_interface config file.
 It is in this file where the current configuration (as dict)
@@ -16,14 +11,19 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.nve_interface import (
     Nve_interfaceTemplate,
 )
@@ -31,11 +31,11 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 class Nve_interface(ResourceModule):
     """
-    The nxos_nve_interface config class
+    The nxos_nve_interface config class.
     """
 
     def __init__(self, module):
-        super(Nve_interface, self).__init__(
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,

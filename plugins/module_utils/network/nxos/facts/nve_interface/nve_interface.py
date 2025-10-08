@@ -3,11 +3,6 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-
-__metaclass__ = type
-
 """
 The nxos nve_interface fact class
 It is in this file the configuration is collected from the device
@@ -15,10 +10,13 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.nve_interface.nve_interface import (
     Nve_interfaceArgs,
 )
@@ -28,7 +26,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Nve_interfaceFacts(object):
-    """The nxos_nve_interface fact class"""
+    """
+    The nxos_nve_interface fact class.
+    """
 
     def __init__(self, module):
         self._module = module
