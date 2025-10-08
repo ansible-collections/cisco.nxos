@@ -536,7 +536,6 @@ EXAMPLES = """
 #  vnis:
 #    - vni_id: 22222
 #    - vni_id: 33333
-
 """
 
 RETURN = """
