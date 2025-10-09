@@ -33,6 +33,8 @@
             bfd: "{{ bfd_disable|default(omit)}}"
             echo: disable
         state: merged
+      vars:
+        ansible_command_timeout: 90
 
     - name: Gather bfd_interfaces facts
       cisco.nxos.nxos_facts:

@@ -10,6 +10,12 @@
       - "interface Ethernet1/2"
       - "  no ipv6 traffic-filter ACL1v6 in"
   ignore_errors: true
+  register: remove_config_1
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_1.failed
 
 - name: Remove configuration - 2
   cisco.nxos.nxos_config:
@@ -18,6 +24,12 @@
       - no ipv6 traffic-filter ACL1v6 in
     parents: interface Ethernet1/5
   ignore_errors: true
+  register: remove_config_2
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_2.failed
 
 - name: Remove configuration - 3
   cisco.nxos.nxos_config:
@@ -26,6 +38,12 @@
       - no ip access-group ACL1v4 out
     parents: interface Ethernet1/3
   ignore_errors: true
+  register: remove_config_3
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_3.failed
 
 - name: Remove configuration - 4
   cisco.nxos.nxos_config:
@@ -33,6 +51,12 @@
       - no ip access-group NewACLv4 out
     parents: interface Ethernet1/4
   ignore_errors: true
+  register: remove_config_4
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_4.failed
 
 - name: Remove configuration - 5
   cisco.nxos.nxos_config:
@@ -42,8 +66,20 @@
       - no ip port access-group PortACL in
     parents: interface Ethernet1/6
   ignore_errors: true
+  register: remove_config_5
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_5.failed
 
 - name: Remove configuration - 6
   cisco.nxos.nxos_config:
     lines: no interface loopback1
   ignore_errors: true
+  register: remove_config_6
+
+- name: Wait for 25 seconds if removal was successful
+  ansible.builtin.wait_for:
+    timeout: 25
+  when: not remove_config_6.failed

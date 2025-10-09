@@ -19,3 +19,5 @@
         lines:
           - "hostname {{ inventory_hostname_short }}"
         match: none
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
