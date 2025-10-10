@@ -20,8 +20,8 @@
       - result.ansible_facts.ansible_net_config is defined
       - result.ansible_facts.ansible_net_cpu_utilization is defined
       - result.ansible_facts.ansible_net_model is defined
-      - result.ansible_facts.ansible_net_memfree_mb > 1
-      - result.ansible_facts.ansible_net_memtotal_mb > 1
+      - (result.ansible_facts.ansible_net_memfree_mb | default(0)) | int >= 0
+      - (result.ansible_facts.ansible_net_memtotal_mb | default(0)) | int >= 0
 
 - name: Collect list of available network resources for nxos
   register: result
