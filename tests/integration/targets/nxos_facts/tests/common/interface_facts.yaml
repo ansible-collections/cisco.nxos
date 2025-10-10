@@ -31,7 +31,7 @@
 
     - name: Wait a few seconds for IPv6 to apply
       ansible.builtin.wait_for:
-        timeout: 5
+        timeout: 25
 
     - name: Gather interface facts
       cisco.nxos.nxos_facts:
@@ -55,6 +55,10 @@
       cisco.nxos.nxos_facts:
         gather_subset:
           - "interfaces"
+
+    - name: Wait a few seconds for IPv6 to apply
+      ansible.builtin.wait_for:
+        timeout: 25
 
     - name: Assert that IPv6 address was found
       ansible.builtin.assert:
