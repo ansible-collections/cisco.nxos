@@ -4,7 +4,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The nxos nve_interface fact class
+The nxos_nve_interface fact class.
 It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
@@ -18,7 +18,6 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.nve_interface.nve_interface import (
     Nve_interfaceArgs,
 )
@@ -28,22 +27,20 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Nve_interfaceFacts(object):
-    """
-    The nxos_nve_interface fact class.
-    """
+    """The nxos_nve_interface fact class."""
 
     def __init__(self, module):
         self._module = module
         self.argument_spec = Nve_interfaceArgs.argument_spec
 
     def get_nve_interface_data(self, connection):
-        """Wrapper method for `connection.get()`
-        This exists solely to allow the unit test framework to mock device connection calls.
-        """
+        """Get the configuration."""
+
         return connection.get("show running-config | section '^interface nve1'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for nve_interface network resource
+        """
+        Populate the facts for nve_interface network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -77,8 +74,9 @@ class Nve_interfaceFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """Flatten vni contexts
-        in the running-config for easier parsing.
+        """
+        Flatten vni contexts in the running-config for easier parsing.
+
         :param obj: dict
         :returns: flattended running config
         """
@@ -100,8 +98,10 @@ class Nve_interfaceFacts(object):
         return "\n".join(data)
 
     def _post_parse(self, obj):
-        """Converts the intermediate data structure
-           to valid format as per argspec.
+        """
+        Converts the intermediate data structure
+        to valid format as per argspec.
+
         :param obj: dict
         """
         vnis = obj.get("vnis", [])

@@ -4,7 +4,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The Nve_interface parser templates file. This contains
+The nxos_nve_interface parser templates file. This contains
 a list of parser definitions and associated functions that
 facilitates both facts gathering and native command generation for
 the given network resource.
@@ -23,9 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class Nve_interfaceTemplate(NetworkTemplate):
-    """
-    Parsing rules and setters for nve_interface module.
-    """
+    """Parsing rules and setters for nve_interface module."""
 
     def __init__(self, lines=None, module=None):
         super().__init__(lines=lines, tmplt=self, module=module)

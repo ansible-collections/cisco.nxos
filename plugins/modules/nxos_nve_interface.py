@@ -1,12 +1,9 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-"""
-The module file for nxos_nve_interface
-"""
+"""The module file for nxos_nve_interface"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -17,14 +14,14 @@ DOCUMENTATION = """
 module: nxos_nve_interface
 short_description: NVE interface resource module.
 description:
-- This module provides declarative management of Network Virtualization Endpoint (NVE)
-  overlay interface that terminates VXLAN tunnels.
+  - This module provides declarative management of Network Virtualization Endpoint (NVE)
+    overlay interface that terminates VXLAN tunnels.
 version_added: 11.0.0
 author:
-- Jørn Ivar Holland (@jiholland)
+  - Jørn Ivar Holland (@jiholland)
 notes:
-- Tested against NXOS 10.3(7)
-- Unsupported for Cisco MDS
+  - Tested against NXOS 10.3(7)
+  - Unsupported for Cisco MDS
 options:
   config:
     description: A List of NVE interface options.
@@ -32,20 +29,20 @@ options:
     suboptions:
       enabled:
         description:
-        - Administrative state of the interface. Set the value to C(true) to
-          administratively enable the interface or C(false) to disable it.
+          - Administrative state of the interface. Set the value to C(true) to
+            administratively enable the interface or C(false) to disable it.
         type: bool
       description:
         description:
-        - Interface description
+          - Interface description
         type: str
       host_reachability_bgp:
         description:
-        - Enable/disable host reachability with bgp
+          - Enable/disable host reachability with bgp
         type: bool
       advertise_virtual_rmac:
         description:
-        - Enable/disable virtual RMAC advertisement
+          - Enable/disable virtual RMAC advertisement
         type: bool
       source_interface_name:
         description:
@@ -64,52 +61,51 @@ options:
           - Enable/disable global bgp ingress replication
         type: bool
       global_multicast_group:
-        description:
-        - Global multicast group
+        description: Global multicast group
         type: dict
         suboptions:
           address:
             description:
-            - Multicast address
+              - Multicast address
             type: str
           mode:
             description:
-            - VNI type.
+              - VNI type.
             type: str
             required: true
             choices:
-            - L2
-            - L3
+              - L2
+              - L3
       multisite_interface:
         description:
           - Multiste border gateway source interface
         type: str
       vnis:
         description:
-        - Configure Virtual Network Identifier membership
+          - Configure Virtual Network Identifier membership
         type: list
         elements: dict
         suboptions:
           vni_id:
             description:
-            - Virtual Network Identifier ID
+              - Virtual Network Identifier ID
             type: int
             required: true
           associate_vrf:
             description:
-            - Associate L3VNI with VRF
+              - Associate L3VNI with VRF
             type: bool
           suppress_arp:
             description:
-            - Enable/disable ARP suppression for L2VNI
+              - Enable/disable ARP suppression for L2VNI
             type: bool
           suppress_arp_disable:
             description:
-            - Disable/enable the global setting for ARP suppression for L2VNI
+              - Disable/enable the global setting for ARP suppression for L2VNI
             type: bool
           multisite_ingress_replication:
             description:
-            - Enable/disable multisite ingress replication for L2VNI
+              - Enable/disable multisite ingress replication for L2VNI
             type: bool
           ingress_replication_bgp:
             description:
@@ -117,26 +113,26 @@ options:
             type: bool
   state:
     description:
-    - The state of the configuration after module completion.
-    - States C(replaced) and C(overridden) have the same behaviour for this module.
+      - The state of the configuration after module completion.
+      - States C(replaced) and C(overridden) have the same behaviour for this module.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - parsed
-    - gathered
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - parsed
+      - gathered
+      - rendered
     default: merged
   running_config:
     description:
-    - This option is used only with state I(parsed).
-    - The value of this option should be the output received from the NX-OS device
-      by executing the command B(show running-config | section '^router bgp').
-    - The state I(parsed) reads the configuration from C(running_config) option and
-      transforms it into Ansible structured data as per the resource module's argspec
-      and the value is then returned in the I(parsed) key within the result.
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device
+        by executing the command B(show running-config | section '^router bgp').
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
     type: str
 """
 EXAMPLES = """
@@ -571,8 +567,9 @@ commands:
     - suppress-arp
 """
 
-from ansible.module_utils.basic import AnsibleModule
-
+from ansible.module_utils.basic import (
+    AnsibleModule,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.nve_interface.nve_interface import (
     Nve_interfaceArgs,
 )

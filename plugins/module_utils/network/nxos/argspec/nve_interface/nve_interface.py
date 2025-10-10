@@ -3,9 +3,7 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-"""
-The arg spec for the nxos_nve_interface module.
-"""
+"""The arg spec for the nxos_nve_interface module."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -14,9 +12,7 @@ __metaclass__ = type
 
 
 class Nve_interfaceArgs(object):
-    """
-    The arg spec for the nxos_nve_interface module.
-    """
+    """The arg spec for the nxos_nve_interface module."""
 
     argument_spec = {
         "running_config": {"type": "str"},

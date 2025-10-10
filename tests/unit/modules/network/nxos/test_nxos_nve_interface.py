@@ -2,6 +2,7 @@
 # Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 Unit tests for the nxos_nve_interface Ansible module.
 
@@ -26,16 +27,13 @@ from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosNveInterfaceModule(TestNxosModule):
-    """
-    Unit tests for the nxos_nve_interface.
-    """
+    """Unit tests for the nxos_nve_interface."""
 
     module = nxos_nve_interface
 
     def setUp(self):
-        """
-        Set up test fixtures before each test method.
-        """
+        """Set up test fixtures before each test method."""
+
         super().setUp()
 
         self.mock_get_resource_connection_facts = patch(
@@ -51,17 +49,15 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        """
-        Clean up after each test method.
-        """
+        """Clean up after each test method."""
+
         super().tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_get_config.stop()
 
     def test_nxos_nve_interface_merged(self):
-        """
-        Test state merged.
-        """
+        """Test state merged."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -112,9 +108,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_nxos_nve_interface_merged_idempotent(self):
-        """
-        Test idempotency for state merged.
-        """
+        """Test idempotency for state merged."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -160,9 +155,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_nve_interface_replaced(self):
-        """
-        Test state replaced.
-        """
+        """Test state replaced."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -219,9 +213,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_nxos_nve_interface_replaced_idempotent(self):
-        """
-        Test idempotency for state replaced.
-        """
+        """Test idempotency for state replaced."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -271,9 +264,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_nve_interface_overridden(self):
-        """
-        Test state overridden.
-        """
+        """Test state overridden."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -328,9 +320,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_nxos_nve_interface_overridden_idempotent(self):
-        """
-        Test idempotency for state overridden.
-        """
+        """Test idempotency for state overridden."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1
@@ -373,9 +364,8 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_nve_interface_deleted(self):
-        """
-        Test state deleted.
-        """
+        """Test state deleted."""
+
         self.get_config.return_value = dedent(
             """\
             interface nve1

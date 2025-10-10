@@ -22,7 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
@@ -32,9 +31,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Nve_interface(ResourceModule):
-    """
-    The nxos_nve_interface config class.
-    """
+    """The nxos_nve_interface config class."""
 
     def __init__(self, module):
         super().__init__(
@@ -56,14 +53,16 @@ class Nve_interface(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module"""
+        """Execute the module."""
+
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
             self.run_commands()
         return self.result
 
     def generate_commands(self):
-        """Generate configuration commands to send based on
+        """
+        Generate configuration commands to send based on
         want, have and desired state.
         """
         wantd = self.want
@@ -82,7 +81,8 @@ class Nve_interface(ResourceModule):
         self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
-        """Leverages the base class `compare()` method and
+        """
+        Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
         the `want` and `have` data with the `parsers` defined
         for the Nve_interface network resource.
@@ -121,7 +121,8 @@ class Nve_interface(ResourceModule):
                 self.commands.insert(begin, "interface nve1")
 
     def _compare_vnis(self, want, have):
-        """Custom handling of VNI option
+        """
+        Custom handling of VNI option
 
         :param want: the want vni dictionary
         :param have: the have vni dictionary
