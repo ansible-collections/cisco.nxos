@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - nxos_nve_interface - Resource module to configure Network Virtualization Endpoint (NVE) overlay interface that terminates VXLAN tunnels.
