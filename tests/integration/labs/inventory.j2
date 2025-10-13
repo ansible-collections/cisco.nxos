@@ -12,5 +12,5 @@ ansible_ssh_port={{ ansible_ssh_port }}
 ansible_httpapi_port={{ ansible_http_port }}
 ansible_become={{ ansible_become | default(true) }}
 ansible_become_password={{ ansible_become_password | default('cisco') }}
-ansible_command_timeout={{ ansible_command_timeout | default(90) }}
-ansible_httpapi_con_timeout={{ ansible_httpapi_con_timeout | default(90) }}
+ansible_command_timeout={{ ansible_command_timeout | default(120) }}
+ansible_httpapi_con_timeout={{ ansible_httpapi_con_timeout | default(120) }}
