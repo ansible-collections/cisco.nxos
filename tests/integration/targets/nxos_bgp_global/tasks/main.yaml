@@ -8,8 +8,6 @@
 - name: Enable fabric forwarding
   cisco.nxos.nxos_config:
     lines: feature fabric forwarding
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
 
 - name: Run the CLI and NX-API tests
   block:
@@ -28,11 +26,7 @@
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled
-      vars:
-        ansible_connection: ansible.netcommon.network_cli
 
     - name: Disable fabric forwarding
       cisco.nxos.nxos_config:
         lines: no feature fabric forwarding
-      vars:
-        ansible_connection: ansible.netcommon.network_cli

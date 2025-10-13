@@ -22,8 +22,6 @@
       - "no feature bfd"
       - "default interface {{ test_int1 }}"
       - "default interface {{ test_int2 }}"
-  vars:
-    ansible_command_timeout: 90
 
 - block:
     - name: Setup2
