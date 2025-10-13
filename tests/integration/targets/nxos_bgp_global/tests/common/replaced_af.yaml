@@ -24,8 +24,6 @@
       - "  low-memory exempt"
       - "neighbor 192.0.2.1"
       - "  remote-as 65537"
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
 
 - block:
     - name: Remove a neighbor having AF configurations (should fail)

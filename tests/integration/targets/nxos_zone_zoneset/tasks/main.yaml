@@ -3,8 +3,6 @@
   register: result
   cisco.nxos.nxos_command:
     commands: show version | grep MDS
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
 
 - name: Set skip_test flag to false
   ansible.builtin.set_fact:
