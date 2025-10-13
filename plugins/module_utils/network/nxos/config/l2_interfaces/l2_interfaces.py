@@ -59,6 +59,7 @@ class L2_interfaces(ResourceModule):
             "beacon",
             "link_flap.error_disable",
             "cdp_enable",
+            "no_cdp_enable",
         ]
 
     def execute_module(self):
@@ -107,6 +108,12 @@ class L2_interfaces(ResourceModule):
         for the L2_interfaces network resource.
         """
         begin = len(self.commands)
+        want_without_name = want.copy()
+        want_without_name.pop("name", None)
+        pre_pop_want = bool(want_without_name)
+        want_cdp = want.pop("cdp_enable", None)
+        have_cdp = have.pop("cdp_enable", None)
+        self.handle_cdp(want_cdp, have_cdp, "cdp_enable", pre_pop_want)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists(want, have)
         if len(self.commands) != begin:
@@ -175,3 +182,16 @@ class L2_interfaces(ResourceModule):
                         vlanList = val.get("trunk").get(vlan, [])
                         if vlanList and vlanList != "none":
                             val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
+
+    def handle_cdp(self, want_cdp, have_cdp, parser, want):
+        if want_cdp is None and have_cdp is None:
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: True}, parser, True)
+        else:
+            if want_cdp is True and have_cdp is False:
+                self.addcmd({parser: want_cdp}, parser, not want_cdp)
+            elif want_cdp is False and have_cdp is None:
+                self.addcmd({parser: not want_cdp}, parser, not want_cdp)
+            elif want_cdp is None and have_cdp is False:
+                if self.state in ["overridden", "deleted"] and not want:
+                    self.addcmd({parser: not have_cdp}, parser, have_cdp)
