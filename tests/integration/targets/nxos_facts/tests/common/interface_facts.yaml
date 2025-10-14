@@ -17,32 +17,12 @@
           - name: Ethernet1/2
             mode: layer3
 
-    # since the | json output renders differently when only one
-    # interface has IPv6 address vs when more than one interface
-    # has IPv6 address, we need to test them separately
-
-    - name: Assign IPv6 address to interface - 1
-      register: result
+    - name: Assign IPv6 addresses to interfaces
       cisco.nxos.nxos_l3_interfaces:
         config:
           - name: Ethernet1/1
             ipv6:
               - address: 2001:db8::2/32
-
-    - name: Gather interface facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "interfaces"
-
-    - name: Assert that IPv6 address was found
-      ansible.builtin.assert:
-        that:
-          - "'2001:db8::2/32' in ansible_net_all_ipv6_addresses"
-
-    - name: Assign IPv6 address to interface - 2
-      register: result
-      cisco.nxos.nxos_l3_interfaces:
-        config:
           - name: Ethernet1/2
             ipv6:
               - address: 2001:db8::3/32
@@ -52,7 +32,7 @@
         gather_subset:
           - "interfaces"
 
-    - name: Assert that IPv6 address was found
+    - name: Assert that IPv6 addresses were found
       ansible.builtin.assert:
         that:
           - "'2001:db8::2/32' in ansible_net_all_ipv6_addresses"
