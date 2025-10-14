@@ -104,7 +104,7 @@
             switchport_mode: dot1q-tunnel
             access:
               vlan: 30
-        state: merged      
+        state: merged
 
     - ansible.builtin.assert:
         that:
@@ -112,7 +112,7 @@
           - "'interface {{ nxos_int2 }}' in result.commands"
           - "'switchport mode dot1q-tunnel' in result.commands"
           - "'switchport access vlan 30' in result.commands"
-          - result.commands|length == 3    
+          - result.commands|length == 3
 
   always:
     - name: Teardown

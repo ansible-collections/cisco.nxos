@@ -54,7 +54,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "trunk",
                         "fex-fabric",
                         "fabricpath",
-                    ],    
+                    ],
                     "aliases": ["switchport_mode"],
                 },
                 "cdp_enable": {"type": "bool"},
