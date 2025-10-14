@@ -1,5 +1,0 @@
----
-vsan1: 922
-vsan2: 923
-intA1: fc1/1 # noqa var-naming
-intB1: fc1/2 # noqa var-naming
