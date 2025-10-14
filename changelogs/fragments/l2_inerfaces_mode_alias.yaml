@@ -1,3 +1,3 @@
 ---
 minor_changes:
-  - Added alias for mode option as switchport_mode for nxos_l2_interfaces 
+  - Added alias for mode option as switchport_mode for nxos_l2_interfaces
