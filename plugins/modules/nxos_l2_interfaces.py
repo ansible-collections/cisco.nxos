@@ -72,6 +72,8 @@ options:
         - trunk
         - fex-fabric
         - fabricpath
+        aliases:
+          - switchport_mode
       cdp_enable:
         type: bool
         description: Enable/disable CDP on the interface
