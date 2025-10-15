@@ -87,19 +87,15 @@ jobs:
             sudo apt-get install -y jq >/dev/null 2>&1 || true
           fi
           # Dynamically get the IP of the test node
-          test_node_ip=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
-          if [ -z "$test_node_ip" ] || [ "$test_node_ip" = "null" ]; then
+          ansible_host=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
+          if [ -z "$ansible_host" ] || [ "$ansible_host" = "null" ]; then
             echo "No node found for key: $ANSIBLE_VERSION_KEY"
             echo "Available keys:" $(echo "$LAB_NODES_JSON" | jq -r '.nodes | keys | join(", ")')
             exit 1
           fi
-          # Dynamically get the IP of the external connector
-          dest_host=$(echo "$LAB_NODES_JSON" | jq -r '.nodes["ci-god"]')
-          if [ -z "$dest_host" ] || [ "$dest_host" = "null" ]; then
-            echo "No node found for key: ci-god"
-            exit 1
-          fi
-          last_octet="${test_node_ip##*.}"
+          # The destination host IS the test node IP
+          dest_host=$ansible_host
+          last_octet="${ansible_host##*.}"
           ssh_port=$((last_octet + 2000))
           https_port=$((last_octet + 4000))
           http_port=$((last_octet + 8000))
