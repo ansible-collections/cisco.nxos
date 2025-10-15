@@ -16,7 +16,6 @@ jobs:
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_create.yaml@main
     with:
       topology_path: tests/integration/labs/multi.yaml
-      # lab_title_override: "Optional custom lab title"
     secrets:
       virl_host: ${{ secrets.VIRL_HOST }}
       virl_username: ${{ secrets.VIRL_USERNAME }}
@@ -30,6 +29,8 @@ jobs:
       fail-fast: true
       matrix:
         ansible_version: ["stable-2.16"]
+    # Add secrets block to inherit repository secrets
+    secrets: inherit
     env:
       PY_COLORS: "1"
       source_directory: "./source"
@@ -80,29 +81,32 @@ jobs:
           ANSIBLE_VERSION_KEY: ${{ matrix.ansible_version }}
           RUNNER_TEMP: ${{ runner.temp }}
           CLI_SSH_TYPE: 'libssh'
+          # Pass secrets into the step's environment
+          VIRL_HOST: ${{ secrets.VIRL_HOST }}
+          CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
         run: |
           set -euo pipefail
           if ! command -v jq >/dev/null 2>&1; then
             sudo apt-get update -y >/dev/null 2>&1 || true
             sudo apt-get install -y jq >/dev/null 2>&1 || true
           fi
-          # Dynamically get the IP of the test node
-          ansible_host=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
-          if [ -z "$ansible_host" ] || [ "$ansible_host" = "null" ]; then
+          internal_ip=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
+          if [ -z "$internal_ip" ] || [ "$internal_ip" = "null" ]; then
             echo "No node found for key: $ANSIBLE_VERSION_KEY"
             echo "Available keys:" $(echo "$LAB_NODES_JSON" | jq -r '.nodes | keys | join(", ")')
             exit 1
           fi
-          # The destination host IS the test node IP
-          dest_host=$ansible_host
-          last_octet="${ansible_host##*.}"
+          # Use the VIRL_HOST secret for the destination host
+          dest_host="$VIRL_HOST"
+          last_octet="${internal_ip##*.}"
           ssh_port=$((last_octet + 2000))
           https_port=$((last_octet + 4000))
           http_port=$((last_octet + 8000))
           netconf_port=$((last_octet + 3000))
           out_file="$RUNNER_TEMP/inventory-$ANSIBLE_VERSION_KEY.ini"
+          # Add ansible_ssh_pass to the template variables
           ansible localhost -c local -m template -a "src=tests/integration/labs/inventory.j2 dest=$out_file mode=0644" \
-            -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_http_port=$http_port ansible_netconf_port=$netconf_port ansible_network_cli_ssh_type=$CLI_SSH_TYPE"
+            -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_ssh_pass=$CML_SSH_PASSWORD ansible_http_port=$http_port ansible_netconf_port=$netconf_port ansible_network_cli_ssh_type=$CLI_SSH_TYPE"
           echo "inventory_path=$out_file" >> "$GITHUB_OUTPUT"
 
       - name: Run ansible-test network-integration
