@@ -4,12 +4,10 @@ lab:
   title: cisco.nxos.nxos
   version: 0.2.2
 nodes:
-  # The Nexus Switch device
   - boot_disk_size: null
     configuration: &conf |2-
       !Command: show running-config
-      !Running configuration last done at: Mon Feb 12 07:11:33 2024
-      !Time: Mon Feb 12 07:11:33 2024
+      !Time: Wed Oct 15 10:33:00 2025
 
       version 10.3(1) Bios:version
       hostname R1
@@ -20,7 +18,7 @@ nodes:
         limit-resource m4route-mem minimum 58 maximum 58
         limit-resource m6route-mem minimum 8 maximum 8
 
-      ! Re-enable the NX-API feature for the httpapi tests
+      ! Enable the NX-API feature so httpapi tests can connect
       feature nxapi
 
       no password strength-check
@@ -70,12 +68,7 @@ nodes:
         label: mgmt0
         slot: 0
         type: physical
-      - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
   
-  # The External Connector (bridged)
   - boot_disk_size: null
     configuration: virbr0
     cpu_limit: null
@@ -97,7 +90,6 @@ nodes:
         slot: 0
         type: physical
 links:
-  # Direct link from the switch's management port to the external connector
   - id: l0
     n1: n0
     n2: n1
