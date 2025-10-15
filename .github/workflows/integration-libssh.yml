@@ -33,7 +33,6 @@ jobs:
     with:
       ansible_version: ${{ matrix.ansible_version }}
       lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
-      cli_ssh_type: paramiko
 
   lab-destroy:
     if: ${{ always() }}
