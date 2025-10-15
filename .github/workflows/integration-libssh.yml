@@ -103,10 +103,6 @@ jobs:
           ansible localhost -c local -m template -a "src=tests/integration/labs/inventory.j2 dest=$out_file mode=0644" \
             -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_ssh_pass=$CML_SSH_PASSWORD ansible_http_port=$http_port ansible_netconf_port=$netconf_port ansible_network_cli_ssh_type=$CLI_SSH_TYPE"
           
-          # Add settings to force password authentication
-          echo "ansible_ssh_look_for_keys=no" >> "$out_file"
-          echo "ansible_ssh_common_args='-o PreferredAuthentications=password'" >> "$out_file"
-          
           echo "inventory_path=$out_file" >> "$GITHUB_OUTPUT"
 
       - name: Run ansible-test network-integration
@@ -115,6 +111,8 @@ jobs:
         env:
           LAB_NODES: ${{ needs.lab-create.outputs.lab_nodes_json }}
           ANSIBLE_CONNECTION: ansible.netcommon.network_cli
+          ANSIBLE_SSH_LOOK_FOR_KEYS: 'no'
+          ANSIBLE_SSH_COMMON_ARGS: '-o PreferredAuthentications=password'
 
   lab-destroy:
     if: ${{ always() }}
