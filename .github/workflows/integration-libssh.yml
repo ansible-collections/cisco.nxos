@@ -63,4 +63,59 @@ jobs:
         with:
           install_python_dependencies: true
           source_path: ${{ env.source_directory }}
-          collection_path: ${{ steps.identify
+          collection_path: ${{ steps.identify.outputs.collection_path }}
+          tar_file: ${{ steps.identify.outputs.tar_file }}
+          ansible_version: ${{ matrix.ansible_version }}
+
+      - name: Print the ansible version
+        run: ansible --version
+
+      - name: Generate inventory from lab_nodes and template
+        id: render_inventory
+        shell: bash
+        working-directory: ${{ steps.identify.outputs.collection_path }}
+        env:
+          LAB_NODES_JSON: ${{ needs.lab-create.outputs.lab_nodes_json }}
+          ANSIBLE_VERSION_KEY: ${{ matrix.ansible_version }}
+          RUNNER_TEMP: ${{ runner.temp }}
+          CLI_SSH_TYPE: 'libssh'
+          VIRL_HOST: ${{ secrets.VIRL_HOST }}
+          CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y >/dev/null 2>&1 || true
+            sudo apt-get install -y jq >/dev/null 2>&1 || true
+          fi
+          internal_ip=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
+          if [ -z "$internal_ip" ] || [ "$internal_ip" = "null" ]; then
+            echo "No node found for key: $ANSIBLE_VERSION_KEY"
+            echo "Available keys:" $(echo "$LAB_NODES_JSON" | jq -r '.nodes | keys | join(", ")')
+            exit 1
+          fi
+          dest_host="$VIRL_HOST"
+          last_octet="${internal_ip##*.}"
+          ssh_port=$((last_octet + 2000))
+          https_port=$((last_octet + 4000))
+          http_port=$((last_octet + 8000))
+          netconf_port=$((last_octet + 3000))
+          out_file="$RUNNER_TEMP/inventory-$ANSIBLE_VERSION_KEY.ini"
+          ansible localhost -c local -m template -a "src=tests/integration/labs/inventory.j2 dest=$out_file mode=0644" \
+            -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_ssh_pass=$CML_SSH_PASSWORD ansible_http_port=$http_port ansible_netconf_port=$netconf_port ansible_network_cli_ssh_type=$CLI_SSH_TYPE"
+          echo "inventory_path=$out_file" >> "$GITHUB_OUTPUT"
+
+      - name: Run ansible-test network-integration
+        run: ansible-test network-integration --inventory "${{ steps.render_inventory.outputs.inventory_path }}" -vvvv
+        working-directory: ${{ steps.identify.outputs.collection_path }}
+        env:
+          LAB_NODES: ${{ needs.lab-create.outputs.lab_nodes_json }}
+          ANSIBLE_CONNECTION: ansible.netcommon.network_cli
+
+  lab-destroy:
+    if: ${{ always() }}
+    needs: integration-tests
+    uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
+    secrets:
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_username: ${{ secrets.VIRL_USERNAME }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}
