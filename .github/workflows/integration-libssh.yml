@@ -29,7 +29,6 @@ jobs:
       fail-fast: true
       matrix:
         ansible_version: ["stable-2.16"]
-    secrets: inherit
     env:
       PY_COLORS: "1"
       source_directory: "./source"
