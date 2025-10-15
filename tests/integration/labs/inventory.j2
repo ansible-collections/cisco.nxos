@@ -14,4 +14,4 @@ ansible_become={{ ansible_become | default(true) }}
 ansible_become_password={{ ansible_become_password | default('cisco') }}
 ansible_command_timeout={{ ansible_command_timeout | default(120) }}
 ansible_httpapi_con_timeout={{ ansible_httpapi_con_timeout | default(120) }}
-ansible_net_api={{ ansible_net_api | default('cliconf') }}
+ansible_net_api=cliconf
