@@ -4,6 +4,7 @@ lab:
   title: cisco.nxos.nxos
   version: 0.2.2
 nodes:
+  # The Nexus Switch device
   - boot_disk_size: null
     configuration: &conf |2-
       !Command: show running-config
@@ -19,6 +20,9 @@ nodes:
         limit-resource m4route-mem minimum 58 maximum 58
         limit-resource m6route-mem minimum 8 maximum 8
 
+      ! Re-enable the NX-API feature for the httpapi tests
+      feature nxapi
+
       no password strength-check
       username admin password 5 $5$AADOBF$GVXUV2cvmlZH42xDu6wnqfBpV9gXF61WGVNrGF5Gk6C  role network-admin
       username ansible password 5 $5$GHBNKA$8ccD8KWjmP6NzxzkIRufl7giaUWjrhAn4SRrVWYZ4R1  role network-admin
@@ -31,6 +35,9 @@ nodes:
       vrf context management
         ip name-server 192.168.255.1
         ip route 0.0.0.0/0 192.168.255.1
+      
+      ! Configure the NX-API port
+      nxapi http port 80
 
       interface mgmt0
         ip address dhcp
@@ -68,6 +75,7 @@ nodes:
         slot: 1
         type: physical
   
+  # The External Connector (bridged)
   - boot_disk_size: null
     configuration: virbr0
     cpu_limit: null
@@ -89,6 +97,7 @@ nodes:
         slot: 0
         type: physical
 links:
+  # Direct link from the switch's management port to the external connector
   - id: l0
     n1: n0
     n2: n1
@@ -96,3 +105,4 @@ links:
     i2: i0
     conditioning: {}
     label: stable-2.16-mgmt0<->ci-god-port
+
