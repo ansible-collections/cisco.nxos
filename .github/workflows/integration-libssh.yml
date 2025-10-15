@@ -96,6 +96,8 @@ jobs:
           ssh_port=$((last_octet + 2000))
           http_port=$((last_octet + 8000))
           out_file="$RUNNER_TEMP/inventory-$ANSIBLE_VERSION_KEY.ini"
+          
+          # This command is now corrected to include ansible_httpapi_port
           ansible localhost -c local -m template -a "src=tests/integration/labs/inventory.j2 dest=$out_file mode=0644" \
             -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_ssh_pass=$CML_SSH_PASSWORD ansible_httpapi_port=$http_port"
           
