@@ -1,3 +1,0 @@
-ansible_connection: ansible.netcommon.network_cli
-ansible_net_api: cliconf
-ansible_network_cli_ssh_type: paramiko
