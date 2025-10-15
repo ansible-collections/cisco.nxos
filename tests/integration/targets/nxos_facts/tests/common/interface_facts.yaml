@@ -7,6 +7,14 @@
     lines:
       - default interface Ethernet1/1
       - default interface Ethernet1/2
+      
+- name: Show connection info
+  ansible.builtin.debug:
+    msg:
+      - "ansible_connection = {{ ansible_connection }}"
+      - "ansible_host = {{ ansible_host }}"
+      - "ansible_ssh_port = {{ ansible_ssh_port }}"
+      - "ansible_user = {{ ansible_user }}"
 
 - block:
     - name: Make sure interfaces are L3
