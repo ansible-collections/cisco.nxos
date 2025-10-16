@@ -18,7 +18,6 @@ nodes:
         limit-resource m4route-mem minimum 58 maximum 58
         limit-resource m6route-mem minimum 8 maximum 8
 
-      ! Enable the NX-API feature so httpapi tests can connect
       feature nxapi
 
       no password strength-check
@@ -34,7 +33,6 @@ nodes:
         ip name-server 192.168.255.1
         ip route 0.0.0.0/0 192.168.255.1
       
-      ! Configure the NX-API port
       nxapi http port 80
 
       interface mgmt0
