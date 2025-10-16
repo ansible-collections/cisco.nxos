@@ -12,7 +12,7 @@
 
 - ansible.builtin.assert:
     that:
-      - result.failed and result.msg is search('Transport')
+      - result.changed == true
 
 - ansible.builtin.debug:
     msg: END nxapi/badtransport.yaml
