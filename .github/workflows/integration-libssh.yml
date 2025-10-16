@@ -1,3 +1,4 @@
+---
 name: Integration tests 💻
 on:
   pull_request_target:
@@ -16,101 +17,22 @@ jobs:
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_create.yaml@main
     with:
       topology_path: tests/integration/labs/multi.yaml
+      # lab_title_override: "Optional custom lab title"
     secrets:
       virl_host: ${{ secrets.VIRL_HOST }}
       virl_username: ${{ secrets.VIRL_USERNAME }}
       virl_password: ${{ secrets.VIRL_PASSWORD }}
 
   integration-tests:
-    name: "paramiko & ansible-core ${{ matrix.ansible_version }} @ py3.12"
-    runs-on: ubuntu-latest
     needs: lab-create
     strategy:
       fail-fast: true
       matrix:
         ansible_version: ["stable-2.16"]
-    env:
-      PY_COLORS: "1"
-      source_directory: "./source"
-      ANSIBLE_COLLECTIONS_PATHS: "/home/runner/collections:~/.ansible/collections:/usr/share/ansible/collections"
-    steps:
-      - name: Checkout the collection repository
-        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
-        with:
-          path: ${{ env.source_directory }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: "0"
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Upgrade pip and install dependencies
-        run: python3 -m pip install --upgrade pip wheel ansible-pylibssh paramiko scp
-
-      - name: Install ansible-core (${{ matrix.ansible_version }})
-        run: python3 -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz --disable-pip-version-check
-
-      - name: Read collection metadata from galaxy.yml
-        id: identify
-        uses: ansible-network/github_actions/.github/actions/identify_collection@main
-        with:
-          source_path: ${{ env.source_directory }}
-
-      - name: Build and install the collection
-        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
-        with:
-          install_python_dependencies: true
-          source_path: ${{ env.source_directory }}
-          collection_path: ${{ steps.identify.outputs.collection_path }}
-          tar_file: ${{ steps.identify.outputs.tar_file }}
-          ansible_version: ${{ matrix.ansible_version }}
-
-      - name: Print the ansible version
-        run: ansible --version
-
-      - name: Generate inventory from lab_nodes and template
-        id: render_inventory
-        shell: bash
-        working-directory: ${{ steps.identify.outputs.collection_path }}
-        env:
-          LAB_NODES_JSON: ${{ needs.lab-create.outputs.lab_nodes_json }}
-          ANSIBLE_VERSION_KEY: ${{ matrix.ansible_version }}
-          RUNNER_TEMP: ${{ runner.temp }}
-          VIRL_HOST: ${{ secrets.VIRL_HOST }}
-          CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
-        run: |
-          set -euo pipefail
-          if ! command -v jq >/dev/null 2>&1; then
-            sudo apt-get update -y >/dev/null 2>&1 || true
-            sudo apt-get install -y jq >/dev/null 2>&1 || true
-          fi
-          internal_ip=$(echo "$LAB_NODES_JSON" | jq -r ".nodes[\"$ANSIBLE_VERSION_KEY\"]")
-          if [ -z "$internal_ip" ] || [ "$internal_ip" = "null" ]; then
-            echo "No node found for key: $ANSIBLE_VERSION_KEY"
-            exit 1
-          fi
-          dest_host="$VIRL_HOST"
-          last_octet="${internal_ip##*.}"
-          ssh_port=$((last_octet + 2000))
-          http_port=$((last_octet + 8000))
-          out_file="$RUNNER_TEMP/inventory-$ANSIBLE_VERSION_KEY.ini"
-          
-          # This command is now corrected to include ansible_httpapi_port
-          ansible localhost -c local -m template -a "src=tests/integration/labs/inventory.j2 dest=$out_file mode=0644" \
-            -e "host_label=$ANSIBLE_VERSION_KEY ansible_host=$dest_host ansible_ssh_port=$ssh_port ansible_ssh_pass=$CML_SSH_PASSWORD ansible_httpapi_port=$http_port"
-          
-          echo "inventory_path=$out_file" >> "$GITHUB_OUTPUT"
-
-      - name: Run ansible-test network-integration
-        run: ansible-test network-integration --inventory "${{ steps.render_inventory.outputs.inventory_path }}" -vvvv
-        working-directory: ${{ steps.identify.outputs.collection_path }}
-        env:
-          LAB_NODES: ${{ needs.lab-create.outputs.lab_nodes_json }}
-          ANSIBLE_CONNECTION: ansible.netcommon.network_cli
-          ANSIBLE_NETWORK_CLI_SSH_TYPE: paramiko
-          ANSIBLE_SSH_LOOK_FOR_KEYS: "no"
+    uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
+    with:
+      ansible_version: ${{ matrix.ansible_version }}
+      lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
 
   lab-destroy:
     if: ${{ always() }}
