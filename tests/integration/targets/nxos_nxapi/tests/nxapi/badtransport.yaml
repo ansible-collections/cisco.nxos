@@ -12,7 +12,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == true
+      - result.failed == true
+      - "'not supported over nxapi transport' in result.msg"
 
 - ansible.builtin.debug:
     msg: END nxapi/badtransport.yaml
