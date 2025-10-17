@@ -7,6 +7,12 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
+    # FIX: Enable the OSPFv3 feature before configuration
+    - name: Ensure ospfv3 feature is enabled
+      cisco.nxos.nxos_feature:
+        feature: ospfv3
+        state: enabled
+
     - name: Replace device configurations of listed ospfv3 processes with provided configurations
       cisco.nxos.nxos_ospfv3: &id001
         config:
