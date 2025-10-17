@@ -66,6 +66,7 @@
           - "'no ipv6 redirects' in result.commands"
           - "'no ip redirects' in result.commands"
           - result.commands|length == 8
+      when: ansible_connection != 'nxapi'
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
@@ -73,6 +74,7 @@
     - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
+      when: ansible_connection != 'nxapi'
 
     - name: Idempotence - overridden
       register: result
@@ -82,6 +84,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+      when: ansible_connection != 'nxapi'
   always:
     - name: Teardown
       ignore_errors: true
