@@ -265,7 +265,6 @@
         config: "{{ overriden_config + mgmt }}"
         state: overridden
       when: ansible_connection != 'ansible.netcommon.httpapi'
-        
 
     - ansible.builtin.assert:
         that:
