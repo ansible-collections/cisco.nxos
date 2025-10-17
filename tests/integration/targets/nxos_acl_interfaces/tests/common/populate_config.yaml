@@ -1,4 +1,0 @@
----
-- name: Adding base configuration
-  cisco.nxos.nxos_config:
-    src: populate_config.cfg
