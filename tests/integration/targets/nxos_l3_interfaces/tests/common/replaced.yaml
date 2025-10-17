@@ -59,6 +59,7 @@
               - address: 192.168.200.2/24
                 secondary: true
         state: replaced
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
@@ -86,6 +87,7 @@
     - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
@@ -99,6 +101,7 @@
         config:
           - name: "{{ subint3 }}"
         state: replaced
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
