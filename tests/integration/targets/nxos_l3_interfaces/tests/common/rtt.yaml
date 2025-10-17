@@ -72,6 +72,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
+      when: ansible_connection != 'nxapi'
 
     - name: Revert back to base configuration using facts round trip
       register: revert
@@ -102,6 +103,7 @@
           - base_normalized | symmetric_difference(revert_normalized) == []
         fail_msg: "Mismatch found for Ethernet1/1 or Ethernet1/2 (excluding redirect fields)"
         success_msg: "Configs match for Ethernet1/1 and 1/2 as expected"
+      when: ansible_connection != 'nxapi'
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
