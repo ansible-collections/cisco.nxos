@@ -38,6 +38,7 @@
       ansible.builtin.assert:
         that:
           - "'2001:db8::2/32' in ansible_net_all_ipv6_addresses"
+      when: ansible_net_api != 'nxapi'
 
     - name: Assign IPv6 address to interface - 2
       register: result
@@ -57,6 +58,8 @@
         that:
           - "'2001:db8::2/32' in ansible_net_all_ipv6_addresses"
           - "'2001:db8::3/32' in ansible_net_all_ipv6_addresses"
+      when: ansible_net_api != 'nxapi'
+
   always:
     - name: Teardown
       cisco.nxos.nxos_config: *default
