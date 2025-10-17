@@ -7,7 +7,6 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    # FIX: Enable the OSPFv3 feature before configuration
     - name: Ensure ospfv3 feature is enabled
       cisco.nxos.nxos_feature:
         feature: ospfv3
@@ -46,7 +45,11 @@
                         no_summary: true
         state: replaced
       register: result
-
+      
+    - name: Debug the result variable to see its structure
+      ansible.builtin.debug:
+        var: result
+        
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
