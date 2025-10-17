@@ -1,4 +1,0 @@
----
-- name: Populate configuration
-  cisco.nxos.nxos_config:
-    lines: "hostname {{ current_hostname }}"
