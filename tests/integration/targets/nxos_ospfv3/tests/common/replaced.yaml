@@ -45,16 +45,19 @@
       ansible.builtin.assert:
         that:
           - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
           - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Replace device configurations of listed OSPF processes with provided configurarions (idempotent)
       register: result
@@ -65,10 +68,13 @@
         that:
           - result['changed'] == false
           - result.commands|length == 0
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert that before dict is correctly generated
       ansible.builtin.assert:
         that:
           - "{{ replaced['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
+
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

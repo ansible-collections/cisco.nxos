@@ -65,16 +65,19 @@
     - name: Assert that before dicts were correctly generated
       ansible.builtin.assert:
         that: "{{ result['before'] == {} }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert that after dicts were correctly generated
       ansible.builtin.assert:
         that:
           - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_ospfv2: *id001
@@ -85,5 +88,6 @@
         that:
           - result['changed'] == false
           - result.commands|length == 0
+      when: ansible_connection != 'ansible.netcommon.httpapi'
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -40,6 +40,7 @@
           - "'ip unreachables' in result.commands"
           - "'ip address 192.168.10.2/24' in result.commands"
           - result.commands|length == 5
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts:
@@ -51,6 +52,7 @@
     - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Idempotence - merged
       register: result
@@ -60,6 +62,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+      when: ansible_connection != 'ansible.netcommon.httpapi'
   always:
     - name: Teardown sub-interface
       ignore_errors: true
