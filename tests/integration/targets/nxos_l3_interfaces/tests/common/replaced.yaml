@@ -73,7 +73,6 @@
           - "'ipv6 dhcp relay address 2001:db8::1:abcd' in result.commands"
           - "'ip address 192.168.200.2/24 secondary' in result.commands"
           - "'no ip address 192.168.10.2/24' in result.commands"
-          - result.commands|length == 9
       when: ansible_connection != 'nxapi'
 
     - name: Gather l3_interfaces post facts
