@@ -183,7 +183,7 @@
               - address: 192.168.200.2/24
                 secondary: true
         state: replaced
-        when: ansible_connection == 'ansible.netcommon.network_cli'
+       when: ansible_connection == 'ansible.netcommon.network_cli'
 
     - ansible.builtin.assert:
         that:
