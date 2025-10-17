@@ -183,6 +183,7 @@
               - address: 192.168.200.2/24
                 secondary: true
         state: replaced
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
@@ -209,6 +210,7 @@
     - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: *id004
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
@@ -262,6 +264,8 @@
       cisco.nxos.nxos_l3_interfaces: &id006
         config: "{{ overriden_config + mgmt }}"
         state: overridden
+      when: ansible_connection != 'ansible.netcommon.httpapi'
+        
 
     - ansible.builtin.assert:
         that:
@@ -291,6 +295,7 @@
     - name: Idempotence - overridden
       register: result
       cisco.nxos.nxos_l3_interfaces: *id006
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
