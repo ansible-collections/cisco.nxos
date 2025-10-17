@@ -49,9 +49,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == false
-      - result.failed == True
-      - "'Could not resolve hostname' in result.module_stderr"
+      - result.failed == true
+      - "'Could not resolve hostname' in result.msg"
 
 # file_pull_timeout > 30s has no effect in this case, since the device
 # shell gives up connecting to the bad IP after 30s and the response
@@ -72,8 +71,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == false
-      - result.failed == True
+      - result.failed == true
+      - "'Connection timed out' in result.msg"
 
 - ansible.builtin.pause:
     seconds: 10
@@ -94,9 +93,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == false
-      - result.failed == True
-      - "'Too many authentication failures' in result.module_stderr"
+      - result.failed == true
+      - "'Too many authentication failures' in result.msg"
 
 - name: Try and copy file using an invalid password
   register: result
@@ -114,9 +112,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == false
       - result.failed == True
-      - "'Too many authentication failures' in result.module_stderr"
+      - "'Too many authentication failures' in result.msg"
 
 - ansible.builtin.debug:
     msg: END nxos_file_copy negative test

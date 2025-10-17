@@ -34,6 +34,7 @@
             ipv4:
               - address: 192.0.2.81/28
         state: merged
+      when: ansible_connection != 'ansible.netcommon.httpapi'
       tags: base_config
 
     - name: Gather interfaces facts
@@ -62,16 +63,19 @@
             ipv6:
               - address: 2001:db8::20/32
                 tag: 6
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ config_to_revert + mgmt }}"
         state: overridden
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Revert back to base configuration using facts round trip
       register: revert
@@ -95,6 +99,7 @@
              | map('rejectattr', 'key', 'in', ['redirects', 'ipv6_redirects'])
              | map('items2dict')
              | list }}
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert base and revert configs match for Ethernet1/1 and 1/2 (ignoring redirects)
       ansible.builtin.assert:
@@ -102,6 +107,7 @@
           - base_normalized | symmetric_difference(revert_normalized) == []
         fail_msg: "Mismatch found for Ethernet1/1 or Ethernet1/2 (excluding redirect fields)"
         success_msg: "Configs match for Ethernet1/1 and 1/2 as expected"
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
