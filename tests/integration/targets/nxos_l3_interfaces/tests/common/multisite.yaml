@@ -74,7 +74,7 @@
           - "'no ip address 192.168.10.2/24' in result.commands"
           - "'no evpn multisite dci-tracking' in result.commands"
           - result.commands|length == 5
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Idempotence - deleted
       register: result
@@ -84,7 +84,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
@@ -118,7 +118,7 @@
           - "'ip address 192.168.10.2/24' in result.commands"
           - "'evpn multisite fabric-tracking' in result.commands"
           - result.commands|length == 5
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Gather l3_interfaces facts - merged
       cisco.nxos.nxos_facts:
@@ -130,7 +130,7 @@
     - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Idempotence - merged
       register: result
@@ -140,7 +140,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
@@ -196,7 +196,7 @@
           - "'no ip address 192.168.10.2/24' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - result.commands|length == 7
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id003
@@ -204,7 +204,7 @@
     - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Idempotence - replaced
       register: result
@@ -214,7 +214,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
@@ -278,7 +278,7 @@
           - "'evpn multisite dci-tracking' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - "'no ip redirects' in result.commands"
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id005
@@ -286,7 +286,7 @@
     - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Idempotence - overridden
       register: result
@@ -296,7 +296,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Teardown - overdidden
       ignore_errors: true
@@ -335,7 +335,7 @@
 
     - ansible.builtin.assert:
         that: "{{ rendered_multi | symmetric_difference(result['rendered']) |length==0 }}"
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Gather l3_interfaces facts from the device and assert that its empty
       register: result
@@ -345,7 +345,7 @@
     - name: Make sure that rendered task actually did not make any changes to the device
       ansible.builtin.assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
@@ -370,7 +370,7 @@
 
     - ansible.builtin.assert:
         that: "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0 }}"
-      when: ansible_connection != 'nxapi'
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
   when: multiout is not search("Invalid command")
 
