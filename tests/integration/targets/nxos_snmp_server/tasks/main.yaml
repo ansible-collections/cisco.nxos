@@ -20,7 +20,7 @@
 
 - name: Find ansible user SNMP localized key
   ansible.builtin.set_fact:
-    ansible_snmp_passwd: "{{ ansible_snmp_passwd[0] }}"
+    ansible_snmp_passwd: "{{ ansible_snmp_passwd[0] | default('') }}"
 
 - name: Grep admin user SNMP localized key (second)
   ansible.builtin.set_fact:
@@ -28,7 +28,7 @@
 
 - name: Find admin user SNMP localized key (second)
   ansible.builtin.set_fact:
-    admin_snmp_passwd_2: "{{ admin_snmp_passwd_2[0] }}"
+    admin_snmp_passwd_2: "{{ admin_snmp_passwd_2[0] | default('') }}"
 
 - name: Grep admin user SNMP engineid (second)
   ansible.builtin.set_fact:
@@ -37,7 +37,7 @@
 
 - name: Find admin user SNMP engineid (second)
   ansible.builtin.set_fact:
-    admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] }}"
+    admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] | default('') }}"
 
 - name: Grep zuul user SNMP localized key
   ansible.builtin.set_fact:
@@ -45,7 +45,7 @@
 
 - name: Find zuul user SNMP localized key
   ansible.builtin.set_fact:
-    zuul_snmp_passwd: "{{ zuul_snmp_passwd[0] }}"
+    zuul_snmp_passwd: "{{ zuul_snmp_passwd[0] | default('')}}"
 
 - name: Include the CLI tasks
   ansible.builtin.include_tasks: cli.yaml
