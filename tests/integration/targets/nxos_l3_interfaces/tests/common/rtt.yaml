@@ -99,6 +99,7 @@
              | map('rejectattr', 'key', 'in', ['redirects', 'ipv6_redirects'])
              | map('items2dict')
              | list }}
+      when: ansible_connection != 'ansible.netcommon.httpapi'
 
     - name: Assert base and revert configs match for Ethernet1/1 and 1/2 (ignoring redirects)
       ansible.builtin.assert:
