@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.debug:
-    msg: Start nxos_bgp_global deleted_af integration tests connection={{ ansible_connection}}
+    msg: Start nxos_bgp_global deleted_af integration tests connection={{ ansible_connection }}
 
 - name: Remove pre-existing BGP configurations
   cisco.nxos.nxos_config: &remove
@@ -19,11 +19,11 @@
       - "  address-family ipv4 unicast"
       - "    next-hop-self"
       - "  remote-as 65538"
-      - "  affinity-group 160"
       - "  description NBR-1"
-      - "  low-memory exempt"
       - "neighbor 192.0.2.1"
       - "  remote-as 65537"
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
 
 - block:
     - name: Remove a neighbor having AF configurations (should fail)
@@ -56,10 +56,7 @@
           - "    address-family ipv4 unicast"
           - "      next-hop-self"
           - "    remote-as 65538"
-          - "    affinity-group 160"
           - "    description NBR-1"
-          - "    low-memory exempt"
-          - "  neighbor-down fib-accelerate"
 
     - name: Remove a neighbor under a VRF having AF configurations (should fail)
       cisco.nxos.nxos_bgp_global: *deleted
@@ -91,11 +88,8 @@
           - "    default-information originate"
           - "  neighbor 203.0.113.2"
           - "    remote-as 65538"
-          - "    affinity-group 160"
           - "    description NBR-1"
-          - "    low-memory exempt"
           - "vrf site-2"
-          - "  neighbor-down fib-accelerate"
 
     - name: Remove a neighbor under a VRF having AF configurations (should fail)
       cisco.nxos.nxos_bgp_global: *deleted
