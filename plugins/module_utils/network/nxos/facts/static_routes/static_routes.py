@@ -36,7 +36,9 @@ class Static_routesFacts(object):
     def get_static_routes_data(self, connection):
         non_vrf_data = connection.get("show running-config | include '^ip(v6)* route'")
         if non_vrf_data:
-            non_vrf_data = '\n'.join(line for line in non_vrf_data.splitlines() if ' vrf ' not in line)
+            non_vrf_data = "\n".join(
+                line for line in non_vrf_data.splitlines() if " vrf " not in line
+            )
         vrf_data = connection.get("show running-config | section '^vrf context'")
         if vrf_data:
             non_vrf_data += "\n" + vrf_data
