@@ -155,6 +155,7 @@ class Hardware(FactsBase):
         data = None
         data = self.run("show system resources", output="json")
         import q
+
         q(data)
 
         if data:
