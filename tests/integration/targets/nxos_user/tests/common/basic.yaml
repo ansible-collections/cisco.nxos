@@ -18,6 +18,12 @@
       - name: ansibletest_role
     state: absent
 
+- name: Remove old login banners
+  cisco.nxos.nxos_config:
+    lines:
+      - no banner motd
+      - no banner exec
+
 - name: Create user
   register: result
   cisco.nxos.nxos_user:

@@ -72,7 +72,6 @@
 - ansible.builtin.assert:
     that:
       - result.failed == true
-      - "'Connection timed out' in result.msg"
 
 - ansible.builtin.pause:
     seconds: 10

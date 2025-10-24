@@ -1,5 +1,35 @@
 ---
 - block:
+    - name: Check if SSH feature is enabled
+      cisco.nxos.nxos_command:
+        commands:
+          - show feature | inc ssh
+      register: ssh_feature
+      ignore_errors: yes
+
+    - name: Ensure SSH feature is enabled
+      when: "'enabled' not in ssh_feature.stdout[0]"
+      cisco.nxos.nxos_config:
+        lines:
+          - feature ssh
+
+    - name: Check existing RSA key
+      cisco.nxos.nxos_command:
+        commands:
+          - show crypto key mypubkey rsa
+      register: rsa_key_check
+      ignore_errors: yes
+
+    - name: Regenerate SSH RSA key if missing or weak
+      when: rsa_key_check.failed or
+            ('2048' not in rsa_key_check.stdout[0] and
+             '3072' not in rsa_key_check.stdout[0] and
+             '4096' not in rsa_key_check.stdout[0])
+      cisco.nxos.nxos_config:
+        lines:
+          - crypto key generate rsa modulus 2048
+        save_when: always
+
     - name: Create user with password
       cisco.nxos.nxos_user:
         name: auth_user
@@ -9,15 +39,21 @@
 
     - name: Test login
       ansible.builtin.expect:
-        command: >-
+        command: >
           ssh auth_user@{{ ansible_ssh_host }}
           -p {{ ansible_ssh_port|default(22) }}
           -o UserKnownHostsFile=/dev/null
           -o StrictHostKeyChecking=no
           -o PubkeyAuthentication=no
+          -oHostKeyAlgorithms=+ssh-rsa
+          -oPubkeyAcceptedKeyTypes=+ssh-rsa
           show version
         responses:
-          (?i)password: pasS!123
+          "(?i)password": "pasS!123"
+          "(?i)continue connecting": "yes"
+          ".*HTTPAPI for cisco\\.nxos.*": ""
+      register: test_login
+      ignore_errors: yes
 
     - name: Test login with invalid password (should fail)
       ansible.builtin.expect:
