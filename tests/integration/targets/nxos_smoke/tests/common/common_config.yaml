@@ -24,7 +24,7 @@
   ansible.builtin.find: &backups
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
-  connection: local
+  delegate_to: localhost
   register: backup_files
 
 - name: Delete backup files
@@ -50,7 +50,7 @@
 
 - name: Collect any backup files
   ansible.builtin.find: *backups
-  connection: local
+  delegate_to: localhost
   register: backup_files
 
 - ansible.builtin.assert:
