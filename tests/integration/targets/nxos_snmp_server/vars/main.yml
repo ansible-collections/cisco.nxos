@@ -40,22 +40,22 @@ merged:
     aaa_user:
       cache_timeout: 36000
     communities:
-    - group: network-admin
-      name: private
-    - group: network-operator
-      name: public
+      - group: network-admin
+        name: private
+      - group: network-operator
+        name: public
     contact: nxosswitchadmin@localhost
     hosts:
-    - community: public
-      host: 192.0.2.1
-      traps: true
-      version: '1'
-    - host: 192.0.2.1
-      source_interface: Ethernet1/1
-    - auth: NMS
-      host: 192.0.2.2
-      informs: true
-      version: '3'
+      - community: public
+        host: 192.0.2.1
+        traps: true
+        version: "1"
+      - host: 192.0.2.1
+        source_interface: Ethernet1/1
+      - auth: NMS
+        host: 192.0.2.2
+        informs: true
+        version: "3"
     location: serverroom-1
     traps:
       aaa:
@@ -64,46 +64,46 @@ merged:
         clock_change_notification: true
     users:
       auth:
-      - authentication:
-          algorithm: md5
-          localizedv2_key: true
-          password: "{{ admin_snmp_passwd }}"
-          priv:
-            aes_128: true
-            privacy_password: "{{ admin_snmp_passwd }}"
-        group: network-admin
-        user: admin
-      - authentication:
-          algorithm: md5
-          localizedv2_key: true
-          password: "{{ ansible_snmp_passwd }}"
-          priv:
-            aes_128: true
-            privacy_password: "{{ ansible_snmp_passwd }}"
-        group: network-admin
-        user: ansible
-      - authentication:
-          algorithm: md5
-          localized_key: true
-          password: '0x5632724fb8ac3699296af26281e1d0f1'
-        group: network-operator
-        user: snmp_user_1
-      - authentication:
-          algorithm: md5
-          localized_key: true
-          password: '0x5632724fb8ac3699296af26281e1d0f1'
-          priv:
-            aes_128: true
-            privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-        group: network-operator
-        user: snmp_user_2
+        - authentication:
+            algorithm: md5
+            localizedv2_key: true
+            password: "{{ admin_snmp_passwd }}"
+            priv:
+              aes_128: true
+              privacy_password: "{{ admin_snmp_passwd }}"
+          group: network-admin
+          user: admin
+        - authentication:
+            algorithm: md5
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd }}"
+            priv:
+              aes_128: true
+              privacy_password: "{{ ansible_snmp_passwd }}"
+          group: network-admin
+          user: ansible
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "0x5632724fb8ac3699296af26281e1d0f1"
+          group: network-operator
+          user: snmp_user_1
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "0x5632724fb8ac3699296af26281e1d0f1"
+            priv:
+              aes_128: true
+              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+          group: network-operator
+          user: snmp_user_2
       use_acls:
-      - ipv4: acl1
-        ipv6: acl2
-        user: snmp_user_1
-      - ipv4: acl3
-        ipv6: acl4
-        user: snmp_user_2
+        - ipv4: acl1
+          ipv6: acl2
+          user: snmp_user_1
+        - ipv4: acl3
+          ipv6: acl4
+          user: snmp_user_2
 
 replaced:
   commands:
