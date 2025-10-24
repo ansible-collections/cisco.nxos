@@ -25,6 +25,8 @@
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - name: Delete backup files
   ansible.builtin.file:
@@ -48,6 +50,8 @@
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - ansible.builtin.assert:
     that:
@@ -71,6 +75,8 @@
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
   register: backup_file
   delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - ansible.builtin.assert:
     that:
@@ -93,6 +99,8 @@
     paths: "{{ role_path }}/backup/backup.cfg"
   register: backup_file
   delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - ansible.builtin.assert:
     that:
@@ -116,6 +124,8 @@
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_file
   delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - ansible.builtin.assert:
     that:
