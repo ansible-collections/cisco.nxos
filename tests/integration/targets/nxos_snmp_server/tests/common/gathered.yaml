@@ -12,10 +12,166 @@
       cisco.nxos.nxos_snmp_server:
         state: gathered
 
-    - name: Assert that facts were correctly generated
-      ansible.builtin.assert:
+    - name: Assert AAA user cache timeout is configured
+      assert:
         that:
-          - "{{ result['gathered'] == merged['after'] }}"
+          - result.gathered.aaa_user.cache_timeout is defined
+          - result.gathered.aaa_user.cache_timeout == 36000
+        fail_msg: "AAA user cache timeout is not configured correctly"
+        success_msg: "AAA user cache timeout is configured correctly"
+
+    - name: Assert SNMP communities are configured
+      assert:
+        that:
+          - result.gathered.communities is defined
+          - result.gathered.communities | length == 2
+          - result.gathered.communities[0].name == "private"
+          - result.gathered.communities[0].group == "network-admin"
+          - result.gathered.communities[1].name == "public"
+          - result.gathered.communities[1].group == "network-operator"
+        fail_msg: "SNMP communities are not configured correctly"
+        success_msg: "SNMP communities are configured correctly"
+
+    - name: Assert SNMP contact is configured
+      assert:
+        that:
+          - result.gathered.contact is defined
+          - result.gathered.contact == "nxosswitchadmin@localhost"
+        fail_msg: "SNMP contact is not configured correctly"
+        success_msg: "SNMP contact is configured correctly"
+
+    - name: Assert SNMP location is configured
+      assert:
+        that:
+          - result.gathered.location is defined
+          - result.gathered.location == "serverroom-1"
+        fail_msg: "SNMP location is not configured correctly"
+        success_msg: "SNMP location is configured correctly"
+
+    - name: Assert SNMP hosts are configured
+      assert:
+        that:
+          - result.gathered.hosts is defined
+          - result.gathered.hosts | length == 3
+        fail_msg: "SNMP hosts count is incorrect"
+        success_msg: "SNMP hosts are configured correctly"
+
+    - name: Assert first SNMP host configuration
+      assert:
+        that:
+          - result.gathered.hosts[0].host == "192.0.2.1"
+          - result.gathered.hosts[0].community == "public"
+          - result.gathered.hosts[0].version == "1"
+          - result.gathered.hosts[0].traps == true
+        fail_msg: "First SNMP host is not configured correctly"
+        success_msg: "First SNMP host is configured correctly"
+
+    - name: Assert second SNMP host configuration
+      assert:
+        that:
+          - result.gathered.hosts[1].host == "192.0.2.1"
+          - result.gathered.hosts[1].source_interface == "Ethernet1/1"
+        fail_msg: "Second SNMP host is not configured correctly"
+        success_msg: "Second SNMP host is configured correctly"
+
+    - name: Assert third SNMP host configuration
+      assert:
+        that:
+          - result.gathered.hosts[2].host == "192.0.2.2"
+          - result.gathered.hosts[2].version == "3"
+          - result.gathered.hosts[2].auth == "NMS"
+          - result.gathered.hosts[2].informs == true
+        fail_msg: "Third SNMP host is not configured correctly"
+        success_msg: "Third SNMP host is configured correctly"
+
+    - name: Assert SNMP traps are configured
+      assert:
+        that:
+          - result.gathered.traps is defined
+          - result.gathered.traps.aaa.server_state_change == true
+          - result.gathered.traps.system.clock_change_notification == true
+        fail_msg: "SNMP traps are not configured correctly"
+        success_msg: "SNMP traps are configured correctly"
+
+    - name: Assert SNMP users with authentication are configured
+      assert:
+        that:
+          - result.gathered.users.auth is defined
+          - result.gathered.users.auth | length == 4
+        fail_msg: "SNMP users count is incorrect"
+        success_msg: "SNMP users are configured correctly"
+
+    - name: Assert admin user configuration
+      assert:
+        that:
+          - result.gathered.users.auth[0].user == "admin"
+          - result.gathered.users.auth[0].group == "network-admin"
+          - result.gathered.users.auth[0].authentication.algorithm == "md5"
+          - result.gathered.users.auth[0].authentication.localizedv2_key == true
+          - result.gathered.users.auth[0].authentication.password == admin_snmp_passwd
+          - result.gathered.users.auth[0].authentication.priv.aes_128 == true
+          - result.gathered.users.auth[0].authentication.priv.privacy_password == admin_snmp_passwd
+        fail_msg: "Admin user is not configured correctly"
+        success_msg: "Admin user is configured correctly"
+
+    - name: Assert cisco user configuration
+      assert:
+        that:
+          - result.gathered.users.auth[1].user == "cisco"
+          - result.gathered.users.auth[1].group == "network-admin"
+          - result.gathered.users.auth[1].authentication.algorithm == "md5"
+          - result.gathered.users.auth[1].authentication.localizedv2_key == true
+          - result.gathered.users.auth[1].authentication.priv.aes_128 == true
+        fail_msg: "Cisco user is not configured correctly"
+        success_msg: "Cisco user is configured correctly"
+
+    - name: Assert snmp_user_1 configuration
+      assert:
+        that:
+          - result.gathered.users.auth[2].user == "snmp_user_1"
+          - result.gathered.users.auth[2].group == "network-operator"
+          - result.gathered.users.auth[2].authentication.algorithm == "md5"
+          - result.gathered.users.auth[2].authentication.localized_key == true
+          - result.gathered.users.auth[2].authentication.password == "0x5632724fb8ac3699296af26281e1d0f1"
+        fail_msg: "snmp_user_1 is not configured correctly"
+        success_msg: "snmp_user_1 is configured correctly"
+
+    - name: Assert snmp_user_2 configuration
+      assert:
+        that:
+          - result.gathered.users.auth[3].user == "snmp_user_2"
+          - result.gathered.users.auth[3].group == "network-operator"
+          - result.gathered.users.auth[3].authentication.algorithm == "md5"
+          - result.gathered.users.auth[3].authentication.localized_key == true
+          - result.gathered.users.auth[3].authentication.priv.aes_128 == true
+        fail_msg: "snmp_user_2 is not configured correctly"
+        success_msg: "snmp_user_2 is configured correctly"
+
+    - name: Assert SNMP user ACLs are configured
+      assert:
+        that:
+          - result.gathered.users.use_acls is defined
+          - result.gathered.users.use_acls | length == 2
+        fail_msg: "SNMP user ACLs count is incorrect"
+        success_msg: "SNMP user ACLs are configured correctly"
+
+    - name: Assert snmp_user_1 ACL configuration
+      assert:
+        that:
+          - result.gathered.users.use_acls[0].user == "snmp_user_1"
+          - result.gathered.users.use_acls[0].ipv4 == "acl1"
+          - result.gathered.users.use_acls[0].ipv6 == "acl2"
+        fail_msg: "snmp_user_1 ACLs are not configured correctly"
+        success_msg: "snmp_user_1 ACLs are configured correctly"
+
+    - name: Assert snmp_user_2 ACL configuration
+      assert:
+        that:
+          - result.gathered.users.use_acls[1].user == "snmp_user_2"
+          - result.gathered.users.use_acls[1].ipv4 == "acl3"
+          - result.gathered.users.use_acls[1].ipv6 == "acl4"
+        fail_msg: "snmp_user_2 ACLs are not configured correctly"
+        success_msg: "snmp_user_2 ACLs are configured correctly"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
