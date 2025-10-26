@@ -94,7 +94,7 @@
       ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
-    
+
     - name: Assert that 'after' user configurations were correctly generated
       ansible.builtin.assert:
         that:
