@@ -43,7 +43,7 @@
                   localizedv2_key: true
                   priv:
                     aes_128: true
-                    privacy_password: "{{ admin_snmp_passwd }}"
+                    privacy_password: "{{ admin_snmp_priv_key }}"
 
               - user: ansible
                 group: network-admin
@@ -53,7 +53,7 @@
                   password: "{{ ansible_snmp_passwd }}"
                   priv:
                     aes_128: true
-                    privacy_password: "{{ ansible_snmp_passwd }}"
+                    privacy_password: "{{ ansible_snmp_priv_key }}"
 
               - user: snmp_user_1
                 group: network-operator
@@ -79,22 +79,32 @@
         state: replaced
       register: result
 
-    # commented out as list attribute ordering may differ and tests fails intermittently
-    # - name: Assert that before dicts were correctly generated
-    #   ansible.builtin.assert:
-    #     that:
-    #       - "{{ result['before'] == merged['after'] }}"
+    - name: Assert that 'before' user configurations are correct
+      ansible.builtin.assert:
+        that:
+          - (result.before.users.auth | selectattr('user', 'equalto', item.user) | list | first) == item
+        fail_msg: >-
+          The 'before' configuration for user '{{ item.user }}' is incorrect.
+        success_msg: "The 'before' configuration for user '{{ item.user }}' is correct."
+      loop: "{{ merged['after']['users']['auth'] }}"
+      loop_control:
+        label: "Asserting user: {{ item.user }}"
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
-
-    # commented out as list attribute ordering may differ and tests fails intermittently
-    # - name: Assert that after dicts were correctly generated
-    #   ansible.builtin.assert:
-    #     that:
-    #       - "{{ replaced['after'] == result['after'] }}"
+    
+    - name: Assert that 'after' user configurations were correctly generated
+      ansible.builtin.assert:
+        that:
+          - (result.after.users.auth | selectattr('user', 'equalto', item.user) | list | first) == item
+        fail_msg: >-
+          The 'after' configuration for user '{{ item.user }}' is incorrect.
+        success_msg: "The 'after' configuration for user '{{ item.user }}' is correct."
+      loop: "{{ replaced['after']['users']['auth'] }}"
+      loop_control:
+        label: "Asserting user: {{ item.user }}"
 
     - name: Replace snmp-server configurations of listed snmp-server with provided configurations (idempotent)
       register: result

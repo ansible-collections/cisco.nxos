@@ -110,20 +110,20 @@
           - result.gathered.users.auth[0].authentication.localizedv2_key == true
           - result.gathered.users.auth[0].authentication.password == admin_snmp_passwd
           - result.gathered.users.auth[0].authentication.priv.aes_128 == true
-          - result.gathered.users.auth[0].authentication.priv.privacy_password == admin_snmp_passwd
         fail_msg: "Admin user is not configured correctly"
         success_msg: "Admin user is configured correctly"
 
-    - name: Assert cisco user configuration
+    - name: Assert ansible user configuration
       assert:
         that:
-          - result.gathered.users.auth[1].user == "cisco"
+          - result.gathered.users.auth[1].user == "ansible"
           - result.gathered.users.auth[1].group == "network-admin"
           - result.gathered.users.auth[1].authentication.algorithm == "md5"
           - result.gathered.users.auth[1].authentication.localizedv2_key == true
           - result.gathered.users.auth[1].authentication.priv.aes_128 == true
-        fail_msg: "Cisco user is not configured correctly"
-        success_msg: "Cisco user is configured correctly"
+          - result.gathered.users.auth[1].authentication.password == ansible_snmp_passwd
+        fail_msg: "Ansible user is not configured correctly"
+        success_msg: "Ansible user is configured correctly"
 
     - name: Assert snmp_user_1 configuration
       assert:

@@ -9,7 +9,7 @@ merged:
             password: "{{ admin_snmp_passwd }}"
             priv:
               aes_128: true
-              privacy_password: "{{ admin_snmp_passwd }}"
+              privacy_password: "{{ admin_snmp_priv_key }}"
           group: network-admin
           user: admin
         - authentication:
@@ -18,7 +18,7 @@ merged:
             password: "{{ ansible_snmp_passwd }}"
             priv:
               aes_128: true
-              privacy_password: "{{ ansible_snmp_passwd }}"
+              privacy_password: "{{ ansible_snmp_priv_key }}"
           group: network-admin
           user: ansible
   commands:
@@ -70,7 +70,7 @@ merged:
             password: "{{ admin_snmp_passwd }}"
             priv:
               aes_128: true
-              privacy_password: "{{ admin_snmp_passwd }}"
+              privacy_password: "{{ admin_snmp_priv_key }}"
           group: network-admin
           user: admin
         - authentication:
@@ -79,7 +79,7 @@ merged:
             password: "{{ ansible_snmp_passwd }}"
             priv:
               aes_128: true
-              privacy_password: "{{ ansible_snmp_passwd }}"
+              privacy_password: "{{ ansible_snmp_priv_key }}"
           group: network-admin
           user: ansible
         - authentication:
@@ -110,9 +110,6 @@ replaced:
     - snmp-server contact nxosswitchadmin2@localhost
     - no snmp-server enable traps system Clock-change-notification
     - snmp-server location serverroom-2
-    - snmp-server user cisco network-admin auth md5 164E144C8814BA53375C8B4A3CFB1A0AFB42
-      priv aes-128 164E144C8814BA53375C8B4A3CFB1A0AFB42 localizedV2key
-    - no snmp-server user cisco
     - no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
     - snmp-server host 192.0.3.2 informs version 3 auth NMS
     - no snmp-server host 192.0.2.2 informs version 3 auth NMS
@@ -152,7 +149,7 @@ replaced:
             localizedv2_key: true
             priv:
               aes_128: true
-              privacy_password: "{{ admin_snmp_passwd }}"
+              privacy_password: "{{ admin_snmp_priv_key }}"
 
         - user: ansible
           group: network-admin
@@ -162,7 +159,7 @@ replaced:
             password: "{{ ansible_snmp_passwd }}"
             priv:
               aes_128: true
-              privacy_password: "{{ ansible_snmp_passwd }}"
+              privacy_password: "{{ ansible_snmp_priv_key }}"
 
         - user: snmp_user_1
           group: network-operator

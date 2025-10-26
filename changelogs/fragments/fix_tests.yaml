@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.nxos.nxos_snmp_server - Fix various test cases post nxapi enablement on CML
