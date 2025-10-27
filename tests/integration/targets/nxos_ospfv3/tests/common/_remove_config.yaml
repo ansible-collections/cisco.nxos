@@ -1,10 +1,19 @@
 ---
-- name: Remove pre-existing OSPF processes
+- name: Remove pre-existing OSPF processes for network_cli
+  when: ansible_connection == 'ansible.netcommon.network_cli'
   cisco.nxos.nxos_config:
     lines:
       - no router ospfv3 100
       - no router ospfv3 102
       - no router ospfv3 104
   ignore_errors: true
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
+
+- name: Remove all found OSPFv3 processes for httpapi
+  when: ansible_connection == 'ansible.netcommon.httpapi'
+  cisco.nxos.nxos_ospfv3:
+    config:
+      processes:
+        - process_id: 100
+        - process_id: 102
+        - process_id: 104
+    state: deleted
