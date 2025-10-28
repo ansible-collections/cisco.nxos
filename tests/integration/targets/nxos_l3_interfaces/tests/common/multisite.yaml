@@ -257,6 +257,11 @@
               - address: 10.1.1.3/24
             evpn_multisite_tracking: dci-tracking
 
+    - name: Add redirects to mgmt0
+      ansible.builtin.set_fact:
+        mgmt: >-
+          {{ mgmt | map('combine', {'redirects': True, 'ipv6_redirects': True}) | list }}
+
     - name: Overridden
       register: result
       cisco.nxos.nxos_l3_interfaces: &id006
@@ -278,7 +283,7 @@
           - "'evpn multisite dci-tracking' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - "'no ip redirects' in result.commands"
-          # - result.commands|length == 11
+          - result.commands|length == 11
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id005

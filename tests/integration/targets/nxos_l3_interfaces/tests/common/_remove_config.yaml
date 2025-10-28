@@ -17,3 +17,11 @@
     - "default interface {{ nxos_int1 }}"
     - "default interface {{ nxos_int2 }}"
     - "default interface {{ nxos_int3 }}"
+
+- name: Ensure mgmt0 redirects are enabled
+  cisco.nxos.nxos_l3_interfaces:
+    config:
+      - name: mgmt0
+        redirects: true
+        ipv6_redirects: true
+    state: merged

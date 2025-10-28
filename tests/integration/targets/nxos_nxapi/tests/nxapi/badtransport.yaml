@@ -17,7 +17,8 @@
 
 - ansible.builtin.assert:
     that:
-      - result.failed
+      - result.changed
+      - "'no nxapi http' in result.commands"
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
 - ansible.builtin.debug:
