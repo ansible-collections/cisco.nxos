@@ -13,6 +13,12 @@
 - ansible.builtin.assert:
     that:
       - result.failed and result.msg is search('transport')
+  when: ansible_connection == 'ansible.netcommon.httpapi'
+
+- ansible.builtin.assert:
+    that:
+      - result.failed
+  when: ansible_connection == 'ansible.netcommon.network_cli'
 
 - ansible.builtin.debug:
     msg: END nxapi/badtransport.yaml

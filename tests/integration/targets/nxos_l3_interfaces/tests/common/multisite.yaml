@@ -278,7 +278,7 @@
           - "'evpn multisite dci-tracking' in result.commands"
           - "'no ipv6 redirects' in result.commands"
           - "'no ip redirects' in result.commands"
-          # - result.commands|length == 14
+          - result.commands|length == 11
 
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id005
