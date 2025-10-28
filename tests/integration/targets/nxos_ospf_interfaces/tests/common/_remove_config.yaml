@@ -1,4 +1,34 @@
 ---
+- name: Check NXAPI feature status
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  cisco.nxos.nxos_command:
+    commands: show feature | grep nxapi
+  register: result
+
+- name: Assert NX-API is enabled
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  ansible.builtin.assert:
+    that: "'enabled' in result.stdout[0]"
+  ignore_errors: true
+
+- name: Ensure NXAPI enabled if using CLI
+  when:
+    - ansible_connection == 'ansible.netcommon.network_cli'
+    - "'enabled' not in result.stdout[0]"
+  cisco.nxos.nxos_nxapi:
+    state: present
+
+- name: Re-check NXAPI status
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  cisco.nxos.nxos_command:
+    commands: show feature | grep nxapi
+  register: result_after
+
+- name: Assert NX-API is now enabled
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  ansible.builtin.assert:
+    that: "'enabled' in result_after.stdout[0]"
+
 - name: Default interfaces
   cisco.nxos.nxos_config:
     lines:
