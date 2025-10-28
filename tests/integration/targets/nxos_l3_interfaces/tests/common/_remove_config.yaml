@@ -1,8 +1,19 @@
 ---
-- name: Remove configuration
+- name: Remove configuration for netword_cli
+  when: ansible_connection == 'ansible.netcommon.network_cli'
   cisco.nxos.nxos_config:
     lines:
       - "default interface {{ nxos_int1 }}"
       - "default interface {{ nxos_int2 }}"
       - "default interface {{ nxos_int3 }}"
   ignore_errors: true
+
+- name: Remove configuration for httpapi
+  when: ansible_connection == 'ansible.netcommon.httpapi'
+  cisco.nxos.nxos_config:
+    lines:
+      - "{{ item }}"
+  loop:
+    - "default interface {{ nxos_int1 }}"
+    - "default interface {{ nxos_int2 }}"
+    - "default interface {{ nxos_int3 }}"

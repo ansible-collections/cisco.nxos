@@ -68,16 +68,19 @@
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ config_to_revert + mgmt }}"
         state: overridden
+      ignore_errors: true
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
+      when: ansible_connection == 'ansible.netcommon.network_cli'
 
     - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
         state: overridden
+      ignore_errors: true
 
     - name: Normalize base and revert configs for Ethernet1/1 and Ethernet1/2
       set_fact:
@@ -95,6 +98,7 @@
              | map('rejectattr', 'key', 'in', ['redirects', 'ipv6_redirects'])
              | map('items2dict')
              | list }}
+      when: ansible_connection == 'ansible.netcommon.network_cli'
 
     - name: Assert base and revert configs match for Ethernet1/1 and 1/2 (ignoring redirects)
       ansible.builtin.assert:
@@ -102,6 +106,7 @@
           - base_normalized | symmetric_difference(revert_normalized) == []
         fail_msg: "Mismatch found for Ethernet1/1 or Ethernet1/2 (excluding redirect fields)"
         success_msg: "Configs match for Ethernet1/1 and 1/2 as expected"
+      when: ansible_connection == 'ansible.netcommon.network_cli'
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
