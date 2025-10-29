@@ -1,2 +1,6 @@
 minor_changes:
-  - cisco.nxos.nxos_snmp_server - Fix test cases for various resource modules
+  - cisco.nxos.nxos_snmp_server - Fix incorrect asseretion statements
+  - cisco.nxos.l3_interfaces - Fixed _remove_config file
+  - cisco.nxos.ospfv2 - Fixed _remove_config file
+  - cisco.nxos.ospfv3 - Fixed _remove_config file
+  - cisco.nxos.nxapi - Fixed assertion statements

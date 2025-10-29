@@ -29,6 +29,45 @@
   ansible.builtin.assert:
     that: "'enabled' in result_after.stdout[0]"
 
+- name: Check NXAPI HTTP port configuration
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  cisco.nxos.nxos_command:
+    commands:
+      - show running-config | include nxapi
+  register: nxapi_output
+
+- name: Enable NXAPI on port 80 if not already configured
+  when:
+    - ansible_connection == 'ansible.netcommon.network_cli'
+    - "'nxapi http port 80' not in nxapi_output.stdout[0]"
+  cisco.nxos.nxos_nxapi:
+    state: present
+    http: true
+    http_port: 80
+  register: nxapi_enable_result
+
+- name: Wait for 10 seconds after enabling NXAPI
+  ansible.builtin.wait_for:
+    timeout: 10
+  when:
+    - ansible_connection == 'ansible.netcommon.network_cli'
+    - nxapi_enable_result is changed
+
+- name: Re-check NXAPI HTTP port configuration
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  cisco.nxos.nxos_command:
+    commands:
+      - show running-config | include nxapi
+  register: nxapi_output_2
+
+- name: Assert NXAPI HTTP port 80 is configured
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+  ansible.builtin.assert:
+    that:
+      - "'nxapi http port 80' in nxapi_output_2.stdout[0]"
+    success_msg: "NXAPI HTTP port 80 is configured"
+    fail_msg: "NXAPI HTTP port 80 is NOT configured"
+
 - name: Default interfaces
   cisco.nxos.nxos_config:
     lines:
