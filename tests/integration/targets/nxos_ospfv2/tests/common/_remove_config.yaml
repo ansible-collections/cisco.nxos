@@ -8,12 +8,13 @@
       - no router ospf 104
   ignore_errors: true
 
-- name: Remove all found OSPFv2 processes for httpapi
+- name: Remove pre-existing OSPF processes for httpapi
   when: ansible_connection == 'ansible.netcommon.httpapi'
-  cisco.nxos.nxos_ospfv3:
-    config:
-      processes:
-        - process_id: 100
-        - process_id: 102
-        - process_id: 104
-    state: deleted
+  cisco.nxos.nxos_config:
+    lines:
+      - "{{ item }}"
+  loop:
+    - no router ospf 100
+    - no router ospf 102
+    - no router ospf 104
+  ignore_errors: true
