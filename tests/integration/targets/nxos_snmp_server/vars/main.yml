@@ -93,6 +93,10 @@ overridden:
     - snmp-server enable traps aaa server-state-change
     - no snmp-server enable traps system Clock-change-notification
     - snmp-server location serverroom-2
+    - snmp-server user cisco network-admin auth md5 00749D0F05537C2D802A7DA4502626BF88DC
+      priv aes-128 332CFD752312713BED674598193B38F893D3 localizedV2key
+    - no snmp-server user ansible
+    - no snmp-server user temp_user
     - snmp-server host 192.0.2.1 source-interface Ethernet1/1
     - snmp-server host 192.0.3.2 informs version 3 auth NMS
     - snmp-server community secret group network-operator
