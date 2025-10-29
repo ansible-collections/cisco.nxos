@@ -53,7 +53,7 @@
               - authentication:
                   algorithm: md5
                   localizedv2_key: true
-                  password: '00749D0F05537C2D802A7DA4502626BF88DC'
+                  password: "00749D0F05537C2D802A7DA4502626BF88DC"
                   priv:
                     aes_128: true
                     privacy_password: 332CFD752312713BED674598193B38F893D3
