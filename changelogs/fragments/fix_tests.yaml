@@ -1,0 +1,4 @@
+bugfixes:
+  - cisco.nxos.nxos_facts - Fix handling of facts for httapi type connection.
+trivial:
+  - Fix integration tests.

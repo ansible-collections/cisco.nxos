@@ -67,19 +67,69 @@
       ansible.builtin.debug:
         msg: "{{ merged['after'] }}"
 
-    - name: Assert that before dicts were correctly generated
+    - name: Assert that the 'before' user configurations were correctly generated
       ansible.builtin.assert:
-        that: "{{ result['before'] == merged['before'] }}"
+        that:
+          - (result.before.users.auth | selectattr('user', 'equalto', item.user) | list | first) == item
+        fail_msg: >-
+          The 'before' configuration for user '{{ item.user }}' is incorrect.
+        success_msg: "The 'before' configuration for user '{{ item.user }}' is correct."
+      loop: "{{ merged['before']['users']['auth'] }}"
+      loop_control:
+        label: "Asserting user: {{ item.user }}"
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
-    - name: Assert that after dicts were correctly generated
+    - name: Assert that 'after' contact/location/aaa_user/traps configurations were correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] == result['after'] }}"
+          - result.after.contact == merged.after.contact
+          - result.after.location == merged.after.location
+          - result.after.aaa_user == merged.after.aaa_user
+          - result.after.traps == merged.after.traps
+
+    - name: Assert that 'after' community configurations are correctly generated
+      ansible.builtin.assert:
+        that:
+          - (result.after.communities | selectattr('name', 'equalto', item.name) | list | first) == item
+        fail_msg: "The 'after' configuration for community '{{ item.name }}' is incorrect."
+        success_msg: "The 'after' configuration for community '{{ item.name }}' is correct."
+      loop: "{{ merged['after']['communities'] }}"
+      loop_control:
+        label: "Asserting community: {{ item.name }}"
+
+    - name: Assert that 'after' host configurations are correctly generated
+      ansible.builtin.assert:
+        that:
+          - item in result.after.hosts
+        fail_msg: "The 'after' configuration for host entry '{{ item }}' is missing or incorrect."
+        success_msg: "The 'after' host entry '{{ item }}' is correct."
+      loop: "{{ merged['after']['hosts'] }}"
+      loop_control:
+        label: "Asserting host entry: {{ item }}"
+
+    - name: Assert that 'after' user authentication configurations are correctly generated
+      ansible.builtin.assert:
+        that:
+          - (result.after.users.auth | selectattr('user', 'equalto', item.user) | list | first) == item
+        fail_msg: "The 'after' configuration for user '{{ item.user }}' auth is incorrect."
+        success_msg: "The 'after' configuration for user '{{ item.user }}' auth is correct."
+      loop: "{{ merged['after']['users']['auth'] }}"
+      loop_control:
+        label: "Asserting user auth: {{ item.user }}"
+
+    - name: Assert that 'after' user ACL configurations are correctly generated
+      ansible.builtin.assert:
+        that:
+          - (result.after.users.use_acls | selectattr('user', 'equalto', item.user) | list | first) == item
+        fail_msg: "The 'after' configuration for user '{{ item.user }}' ACLs is incorrect."
+        success_msg: "The 'after' configuration for user '{{ item.user }}' ACLs is correct."
+      loop: "{{ merged['after']['users']['use_acls'] }}"
+      loop_control:
+        label: "Asserting user ACLs: {{ item.user }}"
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_snmp_server: *id001

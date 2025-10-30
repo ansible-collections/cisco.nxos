@@ -1,10 +1,16 @@
 ---
-- name: Remove pre-existing OSPF processes
-  cisco.nxos.nxos_config:
-    lines:
-      - no router ospfv3 100
-      - no router ospfv3 102
-      - no router ospfv3 104
-  ignore_errors: true
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
+- name: Gather nxos_ospfv3 facts before deleted
+  register: result
+  cisco.nxos.nxos_ospfv3:
+    state: gathered
+
+- name: Delete whatever is gathered
+  register: result
+  cisco.nxos.nxos_ospfv3:
+    config: "{{ result.gathered }}"
+    state: deleted
+
+- name: Gather nxos_ospfv3 facts after deleted
+  register: result
+  cisco.nxos.nxos_ospfv3:
+    state: gathered

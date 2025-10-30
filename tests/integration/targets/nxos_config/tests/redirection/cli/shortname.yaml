@@ -29,7 +29,9 @@
   ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
   register: backup_file
-  connection: local
+  delegate_to: localhost
+  vars:
+    ansible_network_os: cisco.nxos.nxos
 
 - ansible.builtin.assert:
     that:
