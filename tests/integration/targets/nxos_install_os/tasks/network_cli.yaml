@@ -3,7 +3,7 @@
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
-  connection: local
+  delegate_to: localhost
   register: test_cases
 
 - name: Set test_items
