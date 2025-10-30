@@ -95,6 +95,26 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+
+    - name: Using switchport_mode alias with dot1q-tunnel (alias running with check_mode)
+      register: result_check
+      check_mode: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ nxos_int2 }}"
+            switchport_mode: dot1q-tunnel
+            access:
+              vlan: 30
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result_check.changed == true
+          - "'interface {{ nxos_int2 }}' in result_check.commands"
+          - "'switchport mode dot1q-tunnel' in result_check.commands"
+          - "'switchport access vlan 30' in result_check.commands"
+          - result_check.commands|length == 3
+
   always:
     - name: Teardown
       ignore_errors: true

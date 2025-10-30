@@ -36,7 +36,7 @@ class FactsBase(object):
 
     def run(self, command, output="text"):
         command_string = command
-        if output == "json":
+        if output == "json" and self.capabilities.get("network_api") != "nxapi":
             # Not all devices support | json-pretty but is a workaround for
             # libssh issue https://github.com/ansible/pylibssh/issues/208
             output = "json-pretty"

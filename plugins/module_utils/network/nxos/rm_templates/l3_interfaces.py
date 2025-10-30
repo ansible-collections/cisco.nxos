@@ -120,7 +120,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ip address"
             "{{ ' ' + ipv4.address.address if ipv4.address.address is defined else '' }}"
             "{{ ' ' + ipv4.address.ip_network_mask if ipv4.address.ip_network_mask is defined else '' }}"
-            "{{ ' secondary' if ipv4.address.secondary is defined else '' }}"
+            "{{ ' secondary' if ipv4.address.secondary | default(False) else '' }}"
             "{{ ' route-preference ' + ipv4.address.route_preference|string"
             " if ipv4.address.route_preference is defined else '' }}"
             "{{ ' tag ' + ipv4.address.tag|string if ipv4.address.tag is defined else '' }}",
