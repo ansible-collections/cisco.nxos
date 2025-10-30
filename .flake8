@@ -41,7 +41,6 @@ extend-exclude =
 extend-ignore =
   F841,
   # line-length
-  E501,
   # module level import not at top of file
   E402
 
@@ -65,3 +64,4 @@ per-file-ignores =
 
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
+
