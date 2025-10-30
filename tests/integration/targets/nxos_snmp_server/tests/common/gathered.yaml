@@ -12,10 +12,25 @@
       cisco.nxos.nxos_snmp_server:
         state: gathered
 
-    - name: Assert that facts were correctly generated
-      ansible.builtin.assert:
+    - name: Assert AAA user cache timeout is configured
+      assert:
         that:
-          - "{{ result['gathered'] == merged['after'] }}"
+          - result.gathered.aaa_user.cache_timeout is defined
+          - result.gathered.aaa_user.cache_timeout == 36000
+        fail_msg: "AAA user cache timeout is not configured correctly"
+        success_msg: "AAA user cache timeout is configured correctly"
+
+    - name: Assert SNMP communities are configured
+      assert:
+        that:
+          - result.gathered.communities is defined
+          - result.gathered.communities | length == 2
+          - result.gathered.communities[0].name == "private"
+          - result.gathered.communities[0].group == "network-admin"
+          - result.gathered.communities[1].name == "public"
+          - result.gathered.communities[1].group == "network-operator"
+        fail_msg: "SNMP communities are not configured correctly"
+        success_msg: "SNMP communities are configured correctly"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
