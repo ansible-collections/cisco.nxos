@@ -96,8 +96,9 @@
           - result.changed == false
           - result.commands|length == 0
 
-    - name: using switchport_mode alias with dot1q-tunnel
-      register: result
+    - name: Using switchport_mode alias with dot1q-tunnel (alias running with check_mode)
+      register: result_check
+      check_mode: true
       cisco.nxos.nxos_l2_interfaces:
         config:
           - name: "{{ nxos_int2 }}"
