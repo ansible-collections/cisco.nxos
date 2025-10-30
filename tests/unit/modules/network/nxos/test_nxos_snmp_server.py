@@ -87,7 +87,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
+            "snmp-server community private",
             "snmp-server community private group network-admin",
+            "snmp-server community public",
             "snmp-server community public use-ipv4acl myacl",
             "snmp-server globalEnforcePriv",
             "snmp-server tcp-session auth",
