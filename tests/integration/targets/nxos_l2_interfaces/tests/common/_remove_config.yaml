@@ -1,9 +1,18 @@
 ---
 - name: Cleanup
   ignore_errors: true
+  when: ansible_connection == 'ansible.netcommon.network_cli'
   cisco.nxos.nxos_config:
     lines:
       - "default interface {{ nxos_int1 }}"
       - "default interface {{ nxos_int2 }}"
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
+
+- name: Cleanup for httpapi
+  when: ansible_connection == 'ansible.netcommon.httpapi'
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - "{{ item }}"
+  loop:
+    - "default interface {{ nxos_int1 }}"
+    - "default interface {{ nxos_int2 }}"

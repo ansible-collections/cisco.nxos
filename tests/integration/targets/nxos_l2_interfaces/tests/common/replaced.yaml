@@ -71,11 +71,14 @@
           - "'interface {{ test_int1 }}' in result.commands"
           - "'switchport access vlan 8' in result.commands"
           - "'switchport trunk allowed vlan 10-12' in result.commands"
+          - "'no cdp enable' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
           - "'no switchport trunk native vlan 15' in result.commands"
+          - "'no cdp enable' in result.commands"
           - "'interface {{ test_int3 }}' in result.commands"
           - "'switchport trunk allowed vlan none' in result.commands"
-          - result.commands|length == 7
+          - "'no cdp enable' in result.commands"
+          - result.commands|length == 10
 
     - name: Gather l2_interfaces post facts
       cisco.nxos.nxos_facts: *id001
