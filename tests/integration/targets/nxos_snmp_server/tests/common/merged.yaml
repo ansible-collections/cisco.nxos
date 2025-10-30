@@ -13,6 +13,8 @@
           communities:
             - name: private
               group: network-admin
+              ro: true
+              use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
             - name: public
               group: network-operator
           contact: nxosswitchadmin@localhost
