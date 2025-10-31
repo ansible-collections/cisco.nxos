@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.nxos.nxos_static_routes - Fix facts parser to filter inline VRF routes from global route collection preventing incorrect VRF route deletion.
