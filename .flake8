@@ -41,6 +41,7 @@ extend-exclude =
 extend-ignore =
   F841,
   # line-length
+  E501,
   # module level import not at top of file
   E402
 
