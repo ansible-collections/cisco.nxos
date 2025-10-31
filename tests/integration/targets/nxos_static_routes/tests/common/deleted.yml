@@ -65,6 +65,11 @@
         state: deleted
       register: result
 
+    - name: Remove configuration
+      cisco.nxos.nxos_config:
+        lines:
+          - "no vrf context ANSIBLE_TEST_NEW"
+
     - ansible.builtin.assert:
         that:
           - "result.changed == true"
