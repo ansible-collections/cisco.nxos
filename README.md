@@ -6,16 +6,13 @@ The Ansible Cisco NX-OS collection includes a variety of Ansible content to help
 
 The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules aligns the Cisco NX-OS experience with the other core networking platforms supported by Ansible.
 
-This collection has been tested against Cisco N9K-C9300v chassis running NX-OS 9.3.6.
-The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) on MDS Switches.
+The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) and 9.4(3a) on MDS Switches. The modules should work for all releases above 8.4(1)
 
 ## Support
 
-As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
 
-If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/cisco.nxos), there is community support available at no charge.
-
-You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
+Additionally, you can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
 
 For more information you can check the communication section below.
 

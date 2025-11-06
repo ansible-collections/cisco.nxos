@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -94,16 +93,16 @@ class L3_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -242,12 +241,12 @@ class L3_interfaces(ResourceModule):
     def handle_redirects(self, want_redirects, have_redirects, parser, want):
         if want_redirects is None and have_redirects is None:
             if self.state == "replaced" or (self.state == "overridden" and want):
-                self.addcmd({"redirects": True}, parser, True)
+                self.addcmd({parser: True}, parser, True)
         else:
             if want_redirects is True and have_redirects is False:
-                self.addcmd({"redirects": want_redirects}, parser, not want_redirects)
+                self.addcmd({parser: want_redirects}, parser, not want_redirects)
             elif want_redirects is False and have_redirects is None:
-                self.addcmd({"redirects": not want_redirects}, parser, not want_redirects)
+                self.addcmd({parser: not want_redirects}, parser, not want_redirects)
             elif want_redirects is None and have_redirects is False:
                 if self.state in ["overridden", "deleted"] and not want:
-                    self.addcmd({"redirects": not have_redirects}, parser, have_redirects)
+                    self.addcmd({parser: not have_redirects}, parser, have_redirects)

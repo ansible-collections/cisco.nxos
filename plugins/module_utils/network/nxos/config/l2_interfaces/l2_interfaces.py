@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -60,6 +59,7 @@ class L2_interfaces(ResourceModule):
             "beacon",
             "link_flap.error_disable",
             "cdp_enable",
+            "no_cdp_enable",
         ]
 
     def execute_module(self):
@@ -89,16 +89,16 @@ class L2_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -108,6 +108,12 @@ class L2_interfaces(ResourceModule):
         for the L2_interfaces network resource.
         """
         begin = len(self.commands)
+        want_without_name = want.copy()
+        want_without_name.pop("name", None)
+        pre_pop_want = bool(want_without_name)
+        want_cdp = want.pop("cdp_enable", None)
+        have_cdp = have.pop("cdp_enable", None)
+        self.handle_cdp(want_cdp, have_cdp, "cdp_enable", pre_pop_want)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists(want, have)
         if len(self.commands) != begin:
@@ -169,10 +175,23 @@ class L2_interfaces(ResourceModule):
 
     def process_list_attrs(self, param):
         if param:
-            for _k, val in iteritems(param):
+            for _k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
                 if val.get("trunk"):
                     for vlan in ["allowed_vlans"]:
                         vlanList = val.get("trunk").get(vlan, [])
                         if vlanList and vlanList != "none":
                             val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
+
+    def handle_cdp(self, want_cdp, have_cdp, parser, want):
+        if want_cdp is None and have_cdp is None:
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: True}, parser, True)
+        else:
+            if want_cdp is True and have_cdp is False:
+                self.addcmd({parser: want_cdp}, parser, not want_cdp)
+            elif want_cdp is False and have_cdp is None:
+                self.addcmd({parser: not want_cdp}, parser, not want_cdp)
+            elif want_cdp is None and have_cdp is False:
+                if self.state in ["overridden", "deleted"] and not want:
+                    self.addcmd({parser: not have_cdp}, parser, have_cdp)

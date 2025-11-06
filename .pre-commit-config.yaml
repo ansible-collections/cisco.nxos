@@ -6,13 +6,14 @@ ci:
   autofix_commit_msg: "chore: auto fixes from pre-commit.com hooks"
 
 repos:
+  # not a permanent fix, but to hardcode ansible-core 2.16 as repo dependecy
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.2
+    rev: da78082ea59b03ad16cd7dbee267f53e8ff50bb5
     hooks:
       - id: update-docs
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
@@ -23,7 +24,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/asottile/add-trailing-comma
-    rev: v3.2.0
+    rev: v4.0.0
     hooks:
       - id: add-trailing-comma
 
@@ -39,14 +40,14 @@ repos:
           - prettier-plugin-toml
 
   - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
+    rev: 7.0.0
     hooks:
       - id: isort
         name: Sort import statements using isort
         args: ["--filter-files"]
 
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 25.9.0
     hooks:
       - id: black
 

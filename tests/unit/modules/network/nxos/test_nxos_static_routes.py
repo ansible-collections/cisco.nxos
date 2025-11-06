@@ -1325,6 +1325,49 @@ class TestNxosStaticRoutesModule(TestNxosModule):
         ]
         self.assertEqual(result["gathered"], compare_list, result["gathered"])
 
+    def test_delete_non_vrf_route_when_vrf_route_also_exists(self):
+        """
+        Tests the specific bug scenario: deleting a non-VRF route when an
+        identical route also exists in a different VRF.
+        The module should only target the non-VRF (global) route.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 192.0.2.0/24 192.0.2.22 name 2nd_hop
+            vrf context ANSIBLE_TEST_NEW
+              ip route 192.0.2.0/24 192.0.2.22 vrf ANSIBLE_TEST_NEW name 2nd_hop
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.0/24",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.22",
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="deleted",
+            ),
+        )
+        expected_commands = [
+            "no ip route 192.0.2.0/24 192.0.2.22 name 2nd_hop",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
     def test_nxos_static_routes_deleted_vlan(self):
         self.execute_show_command.return_value = dedent(
             """\
