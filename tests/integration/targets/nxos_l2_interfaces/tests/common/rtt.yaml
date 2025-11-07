@@ -24,9 +24,11 @@
             trunk:
               native_vlan: 10
               allowed_vlans: 2,4,15
+            cdp_enable: false
           - name: "{{ nxos_int2 }}"
             access:
               vlan: 30
+            cdp_enable: false
         state: merged
       tags: base_config
 
@@ -45,13 +47,16 @@
           - name: "{{ nxos_int1 }}"
             trunk:
               native_vlan: 20
+            cdp_enable: true
           - name: "{{ nxos_int2 }}"
             access:
               vlan: 31
+            cdp_enable: true
           - name: "{{ nxos_int3 }}"
             trunk:
               native_vlan: 20
               allowed_vlans: 5-10, 15
+            cdp_enable: true
         state: overridden
 
     - ansible.builtin.assert:

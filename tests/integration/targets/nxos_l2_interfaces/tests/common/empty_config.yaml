@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.debug:
-    msg: START nxos_lacp empty_config integration tests on connection={{ ansible_connection }}
+    msg: START nxos_l2_interfaces empty_config integration tests on connection={{ ansible_connection }}
 
 - name: Merged with empty configuration should give appropriate error message
   register: result
