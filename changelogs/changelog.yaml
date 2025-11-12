@@ -526,6 +526,30 @@ releases:
       - l3_interface_refactor.yaml
       - vrf_global_rd_attribute.yaml
     release_date: "2025-08-19"
+  11.1.0:
+    changes:
+      bugfixes:
+        - cisco.nxos.nxos_facts - Fix handling of facts for httapi type connection.
+        - cisco.nxos.nxos_hsrp_interfaces - Fix parsers for preempt and priority
+        - cisco.nxos.nxos_l2_interfaces - Fix cdp_enable config parsing.
+        - cisco.nxos.nxos_l3_interfaces - Improved the code logic for handling redirects.
+        - cisco.nxos.nxos_snmp_server - fixed communities parsing issue
+        - cisco.nxos.nxos_static_routes - Fix facts parser to filter inline VRF routes
+          from global route collection preventing incorrect VRF route deletion.
+      doc_changes:
+        - Update support statement for the collection in README.md for MDS switches.
+      minor_changes:
+        - Added alias for mode option as switchport_mode for nxos_l2_interfaces
+    fragments:
+      - cdp_fix.yaml
+      - fix_santiy_220.yaml
+      - fix_tests.yaml
+      - l2_inerfaces_mode_alias.yaml
+      - parser_fix.yaml
+      - snmp.fix.yaml
+      - update_main_readme.yaml
+      - vrf-route-deletion.yaml
+    release_date: "2025-11-06"
   2.0.0:
     changes:
       bugfixes:

@@ -1,2 +1,0 @@
-bugfixes:
-  - cisco.nxos.nxos_snmp_server - fixed communities parsing issue

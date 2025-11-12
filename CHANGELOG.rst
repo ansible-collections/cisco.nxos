@@ -4,6 +4,29 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.0
+=======
+
+Minor Changes
+-------------
+
+- Added alias for mode option as switchport_mode for nxos_l2_interfaces
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_facts - Fix handling of facts for httapi type connection.
+- cisco.nxos.nxos_hsrp_interfaces - Fix parsers for preempt and priority
+- cisco.nxos.nxos_l2_interfaces - Fix cdp_enable config parsing.
+- cisco.nxos.nxos_l3_interfaces - Improved the code logic for handling redirects.
+- cisco.nxos.nxos_snmp_server - fixed communities parsing issue
+- cisco.nxos.nxos_static_routes - Fix facts parser to filter inline VRF routes from global route collection preventing incorrect VRF route deletion.
+
+Documentation Changes
+---------------------
+
+- Update support statement for the collection in README.md for MDS switches.
+
 v11.0.0
 =======
 
