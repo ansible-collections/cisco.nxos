@@ -604,12 +604,12 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             interface Vlan1
-              hsrp 10 
+              hsrp 10
                 preempt delay minimum 10 reload 100 sync 5
                 priority 100 forwarding-threshold lower 12 upper 22
                 timers msec 456  33
             interface Vlan2
-              hsrp 11 
+              hsrp 11
                 preempt delay minimum 10 sync 5
                 priority 100
                 timers 456  33
@@ -631,7 +631,7 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
                         "preempt": {"minimum": 10, "reload": 100, "sync": 5},
                         "priority": {"level": 100, "upper": 22, "lower": 12},
                         "timer": {"msec": True, "hello_interval": 456, "hold_time": 33},
-                    }
+                    },
                 ],
             },
             {
@@ -643,7 +643,7 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
                         "preempt": {"minimum": 10, "sync": 5},
                         "priority": {"level": 100},
                         "timer": {"hello_interval": 456, "hold_time": 33},
-                    }
+                    },
                 ],
             },
         ]
