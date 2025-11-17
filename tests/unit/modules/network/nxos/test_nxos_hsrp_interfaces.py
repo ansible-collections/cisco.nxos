@@ -406,6 +406,7 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         )
         commands = [
             "interface Vlan1000",
+            "no hsrp version 1",
             "no hsrp 10",
             "interface Vlan14",
             "hsrp 12",
@@ -593,9 +594,9 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         commands = [
             "interface Vlan1",
             "hsrp bfd",
+            "hsrp version 1",
             "interface Vlan10",
             "no hsrp bfd",
-            "no hsrp version 2",
         ]
         self.assertEqual(set(result["commands"]), set(commands))
 
@@ -603,13 +604,15 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             interface Vlan1
-             hsrp 10 preempt delay minimum 10 reload 100 sync 5
-             hsrp 10 priority 100 forwarding-threshold lower 12 upper 22
-             hsrp 10 timers msec 456 33
+              hsrp 10 
+                preempt delay minimum 10 reload 100 sync 5
+                priority 100 forwarding-threshold lower 12 upper 22
+                timers msec 456  33
             interface Vlan2
-             hsrp 11 preempt delay minimum 10 sync 5
-             hsrp 11 priority 100
-             hsrp 11 timers 456 33
+              hsrp 11 
+                preempt delay minimum 10 sync 5
+                priority 100
+                timers 456  33
             """,
         )
         set_module_args(
@@ -621,22 +624,26 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         gathered = [
             {
                 "name": "Vlan1",
+                "standby": {"version": 1},
                 "standby_options": [
                     {
+                        "group_no": 10,
                         "preempt": {"minimum": 10, "reload": 100, "sync": 5},
-                        "priority": {"level": 100, "lower": 12, "upper": 22},
-                        "timer": {"hello_interval": 456, "hold_time": 33, "msec": True},
-                    },
+                        "priority": {"level": 100, "upper": 22, "lower": 12},
+                        "timer": {"msec": True, "hello_interval": 456, "hold_time": 33},
+                    }
                 ],
             },
             {
                 "name": "Vlan2",
+                "standby": {"version": 1},
                 "standby_options": [
                     {
+                        "group_no": 11,
                         "preempt": {"minimum": 10, "sync": 5},
                         "priority": {"level": 100},
                         "timer": {"hello_interval": 456, "hold_time": 33},
-                    },
+                    }
                 ],
             },
         ]

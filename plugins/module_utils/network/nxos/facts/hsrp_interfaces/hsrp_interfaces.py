@@ -75,6 +75,13 @@ class Hsrp_interfacesFacts(object):
                     hsrp_conf.append(standby_options)
             if hsrp_conf:
                 intf_conf["standby_options"] = hsrp_conf
+
+            if intf_conf.get("standby_options") or intf_conf.get("standby"):
+                if intf_conf.get("standby"):
+                    if not intf_conf["standby"].get("version"):
+                        intf_conf["standby"]["version"] = 1
+                else:
+                    intf_conf["standby"] = {"version": 1}
             hsrp_objs.append(intf_conf)
         return hsrp_objs
 

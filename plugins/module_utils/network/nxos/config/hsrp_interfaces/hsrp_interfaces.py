@@ -123,6 +123,8 @@ class Hsrp_interfaces(ResourceModule):
         for the Hsrp_interfaces network resource.
         """
         begin = len(self.commands)
+
+        self.handle_defaults(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_complex_attrs(
             want.get("standby_options", {}),
@@ -159,6 +161,12 @@ class Hsrp_interfaces(ResourceModule):
         # remove group via numbers
         for not_req_grp in have_group.values():
             self.commands.append(self._tmplt.render(not_req_grp, "group_no", True))
+
+    def handle_defaults(self, want, have):
+        if not want.get("standby", {}).get("version") and want.get("standby"):
+            want["standby"]["version"] = 1
+        if not have.get("standby", {}).get("version") and have.get("standby"):
+            have["standby"]["version"] = 1
 
     def list_to_dict(self, param):
         if param:
