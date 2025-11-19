@@ -56,8 +56,8 @@ jobs:
           echo "PR_HEAD=${PR_HEAD}" >> $GITHUB_ENV
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_BASE:   ${{ github.event.pull_request.base.ref }}
-          PR_HEAD:   ${{ github.event.pull_request.head.ref }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
 
       - name: Checkout PR branch for SonarCloud
         if: github.event_name == 'pull_request'
