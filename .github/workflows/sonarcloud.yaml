@@ -66,8 +66,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve latest SonarCloud Scan Action SHA
+        id: sonar_sha
+        run: |
+          LATEST=$(git ls-remote https://github.com/SonarSource/sonarqube-scan-action.git refs/heads/master | cut -f1)
+          echo "SHA=$LATEST" >> $GITHUB_OUTPUT
+
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@${{ steps.sonar_sha.outputs.SHA }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
