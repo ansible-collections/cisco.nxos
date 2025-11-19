@@ -49,12 +49,15 @@ jobs:
         run: |
           pytest tests/unit -v --cov-report xml --cov=./
 
-      - name: Extract PR metadata
-        if: github.event_name == 'pull_request'
+      - name: Export PR info
         run: |
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          echo "PR_BASE=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-          echo "PR_HEAD=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+          echo "PR_BASE=${PR_BASE}" >> $GITHUB_ENV
+          echo "PR_HEAD=${PR_HEAD}" >> $GITHUB_ENV
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE:   ${{ github.event.pull_request.base.ref }}
+          PR_HEAD:   ${{ github.event.pull_request.head.ref }}
 
       - name: Checkout PR branch for SonarCloud
         if: github.event_name == 'pull_request'
