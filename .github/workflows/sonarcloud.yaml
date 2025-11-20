@@ -49,6 +49,23 @@ jobs:
         run: |
           pytest tests/unit -v --cov-report xml --cov=./
 
+      - name: Export PR info
+        run: |
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+          echo "PR_BASE=${PR_BASE}" >> $GITHUB_ENV
+          echo "PR_HEAD=${PR_HEAD}" >> $GITHUB_ENV
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+
+      - name: Checkout PR branch for SonarCloud
+        if: github.event_name == 'pull_request'
+        run: |
+          gh pr checkout ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
@@ -56,4 +73,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
         with:
           args: >
+            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
+            -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
+            -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
+            -Dsonar.pullrequest.base=${{ env.PR_BASE }}
             -Dsonar.python.coverage.reportPaths=coverage.xml
