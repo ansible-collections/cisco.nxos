@@ -183,6 +183,9 @@ class Hsrp_interfaces(ResourceModule):
                         val["standby"]["bfd"] = False
 
                 for standby_grp in val.get("standby_options", {}):
+                    if not standby_grp.get("priority"):
+                        standby_grp["priority"] = {"level": 100}
+
                     temp_ip = {}
                     if standby_grp.get("ip"):
                         for ips in standby_grp.get("ip", {}):
