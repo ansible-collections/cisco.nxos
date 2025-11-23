@@ -20,6 +20,7 @@ replaced:
     - hsrp 11
     - mac-address 00CC.10DD.10EE
     - name VLAN11-GROUP
+    - priority 100
     - no hsrp 10
     - interface Ethernet1/2
     - hsrp 20
@@ -30,6 +31,8 @@ parsed:
       version: 2
     standby_options:
       - group_no: 10
+        priority:
+          level: 100
         timer:
           hello_interval: 250
           hold_time: 255
@@ -46,6 +49,8 @@ parsed:
           - secondary: true
             virtual_ip: 10.10.10.2
         mac_address: 00CC.10DD.10EE
+        priority:
+          level: 100
         preempt:
           minimum: 15
           reload: 120
@@ -67,6 +72,8 @@ parsed:
           - secondary: true
             virtual_ip: 192.168.14.2
         mac_address: 00AA.14BB.14CC
+        priority:
+          level: 100
       - group_no: 15
         mac_address: 00BB.14CC.15DD
         preempt:
@@ -113,6 +120,7 @@ rendered:
   - hsrp 10
   - mac-address 00CC.10DD.10EE
   - name VLAN10-GROUP
+  - priority 100
   - preempt delay minimum 15 reload 120 sync 10
   - ip 10.10.10.2 secondary
   - interface Vlan14
@@ -125,6 +133,7 @@ rendered:
   - mac-address 00AA.14BB.14CC
   - ip 192.168.14.1 secondary
   - ip 192.168.14.2 secondary
+  - priority 100
   - hsrp 15
   - mac-address 00BB.14CC.15DD
   - preempt delay minimum 10 reload 100 sync 5
