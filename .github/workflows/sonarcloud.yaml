@@ -7,7 +7,7 @@ name: SonarCloud
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
-  pull_request:
+  pull_request_target:
     branches: [main]
 
 jobs:
@@ -18,6 +18,7 @@ jobs:
     env:
       PY_COLORS: "1"
       python_version: "3.12"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -59,10 +60,11 @@ jobs:
           PR_BASE: ${{ github.event.pull_request.base.ref }}
           PR_HEAD: ${{ github.event.pull_request.head.ref }}
 
-      - name: Checkout PR branch for SonarCloud
-        if: github.event_name == 'pull_request'
+      - name: Checkout PR branch for direct PRs
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
-          gh pr checkout ${{ github.event.pull_request.number }}
+          git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
+          git checkout ${{ github.event.pull_request.head.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
