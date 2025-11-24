@@ -46,10 +46,6 @@ jobs:
           ansible --version
           python3 -m pip list
 
-      - name: Run unit tests with coverage
-        run: |
-          pytest tests/unit -v --cov-report xml --cov=./
-
       - name: Export PR info
         run: |
           echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
@@ -60,13 +56,17 @@ jobs:
           PR_BASE: ${{ github.event.pull_request.base.ref }}
           PR_HEAD: ${{ github.event.pull_request.head.ref }}
 
-      - name: Checkout PR branch for direct PRs
+      - name: Checkout PR branch code
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
-          git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
-          git checkout ${{ github.event.pull_request.head.ref }}
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
+          git checkout pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit -v --cov-report xml --cov=./
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
@@ -80,3 +80,4 @@ jobs:
             -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
             -Dsonar.pullrequest.base=${{ env.PR_BASE }}
             -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.coverageReportPaths=coverage.xml
