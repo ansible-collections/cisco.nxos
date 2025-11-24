@@ -25,9 +25,9 @@ For more information you can check the communication section below.
   * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
   * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
 
-* The Ansible [Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn): used to announce releases and important changes.
+* The Ansible [Bullhorn newsletter](https://docs.ansible.com/projects/ansible/latest/community/communication.html#the-bullhorn): used to announce releases and important changes.
 
-For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/projects/ansible/latest/community/communication.html#the-bullhorn).
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
@@ -161,7 +161,7 @@ collections:
 ## Using this collection
 
 
-This collection includes [network resource modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html).
+This collection includes [network resource modules](https://docs.ansible.com/projects/ansible/latest/network/user_guide/network_resource_modules.html).
 
 ### Using modules from the Cisco NX-OS collection in your playbooks
 
@@ -186,25 +186,25 @@ The following example task replaces configuration changes in the existing config
 
 ### See Also:
 
-* [Cisco NX-OS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
-* [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
+* [Cisco NX-OS Platform Options](https://docs.ansible.com/projects/ansible/latest/network/user_guide/platform_nxos.html)
+* [Ansible Using collections](https://docs.ansible.com/projects/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
 
 Ongoing development efforts and contributions to this collection are solely focused on enhancements to current resource modules, additional resource modules and enhancements to connection plugins.
 
-We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).  See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for complete details.
+We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).  See [Contributing to Ansible-maintained collections](https://docs.ansible.com/projects/ansible/latest/community/contributing_maintained_collections.html#contributing-maintained-collections) for complete details.
 
 You can also join us on:
 
 - IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
-See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
+See the [Ansible Community Guide](https://docs.ansible.com/projects/ansible/latest/community/index.html) for details on contributing to Ansible.
 
 ### Code of Conduct
 This collection follows the Ansible project's
-[Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html).
+[Code of Conduct](https://docs.ansible.com/projects/ansible/latest/community/code_of_conduct.html).
 Please read and familiarize yourself with this document.
 
 
@@ -218,11 +218,11 @@ Release notes are available [here](https://github.com/ansible-collections/cisco.
 
 ## More information
 
-- [Ansible network resources](https://docs.ansible.com/ansible/latest/network/getting_started/network_resources.html)
+- [Ansible network resources](https://docs.ansible.com/projects/ansible/latest/network/getting_started/network_resources.html)
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
-- [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
-- [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
-- [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
+- [Ansible User guide](https://docs.ansible.com/projects/ansible/latest/user_guide/index.html)
+- [Ansible Developer guide](https://docs.ansible.com/projects/ansible/latest/dev_guide/index.html)
+- [Ansible Community code of conduct](https://docs.ansible.com/projects/ansible/latest/community/code_of_conduct.html)
 
 ## Licensing
 

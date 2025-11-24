@@ -167,4 +167,4 @@ The following platforms and software versions have been certified by Cisco to wo
 Notes
 -----
 
-`Setting Timeout Option <https://docs.ansible.com/ansible/latest/network/getting_started/network_connection_options.html#timeout-options>`_
+`Setting Timeout Option <https://docs.ansible.com/projects/ansible/latest/network/getting_started/network_connection_options.html#timeout-options>`_

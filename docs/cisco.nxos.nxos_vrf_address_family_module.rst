@@ -609,7 +609,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6.
-   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/projects/ansible/latest/network/user_guide/platform_nxos.html
 
 
 
@@ -1295,7 +1295,7 @@ Examples
 
 Return Values
 -------------
-Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
+Common return values are documented `here <https://docs.ansible.com/projects/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
 
 .. raw:: html
 
