@@ -3,7 +3,7 @@
 # https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
 # https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/32
 
-name: SonarCloud
+name: Sonar
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
