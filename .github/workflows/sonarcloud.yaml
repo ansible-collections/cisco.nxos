@@ -7,7 +7,7 @@ name: SonarCloud
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
-  pull_request:
+  pull_request_target:
     branches: [main]
 
 jobs:
@@ -58,13 +58,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_BASE: ${{ github.event.pull_request.base.ref }}
           PR_HEAD: ${{ github.event.pull_request.head.ref }}
-
-      - name: Checkout PR branch for SonarCloud
-        if: github.event_name == 'pull_request'
-        run: |
-          gh pr checkout ${{ github.event.pull_request.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
