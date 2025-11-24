@@ -1,8 +1,4 @@
 ---
-# With much help from:
-# https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
-# https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/32
-
 name: SonarCloud
 on: # yamllint disable-line rule:truthy
   push:
@@ -57,7 +53,6 @@ jobs:
           PR_HEAD: ${{ github.event.pull_request.head.ref }}
 
       - name: Checkout PR branch code
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
           git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
           git checkout pr
