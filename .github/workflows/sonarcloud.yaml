@@ -18,6 +18,7 @@ jobs:
     env:
       PY_COLORS: "1"
       python_version: "3.12"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -64,6 +65,8 @@ jobs:
         run: |
           git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
           git checkout ${{ github.event.pull_request.head.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
