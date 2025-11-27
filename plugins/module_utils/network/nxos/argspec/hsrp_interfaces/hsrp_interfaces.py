@@ -75,7 +75,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "priority": {
                             "type": "dict",
                             "options": {
-                                "level": {"type": "int"},
+                                "level": {"type": "int", "default": 100},
                                 "upper": {"type": "int"},
                                 "lower": {"type": "int"},
                             },
@@ -117,7 +117,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                 "scope": {"type": "bool"},
                             },
                         },
-                        "version": {"type": "int"},
+                        "version": {"type": "int", "choices": [1, 2]},
                     },
                 },
             },

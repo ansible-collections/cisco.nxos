@@ -269,6 +269,10 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>1</li>
+                                    <li>2</li>
+                        </ul>
                 </td>
                 <td>
                         <div>HSRP version</div>
@@ -593,6 +597,7 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <b>Default:</b><br/><div style="color: blue">100</div>
                 </td>
                 <td>
                         <div>Priority level value</div>

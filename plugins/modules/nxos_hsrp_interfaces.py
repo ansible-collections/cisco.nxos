@@ -114,6 +114,7 @@ options:
               level:
                 description: Priority level value
                 type: int
+                default: 100
               upper:
                 description: Set upper threshold value (forwarding-threshold)
                 type: int
@@ -178,6 +179,9 @@ options:
           version:
             description: HSRP version
             type: int
+            choices:
+              - 1
+              - 2
   state:
     choices:
       - merged
