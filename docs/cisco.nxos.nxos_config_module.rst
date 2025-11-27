@@ -355,7 +355,7 @@ Notes
 
 .. note::
    - Unsupported for Cisco MDS
-   - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands.
+   - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/projects/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands.
    - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
