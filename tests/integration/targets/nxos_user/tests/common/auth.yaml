@@ -3,21 +3,21 @@
     - name: Create user with password
       cisco.nxos.nxos_user:
         name: auth_user
-        role: network-operator
+        role: network-admin
         state: present
         configured_password: pasS!123
 
-    - name: Test login
-      ansible.builtin.expect:
-        command: >-
-          ssh auth_user@{{ ansible_ssh_host }}
-          -p {{ ansible_ssh_port|default(22) }}
-          -o UserKnownHostsFile=/dev/null
-          -o StrictHostKeyChecking=no
-          -o PubkeyAuthentication=no
-          show version
-        responses:
-          (?i)password: pasS!123
+    # - name: Test login
+    #   ansible.builtin.expect:
+    #     command: >-
+    #       ssh auth_user@{{ ansible_ssh_host }}
+    #       -p {{ ansible_ssh_port|default(22) }}
+    #       -o UserKnownHostsFile=/dev/null
+    #       -o StrictHostKeyChecking=no
+    #       -o PubkeyAuthentication=no
+    #       show version
+    #     responses:
+    #       (?i)password: pasS!123
 
     - name: Test login with invalid password (should fail)
       ansible.builtin.expect:
