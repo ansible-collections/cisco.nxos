@@ -41,12 +41,12 @@
               mac_refresh: 400
               version: 2
             standby_options:
-                group_name: VLAN10-GROUP
-                group_no: 10
-                ip:
-                  - secondary: true
-                    virtual_ip: 10.10.10.2
-                mac_address: 00CC.10DD.10EE
+              group_name: VLAN10-GROUP
+              group_no: 10
+              ip:
+                - secondary: true
+                  virtual_ip: 10.10.10.2
+              mac_address: 00CC.10DD.10EE
         state: merged
 
     - ansible.builtin.assert:
