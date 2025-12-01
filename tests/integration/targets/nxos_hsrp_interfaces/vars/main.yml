@@ -12,6 +12,7 @@ merged:
     - hsrp 10
     - mac-address 00CC.10DD.10EE
     - name VLAN10-GROUP
+    - priority 100
     - authentication md5 key-string SECUREKEY10
     - ip 10.10.10.2 secondary
 replaced:
