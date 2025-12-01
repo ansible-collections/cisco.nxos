@@ -54,7 +54,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Gather hsrp_interfaces facts
