@@ -20,6 +20,7 @@ replaced:
     - hsrp 11
     - mac-address 00CC.10DD.10EE
     - name VLAN11-GROUP
+    - priority 100
     - no hsrp 10
     - interface Ethernet1/2
     - hsrp 20
@@ -30,6 +31,8 @@ parsed:
       version: 2
     standby_options:
       - group_no: 10
+        priority:
+          level: 100
         timer:
           hello_interval: 250
           hold_time: 255
@@ -46,6 +49,8 @@ parsed:
           - secondary: true
             virtual_ip: 10.10.10.2
         mac_address: 00CC.10DD.10EE
+        priority:
+          level: 100
         preempt:
           minimum: 15
           reload: 120
@@ -67,6 +72,8 @@ parsed:
           - secondary: true
             virtual_ip: 192.168.14.2
         mac_address: 00AA.14BB.14CC
+        priority:
+          level: 100
       - group_no: 15
         mac_address: 00BB.14CC.15DD
         preempt:
@@ -82,6 +89,8 @@ parsed:
           hold_time: 33
           msec: true
   - name: Vlan1000
+    standby:
+      version: 1
     standby_options:
       - group_name: testhsr
         group_no: 10
@@ -105,6 +114,7 @@ rendered:
   - interface Vlan1
   - hsrp version 2
   - hsrp 10
+  - priority 100
   - timers msec 250 255
   - interface Vlan10
   - hsrp bfd
@@ -114,6 +124,7 @@ rendered:
   - mac-address 00CC.10DD.10EE
   - name VLAN10-GROUP
   - preempt delay minimum 15 reload 120 sync 10
+  - priority 100
   - ip 10.10.10.2 secondary
   - interface Vlan14
   - hsrp bfd
@@ -123,6 +134,7 @@ rendered:
   - hsrp 14
   - follow VLAN14-GROUP
   - mac-address 00AA.14BB.14CC
+  - priority 100
   - ip 192.168.14.1 secondary
   - ip 192.168.14.2 secondary
   - hsrp 15
@@ -131,6 +143,7 @@ rendered:
   - priority 22 forwarding-threshold lower 12 upper 22
   - timers msec 456 33
   - interface Vlan1000
+  - hsrp version 1
   - hsrp 10
   - mac-address 0423.4567.89AB
   - name testhsr

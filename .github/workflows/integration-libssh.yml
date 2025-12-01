@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        ansible_version: ["stable-2.16"]
+        ansible_version: ["stable-2.17"]
     uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
     with:
       ansible_version: ${{ matrix.ansible_version }}

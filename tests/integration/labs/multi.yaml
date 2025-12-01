@@ -259,7 +259,7 @@ nodes:
     hide_links: false
     id: n4
     image_definition: null
-    label: stable-2.16
+    label: stable-2.17
     node_definition: nxosv9000
     parameters: {}
     ram: null
@@ -368,7 +368,7 @@ links:
     i1: i5
     i2: i1
     conditioning: {}
-    label: slave-switch-port5<->stable-2.16-mgmt0
+    label: slave-switch-port5<->stable-2.17-mgmt0
 lab:
   description: "Upstream test lab for cisco.nxos"
   notes: "Upstream test lab for cisco.nxos"
