@@ -41,9 +41,7 @@
               mac_refresh: 400
               version: 2
             standby_options:
-              - authentication:
-                  key_string: SECUREKEY10
-                group_name: VLAN10-GROUP
+              - group_name: VLAN10-GROUP
                 group_no: 10
                 ip:
                   - secondary: true
@@ -54,7 +52,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Gather hsrp_interfaces facts
