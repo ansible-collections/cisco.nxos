@@ -41,8 +41,6 @@
               mac_refresh: 400
               version: 2
             standby_options:
-              - authentication:
-                  key_string: SECUREKEY10
                 group_name: VLAN10-GROUP
                 group_no: 10
                 ip:
