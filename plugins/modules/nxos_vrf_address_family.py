@@ -22,7 +22,7 @@ author: Vinay Mulugund (@roverflow)
 notes:
   - Tested against NX-OS 9.3.6.
   - This module works with connection C(network_cli) and C(httpapi).
-    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+    See U(https://docs.ansible.com/projects/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
     description: A list of device configurations for VRF address family.
