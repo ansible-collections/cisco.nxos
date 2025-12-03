@@ -16,7 +16,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   sonar:
-    name: SonarCloud
+    name: SonarClou
     uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
     with:
       python_version: "3.12"
