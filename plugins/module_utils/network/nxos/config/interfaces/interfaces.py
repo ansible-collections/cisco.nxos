@@ -30,6 +30,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    default_intf_enabled,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.interfaces import (
     InterfacesTemplate,
 )
@@ -137,22 +140,6 @@ class Interfaces(ResourceModule):
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
 
-        # Handle the 'enabled' state separately
-        want_enabled = want.get("enabled")
-        have_enabled = have.get("enabled")
-        if want_enabled is not None:
-            if want_enabled != have_enabled:
-                if want_enabled is True:
-                    self.addcmd(want, "enabled", True)
-                else:
-                    self.addcmd(want, "enabled", False)
-        elif not want and self.state == "overridden":
-            if have_enabled is not None:
-                self.addcmd(have, "enabled", False)
-        elif not want and self.state == "deleted":
-            if have_enabled:
-                self.addcmd(have, "enabled", False)
-
         # Handle the 'mode' state separately
         want_mode = want.get("mode")
         have_mode = have.get("mode", self.defaults.get("default_mode"))
@@ -170,6 +157,26 @@ class Interfaces(ResourceModule):
             if have.get("mode") and have_mode != self.defaults.get("default_mode"):
                 no_cmd = True if self.defaults.get("default_mode") == "layer3" else False
                 self.addcmd(have, "mode", no_cmd)
+
+        # Handle the 'enabled' state separately
+        want_enabled = want.get("enabled")
+        have_enabled = have.get("enabled")
+
+        if have_enabled is None and have.get("name", None) is not None:
+            have_enabled = default_intf_enabled(have["name"], self.defaults, have_mode)
+
+        if want_enabled is not None:
+            if want_enabled != have_enabled:
+                if want_enabled is True:
+                    self.addcmd(want, "enabled", True)
+                else:
+                    self.addcmd(want, "enabled", False)
+        elif not want and self.state == "overridden":
+            if have_enabled is not None:
+                self.addcmd(have, "enabled", False)
+        elif not want and self.state == "deleted":
+            if have_enabled:
+                self.addcmd(have, "enabled", False)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -215,5 +222,8 @@ class Interfaces(ResourceModule):
         default_enabled = re.search(pat, switchport_data, re.MULTILINE)
         if default_enabled:
             interface_defs["L2_enabled"] = True if "no " in default_enabled.groups() else False
+
+        # Layer 3 interfaces default to shutdown (disabled)
+        interface_defs["L3_enabled"] = False
 
         return interface_defs

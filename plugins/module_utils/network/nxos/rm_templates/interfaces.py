@@ -68,7 +68,7 @@ class InterfacesTemplate(NetworkTemplate):
             "setval": "shutdown",
             "result": {
                 '{{ name }}': {
-                    'enabled': "{{ False if shutdown is defined and negate is not defined else True }}",
+                    'enabled': "{{ True if negate is defined and shutdown is defined else False if shutdown is defined else None }}",
                 },
             },
         },
