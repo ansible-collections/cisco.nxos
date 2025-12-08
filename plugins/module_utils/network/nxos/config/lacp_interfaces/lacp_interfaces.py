@@ -259,7 +259,7 @@ class Lacp_interfaces(ConfigBase):
         if "vpc" in obj:
             commands.append("no lacp vpn-convergence")
         if "suspend_individual" in obj:
-            commands.append("lacp suspend_individual")
+            commands.append("lacp suspend-individual")
         if "mode" in obj:
             commands.append("no lacp mode " + obj["mode"])
         if "max" in obj:
