@@ -4,6 +4,15 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_hsrp_intefaces - Considers version 1 as default if configuration does not specify version.
+- cisco.nxos.nxos_hsrp_intefaces - Corrects idempotency issue when version is not specified in configuration.
+
 v11.1.0
 =======
 

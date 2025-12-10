@@ -550,6 +550,16 @@ releases:
       - update_main_readme.yaml
       - vrf-route-deletion.yaml
     release_date: "2025-11-06"
+  11.1.1:
+    changes:
+      bugfixes:
+        - cisco.nxos.nxos_hsrp_intefaces - Considers version 1 as default if configuration
+          does not specify version.
+        - cisco.nxos.nxos_hsrp_intefaces - Corrects idempotency issue when version is
+          not specified in configuration.
+    fragments:
+      - hsrp_intf_ver_def_1.yml
+    release_date: '2025-12-10'
   2.0.0:
     changes:
       bugfixes:
