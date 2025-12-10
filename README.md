@@ -1,6 +1,6 @@
 # Cisco NX-OS Collection
-[![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
 [![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
+[![Integration tests 💻](https://github.com/ansible-collections/cisco.nxos/actions/workflows/integration-libssh.yml/badge.svg?branch=main)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/integration-libssh.yml)
 
 The Ansible Cisco NX-OS collection includes a variety of Ansible content to help automate the management of Cisco NX-OS network appliances.
 
