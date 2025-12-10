@@ -559,7 +559,7 @@ releases:
           not specified in configuration.
     fragments:
       - hsrp_intf_ver_def_1.yml
-    release_date: '2025-12-10'
+    release_date: "2025-12-10"
   2.0.0:
     changes:
       bugfixes:
