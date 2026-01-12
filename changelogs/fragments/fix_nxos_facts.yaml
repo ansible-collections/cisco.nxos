@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - fixed nxos_facts module so it can handle vlan interface facts without any issue even if addr is not defined 
