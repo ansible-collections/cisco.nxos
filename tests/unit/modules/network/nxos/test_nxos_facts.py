@@ -99,10 +99,11 @@ class TestNxosFactsModule(TestNxosModule):
 
     def test_nxos_facts_ipv6_interface_no_table_addr(self):
         """Test that IPv6 interfaces without TABLE_addr don't cause KeyError."""
+        from unittest.mock import MagicMock
+
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
             Interfaces,
         )
-        from unittest.mock import MagicMock
 
         # Create a mock module
         module = MagicMock()
