@@ -112,13 +112,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server community "
-                      "{{ name }}"
-                      "{{ (' group ' + group) if group is defined else '' }}"
-                      "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }}"
-                      "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}"
-                      "{{ ' ro' if ro|d(False) else ''}}"
-                      "{{ ' rw' if rw|d(False) else ''}}",
+            "setval": "snmp-server community {{ name }} {{ (' group ' + group) if group is defined else '' }} \n"
+                      "snmp-server community {{ name }} {{ ' ro' if ro|d(False) else ''}}"
+                      "{{ ' rw' if rw|d(False) else ''}} \n"
+                      "snmp-server community {{ name }}"
+                      "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }} "
+                      "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}",
+
             "result": {
                 "communities": [
                     {

@@ -58,6 +58,20 @@ class Hsrp_interfacesFacts(object):
                     finalConfig.append(hsrp_line + line)
         return "\n".join(finalConfig)
 
+    def add_defaults(self, intf_conf):
+        if intf_conf.get("standby_options") or intf_conf.get("standby"):
+            if intf_conf.get("standby"):
+                if not intf_conf["standby"].get("version"):
+                    intf_conf["standby"]["version"] = 1
+            else:
+                intf_conf["standby"] = {"version": 1}
+
+        if "standby_options" in intf_conf:
+            for stdby in intf_conf["standby_options"]:
+                if not stdby.get("priority"):
+                    stdby["priority"] = {"level": 100}
+        return intf_conf
+
     def handle_grp_options(self, objs):
 
         hsrp_objs = []
@@ -75,6 +89,7 @@ class Hsrp_interfacesFacts(object):
                     hsrp_conf.append(standby_options)
             if hsrp_conf:
                 intf_conf["standby_options"] = hsrp_conf
+            intf_conf = self.add_defaults(intf_conf)
             hsrp_objs.append(intf_conf)
         return hsrp_objs
 

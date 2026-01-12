@@ -377,6 +377,7 @@ class Cliconf(CliconfBase):
             re.compile(rb"(?i)Too many authentication failures"),
             re.compile(rb"Access Denied"),
             re.compile(rb"(?i)Copying to\/from this server name is not permitted"),
+            re.compile(rb"Could not resolve hostname"),
         ]
 
         # set error regex for copy command
