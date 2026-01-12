@@ -96,3 +96,53 @@ class TestNxosFactsModule(TestNxosModule):
             result["ansible_facts"]["ansible_net_interfaces"]["Ethernet1/1"]["macaddress"],
             "5254.0014.c104",
         )
+
+    def test_nxos_facts_ipv6_interface_no_table_addr(self):
+        """Test that IPv6 interfaces without TABLE_addr don't cause KeyError."""
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+        from unittest.mock import MagicMock
+
+        # Create a mock module
+        module = MagicMock()
+
+        # Create Interfaces instance
+        interfaces_obj = Interfaces(module)
+
+        # Pre-populate interfaces dict (simulating show interface output)
+        interfaces_obj.facts = {
+            "interfaces": {
+                "Vlan100": {
+                    "state": "up",
+                    "macaddress": "5254.0014.c104",
+                    "mtu": "1500",
+                },
+            },
+            "all_ipv4_addresses": [],
+            "all_ipv6_addresses": [],
+        }
+
+        # Mock data with IPv6 interface that has no TABLE_addr (only prefix)
+        ipv6_data = {
+            "TABLE_intf": {
+                "ROW_intf": {
+                    "intf-name": "Vlan100",
+                    "prefix": "2001:db8::/64",
+                    "forwarding-enabled": "enabled",
+                },
+            },
+        }
+
+        # This should not raise KeyError
+        interfaces_obj.populate_structured_ipv6_interfaces(ipv6_data)
+
+        # Verify that all_ipv6_addresses is still empty (no address was added)
+        self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 0)
+
+        # Verify that ipv6 key was added to the interface with prefix info
+        self.assertIn("ipv6", interfaces_obj.facts["interfaces"]["Vlan100"])
+        self.assertEqual(
+            interfaces_obj.facts["interfaces"]["Vlan100"]["ipv6"]["subnet"],
+            "2001:db8::/64",
+        )

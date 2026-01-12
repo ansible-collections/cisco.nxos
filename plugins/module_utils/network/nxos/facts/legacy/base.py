@@ -336,7 +336,11 @@ class Interfaces(FactsBase):
                         try:
                             addr = item["addr"]
                         except KeyError:
-                            addr = item["TABLE_addr"]["ROW_addr"]["addr"]
+                            try:
+                                addr = item["TABLE_addr"]["ROW_addr"]["addr"]
+                            except KeyError:
+                                # No IPv6 address configured on this interface, skip
+                                continue
                         self.facts["all_ipv6_addresses"].append(addr)
             else:
                 return ""
