@@ -1,0 +1,56 @@
+{
+  "TABLE_intf": {
+    "ROW_intf": [
+      {
+        "vrf-name-out": "default",
+        "intf-name": "Vlan101",
+        "iod": "10",
+        "proto-state": "up",
+        "link-state": "up",
+        "admin-state": "up",
+        "TABLE_addr": {
+          "ROW_addr": {
+            "addr": "2001:db8:101::1/64"
+          }
+        },
+        "prefix": "2001:db8:101::/64",
+        "linklocal-addr": "fe80::5254:ff:fe14:c104",
+        "linklocal-configured": "FALSE",
+        "mrouting-enabled": "disabled",
+        "report-linklocal-enabled": "disabled",
+        "forwarding-enabled": "disabled",
+        "mgroup-locally-joined": "TRUE",
+        "mcast-sgentries-joined": "FALSE",
+        "mtu": "1500",
+        "urpf-mode": "none",
+        "ipv6-lstype": "none",
+        "stats-last-reset": "never"
+      },
+      {
+        "vrf-name-out": "default",
+        "intf-name": "Vlan102",
+        "iod": "11",
+        "proto-state": "up",
+        "link-state": "up",
+        "admin-state": "up",
+        "TABLE_addr": {
+          "ROW_addr": {
+            "addr": "2001:db8:102::1/64"
+          }
+        },
+        "prefix": "2001:db8:102::/64",
+        "linklocal-addr": "fe80::5254:ff:fe14:c105",
+        "linklocal-configured": "FALSE",
+        "mrouting-enabled": "disabled",
+        "report-linklocal-enabled": "disabled",
+        "forwarding-enabled": "enabled",
+        "mgroup-locally-joined": "TRUE",
+        "mcast-sgentries-joined": "FALSE",
+        "mtu": "1500",
+        "urpf-mode": "none",
+        "ipv6-lstype": "none",
+        "stats-last-reset": "never"
+      }
+    ]
+  }
+}

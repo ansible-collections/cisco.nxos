@@ -27,10 +27,10 @@
           - name: Vlan100
             enabled: true
 
-    - name: Enable IPv6 on VLAN interface (without assigning address)
+    - name: Enable IPv6 forwarding on VLAN interface (without assigning address)
       cisco.nxos.nxos_config:
         lines:
-          - ipv6 enable
+          - ipv6 forward
         parents:
           - interface Vlan100
 
@@ -48,11 +48,12 @@
             'vlan100' in ansible_net_interfaces
         fail_msg: "Vlan100 interface not found in facts"
         success_msg: >-
-          Facts gathered successfully for VLAN interface with IPv6 enabled
+          Facts gathered successfully for VLAN interface with IPv6 forwarding enabled
 
-    - name: Test with both IPv6 forwarding and an interface with address
+    - name: Remove IPv6 forwarding and add IPv6 address
       cisco.nxos.nxos_config:
         lines:
+          - no ipv6 forward
           - ipv6 address 2001:db8:100::1/64
         parents:
           - interface Vlan100
@@ -69,7 +70,7 @@
         fail_msg: "IPv6 address not found in all_ipv6_addresses"
         success_msg: "IPv6 address correctly detected"
 
-    - name: Remove IPv6 address (keep IPv6 enabled)
+    - name: Remove IPv6 address
       cisco.nxos.nxos_config:
         lines:
           - no ipv6 address 2001:db8:100::1/64
@@ -90,9 +91,9 @@
             'vlan100' in ansible_net_interfaces
           - "'2001:db8:100::1/64' not in ansible_net_all_ipv6_addresses"
         fail_msg: >-
-          Failed to handle interface with IPv6 enabled but no address
+          Failed to handle interface without IPv6 address
         success_msg: >-
-          Successfully handled IPv6 enabled interface without address
+          Successfully handled interface without IPv6 address
 
   always:
     - name: Teardown - Remove VLAN configuration
