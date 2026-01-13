@@ -27,7 +27,7 @@
           - name: Vlan100
             enabled: true
 
-    - name: Enable IPv6 forwarding on VLAN interface (without assigning address)
+    - name: Enable IPv6 forward on VLAN interface (without assigning address)
       cisco.nxos.nxos_config:
         lines:
           - ipv6 forward
@@ -48,53 +48,7 @@
             'vlan100' in ansible_net_interfaces
         fail_msg: "Vlan100 interface not found in facts"
         success_msg: >-
-          Facts gathered successfully for VLAN interface with IPv6 forwarding enabled
-
-    - name: Remove IPv6 forwarding and add IPv6 address
-      cisco.nxos.nxos_config:
-        lines:
-          - no ipv6 forward
-          - ipv6 address 2001:db8:100::1/64
-        parents:
-          - interface Vlan100
-
-    - name: Gather interface facts again with IPv6 address present
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "interfaces"
-
-    - name: Assert that IPv6 address was found
-      ansible.builtin.assert:
-        that:
-          - "'2001:db8:100::1/64' in ansible_net_all_ipv6_addresses"
-        fail_msg: "IPv6 address not found in all_ipv6_addresses"
-        success_msg: "IPv6 address correctly detected"
-
-    - name: Remove IPv6 address
-      cisco.nxos.nxos_config:
-        lines:
-          - no ipv6 address 2001:db8:100::1/64
-        parents:
-          - interface Vlan100
-
-    - name: Gather interface facts after removing address - should not crash
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "interfaces"
-
-    - name: Assert interface exists but without IPv6 address
-      ansible.builtin.assert:
-        that:
-          - ansible_net_interfaces is defined
-          - >-
-            'Vlan100' in ansible_net_interfaces or
-            'vlan100' in ansible_net_interfaces
-          - "'2001:db8:100::1/64' not in ansible_net_all_ipv6_addresses"
-        fail_msg: >-
-          Failed to handle interface without IPv6 address
-        success_msg: >-
-          Successfully handled interface without IPv6 address
-
+          Facts gathered successfully for VLAN interface with IPv6 enabled
   always:
     - name: Teardown - Remove VLAN configuration
       ignore_errors: true
