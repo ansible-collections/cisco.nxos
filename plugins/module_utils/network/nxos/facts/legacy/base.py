@@ -345,7 +345,8 @@ class Interfaces(FactsBase):
                             if intf is None:
                                 # Interface not found, skip
                                 self.warnings.append(
-                                    "IPv6 interface %s not found in interfaces dict, skipping" % intf_name
+                                    "IPv6 interface %s not found in interfaces dict, skipping"
+                                    % intf_name,
                                 )
                                 continue
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)

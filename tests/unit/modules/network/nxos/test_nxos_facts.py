@@ -152,6 +152,7 @@ class TestNxosFactsModule(TestNxosModule):
         # Test for multiple VLAN interfaces with IPv6 addresses
         import json
         import os
+
         from unittest.mock import MagicMock
 
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (

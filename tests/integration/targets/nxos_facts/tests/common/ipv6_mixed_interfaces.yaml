@@ -91,7 +91,6 @@
         gather_subset:
           - "interfaces"
 
-
     - name: Assert that both IPv6 addresses are present
       ansible.builtin.assert:
         that:
