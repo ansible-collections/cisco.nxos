@@ -10,6 +10,11 @@
       - no vlan 100
 
 - block:
+    - name: Enable interface-vlan feature
+      cisco.nxos.nxos_feature:
+        feature: interface-vlan
+        state: enabled
+
     - name: Create VLAN 100
       cisco.nxos.nxos_vlans:
         config:

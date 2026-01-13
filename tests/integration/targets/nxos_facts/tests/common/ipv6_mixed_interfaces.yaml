@@ -12,6 +12,11 @@
       - no vlan 102
 
 - block:
+    - name: Enable interface-vlan feature
+      cisco.nxos.nxos_feature:
+        feature: interface-vlan
+        state: enabled
+
     - name: Create test VLANs
       cisco.nxos.nxos_vlans:
         config:
