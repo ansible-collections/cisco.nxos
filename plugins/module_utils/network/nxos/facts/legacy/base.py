@@ -331,24 +331,8 @@ class Interfaces(FactsBase):
                     if isinstance(row_intf, dict):
                         row_intf = [row_intf]
                     for item in row_intf:
-                        intf_name = item["intf-name"]
-                        # Try exact match first, then case-insensitive match
-                        if intf_name in self.facts["interfaces"]:
-                            intf = self.facts["interfaces"][intf_name]
-                        else:
-                            # Try case-insensitive lookup
-                            intf = None
-                            for key in self.facts["interfaces"]:
-                                if key.lower() == intf_name.lower():
-                                    intf = self.facts["interfaces"][key]
-                                    break
-                            if intf is None:
-                                # Interface not found, skip
-                                self.warnings.append(
-                                    "IPv6 interface %s not found in interfaces dict, skipping"
-                                    % intf_name,
-                                )
-                                continue
+                        name = item["intf-name"]
+                        intf = self.facts["interfaces"][name]
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
                         try:
                             addr = item["addr"]
@@ -356,7 +340,6 @@ class Interfaces(FactsBase):
                             try:
                                 addr = item["TABLE_addr"]["ROW_addr"]["addr"]
                             except KeyError:
-                                # No IPv6 address configured on this interface, skip
                                 continue
                         self.facts["all_ipv6_addresses"].append(addr)
             else:
