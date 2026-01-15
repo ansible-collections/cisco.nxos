@@ -411,7 +411,7 @@ Examples
       cisco.nxos.nxos_config:
         src: basic/config_src_not_recommended.j2
 
-    # This is a more recommended way.
+    # This is the recommended way.
 
     - name: Template a file - recommended way
       ansible.builtin.template:
