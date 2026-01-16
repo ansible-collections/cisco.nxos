@@ -334,14 +334,16 @@ class Interfaces(FactsBase):
                         name = item["intf-name"]
                         intf = self.facts["interfaces"][name]
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
-                        try:
+
+                        # Check for IPv6 address in two possible locations
+                        if "addr" in item:
                             addr = item["addr"]
-                        except KeyError:
-                            try:
-                                addr = item["TABLE_addr"]["ROW_addr"]["addr"]
-                            except KeyError:
-                                continue
-                        self.facts["all_ipv6_addresses"].append(addr)
+                            self.facts["all_ipv6_addresses"].append(addr)
+                        elif "TABLE_addr" in item and "ROW_addr" in item["TABLE_addr"]:
+                            addr = item["TABLE_addr"]["ROW_addr"].get("addr")
+                            if addr:
+                                self.facts["all_ipv6_addresses"].append(addr)
+                        # Interface has IPv6 enabled but no address configured - skip silently
             else:
                 return ""
         except TypeError:
