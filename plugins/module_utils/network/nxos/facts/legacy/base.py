@@ -336,11 +336,13 @@ class Interfaces(FactsBase):
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
 
                         # Check for IPv6 address in two possible locations
-                        if "addr" in item:
-                            addr = item["addr"]
+                        addr = item.get("addr")
+                        if addr:
                             self.facts["all_ipv6_addresses"].append(addr)
-                        elif "TABLE_addr" in item and "ROW_addr" in item["TABLE_addr"]:
-                            addr = item["TABLE_addr"]["ROW_addr"].get("addr")
+                        else:
+                            table_addr = item.get("TABLE_addr", {})
+                            row_addr = table_addr.get("ROW_addr", {})
+                            addr = row_addr.get("addr")
                             if addr:
                                 self.facts["all_ipv6_addresses"].append(addr)
                         # Interface has IPv6 enabled but no address configured - skip silently
