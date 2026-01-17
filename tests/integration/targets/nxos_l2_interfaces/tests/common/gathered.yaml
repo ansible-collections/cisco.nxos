@@ -16,7 +16,6 @@
       ansible.builtin.set_fact:
         gathered_ethernet: "{{ result['gathered'] | rejectattr('name', 'match', '^Vlan') | list }}"
 
-
     - ansible.builtin.assert:
         that: "{{ gathered_ethernet[:2] | symmetric_difference(gathered) |length == 0 }}"
   always:
