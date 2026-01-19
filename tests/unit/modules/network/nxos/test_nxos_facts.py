@@ -96,3 +96,104 @@ class TestNxosFactsModule(TestNxosModule):
             result["ansible_facts"]["ansible_net_interfaces"]["Ethernet1/1"]["macaddress"],
             "5254.0014.c104",
         )
+
+    def test_nxos_facts_ipv6_interface_no_table_addr(self):
+        """Test that IPv6 interfaces without TABLE_addr don't cause KeyError."""
+        from unittest.mock import MagicMock
+
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+
+        # Create a mock module
+        module = MagicMock()
+
+        # Create Interfaces instance
+        interfaces_obj = Interfaces(module)
+
+        # Pre-populate interfaces dict (simulating show interface output)
+        interfaces_obj.facts = {
+            "interfaces": {
+                "Vlan100": {
+                    "state": "up",
+                    "macaddress": "5254.0014.c104",
+                    "mtu": "1500",
+                },
+            },
+            "all_ipv4_addresses": [],
+            "all_ipv6_addresses": [],
+        }
+
+        # Mock data with IPv6 interface that has no TABLE_addr (only prefix)
+        ipv6_data = {
+            "TABLE_intf": {
+                "ROW_intf": {
+                    "intf-name": "Vlan100",
+                    "prefix": "2001:db8::/64",
+                    "forwarding-enabled": "enabled",
+                },
+            },
+        }
+
+        # This should not raise KeyError
+        interfaces_obj.populate_structured_ipv6_interfaces(ipv6_data)
+
+        # Verify that all_ipv6_addresses is still empty (no address was added)
+        self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 0)
+
+        # Verify that ipv6 key was added to the interface with prefix info
+        self.assertIn("ipv6", interfaces_obj.facts["interfaces"]["Vlan100"])
+        self.assertEqual(
+            interfaces_obj.facts["interfaces"]["Vlan100"]["ipv6"]["subnet"],
+            "2001:db8::/64",
+        )
+
+    def test_nxos_facts_ipv6_multiple_vlan_interfaces(self):
+        # Test for multiple VLAN interfaces with IPv6 addresses
+        import json
+        import os
+
+        from unittest.mock import MagicMock
+
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+
+        module = MagicMock()
+        interfaces_obj = Interfaces(module)
+
+        # Setup interfaces dict with two VLAN interfaces
+        interfaces_obj.facts = {
+            "interfaces": {
+                "Vlan101": {
+                    "state": "up",
+                    "macaddress": "5254.0014.c104",
+                    "mtu": "1500",
+                },
+                "Vlan102": {
+                    "state": "up",
+                    "macaddress": "5254.0014.c105",
+                    "mtu": "1500",
+                },
+            },
+            "all_ipv4_addresses": [],
+            "all_ipv6_addresses": [],
+        }
+
+        # Load fixture with two VLAN interfaces
+        fixture_path = os.path.join(
+            os.path.dirname(__file__),
+            "fixtures",
+            "nxos_facts",
+            "show_ipv6_interface_vrf_all_two_vlans",
+        )
+        with open(fixture_path) as f:
+            ipv6_data = json.load(f)
+
+        # This should collect both IPv6 addresses
+        interfaces_obj.populate_structured_ipv6_interfaces(ipv6_data)
+
+        # Verify that both IPv6 addresses are collected
+        self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 2)
+        self.assertIn("2001:db8:101::1/64", interfaces_obj.facts["all_ipv6_addresses"])
+        self.assertIn("2001:db8:102::1/64", interfaces_obj.facts["all_ipv6_addresses"])

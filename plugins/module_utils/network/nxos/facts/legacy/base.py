@@ -331,13 +331,21 @@ class Interfaces(FactsBase):
                     if isinstance(row_intf, dict):
                         row_intf = [row_intf]
                     for item in row_intf:
-                        intf = self.facts["interfaces"][item["intf-name"]]
+                        name = item["intf-name"]
+                        intf = self.facts["interfaces"][name]
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
-                        try:
-                            addr = item["addr"]
-                        except KeyError:
-                            addr = item["TABLE_addr"]["ROW_addr"]["addr"]
-                        self.facts["all_ipv6_addresses"].append(addr)
+
+                        # Check for IPv6 address in two possible locations
+                        addr = item.get("addr")
+                        if addr:
+                            self.facts["all_ipv6_addresses"].append(addr)
+                        else:
+                            table_addr = item.get("TABLE_addr", {})
+                            row_addr = table_addr.get("ROW_addr", {})
+                            addr = row_addr.get("addr")
+                            if addr:
+                                self.facts["all_ipv6_addresses"].append(addr)
+                        # Interface has IPv6 enabled but no address configured - skip silently
             else:
                 return ""
         except TypeError:
