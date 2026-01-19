@@ -4,6 +4,14 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.3
+=======
+
+Release Summary
+---------------
+
+Rereleased 11.1.2 which fixes nxos_facts module to handle VLAN interface facts without any issue even if addr is not defined for ipv6
+
 v11.1.2
 =======
 
