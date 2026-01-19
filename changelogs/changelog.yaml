@@ -560,6 +560,14 @@ releases:
     fragments:
       - hsrp_intf_ver_def_1.yml
     release_date: "2025-12-10"
+  11.1.2:
+    changes:
+      bugfixes:
+        - Fixed nxos_facts module so it can handle VLAN interface facts without any
+          issue even if addr is not defined
+    fragments:
+      - fix_nxos_facts.yaml
+    release_date: "2026-01-19"
   2.0.0:
     changes:
       bugfixes:
