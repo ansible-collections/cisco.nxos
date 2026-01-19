@@ -46,12 +46,5 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
-    - name: Populate global and VRF route for conflict test
-      cisco.nxos.nxos_config:
-        lines:
-          - "ip route 192.0.2.0/24 192.0.2.22 name global_2nd_hop"
-          - "vrf context ANSIBLE_TEST_NEW"
-          - "ip route 192.0.2.0/24 192.0.2.22 name vrf_2nd_hop"
-
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
