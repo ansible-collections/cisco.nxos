@@ -338,6 +338,11 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
+                        <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
+                        <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
+                        <div>The state <code>deleted</code> does not support or guarantee granular deletion of configuration the playbook should act as source of truth, and the desired state of the resouce is what the playbook should reflect. Use <code>overridden</code> or <code>replaced</code> to get extra configuration removed.</div>
+                        <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section &#x27;^ip(v6</em>* route&#x27;) executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
                 </td>
             </tr>
     </table>

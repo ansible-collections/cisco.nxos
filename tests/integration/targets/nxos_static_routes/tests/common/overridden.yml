@@ -14,7 +14,7 @@
           - "!min"
         gather_network_resources: static_routes
 
-    - name: Overridden
+    - name: Overridden test on a specific config
       cisco.nxos.nxos_static_routes: &overridden
         config:
           - vrf: trial_vrf

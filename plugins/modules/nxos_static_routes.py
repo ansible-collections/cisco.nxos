@@ -114,7 +114,26 @@ options:
                     type: str
   state:
     description:
-    - The state the configuration should be left in
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state C(deleted) does not support or guarantee granular deletion of configuration
+        the playbook should act as source of truth, and the desired state of the resouce is what
+        the playbook should reflect. Use C(overridden) or C(replaced) to get extra configuration
+        removed.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command
+        I(show running-config | section '^ip(v6)* route') executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
     choices:
     - deleted

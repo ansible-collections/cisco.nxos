@@ -464,6 +464,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
             ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
             ip route 192.0.2.80/28 192.0.2.26 tag 12
+            ip route 192.0.2.80/28 Null0 name TEST
+            ip route 192.0.2.80/28 192.0.2.23 vrf ANSIBLE_TEST_NEW
             vrf context Test
               ip route 192.0.2.48/28 192.0.2.13
               ip route 192.0.2.48/28 192.0.2.14 5
@@ -548,6 +550,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
         commands = [
             "ip route 192.0.2.80/28 192.0.2.27 tag 13",
             "no ip route 192.0.2.80/28 192.0.2.26 tag 12",
+            "no ip route 192.0.2.80/28 Null0 name TEST",
+            "no ip route 192.0.2.80/28 192.0.2.23 vrf ANSIBLE_TEST_NEW",
             "vrf context trial_vrf",
             "ip route 192.0.2.0/28 192.0.2.23 name merged_route 1",
             "no ip route 192.0.2.64/28 192.0.2.22 tag 4",
