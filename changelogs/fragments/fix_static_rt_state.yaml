@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Fixed nxos_static_routes module so to handle replaced and overridden state with vrf configuration.
