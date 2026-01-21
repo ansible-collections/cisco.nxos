@@ -565,9 +565,12 @@ releases:
       bugfixes:
         - Fixed nxos_facts module so it can handle VLAN interface facts without any
           issue even if addr is not defined
+        - Fixed nxos_static_routes module so to handle replaced and overridden state
+          with vrf configuration.
     fragments:
       - fix_nxos_facts.yaml
-    release_date: "2026-01-19"
+      - fix_static_rt_state.yaml
+    release_date: "2026-01-20"
   2.0.0:
     changes:
       bugfixes:

@@ -11,6 +11,7 @@ Bugfixes
 --------
 
 - Fixed nxos_facts module so it can handle VLAN interface facts without any issue even if addr is not defined
+- Fixed nxos_static_routes module so to handle replaced and overridden state with vrf configuration.
 
 v11.1.1
 =======
