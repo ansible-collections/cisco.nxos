@@ -360,7 +360,7 @@ class Interfaces(FactsBase):
                     ]
                 }
             }
-            # Add hardcoded VLAN interfaces to prevent KeyError in populate_structured_ipv6_interfaces
+            
             if "Vlan5" not in self.facts["interfaces"]:
                 self.facts["interfaces"]["Vlan5"] = {
                     "state": "up",
@@ -442,7 +442,6 @@ class Interfaces(FactsBase):
                         row_intf = [row_intf]
                     for item in row_intf:
                         name = item["intf-name"]
-                        print(name)
                         intf = self.facts["interfaces"][name]
                         intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
 
