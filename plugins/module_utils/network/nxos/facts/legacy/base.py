@@ -262,7 +262,7 @@ class Interfaces(FactsBase):
                 self.facts["interfaces"] = self.populate_interfaces(interfaces)
 
         if self.ipv6_structure_op_supported():
-            #data = self.run("show ipv6 interface vrf all", output="json")
+            # data = self.run("show ipv6 interface vrf all", output="json")
             data = {
                 "TABLE_intf": {
                     "ROW_intf": [
@@ -297,7 +297,7 @@ class Interfaces(FactsBase):
                             "mpkt-consumed": "0",
                             "mbyte-fwd": "0",
                             "mbyte-orig": "0",
-                            "mbyte-consumed": "0"
+                            "mbyte-consumed": "0",
                         },
                         {
                             "vrf-name-out": "NMNET",
@@ -308,8 +308,8 @@ class Interfaces(FactsBase):
                             "admin-state": "up",
                             "TABLE_addr": {
                                 "ROW_addr": {
-                                    "addr": "fd02:976a:d6b7:1701::1/64"
-                                }
+                                    "addr": "fd02:976a:d6b7:1701::1/64",
+                                },
                             },
                             "prefix": "fd02:976a:d6b7:1701::/64",
                             "linklocal-addr": "fe80::dcad:beff:feef:cafe",
@@ -323,21 +323,21 @@ class Interfaces(FactsBase):
                             "TABLE_maddr": {
                                 "ROW_maddr": [
                                     {
-                                        "m-addr": "ff02::2"
+                                        "m-addr": "ff02::2",
                                     },
                                     {
-                                        "m-addr": "ff02::1"
+                                        "m-addr": "ff02::1",
                                     },
                                     {
-                                        "m-addr": "ff02::1:ff00:1"
+                                        "m-addr": "ff02::1:ff00:1",
                                     },
                                     {
-                                        "m-addr": "ff02::1:ffef:cafe"
+                                        "m-addr": "ff02::1:ffef:cafe",
                                     },
                                     {
-                                        "m-addr": "ff02::1:ff00:0"
-                                    }
-                                ]
+                                        "m-addr": "ff02::1:ff00:0",
+                                    },
+                                ],
                             },
                             "mcast-sgentries-joined": "FALSE",
                             "mtu": "9216",
@@ -355,23 +355,23 @@ class Interfaces(FactsBase):
                             "mpkt-consumed": "728",
                             "mbyte-fwd": "0",
                             "mbyte-orig": "262",
-                            "mbyte-consumed": "59488"
-                        }
-                    ]
-                }
+                            "mbyte-consumed": "59488",
+                        },
+                    ],
+                },
             }
-            
+
             if "Vlan5" not in self.facts["interfaces"]:
                 self.facts["interfaces"]["Vlan5"] = {
                     "state": "up",
                     "mtu": "1500",
-                    "type": "Ethernet SVI"
+                    "type": "Ethernet SVI",
                 }
             if "Vlan100" not in self.facts["interfaces"]:
                 self.facts["interfaces"]["Vlan100"] = {
                     "state": "up",
                     "mtu": "9216",
-                    "type": "Ethernet SVI"
+                    "type": "Ethernet SVI",
                 }
         else:
             data = None
