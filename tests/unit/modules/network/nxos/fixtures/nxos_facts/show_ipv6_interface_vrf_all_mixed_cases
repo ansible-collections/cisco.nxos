@@ -1,0 +1,97 @@
+{
+  "TABLE_intf": {
+    "ROW_intf": [
+      {
+        "vrf-name-out": "Test",
+        "intf-name": "Vlan5",
+        "iod": "3",
+        "proto-state": "up",
+        "link-state": "up",
+        "admin-state": "up",
+        "linklocal-addr": "0::",
+        "linklocal-configured": "FALSE",
+        "linklocal-state": "NONE",
+        "linklocal-non-rfc-compliant": "TRUE",
+        "mrouting-enabled": "disabled",
+        "report-linklocal-enabled": "disabled",
+        "forwarding-enabled": "enabled",
+        "mgroup-locally-joined": "FALSE",
+        "mcast-sgentries-joined": "FALSE",
+        "mtu": "1500",
+        "urpf-mode": "none",
+        "ipv6-lstype": "none",
+        "stats-last-reset": "never",
+        "upkt-fwd": "0",
+        "upkt-orig": "0",
+        "upkt-consumed": "0",
+        "ubyte-fwd": "0",
+        "ubyte-orig": "0",
+        "ubyte-consumed": "0",
+        "mpkt-fwd": "0",
+        "mpkt-orig": "0",
+        "mpkt-consumed": "0",
+        "mbyte-fwd": "0",
+        "mbyte-orig": "0",
+        "mbyte-consumed": "0"
+      },
+      {
+        "vrf-name-out": "NMNET",
+        "intf-name": "Vlan100",
+        "iod": "17",
+        "proto-state": "up",
+        "link-state": "up",
+        "admin-state": "up",
+        "TABLE_addr": {
+          "ROW_addr": {
+            "addr": "fd02:976a:d6b7:1701::1/64"
+          }
+        },
+        "prefix": "fd02:976a:d6b7:1701::/64",
+        "linklocal-addr": "fe80::dcad:beff:feef:cafe",
+        "linklocal-configured": "FALSE",
+        "linklocal-state": "VALID",
+        "linklocal-non-rfc-compliant": "FALSE",
+        "mrouting-enabled": "disabled",
+        "report-linklocal-enabled": "disabled",
+        "forwarding-enabled": "disabled",
+        "mgroup-locally-joined": "TRUE",
+        "TABLE_maddr": {
+          "ROW_maddr": [
+            {
+              "m-addr": "ff02::2"
+            },
+            {
+              "m-addr": "ff02::1"
+            },
+            {
+              "m-addr": "ff02::1:ff00:1"
+            },
+            {
+              "m-addr": "ff02::1:ffef:cafe"
+            },
+            {
+              "m-addr": "ff02::1:ff00:0"
+            }
+          ]
+        },
+        "mcast-sgentries-joined": "FALSE",
+        "mtu": "9216",
+        "urpf-mode": "none",
+        "ipv6-lstype": "none",
+        "stats-last-reset": "never",
+        "upkt-fwd": "0",
+        "upkt-orig": "0",
+        "upkt-consumed": "0",
+        "ubyte-fwd": "0",
+        "ubyte-orig": "0",
+        "ubyte-consumed": "0",
+        "mpkt-fwd": "0",
+        "mpkt-orig": "3",
+        "mpkt-consumed": "728",
+        "mbyte-fwd": "0",
+        "mbyte-orig": "262",
+        "mbyte-consumed": "59488"
+      }
+    ]
+  }
+}
