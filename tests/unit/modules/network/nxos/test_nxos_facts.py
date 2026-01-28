@@ -197,3 +197,42 @@ class TestNxosFactsModule(TestNxosModule):
         self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 2)
         self.assertIn("2001:db8:101::1/64", interfaces_obj.facts["all_ipv6_addresses"])
         self.assertIn("2001:db8:102::1/64", interfaces_obj.facts["all_ipv6_addresses"])
+
+    def test_nxos_facts_ipv6_row_addr_as_list_no_attribute_error(self):
+        """ROW_addr can be a list (multiple addresses on one interface). Must not raise AttributeError."""
+        import json
+        from unittest.mock import MagicMock
+
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+
+        module = MagicMock()
+        interfaces_obj = Interfaces(module)
+        interfaces_obj.facts = {
+            "interfaces": {
+                "Vlan100": {"state": "up", "macaddress": "5254.0014.c104", "mtu": "9216"},
+            },
+            "all_ipv4_addresses": [],
+            "all_ipv6_addresses": [],
+        }
+
+        # NXOS returns ROW_addr as list when interface has multiple IPv6 addresses
+        ipv6_data = {
+            "TABLE_intf": {
+                "ROW_intf": {
+                    "intf-name": "Vlan100",
+                    "TABLE_addr": {
+                        "ROW_addr": [
+                            {"addr": "2001:db8::1/64"},
+                            {"addr": "2001:db8::2/64"},
+                        ],
+                    },
+                },
+            },
+        }
+        interfaces_obj.populate_structured_ipv6_interfaces(ipv6_data)
+        self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 2)
+        self.assertIn("2001:db8::1/64", interfaces_obj.facts["all_ipv6_addresses"])
+        self.assertIn("2001:db8::2/64", interfaces_obj.facts["all_ipv6_addresses"])
+
