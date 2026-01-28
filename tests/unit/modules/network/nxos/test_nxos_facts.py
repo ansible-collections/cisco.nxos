@@ -200,7 +200,6 @@ class TestNxosFactsModule(TestNxosModule):
 
     def test_nxos_facts_ipv6_row_addr_as_list_no_attribute_error(self):
         """ROW_addr can be a list (multiple addresses on one interface). Must not raise AttributeError."""
-        import json
         from unittest.mock import MagicMock
 
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
