@@ -234,4 +234,3 @@ class TestNxosFactsModule(TestNxosModule):
         self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 2)
         self.assertIn("2001:db8::1/64", interfaces_obj.facts["all_ipv6_addresses"])
         self.assertIn("2001:db8::2/64", interfaces_obj.facts["all_ipv6_addresses"])
-

@@ -1,3 +1,2 @@
 bugfixes:
   - "cisco.nxos.nxos_facts - Fix AttributeError when interface has multiple IPv6 addrs and handle ROW_addr as list."
-
