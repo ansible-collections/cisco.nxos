@@ -83,6 +83,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
             switchport trunk native vlan 5
             switchport trunk allowed vlan 10
             no lacp graceful-convergence
+            no lacp suspend-individual
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
@@ -103,6 +104,16 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
             "lacp suspend-individual",
         ]
 
+        deleted = [
+            "interface port-channel1",
+            "lacp graceful-convergence",
+            "lacp suspend-individual",
+        ]
+
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=merged)
+
+        playbook["state"] = "deleted"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=deleted)
