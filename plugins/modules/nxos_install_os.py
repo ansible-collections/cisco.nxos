@@ -58,6 +58,10 @@ options:
     description:
     - Name of the kickstart image file on flash. (Not required on all Nexus platforms)
     type: str
+  epld_image_file:
+    description:
+    - Name of the epld image file on flash. (Not possible on all Nexus platforms)
+    type: str
   issu:
     description:
     - Upgrade using In Service Software Upgrade (ISSU). (Supported on N5k, N7k, N9k
@@ -357,7 +361,7 @@ def massage_install_data(data):
     return result_data
 
 
-def build_install_cmd_set(issu, image, kick, type, force=True):
+def build_install_cmd_set(issu, image, kick, epld, type, force=True):
     commands = ["terminal dont-ask"]
 
     # Different NX-OS platforms behave differently for
@@ -389,7 +393,10 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
     else:
         rootcmd = "install all"
     if kick is None:
-        commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
+        if epld is None:
+            commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
+        else:
+            commands.append("%s nxos %s epld %s %s" % (rootcmd, image, epld, issu_cmd))
     else:
         commands.append(
             "%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick),
@@ -454,16 +461,16 @@ def check_mode_legacy(module, issu, image, kick=None):
     return data
 
 
-def check_mode_nextgen(module, issu, image, kick=None):
+def check_mode_nextgen(module, issu, image, kick=None, epld=None):
     """Use the 'install all impact' command for check_mode"""
     opts = {"ignore_timeout": True}
-    commands = build_install_cmd_set(issu, image, kick, "impact")
+    commands = build_install_cmd_set(issu, image, kick, epld, "impact")
     data = parse_show_install(load_config(module, commands, True, opts))
     # If an error is encountered when issu is 'desired' then try again
     # but set issu to 'no'
     if data["error"] and issu == "desired":
         issu = "no"
-        commands = build_install_cmd_set(issu, image, kick, "impact")
+        commands = build_install_cmd_set(issu, image, kick, epld, "impact")
         # The system may be busy from the previous call to check_mode so loop
         # until it's done.
         data = check_install_in_progress(module, commands, opts)
@@ -499,7 +506,7 @@ def check_mode(module, issu, image, kick=None):
     return data
 
 
-def do_install_all(module, issu, image, kick=None):
+def do_install_all(module, issu, image, kick=None, epld=None):
     """Perform the switch upgrade using the 'install all' command"""
     impact_data = check_mode(module, issu, image, kick)
     if module.check_mode:
@@ -526,7 +533,7 @@ def do_install_all(module, issu, image, kick=None):
             else:
                 issu = "no"
 
-        commands = build_install_cmd_set(issu, image, kick, "install")
+        commands = build_install_cmd_set(issu, image, kick, epld, "install")
         opts = {"ignore_timeout": True}
         # The system may be busy from the call to check_mode so loop until
         # it's done.
@@ -534,7 +541,7 @@ def do_install_all(module, issu, image, kick=None):
         if upgrade["invalid_command"] and "force" in commands[1]:
             # Not all platforms support the 'force' keyword.  Check for this
             # condition and re-try without the 'force' keyword if needed.
-            commands = build_install_cmd_set(issu, image, kick, "install", False)
+            commands = build_install_cmd_set(issu, image, kick, epld, "install", False)
             upgrade = check_install_in_progress(module, commands, opts)
         upgrade["upgrade_cmd"] = commands
 
@@ -563,6 +570,7 @@ def main():
     argument_spec = dict(
         system_image_file=dict(required=True),
         kickstart_image_file=dict(required=False),
+        epld_image_file=dict(required=False),
         issu=dict(choices=["required", "desired", "no", "yes"], default="no"),
     )
 
@@ -574,6 +582,7 @@ def main():
     # issu settings from module params.
     sif = module.params["system_image_file"]
     kif = module.params["kickstart_image_file"]
+    eif = module.params["epld_image_file"]
     issu = module.params["issu"]
 
     if re.search(r"(yes|required)", issu):
@@ -582,7 +591,10 @@ def main():
     if kif == "null" or kif == "":
         kif = None
 
-    install_result = do_install_all(module, issu, sif, kick=kif)
+    if eif == "null" or eif == "":
+        eif = None
+
+    install_result = do_install_all(module, issu, sif, kick=kif, epld=eif)
     if install_result["error"]:
         cmd = install_result["upgrade_cmd"]
         msg = "Failed to upgrade device using command: %s" % cmd
