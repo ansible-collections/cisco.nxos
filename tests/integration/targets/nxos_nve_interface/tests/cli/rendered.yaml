@@ -1,0 +1,29 @@
+---
+- ansible.builtin.debug:
+    msg: START Rendered nxos_nve_interface state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Nxos_nve_interface rendered - play
+      cisco.nxos.nxos_nve_interface:
+        config:
+          enabled: true
+          description: "vxlan vtep"
+          advertise_virtual_rmac: true
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+          global_multicast_group:
+            address: 239.239.239.239
+            mode: L2
+          vnis:
+            - vni_id: 11111
+              suppress_arp: true
+            - vni_id: 22222
+              suppress_arp_disable: true
+        state: rendered
+      register: result
+
+    - name: Nxos_nve_interface rendered - assert commands
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+          - result['changed'] == false

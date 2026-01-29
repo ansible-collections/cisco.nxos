@@ -1,0 +1,10 @@
+---
+- name: Set a fact for 'skip_test'
+  ansible.builtin.set_fact:
+    skip_test: false
+
+- name: Main task for NVE interface module
+  ansible.builtin.include_tasks:
+    file: cli.yaml
+  tags:
+    - network_cli
