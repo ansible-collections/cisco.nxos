@@ -107,13 +107,12 @@ class Static_routes(ResourceModule):
             for addf in ["ipv4", "ipv6"]:
                 _temp_sr = {}
                 for k, ha in have.get(addf, {}).items():
-                    if k in want.get(addf, {}):  # or not want.get(addf)
+                    if k in want.get(addf, {}) or not want.get(addf):
                         _temp_sr[k] = ha
                     if _temp_sr:
                         _have[addf] = _temp_sr
-            if _have:
-                have = _have
-                want = {}
+            have = _have
+            want = {}
 
         if self.state != "deleted":
             for _afi, routes in want.items():
