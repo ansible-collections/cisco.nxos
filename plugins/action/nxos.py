@@ -123,7 +123,6 @@ class ActionModule(ActionNetworkModule):
                 "failed": True,
                 "msg": f"Connection type {self._play_context.connection} is not valid for this module",
             }
-
         result = super(ActionModule, self).run(task_vars=task_vars)
         if warnings:
             if "warnings" in result:
