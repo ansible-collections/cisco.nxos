@@ -83,7 +83,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+(?P<vlan>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport trunk native vlan {{ trunk.native_vlan }}",
+            "setval": "switchport trunk native vlan {{ trunk.native_vlan|string }}",
             "result": {
                 '{{ name }}': {
                     'trunk': {

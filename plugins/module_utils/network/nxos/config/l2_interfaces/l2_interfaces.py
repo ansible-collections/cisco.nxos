@@ -131,6 +131,11 @@ class L2_interfaces(ResourceModule):
         have_set = set(have.get("trunk", {}).get("allowed_vlans", {}))
         have_vlan_none = have.get("trunk", {}).get("allowed_vlans_none", False)
 
+        if self.state == "deleted" and have_set:
+            # there is no support for granular deletion with deleted state
+            self.commands.append("no switchport trunk allowed vlan")
+            return
+
         if want_set and have_set:
             # VLANs to be added (present in want, not in have)
             vlans_to_add = want_set - have_set
@@ -150,19 +155,22 @@ class L2_interfaces(ResourceModule):
             elif vlans_to_remove:
                 # remove excess vlans for replaced overridden with vlan entries
                 self.commands.append(
-                    f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
+                    f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove, key=int))}",
                 )
 
         if self.state != "deleted" and vlans_to_add:
-
             if vlan_list_to_range(have_set) == "1-4094" and not have_vlan_none and vlans_to_add:
+                # vlan 1-4094 default is empty in appliance, see facts
+                # vlan none command is not present
+                # vlans to add is having value but all vlans are enabled by default
+                # to be safe that all vlans^ this range is enabled
                 self.commands.extend("switchport trunk allowed vlan all")
-
+                return
             self.commands.extend(
                 generate_switchport_trunk(
                     "allowed",
                     True,
-                    vlan_list_to_range(sorted(vlans_to_add)),
+                    vlan_list_to_range(sorted(vlans_to_add, key=int)),
                 ),
             )
 

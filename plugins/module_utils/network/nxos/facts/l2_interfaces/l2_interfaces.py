@@ -50,10 +50,7 @@ class L2_interfacesFacts(object):
                     "trunk",
                     {},
                 ).get("allowed_vlans_none"):
-                    interface["trunk"] = {}
                     interface["trunk"]["allowed_vlans"] = "1-4094"
-                if interface.get("trunk", {}).get("allowed_vlans_none"):
-                    interface["trunk"].pop("allowed_vlans_none")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource

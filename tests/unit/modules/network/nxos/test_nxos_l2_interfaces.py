@@ -247,13 +247,14 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     {
                         "name": "Ethernet1/7",
                         "trunk": {
+                            "native_vlan": 25,
                             "allowed_vlans": "25-27",
                         },
                     },
                     {
                         "name": "Ethernet1/8",
                         "trunk": {
-                            "allowed_vlans": "none",
+                            "allowed_vlans": "33",
                         },
                         "cdp_enable": True,
                     },
@@ -266,12 +267,13 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/6",
             "no cdp enable",
             "switchport access vlan 8",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan add 10-12",
             "interface Ethernet1/7",
             "no cdp enable",
-            "no switchport trunk native vlan 15",
+            "switchport trunk native vlan 25",
             "interface Ethernet1/8",
-            "switchport trunk allowed vlan none",
+            "switchport trunk allowed vlan remove 100-200",
+            "switchport trunk allowed vlan add 33",
         ]
 
         result = self.execute_module(changed=True)
@@ -310,11 +312,11 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected_commands = [
             "interface Ethernet1/6",
-            "no switchport trunk allowed vlan",
+            "switchport trunk allowed vlan remove 11",
             "interface Ethernet1/7",
             "no cdp enable",
             "switchport access vlan 6",
-            "switchport trunk allowed vlan add 10-12",
+            "switchport trunk allowed vlan remove 13-500",
         ]
 
         result = self.execute_module(changed=True)
@@ -342,6 +344,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         expected_commands = [
             "interface Ethernet1/6",
             "no switchport trunk native vlan 10",
+            "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
             "no switchport mode trunk",
             "no switchport trunk allowed vlan",
