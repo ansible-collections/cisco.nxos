@@ -93,18 +93,35 @@ class L2_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "trunk.allowed_vlans_none",
+            "getval": re.compile(
+                r"""
+                \s+switchport\strunk\sallowed\svlan
+                \s+(?P<isnone>none)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport trunk allowed vlan none",
+            "result": {
+                '{{ name }}': {
+                    'trunk': {
+                        'allowed_vlans_none': "{{ not not isnone }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "trunk.allowed_vlans",
             "getval": re.compile(
                 r"""
                 \s+switchport\strunk\sallowed\svlan
-                \s+(?P<allowed_vlans>.+)
+                \s+(?!none$)(?P<allowed_vlans>.+)
                 $""", re.VERBOSE,
             ),
             "setval": "",
             "result": {
                 '{{ name }}': {
                     'trunk': {
-                        'allowed_vlans': "{{ allowed_vlans }}",
+                        'allowed_vlans': "'{{ allowed_vlans }}'",
                     },
                 },
             },

@@ -56,6 +56,7 @@ class L2_interfaces(ResourceModule):
             "mode",
             "access.vlan",
             "trunk.native_vlan",
+            "trunk.allowed_vlans_none",
             "beacon",
             "link_flap.error_disable",
             "cdp_enable",
@@ -77,8 +78,12 @@ class L2_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        # import debugpy
+
+        # debugpy.listen(3000)
+        # debugpy.wait_for_client()
+        wantd = {entry["name"].lower(): entry for entry in self.want}
+        haved = {entry["name"].lower(): entry for entry in self.have}
 
         for each in wantd, haved:
             self.process_list_attrs(each)
@@ -121,57 +126,45 @@ class L2_interfaces(ResourceModule):
 
     def _compare_lists(self, want, have):
         """Compare list attributes"""
-        trunk_want = want.get("trunk", {})
-        trunk_have = have.get("trunk", {})
 
-        for vlan in ["allowed_vlans"]:
-            want_list = trunk_want.get(vlan, [])
-            have_list = trunk_have.get(vlan, [])
+        want_set = set(want.get("trunk", {}).get("allowed_vlans", {}))
+        have_set = set(have.get("trunk", {}).get("allowed_vlans", {}))
+        have_vlan_none = have.get("trunk", {}).get("allowed_vlans_none", False)
 
-            if want_list != "none" and have_list != "none":
-                # Convert VLAN lists to sets for easier comparison
-                want_set = set(want_list)
-                have_set = set(have_list)
+        if want_set and have_set:
+            # VLANs to be added (present in want, not in have)
+            vlans_to_add = want_set - have_set
 
-                # VLANs to be added (present in want, not in have)
-                vlans_to_add = want_set - have_set
+            # VLANs to be removed (present in have, not in want or not in add list)
+            vlans_to_remove = [
+                vl_no for vl_no in have_set if vl_no not in vlans_to_add and vl_no not in want_set
+            ]
+        else:
+            vlans_to_add = want_set
+            vlans_to_remove = have_set
 
-                # VLANs to be removed (present in have, not in want or not in add list)
-                vlans_to_remove = [
-                    vl_no
-                    for vl_no in have_list
-                    if vl_no not in vlans_to_add and vl_no not in want_set
-                ]
-            else:
-                want_set = "none" if want_list == "none" else want_list
-                have_set = "none" if have_list == "none" else have_list
-
-                vlans_to_add = [] if want_set == "none" else want_set
-                vlans_to_remove = [] if have_set == "none" else have_set
-
-            vlan_name = vlan.split("_", maxsplit=1)[0]
-
-            if self.state != "merged":
-                if want_set == "none" and have_set != "none":
-                    # if want is none, remove all vlans
-                    self.commands.append(f"switchport trunk {vlan_name} vlan none")
-                elif not want_list and vlans_to_remove:
-                    # remove vlan all as want blank
-                    self.commands.append(f"no switchport trunk {vlan_name} vlan")
-                elif vlans_to_remove:
-                    # remove excess vlans for replaced overridden with vlan entries
-                    self.commands.append(
-                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
-                    )
-
-            if self.state != "deleted" and vlans_to_add:
-                self.commands.extend(
-                    generate_switchport_trunk(
-                        vlan_name,
-                        have_list,
-                        vlan_list_to_range(sorted(vlans_to_add)),
-                    ),
+        if self.state != "merged":
+            if not want_set and not have_set:
+                # if want is none, remove all vlans
+                self.commands.append("switchport trunk allowed vlan none")
+            elif vlans_to_remove:
+                # remove excess vlans for replaced overridden with vlan entries
+                self.commands.append(
+                    f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
                 )
+
+        if self.state != "deleted" and vlans_to_add:
+
+            if vlan_list_to_range(have_set) == "1-4094" and not have_vlan_none and vlans_to_add:
+                self.commands.extend("switchport trunk allowed vlan all")
+
+            self.commands.extend(
+                generate_switchport_trunk(
+                    "allowed",
+                    True,
+                    vlan_list_to_range(sorted(vlans_to_add)),
+                ),
+            )
 
     def process_list_attrs(self, param):
         if param:

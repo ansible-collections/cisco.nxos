@@ -207,7 +207,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/6",
             "cdp enable",
             "switchport mode trunk",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan add 10-12",
         ]
 
         result = self.execute_module(changed=True)
@@ -287,6 +287,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              switchport trunk allowed vlan 11
             interface Ethernet1/7
              switchport
+             switchport trunk allowed vlan 10-500
             """,
         )
 
@@ -313,7 +314,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/7",
             "no cdp enable",
             "switchport access vlan 6",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan add 10-12",
         ]
 
         result = self.execute_module(changed=True)
