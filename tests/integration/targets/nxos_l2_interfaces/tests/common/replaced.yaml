@@ -4,49 +4,49 @@
 
 - name: Set test interface facts
   ansible.builtin.set_fact:
-    test_int1: '{{ nxos_int1 }}'
-    test_int2: '{{ nxos_int2 }}'
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - name: Reset test interfaces
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
-      - 'default interface {{ test_int1 }}'
-      - 'default interface {{ test_int2 }}'
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
 
 - block:
     - name: Setup interface 1 with access vlan
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-          - 'switchport access vlan 5'
-        parents: 'interface {{ test_int1 }}'
+          - "switchport"
+          - "switchport access vlan 5"
+        parents: "interface {{ test_int1 }}"
 
     - name: Setup interface 2 with trunk config
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-          - 'switchport trunk native vlan 15'
-          - 'switchport trunk allowed vlan 25-27'
-        parents: 'interface {{ test_int2 }}'
+          - "switchport"
+          - "switchport trunk native vlan 15"
+          - "switchport trunk allowed vlan 25-27"
+        parents: "interface {{ test_int2 }}"
 
     - name: Gather l2_interfaces facts before replace
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - name: Replaced - replace interface configs
       register: result
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             access:
               vlan: 8
             trunk:
               allowed_vlans: 10-12
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             trunk:
               allowed_vlans: 25-27
         state: replaced
@@ -61,8 +61,8 @@
     - name: Gather l2_interfaces facts after replace
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - ansible.builtin.assert:
@@ -73,12 +73,12 @@
       register: result
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             access:
               vlan: 8
             trunk:
               allowed_vlans: 10-12
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             trunk:
               allowed_vlans: 25-27
         state: replaced
@@ -93,5 +93,5 @@
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
-          - 'default interface {{ test_int1 }}'
-          - 'default interface {{ test_int2 }}'
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"

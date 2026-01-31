@@ -7,8 +7,8 @@
 - name: Gather pre-facts
   cisco.nxos.nxos_facts:
     gather_subset:
-      - '!all'
-      - '!min'
+      - "!all"
+      - "!min"
     gather_network_resources: l2_interfaces
 
 - block:

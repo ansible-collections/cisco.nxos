@@ -8,9 +8,9 @@
     - name: Prepare interfaces as layer2
       cisco.nxos.nxos_interfaces:
         config:
-          - name: '{{ nxos_int1 }}'
+          - name: "{{ nxos_int1 }}"
             mode: layer2
-          - name: '{{ nxos_int2 }}'
+          - name: "{{ nxos_int2 }}"
             mode: layer2
         state: merged
 
@@ -18,11 +18,11 @@
       register: base_config
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ nxos_int1 }}'
+          - name: "{{ nxos_int1 }}"
             trunk:
               native_vlan: 10
               allowed_vlans: 2,4,15
-          - name: '{{ nxos_int2 }}'
+          - name: "{{ nxos_int2 }}"
             access:
               vlan: 30
         state: merged
@@ -30,8 +30,8 @@
     - name: Gather facts after base config
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - l2_interfaces
 
@@ -39,10 +39,10 @@
       register: result
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ nxos_int1 }}'
+          - name: "{{ nxos_int1 }}"
             trunk:
               native_vlan: 20
-          - name: '{{ nxos_int2 }}'
+          - name: "{{ nxos_int2 }}"
             access:
               vlan: 31
         state: overridden

@@ -4,37 +4,37 @@
 
 - name: Set test interface facts
   ansible.builtin.set_fact:
-    test_int1: '{{ nxos_int1 }}'
-    test_int2: '{{ nxos_int2 }}'
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - name: Reset test interfaces
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
-      - 'default interface {{ test_int1 }}'
-      - 'default interface {{ test_int2 }}'
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
 
 - block:
     - name: Setup interface 1 with native vlan
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-          - 'switchport trunk native vlan 10'
-        parents: 'interface {{ test_int1 }}'
+          - "switchport"
+          - "switchport trunk native vlan 10"
+        parents: "interface {{ test_int1 }}"
 
     - name: Setup interface 2 with trunk mode and allowed vlans
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-          - 'switchport mode trunk'
-          - 'switchport trunk allowed vlan 20'
-        parents: 'interface {{ test_int2 }}'
+          - "switchport"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 20"
+        parents: "interface {{ test_int2 }}"
 
     - name: Gather l2_interfaces facts before delete
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - name: Deleted - remove all l2 config from interfaces
@@ -65,5 +65,5 @@
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
-          - 'default interface {{ test_int1 }}'
-          - 'default interface {{ test_int2 }}'
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"

@@ -4,42 +4,42 @@
 
 - name: Set test interface facts
   ansible.builtin.set_fact:
-    test_int1: '{{ nxos_int1 }}'
-    test_int2: '{{ nxos_int2 }}'
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - name: Reset test interfaces
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
-      - 'default interface {{ test_int1 }}'
-      - 'default interface {{ test_int2 }}'
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
 
 - block:
     - name: Setup interface 1 with trunk allowed vlan
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-          - 'switchport trunk allowed vlan 11'
-        parents: 'interface {{ test_int1 }}'
+          - "switchport"
+          - "switchport trunk allowed vlan 11"
+        parents: "interface {{ test_int1 }}"
 
     - name: Setup interface 2 as switchport
       cisco.nxos.nxos_config:
         lines:
-          - 'switchport'
-        parents: 'interface {{ test_int2 }}'
+          - "switchport"
+        parents: "interface {{ test_int2 }}"
 
     - name: Gather l2_interfaces facts before override
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - name: Overridden - override all l2 interface configs
       register: result
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             access:
               vlan: 6
             trunk:
@@ -57,8 +57,8 @@
     - name: Gather l2_interfaces facts after override
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - ansible.builtin.assert:
@@ -69,7 +69,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             access:
               vlan: 6
             trunk:
@@ -86,5 +86,5 @@
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
-          - 'default interface {{ test_int1 }}'
-          - 'default interface {{ test_int2 }}'
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"
