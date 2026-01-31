@@ -58,7 +58,15 @@ options:
             description:
             - List of allowed VLANs in a given trunk port. These are the only VLANs
               that will be configured on the trunk.
+            - The module would consider 1-4093 as the default range enabled if switchport
+              mode is trunk.
             type: str
+          allowed_vlans_none:
+            description:
+            - This option governs the `switchport trunk allowed vlan none` configuration
+            - negation of this command would consider 1-4093 as the default.
+            - This attribute does not ensure idempotency.
+            type: bool
       mode:
         description:
         - Mode in which interface needs to be configured.

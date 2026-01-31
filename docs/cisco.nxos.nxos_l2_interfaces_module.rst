@@ -267,6 +267,30 @@ Parameters
                 </td>
                 <td>
                         <div>List of allowed VLANs in a given trunk port. These are the only VLANs that will be configured on the trunk.</div>
+                        <div>The module would consider 1-4093 as the default range enabled if switchport mode is trunk.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>allowed_vlans_none</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>This option governs the `switchport trunk allowed vlan none` configuration</div>
+                        <div>negation of this command would consider 1-4093 as the default.</div>
+                        <div>This attribute does not ensure idempotency.</div>
                 </td>
             </tr>
             <tr>

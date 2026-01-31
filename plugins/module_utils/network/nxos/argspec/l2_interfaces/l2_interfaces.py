@@ -44,6 +44,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                     "options": {
                         "native_vlan": {"type": "int"},
                         "allowed_vlans": {"type": "str"},
+                        "allowed_vlans_none": {"type": "bool"},
                     },
                 },
                 "mode": {
