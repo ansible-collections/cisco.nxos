@@ -571,6 +571,14 @@ releases:
       - fix_nxos_facts.yaml
       - fix_static_rt_state.yaml
     release_date: "2026-01-20"
+  11.1.3:
+    changes:
+      bugfixes:
+        - cisco.nxos.nxos_facts - Fix AttributeError when interface has multiple IPv6
+          addrs and handle ROW_addr as list.
+    fragments:
+      - fix_nxos_facts.yaml
+    release_date: "2026-01-29"
   2.0.0:
     changes:
       bugfixes:

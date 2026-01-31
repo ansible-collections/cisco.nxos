@@ -4,6 +4,14 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.3
+=======
+
+Bugfixes
+--------
+
+- cisco.nxos.nxos_facts - Fix AttributeError when interface has multiple IPv6 addrs and handle ROW_addr as list.
+
 v11.1.2
 =======
 
