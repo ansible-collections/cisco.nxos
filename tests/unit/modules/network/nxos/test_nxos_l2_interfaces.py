@@ -185,6 +185,12 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             interface Ethernet1/6
              switchport
              no cdp enable
+            interface Ethernet1/7
+             switchport mode trunk
+             switchport trunk allowed vlan 23-100
+            interface Ethernet1/8
+             switchport mode trunk
+             no cdp enable
             """,
         )
 
@@ -199,6 +205,21 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                         },
                         "cdp_enable": True,
                     },
+                    {
+                        "name": "Ethernet1/7",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "21-101",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/8",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 10,
+                            "allowed_vlans": "1-4000",
+                        },
+                    },
                 ],
             ),
         )
@@ -208,6 +229,82 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "cdp enable",
             "switchport mode trunk",
             "switchport trunk allowed vlan add 10-12",
+            "interface Ethernet1/7",
+            "switchport trunk allowed vlan add 21-22,101",
+            "interface Ethernet1/8",
+            "switchport trunk native vlan 10",
+            "switchport trunk allowed vlan add 1-4000",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_merged_subset_superset(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            interface Ethernet1/6
+             switchport
+             no cdp enable
+            interface Ethernet1/7
+             switchport mode trunk
+             switchport trunk allowed vlan 23-100
+            interface Ethernet1/8
+             switchport mode trunk
+             no cdp enable
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                        "cdp_enable": True,
+                    },
+                    {
+                        "name": "Ethernet1/7",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "23-99",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/8",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 10,
+                            "allowed_vlans": "1-4094",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/9",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 18,
+                            "allowed_vlans": "222",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "cdp enable",
+            "switchport mode trunk",
+            "switchport trunk allowed vlan add 10-12",
+            "interface Ethernet1/8",
+            "switchport trunk native vlan 10",
+            "switchport trunk allowed vlan add 1-4094",
+            "interface Ethernet1/9",
+            "switchport mode trunk",
+            "switchport trunk native vlan 18",
+            "switchport trunk allowed vlan add 222",
         ]
 
         result = self.execute_module(changed=True)

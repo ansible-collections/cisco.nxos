@@ -100,7 +100,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+(?P<isnone>none)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport trunk allowed vlan none",
+            "setval": "switchport trunk allowed vlan",
             "result": {
                 '{{ name }}': {
                     'trunk': {

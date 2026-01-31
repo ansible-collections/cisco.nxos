@@ -46,6 +46,7 @@
 
     - name: Deleted
       register: result
+      # check_mode: true
       cisco.nxos.nxos_l2_interfaces: &id001
         state: deleted
 
@@ -58,7 +59,7 @@
           - "'interface {{ test_int2 }}' in result.commands"
           - "'no switchport mode trunk' in result.commands"
           - "'no switchport trunk allowed vlan' in result.commands"
-          - result.commands|length == 5
+          - result.commands|length == 6
 
     - name: Idempotence - deleted
       register: result

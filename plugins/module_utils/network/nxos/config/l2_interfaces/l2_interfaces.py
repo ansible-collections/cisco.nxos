@@ -78,10 +78,6 @@ class L2_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        # import debugpy
-
-        # debugpy.listen(3000)
-        # debugpy.wait_for_client()
         wantd = {entry["name"].lower(): entry for entry in self.want}
         haved = {entry["name"].lower(): entry for entry in self.have}
 
@@ -149,9 +145,9 @@ class L2_interfaces(ResourceModule):
             vlans_to_remove = have_set
 
         if self.state != "merged":
-            if not want_set and not have_set:
+            if not want_set and have_set:
                 # if want is none, remove all vlans
-                self.commands.append("switchport trunk allowed vlan none")
+                self.commands.append("no switchport trunk allowed vlan")
             elif vlans_to_remove:
                 # remove excess vlans for replaced overridden with vlan entries
                 self.commands.append(

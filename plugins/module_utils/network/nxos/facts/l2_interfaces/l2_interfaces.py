@@ -64,10 +64,7 @@ class L2_interfacesFacts(object):
         """
         facts = {}
         objs = []
-        # import debugpy
 
-        # debugpy.listen(3000)
-        # debugpy.wait_for_client()
         if not data:
             data = self._get_interface_config(connection)
 
