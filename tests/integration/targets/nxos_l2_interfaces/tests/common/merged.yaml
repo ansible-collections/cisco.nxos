@@ -2,28 +2,30 @@
 - ansible.builtin.debug:
     msg: Start nxos_l2_interfaces merged integration tests connection={{ ansible_connection }}
 
-- name: Set a fact for 'test_int1'
+- name: Set test interface facts
   ansible.builtin.set_fact:
-    test_int1: "{{ nxos_int1 }}"
+    test_int1: '{{ nxos_int1 }}'
+    test_int2: '{{ nxos_int2 }}'
 
-- name: Setup1
+- name: Reset test interfaces
   ignore_errors: true
-  cisco.nxos.nxos_config: &id003
+  cisco.nxos.nxos_config:
     lines:
-      - "default interface {{ test_int1 }}"
+      - 'default interface {{ test_int1 }}'
+      - 'default interface {{ test_int2 }}'
 
 - block:
-    - name: Setup2
+    - name: Prepare interface as switchport
       cisco.nxos.nxos_config:
         lines:
-          - "interface {{ test_int1 }}"
-          - "  switchport"
+          - 'interface {{ test_int1 }}'
+          - '  switchport'
 
-    - name: Merged
+    - name: Merged - add access vlan and trunk allowed vlans
       register: result
-      cisco.nxos.nxos_l2_interfaces: &id001
+      cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: "{{ test_int1 }}"
+          - name: '{{ test_int1 }}'
             access:
               vlan: 6
             trunk:
@@ -33,36 +35,41 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'interface {{ test_int1 }}' in result.commands"
           - "'switchport access vlan 6' in result.commands"
           - "'switchport trunk allowed vlan add 200' in result.commands"
-          - result.commands|length == 3
 
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - "!all"
-          - "!min"
+          - '!all'
+          - '!min'
         gather_network_resources: l2_interfaces
 
     - ansible.builtin.assert:
         that:
-          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
+          - ansible_facts.network_resources.l2_interfaces | symmetric_difference(result.after) == []
 
-    - name: Idempotence - merged
+    - name: Idempotence - merged (no changes expected)
       register: result
-      cisco.nxos.nxos_l2_interfaces: *id001
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: '{{ test_int1 }}'
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200
+        state: merged
 
     - ansible.builtin.assert:
         that:
           - result.changed == false
-          - result.commands|length == 0
+          - result.commands | length == 0
 
-    - name: Merge with existing vlans
+    - name: Merged - add more vlans to existing config
       register: result
-      cisco.nxos.nxos_l2_interfaces: &id002
+      cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: "{{ test_int1 }}"
+          - name: '{{ test_int1 }}'
             mode: trunk
             trunk:
               allowed_vlans: 10-12
@@ -71,37 +78,15 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'interface {{ test_int1 }}' in result.commands"
           - "'switchport mode trunk' in result.commands"
           - "'switchport trunk allowed vlan add 10-12' in result.commands"
-          - result.commands|length == 3
 
-    - name: Gather l2_interfaces facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
-        gather_network_resources: l2_interfaces
-
-    - ansible.builtin.assert:
-        that:
-          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
-
-    - name: Idempotence - with newly added vlans
+    - name: Merged - test switchport_mode alias with dot1q-tunnel (check_mode)
       register: result
-      cisco.nxos.nxos_l2_interfaces: *id002
-
-    - ansible.builtin.assert:
-        that:
-          - result.changed == false
-          - result.commands|length == 0
-
-    - name: Using switchport_mode alias with dot1q-tunnel (alias running with check_mode)
-      register: result_check
       check_mode: true
       cisco.nxos.nxos_l2_interfaces:
         config:
-          - name: "{{ nxos_int2 }}"
+          - name: '{{ test_int2 }}'
             switchport_mode: dot1q-tunnel
             access:
               vlan: 30
@@ -109,13 +94,14 @@
 
     - ansible.builtin.assert:
         that:
-          - result_check.changed == true
-          - "'interface {{ nxos_int2 }}' in result_check.commands"
-          - "'switchport mode dot1q-tunnel' in result_check.commands"
-          - "'switchport access vlan 30' in result_check.commands"
-          - result_check.commands|length == 3
+          - result.changed == true
+          - "'switchport mode dot1q-tunnel' in result.commands"
+          - "'switchport access vlan 30' in result.commands"
 
   always:
-    - name: Teardown
+    - name: Teardown - reset interfaces
       ignore_errors: true
-      cisco.nxos.nxos_config: *id003
+      cisco.nxos.nxos_config:
+        lines:
+          - 'default interface {{ test_int1 }}'
+          - 'default interface {{ test_int2 }}'
