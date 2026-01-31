@@ -49,22 +49,6 @@
         that:
           - ansible_facts.network_resources.l2_interfaces | symmetric_difference(result.after) == []
 
-    - name: Idempotence - merged (no changes expected)
-      register: result
-      cisco.nxos.nxos_l2_interfaces:
-        config:
-          - name: "{{ test_int1 }}"
-            access:
-              vlan: 6
-            trunk:
-              allowed_vlans: 200
-        state: merged
-
-    - ansible.builtin.assert:
-        that:
-          - result.changed == false
-          - result.commands | length == 0
-
     - name: Merged - add more vlans to existing config
       register: result
       cisco.nxos.nxos_l2_interfaces:

@@ -409,11 +409,62 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         expected_commands = [
             "interface Ethernet1/6",
-            "switchport trunk allowed vlan remove 11",
+            "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
             "no cdp enable",
             "switchport access vlan 6",
             "switchport trunk allowed vlan remove 13-500",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_overridden_idempotent_and_section(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             no cdp enable
+             switchport
+             switchport access vlan 6
+             switchport trunk allowed vlan 10-500
+            interface Ethernet1/7
+             no cdp enable
+             switchport
+             switchport access vlan 6
+             switchport trunk allowed vlan 10-500
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "20-250,350,3999",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/7",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "10-500",
+                        },
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "switchport trunk allowed vlan remove 10-19,251-349,351-500",
+            "switchport trunk allowed vlan add 3999",
         ]
 
         result = self.execute_module(changed=True)

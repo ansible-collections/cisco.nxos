@@ -121,54 +121,59 @@ class L2_interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
-        """Compare list attributes"""
+        """Compare list attributes for trunk allowed vlans.
 
+        want_set: VLANs that should be present on the appliance
+        have_set: VLANs that are currently on the appliance
+        """
         want_set = set(want.get("trunk", {}).get("allowed_vlans", {}))
         have_set = set(have.get("trunk", {}).get("allowed_vlans", {}))
-        have_vlan_none = have.get("trunk", {}).get("allowed_vlans_none", False)
 
         if self.state == "deleted" and have_set:
-            # there is no support for granular deletion with deleted state
-            self.commands.append("no switchport trunk allowed vlan")
+            # For deleted state, remove all trunk allowed vlans if any exist
+            if have_set:
+                self.commands.append("no switchport trunk allowed vlan")
             return
 
-        if want_set and have_set:
-            # VLANs to be added (present in want, not in have)
+        if self.state in ("merged", "rendered"):
+            # Merged/rendered: only ADD vlans, never remove
+            # Add vlans that are in want but not in have
+            vlans_to_add = want_set - have_set
+            if vlans_to_add:
+                self.commands.extend(
+                    generate_switchport_trunk(
+                        "allowed",
+                        True,
+                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                    ),
+                )
+            return
+
+        if self.state in ("replaced", "overridden"):
+            # Replaced/overridden: make device match want_set exactly
+            # Remove vlans that are in have but not in want
+            vlans_to_remove = have_set - want_set
+            # Add vlans that are in want but not in have
             vlans_to_add = want_set - have_set
 
-            # VLANs to be removed (present in have, not in want or not in add list)
-            vlans_to_remove = [
-                vl_no for vl_no in have_set if vl_no not in vlans_to_add and vl_no not in want_set
-            ]
-        else:
-            vlans_to_add = want_set
-            vlans_to_remove = have_set
-
-        if self.state != "merged":
             if not want_set and have_set:
-                # if want is none, remove all vlans
+                # Want is empty but have has vlans - remove all
                 self.commands.append("no switchport trunk allowed vlan")
             elif vlans_to_remove:
-                # remove excess vlans for replaced overridden with vlan entries
+                # Remove excess vlans first
                 self.commands.append(
                     f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove, key=int))}",
                 )
 
-        if self.state != "deleted" and vlans_to_add:
-            if vlan_list_to_range(have_set) == "1-4094" and not have_vlan_none and vlans_to_add:
-                # vlan 1-4094 default is empty in appliance, see facts
-                # vlan none command is not present
-                # vlans to add is having value but all vlans are enabled by default
-                # to be safe that all vlans^ this range is enabled
-                self.commands.extend("switchport trunk allowed vlan all")
-                return
-            self.commands.extend(
-                generate_switchport_trunk(
-                    "allowed",
-                    True,
-                    vlan_list_to_range(sorted(vlans_to_add, key=int)),
-                ),
-            )
+            if vlans_to_add:
+                # Add missing vlans
+                self.commands.extend(
+                    generate_switchport_trunk(
+                        "allowed",
+                        True,
+                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                    ),
+                )
 
     def process_list_attrs(self, param):
         if param:
