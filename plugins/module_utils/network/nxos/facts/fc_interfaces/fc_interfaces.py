@@ -17,7 +17,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Fc_interfacesTemplate,
 )
 
-
 __metaclass__ = type
 
 """
