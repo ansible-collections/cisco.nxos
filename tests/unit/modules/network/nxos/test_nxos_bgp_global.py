@@ -19,7 +19,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from textwrap import dedent
@@ -28,7 +27,6 @@ from unittest.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
 
 from .nxos_module import TestNxosModule, set_module_args
-
 
 ignore_provider_arg = True
 

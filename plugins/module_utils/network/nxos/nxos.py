@@ -28,7 +28,6 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 
@@ -49,7 +48,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     ComplexList,
     to_list,
 )
-
 
 try:
     import yaml
