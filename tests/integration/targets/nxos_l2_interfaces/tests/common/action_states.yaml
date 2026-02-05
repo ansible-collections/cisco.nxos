@@ -1,0 +1,56 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_l2_interfaces action states integration tests connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replaced - add access vlan and trunk allowed vlans
+      register: result_replaced
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Replaced - idempotent
+      register: result_replaced_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Merged - Cannot be idempotent as 1-4096 is device default for allowed_vlans
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: merged
+
+    - name: Deleted - remove context, no granular deletion (delete context of entire interface for l2)
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+  always:
+    - name: Teardown - reset interfaces
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface Ethernet1/7"
+          - "default interface Ethernet1/8"

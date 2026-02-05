@@ -1,19 +1,19 @@
 ---
-- name: Populate interface 1 with access vlan and trunk allowed vlan
+- name: Config - Populate interface 1/7 with access vlan and trunk allowed vlan
   cisco.nxos.nxos_config:
     lines:
-      - "switchport"
-      - "switchport access vlan 6"
-      - "switchport trunk allowed vlan 200"
-    parents: "interface {{ nxos_int1 }}"
+      - switchport
+      - switchport access vlan 6
+      - 'switchport trunk allowed vlan 200-270,350,398-999'
+    parents: interface Ethernet1/7
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- name: Populate interface 2 with trunk native vlan
+- name: Config - Populate interface 1/8 with trunk native vlan
   cisco.nxos.nxos_config:
     lines:
-      - "switchport"
-      - "switchport trunk native vlan 10"
-    parents: "interface {{ nxos_int2 }}"
+      - switchport
+      - switchport trunk native vlan 10
+    parents: interface Ethernet1/8
   vars:
     ansible_connection: ansible.netcommon.network_cli
