@@ -125,7 +125,7 @@ def remove_rsvd_interfaces(interfaces):
     return [i for i in interfaces if get_interface_type(i["name"]) != "management"]
 
 
-def vlan_range_to_list(vlans):
+def vlan_range_to_dict(vlans):
     result = {}
     if vlans:
         for part in vlans.split(","):

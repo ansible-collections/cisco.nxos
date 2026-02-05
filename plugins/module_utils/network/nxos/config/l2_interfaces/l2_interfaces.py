@@ -35,7 +35,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     generate_switchport_trunk,
     normalize_interface,
     vlan_list_to_range,
-    vlan_range_to_list,
+    vlan_range_to_dict,
 )
 
 
@@ -183,7 +183,7 @@ class L2_interfaces(ResourceModule):
                     for vlan in ["allowed_vlans"]:
                         vlanList = val.get("trunk").get(vlan, [])
                         if vlanList and vlanList != "none":
-                            val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
+                            val["trunk"][vlan] = vlan_range_to_dict(val.get("trunk").get(vlan))
 
     def handle_cdp(self, want_cdp, have_cdp, parser, want):
         if want_cdp is None and have_cdp is None:
