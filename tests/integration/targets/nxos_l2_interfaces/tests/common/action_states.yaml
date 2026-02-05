@@ -1,0 +1,91 @@
+---
+- name: Debug - Start action states tests
+  ansible.builtin.debug:
+    msg: Start nxos_l2_interfaces action states integration tests connection={{ ansible_connection }}
+
+- name: Include - Remove config for clean slate
+  ansible.builtin.include_tasks: _remove_config.yaml
+
+- name: Include - Populate config for testing
+  ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replaced - add access vlan and trunk allowed vlans
+      register: result_replaced
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Assert Replaced - changed and commands generated
+      ansible.builtin.assert:
+        that:
+          - result_replaced.changed == true
+          - "'interface Ethernet1/8' in result_replaced.commands"
+          - "'switchport access vlan 6' in result_replaced.commands"
+          - "'no switchport trunk native vlan 10' in result_replaced.commands"
+          - "'switchport trunk allowed vlan remove 1-199,201-559,1001-4094' in result_replaced.commands | join(' ')"
+
+    - name: Replaced - idempotent
+      register: result_replaced_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Assert Replaced idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_replaced_idempotent.changed == false
+          - result_replaced_idempotent.commands | length == 0
+
+    - name: Merged - should be idempotent since VLANs already present
+      register: result_merged
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: merged
+
+    - name: Assert Merged - no changes since VLANs already exist
+      ansible.builtin.assert:
+        that:
+          - result_merged.changed == false
+          - result_merged.commands | length == 0
+
+    - name: Deleted - remove L2 config from interfaces
+      register: result_deleted
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+
+    - name: Assert Deleted - changed and cleanup commands generated
+      ansible.builtin.assert:
+        that:
+          - result_deleted.changed == true
+          - "'interface Ethernet1/7' in result_deleted.commands"
+          - "'no switchport access vlan 6' in result_deleted.commands"
+          - "'no switchport trunk allowed vlan' in result_deleted.commands"
+          - "'interface Ethernet1/8' in result_deleted.commands"
+          - "'cdp enable' in result_deleted.commands"
+
+  always:
+    - name: Teardown - reset interfaces
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface Ethernet1/7"
+          - "default interface Ethernet1/8"

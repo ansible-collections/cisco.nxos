@@ -1,19 +1,79 @@
 ---
 gathered:
-  - name: "{{ nxos_int1 }}"
+  - name: Ethernet1/1
+  - name: Ethernet1/2
+  - name: Ethernet1/3
+  - name: Ethernet1/4
+  - name: Ethernet1/5
+  - name: Ethernet1/6
+  - name: Ethernet1/7
     access:
       vlan: 6
     trunk:
-      allowed_vlans: "200"
-
-  - name: "{{ nxos_int2 }}"
+      allowed_vlans: "200-270,350,398-999"
+  - name: Ethernet1/8
     trunk:
+      allowed_vlans: "1-4094"
       native_vlan: 10
+  - name: Ethernet1/9
+  - name: Ethernet1/10
+  - name: Ethernet1/11
+  - name: Ethernet1/12
+  - name: Ethernet1/13
+  - name: Ethernet1/14
+  - name: Ethernet1/15
+  - name: Ethernet1/16
+  - name: Ethernet1/17
+  - name: Ethernet1/18
+  - name: Ethernet1/19
+  - name: Ethernet1/20
+  - name: Ethernet1/21
+  - name: Ethernet1/22
+  - name: Ethernet1/23
+  - name: Ethernet1/24
+  - name: Ethernet1/25
+  - name: Ethernet1/26
+  - name: Ethernet1/27
+  - name: Ethernet1/28
+  - name: Ethernet1/29
+  - name: Ethernet1/30
+  - name: Ethernet1/31
+  - name: Ethernet1/32
+  - name: Ethernet1/33
+  - name: Ethernet1/34
+  - name: Ethernet1/35
+  - name: Ethernet1/36
+  - name: Ethernet1/37
+  - name: Ethernet1/38
+  - name: Ethernet1/39
+  - name: Ethernet1/40
+  - name: Ethernet1/41
+  - name: Ethernet1/42
+  - name: Ethernet1/43
+  - name: Ethernet1/44
+  - name: Ethernet1/45
+  - name: Ethernet1/46
+  - name: Ethernet1/47
+  - name: Ethernet1/48
+  - name: Ethernet1/49
+  - name: Ethernet1/50
+  - name: Ethernet1/51
+  - name: Ethernet1/52
+  - name: Ethernet1/53
+  - name: Ethernet1/54
+  - name: Ethernet1/55
+  - name: Ethernet1/56
+  - name: Ethernet1/57
+  - name: Ethernet1/58
+  - name: Ethernet1/59
+  - name: Ethernet1/60
+  - name: Ethernet1/61
+  - name: Ethernet1/62
+  - name: Ethernet1/63
+  - name: Ethernet1/64
+  - name: mgmt0
 
 parsed:
-  - name: nve1
-  - name: Ethernet1/799
-    mode: dot1q-tunnel
   - name: Ethernet1/800
     access:
       vlan: 18
@@ -23,19 +83,20 @@ parsed:
     trunk:
       allowed_vlans: "2,4,15"
   - name: Ethernet1/802
-    mode: fex-fabric
+    mode: dot1q-tunnel
   - name: Ethernet1/803
+    mode: fex-fabric
+  - name: Ethernet1/804
     mode: fabricpath
-  - name: loopback1
 
 rendered:
   - "interface Ethernet1/1"
-  - "switchport trunk allowed vlan 2,4,15"
+  - "switchport trunk allowed vlan add 2,4,15"
   - "switchport trunk native vlan 10"
   - "interface Ethernet1/2"
   - "switchport access vlan 30"
   - "interface Ethernet1/3"
-  - "switchport trunk allowed vlan 5-10,15"
+  - "switchport trunk allowed vlan add 5-10,15"
   - "switchport trunk native vlan 20"
   - "interface Ethernet1/4"
   - "switchport mode fex-fabric"

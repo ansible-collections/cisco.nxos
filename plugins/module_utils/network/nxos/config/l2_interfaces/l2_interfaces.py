@@ -35,7 +35,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     generate_switchport_trunk,
     normalize_interface,
     vlan_list_to_range,
-    vlan_range_to_list,
+    vlan_range_to_dict,
 )
 
 
@@ -56,6 +56,7 @@ class L2_interfaces(ResourceModule):
             "mode",
             "access.vlan",
             "trunk.native_vlan",
+            "trunk.allowed_vlans_none",
             "beacon",
             "link_flap.error_disable",
             "cdp_enable",
@@ -77,8 +78,8 @@ class L2_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = {entry["name"].lower(): entry for entry in self.want}
+        haved = {entry["name"].lower(): entry for entry in self.have}
 
         for each in wantd, haved:
             self.process_list_attrs(each)
@@ -120,56 +121,57 @@ class L2_interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
-        """Compare list attributes"""
-        trunk_want = want.get("trunk", {})
-        trunk_have = have.get("trunk", {})
+        """Compare list attributes for trunk allowed vlans.
 
-        for vlan in ["allowed_vlans"]:
-            want_list = trunk_want.get(vlan, [])
-            have_list = trunk_have.get(vlan, [])
+        want_set: VLANs that should be present on the appliance
+        have_set: VLANs that are currently on the appliance
+        """
+        want_set = set(want.get("trunk", {}).get("allowed_vlans", {}))
+        have_set = set(have.get("trunk", {}).get("allowed_vlans", {}))
 
-            if want_list != "none" and have_list != "none":
-                # Convert VLAN lists to sets for easier comparison
-                want_set = set(want_list)
-                have_set = set(have_list)
+        if self.state == "deleted" and have_set:
+            # For deleted state, remove all trunk allowed vlans if any exist
+            if have_set:
+                self.commands.append("no switchport trunk allowed vlan")
+            return
 
-                # VLANs to be added (present in want, not in have)
-                vlans_to_add = want_set - have_set
-
-                # VLANs to be removed (present in have, not in want or not in add list)
-                vlans_to_remove = [
-                    vl_no
-                    for vl_no in have_list
-                    if vl_no not in vlans_to_add and vl_no not in want_set
-                ]
-            else:
-                want_set = "none" if want_list == "none" else want_list
-                have_set = "none" if have_list == "none" else have_list
-
-                vlans_to_add = [] if want_set == "none" else want_set
-                vlans_to_remove = [] if have_set == "none" else have_set
-
-            vlan_name = vlan.split("_", maxsplit=1)[0]
-
-            if self.state != "merged":
-                if want_set == "none" and have_set != "none":
-                    # if want is none, remove all vlans
-                    self.commands.append(f"switchport trunk {vlan_name} vlan none")
-                elif not want_list and vlans_to_remove:
-                    # remove vlan all as want blank
-                    self.commands.append(f"no switchport trunk {vlan_name} vlan")
-                elif vlans_to_remove:
-                    # remove excess vlans for replaced overridden with vlan entries
-                    self.commands.append(
-                        f"switchport trunk {vlan_name} vlan remove {vlan_list_to_range(sorted(vlans_to_remove))}",
-                    )
-
-            if self.state != "deleted" and vlans_to_add:
+        if self.state in ("merged", "rendered"):
+            # Merged/rendered: only ADD vlans, never remove
+            # Add vlans that are in want but not in have
+            vlans_to_add = want_set - have_set
+            if vlans_to_add:
                 self.commands.extend(
                     generate_switchport_trunk(
-                        vlan_name,
-                        have_list,
-                        vlan_list_to_range(sorted(vlans_to_add)),
+                        "allowed",
+                        True,
+                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                    ),
+                )
+            return
+
+        if self.state in ("replaced", "overridden"):
+            # Replaced/overridden: make device match want_set exactly
+            # Remove vlans that are in have but not in want
+            vlans_to_remove = have_set - want_set
+            # Add vlans that are in want but not in have
+            vlans_to_add = want_set - have_set
+
+            if not want_set and have_set:
+                # Want is empty but have has vlans - remove all
+                self.commands.append("no switchport trunk allowed vlan")
+            elif vlans_to_remove:
+                # Remove excess vlans first
+                self.commands.append(
+                    f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove, key=int))}",
+                )
+
+            if vlans_to_add:
+                # Add missing vlans
+                self.commands.extend(
+                    generate_switchport_trunk(
+                        "allowed",
+                        True,
+                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
                     ),
                 )
 
@@ -181,7 +183,7 @@ class L2_interfaces(ResourceModule):
                     for vlan in ["allowed_vlans"]:
                         vlanList = val.get("trunk").get(vlan, [])
                         if vlanList and vlanList != "none":
-                            val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
+                            val["trunk"][vlan] = vlan_range_to_dict(val.get("trunk").get(vlan))
 
     def handle_cdp(self, want_cdp, have_cdp, parser, want):
         if want_cdp is None and have_cdp is None:

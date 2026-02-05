@@ -58,7 +58,15 @@ options:
             description:
             - List of allowed VLANs in a given trunk port. These are the only VLANs
               that will be configured on the trunk.
+            - The module would consider 1-4093 as the default range enabled if switchport
+              mode is trunk.
             type: str
+          allowed_vlans_none:
+            description:
+            - This option governs the `switchport trunk allowed vlan none` configuration
+            - negation of this command would consider 1-4093 as the default.
+            - This attribute does not ensure idempotency.
+            type: bool
       mode:
         description:
         - Mode in which interface needs to be configured.
@@ -450,6 +458,82 @@ EXAMPLES = """
 #  - name: "Ethernet1/2"
 #    trunk:
 #      native_vlan: 10
+
+# Using allowed_vlans_none
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport mode trunk
+#   switchport trunk allowed vlan 10-100
+# interface Ethernet1/2
+#   switchport mode trunk
+
+- name: Configure trunk interface to allow no VLANs (block all traffic)
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          allowed_vlans_none: true
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans: "10-100"
+# - name: Ethernet1/2
+#   trunk:
+#     allowed_vlans: "1-4094"
+# commands:
+# - interface Ethernet1/1
+# - switchport trunk allowed vlan none
+# after:
+# - name: Ethernet1/1
+#   trunk:
+#     allowed_vlans_none: true
+# - name: Ethernet1/2
+#   trunk:
+#     allowed_vlans: "1-4094"
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/1
+#   switchport mode trunk
+#   switchport trunk allowed vlan none
+# interface Ethernet1/2
+#   switchport mode trunk
+
+# Note: When allowed_vlans_none is not configured on a trunk interface,
+# the module assumes the default allowed VLANs range of 1-4094.
+# This is consistent with NX-OS default behavior where all VLANs are
+# allowed on trunk ports unless explicitly restricted.
+
+- name: Configure specific VLANs after removing none restriction
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          allowed_vlans: "10,20,30"
+      - name: Ethernet1/2
+        trunk:
+          allowed_vlans_none: true
+    state: replaced
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/1
+# - switchport trunk allowed vlan 10,20,30
+# - interface Ethernet1/2
+# - switchport trunk allowed vlan none
 """
 
 RETURN = """

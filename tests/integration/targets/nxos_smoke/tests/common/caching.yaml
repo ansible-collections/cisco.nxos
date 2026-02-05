@@ -56,7 +56,7 @@
         that:
           - '"interface {{ nxos_int1 }}" in result.commands'
           - '"switchport trunk native vlan 10" in result.commands'
-          - '"switchport trunk allowed vlan 2,4,15" in result.commands'
+          - '"switchport trunk allowed vlan add 2,4,15" in result.commands'
           - result.commands|length == 3
 
     - name: Merge layer 2 interfaces configuration (idempotent)
