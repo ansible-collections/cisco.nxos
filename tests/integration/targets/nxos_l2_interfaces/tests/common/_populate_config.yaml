@@ -4,7 +4,7 @@
     lines:
       - switchport
       - switchport access vlan 6
-      - 'switchport trunk allowed vlan 200-270,350,398-999'
+      - "switchport trunk allowed vlan 200-270,350,398-999"
     parents: interface Ethernet1/7
   vars:
     ansible_connection: ansible.netcommon.network_cli
