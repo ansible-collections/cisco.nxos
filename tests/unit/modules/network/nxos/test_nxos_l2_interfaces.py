@@ -492,6 +492,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         expected_commands = [
             "interface Ethernet1/6",
             "no switchport trunk native vlan 10",
+            "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
             "no switchport mode trunk",
             "no switchport trunk allowed vlan",
