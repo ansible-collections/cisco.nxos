@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix key generation in nxos_static_routes to prevent route collision
