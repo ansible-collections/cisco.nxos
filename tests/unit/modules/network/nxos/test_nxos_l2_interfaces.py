@@ -185,6 +185,12 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             interface Ethernet1/6
              switchport
              no cdp enable
+            interface Ethernet1/7
+             switchport mode trunk
+             switchport trunk allowed vlan 23-100
+            interface Ethernet1/8
+             switchport mode trunk
+             no cdp enable
             """,
         )
 
@@ -199,6 +205,21 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                         },
                         "cdp_enable": True,
                     },
+                    {
+                        "name": "Ethernet1/7",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "21-101",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/8",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 10,
+                            "allowed_vlans": "1-4000",
+                        },
+                    },
                 ],
             ),
         )
@@ -207,7 +228,83 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/6",
             "cdp enable",
             "switchport mode trunk",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan add 10-12",
+            "interface Ethernet1/7",
+            "switchport trunk allowed vlan add 21-22,101",
+            "interface Ethernet1/8",
+            "switchport trunk native vlan 10",
+            "switchport trunk allowed vlan add 1-4000",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_merged_subset_superset(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            default interface Ethernet1/6
+            interface Ethernet1/6
+             switchport
+             no cdp enable
+            interface Ethernet1/7
+             switchport mode trunk
+             switchport trunk allowed vlan 23-100
+            interface Ethernet1/8
+             switchport mode trunk
+             no cdp enable
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                        "cdp_enable": True,
+                    },
+                    {
+                        "name": "Ethernet1/7",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "23-99",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/8",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 10,
+                            "allowed_vlans": "1-4094",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/9",
+                        "mode": "trunk",
+                        "trunk": {
+                            "native_vlan": 18,
+                            "allowed_vlans": "222",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "cdp enable",
+            "switchport mode trunk",
+            "switchport trunk allowed vlan add 10-12",
+            "interface Ethernet1/8",
+            "switchport trunk native vlan 10",
+            "switchport trunk allowed vlan add 1-4094",
+            "interface Ethernet1/9",
+            "switchport mode trunk",
+            "switchport trunk native vlan 18",
+            "switchport trunk allowed vlan add 222",
         ]
 
         result = self.execute_module(changed=True)
@@ -247,13 +344,14 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     {
                         "name": "Ethernet1/7",
                         "trunk": {
+                            "native_vlan": 25,
                             "allowed_vlans": "25-27",
                         },
                     },
                     {
                         "name": "Ethernet1/8",
                         "trunk": {
-                            "allowed_vlans": "none",
+                            "allowed_vlans": "33",
                         },
                         "cdp_enable": True,
                     },
@@ -266,12 +364,13 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/6",
             "no cdp enable",
             "switchport access vlan 8",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan add 10-12",
             "interface Ethernet1/7",
             "no cdp enable",
-            "no switchport trunk native vlan 15",
+            "switchport trunk native vlan 25",
             "interface Ethernet1/8",
-            "switchport trunk allowed vlan none",
+            "switchport trunk allowed vlan remove 100-200",
+            "switchport trunk allowed vlan add 33",
         ]
 
         result = self.execute_module(changed=True)
@@ -287,6 +386,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              switchport trunk allowed vlan 11
             interface Ethernet1/7
              switchport
+             switchport trunk allowed vlan 10-500
             """,
         )
 
@@ -313,7 +413,58 @@ class TestNxosL2InterfacesModule(TestNxosModule):
             "interface Ethernet1/7",
             "no cdp enable",
             "switchport access vlan 6",
-            "switchport trunk allowed vlan 10-12",
+            "switchport trunk allowed vlan remove 13-500",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_overridden_idempotent_and_section(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             no cdp enable
+             switchport
+             switchport access vlan 6
+             switchport trunk allowed vlan 10-500
+            interface Ethernet1/7
+             no cdp enable
+             switchport
+             switchport access vlan 6
+             switchport trunk allowed vlan 10-500
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "20-250,350,3999",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/7",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "10-500",
+                        },
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "switchport trunk allowed vlan remove 10-19,251-349,351-500",
+            "switchport trunk allowed vlan add 3999",
         ]
 
         result = self.execute_module(changed=True)
@@ -341,6 +492,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         expected_commands = [
             "interface Ethernet1/6",
             "no switchport trunk native vlan 10",
+            "no switchport trunk allowed vlan",
             "interface Ethernet1/7",
             "no switchport mode trunk",
             "no switchport trunk allowed vlan",

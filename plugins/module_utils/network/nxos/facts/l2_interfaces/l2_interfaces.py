@@ -37,17 +37,20 @@ class L2_interfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
-    def _fix_allowed_vlans(self, parsed_config):
-        """Fix the allowed vlans from tuple to a string and remove interfaces with only name key"""
+    def _default_for_allowed_vlans(self, parsed_config):
+        """Handle default for allowed vlans"""
 
         # Process allowed_vlans
         for interface in parsed_config:
-            trunk = interface.get("trunk", {})
-            allowed_vlans = trunk.get("allowed_vlans")
-            if allowed_vlans and isinstance(allowed_vlans, tuple):
-                trunk["allowed_vlans"] = ",".join(map(str, allowed_vlans))
-
-        return parsed_config
+            # if trunk and allowed vlan is empty then apply default
+            # check if ...allowed vlan none command is not there
+            # if vlan none command is there then don't apply default
+            if interface.get("trunk"):
+                if not interface.get("trunk", {}).get("allowed_vlans") and not interface.get(
+                    "trunk",
+                    {},
+                ).get("allowed_vlans_none"):
+                    interface["trunk"]["allowed_vlans"] = "1-4094"
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for L2_interfaces network resource
@@ -68,14 +71,16 @@ class L2_interfacesFacts(object):
         # parse native config using the L2_interfaces template
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
-        final_objs = self._fix_allowed_vlans(objs)
+
+        # process defaults for allowed vlan
+        self._default_for_allowed_vlans(objs)
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
             l2_interfaces_parser.validate_config(
                 self.argument_spec,
-                {"config": final_objs},
+                {"config": objs},
                 redact=True,
             ),
         )

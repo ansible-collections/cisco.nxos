@@ -3,8 +3,7 @@
   ansible.builtin.include_tasks: cli.yaml
   tags:
     - cli
-
-- name: Include the NX-API tasks
-  ansible.builtin.include_tasks: nxapi.yaml
-  tags:
-    - nxapi
+# - name: Include the NX-API tasks
+#   ansible.builtin.include_tasks: nxapi.yaml
+#   tags:
+#     - nxapi
