@@ -3,7 +3,6 @@
   cisco.nxos.nxos_command:
     commands: show running | section '^vrf'
   register: result
-
 # commented as this generates random timeouts
 
 # - name: Set management fact
