@@ -101,6 +101,7 @@ Name | Description
 [cisco.nxos.nxos_lldp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst)|LLDP interfaces resource module
 [cisco.nxos.nxos_logging_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_global_module.rst)|Logging resource module.
 [cisco.nxos.nxos_ntp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_global_module.rst)|NTP Global resource module.
+[cisco.nxos.nxos_nve_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nve_interface_module.rst)|NVE interface resource module.
 [cisco.nxos.nxos_nxapi](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst)|Manage NXAPI configuration on an NXOS device.
 [cisco.nxos.nxos_ospf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst)|OSPF Interfaces Resource Module.
 [cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module

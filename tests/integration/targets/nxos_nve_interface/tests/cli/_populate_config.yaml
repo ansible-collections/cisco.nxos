@@ -1,0 +1,20 @@
+---
+- name: Populate NVE interface configuration
+  cisco.nxos.nxos_nve_interface:
+    config:
+      enabled: true
+      description: vxlan vtep
+      advertise_virtual_rmac: true
+      host_reacability_bgp: true
+      source_interface_name: loopback1
+      source_interface_hold_time: 60
+      global_multicast_group:
+        address: 239.239.239.239
+        mode: L2
+      vnis:
+        - vni_id: 11111
+          associate_vrf: true
+        - vni_id: 22222
+        - vni_id: 33333
+          suppress_arp: true
+    state: merged

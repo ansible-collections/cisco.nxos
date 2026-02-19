@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_nve_interface gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather NVE interace facts using gathered.
+      cisco.nxos.nxos_nve_interface:
+        state: gathered
+      register: result
+
+    - name: Assert the result.
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - gathered['config'] == result['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
