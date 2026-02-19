@@ -82,5 +82,6 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.ansible-lint.result }}',
           '${{ needs.unit-source.result }}',
-          '${{ needs.sonar.result }}'
+          '${{ needs.sonar.result }}',
+          '${{ needs.report-status.result }}'
           ])"
