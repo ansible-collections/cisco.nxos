@@ -408,8 +408,8 @@ class Bgp_global(ResourceModule):
                     # we are inspecting neighbor within a VRF
                     # if the given neighbor has AF we return True
                     has_af = True
-                else:
-                    # we are inspecting VRF as a whole
+                elif not neighbor:
+                    # we are inspecting only VRF as a whole
                     # if there is at least one neighbor
                     # with AF or VRF has AF itself return True
                     if vrf_nbr_has_af or vrf_has_af:
