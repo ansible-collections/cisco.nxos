@@ -27,7 +27,7 @@ nodes:
         limit-resource m4route-mem minimum 58 maximum 58
         limit-resource m6route-mem minimum 8 maximum 8
 
-      feature nxapi  
+      feature nxapi
 
       no password strength-check
       username admin password 5 $5$AADOBF$GVXUV2cvmlZH42xDu6wnqfBpV9gXF61WGVNrGF5Gk6C  role network-admin
@@ -48,7 +48,7 @@ nodes:
       vrf context management
         ip name-server 192.168.255.1
         ip route 0.0.0.0/0 192.168.255.1
-      nxapi http port 80  
+      nxapi http port 80
 
       interface Ethernet1/1
 
