@@ -598,7 +598,7 @@ releases:
     fragments:
       - issue_920.yaml
       - nxos_interfaces-switchport-prerequisite.yaml
-    release_date: '2026-03-05'
+    release_date: "2026-03-05"
   2.0.0:
     changes:
       bugfixes:
