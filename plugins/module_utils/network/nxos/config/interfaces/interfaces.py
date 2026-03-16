@@ -174,7 +174,7 @@ class Interfaces(ResourceModule):
         have_duplex = have.get("duplex")
         want_speed = want.get("speed")
         have_speed = have.get("speed")
-        
+
         if self.state == "deleted":
             if have_duplex:
                 self.addcmd(have, "duplex", True)
@@ -184,7 +184,7 @@ class Interfaces(ResourceModule):
             if want_duplex is not None and want_duplex != have_duplex:
                 if not (want_duplex == "auto" and have_duplex is None):
                     self.addcmd(want, "duplex", False)
-        
+
             if want_speed is not None and want_speed != have_speed:
                 if not (want_speed == "auto" and have_speed is None):
                     self.addcmd(want, "speed", False)
