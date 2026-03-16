@@ -757,3 +757,68 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_duplex_before_speed_ordering(self):
+        # Validate that duplex command is always generated before speed
+        # to satisfy NX-OS sequencing requirement when transitioning to/from auto.
+        # Using asserting on raw (unsorted) commands to verify exact order.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/5
+            speed 1000
+            duplex full
+        """,
+        )
+    
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/5", speed="auto", duplex="auto"),
+            ],
+            state="merged",
+        )
+    
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+    
+        commands = result["commands"]
+        self.assertIn("duplex auto", commands)
+        self.assertIn("speed auto", commands)
+    
+        # Critical: duplex must appear before speed in the command list
+        duplex_index = commands.index("duplex auto")
+        speed_index = commands.index("speed auto")
+        self.assertLess(
+            duplex_index,
+            speed_index,
+            "duplex command must be generated before speed to satisfy NX-OS sequencing requirement",
+        )
+    
+    def test_auto_speed_duplex_idempotency(self):
+        # When want is auto and have has no speed/duplex config (device is already
+        # at default state), no commands should be generated.
+        # NX-OS does not write 'speed auto' or 'duplex auto' to running config,
+        # so have will have no speed/duplex keys — this must not trigger a change.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/5
+        """,
+        )
+    
+        playbook = dict(
+            config=[
+                dict(name="Ethernet1/5", speed="auto", duplex="auto"),
+            ],
+            state="merged",
+        )
+    
+        set_module_args(playbook)
+        # No changes expected — auto with no existing config means already at default
+        self.execute_module(changed=False, commands=[])
