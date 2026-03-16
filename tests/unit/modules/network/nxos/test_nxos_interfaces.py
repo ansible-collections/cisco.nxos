@@ -773,21 +773,21 @@ class TestNxosInterfacesModule(TestNxosModule):
             duplex full
         """,
         )
-    
+
         playbook = dict(
             config=[
                 dict(name="Ethernet1/5", speed="auto", duplex="auto"),
             ],
             state="merged",
         )
-    
+
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-    
+
         commands = result["commands"]
         self.assertIn("duplex auto", commands)
         self.assertIn("speed auto", commands)
-    
+
         # Critical: duplex must appear before speed in the command list
         duplex_index = commands.index("duplex auto")
         speed_index = commands.index("speed auto")
@@ -796,7 +796,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             speed_index,
             "duplex command must be generated before speed to satisfy NX-OS sequencing requirement",
         )
-    
+
     def test_auto_speed_duplex_idempotency(self):
         # When want is auto and have has no speed/duplex config (device is already
         # at default state), no commands should be generated.
@@ -811,14 +811,14 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface Ethernet1/5
         """,
         )
-    
+
         playbook = dict(
             config=[
                 dict(name="Ethernet1/5", speed="auto", duplex="auto"),
             ],
             state="merged",
         )
-    
+
         set_module_args(playbook)
         # No changes expected — auto with no existing config means already at default
         self.execute_module(changed=False, commands=[])
