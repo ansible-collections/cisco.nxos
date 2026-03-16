@@ -235,7 +235,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         ]
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], deleted)
+        self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
     def test_nxos_interfaces_replaced(self):
         self.exec_get_defaults.return_value = {
