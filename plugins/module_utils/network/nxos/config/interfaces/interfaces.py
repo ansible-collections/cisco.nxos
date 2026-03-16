@@ -174,15 +174,20 @@ class Interfaces(ResourceModule):
         have_duplex = have.get("duplex")
         want_speed = want.get("speed")
         have_speed = have.get("speed")
-
-        if want_duplex is not None and want_duplex != have_duplex:
-            # if want is auto and have has no config, device is already at default — skip
-            if not (want_duplex == "auto" and have_duplex is None):
-                self.addcmd(want, "duplex", False)
-
-        if want_speed is not None and want_speed != have_speed:
-            if not (want_speed == "auto" and have_speed is None):
-                self.addcmd(want, "speed", False)
+        
+        if self.state == "deleted":
+            if have_duplex:
+                self.addcmd(have, "duplex", True)
+            if have_speed:
+                self.addcmd(have, "speed", True)
+        else:
+            if want_duplex is not None and want_duplex != have_duplex:
+                if not (want_duplex == "auto" and have_duplex is None):
+                    self.addcmd(want, "duplex", False)
+        
+            if want_speed is not None and want_speed != have_speed:
+                if not (want_speed == "auto" and have_speed is None):
+                    self.addcmd(want, "speed", False)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
