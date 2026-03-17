@@ -53,8 +53,6 @@ plugins/action/ntp_global.py action-plugin-docs
 plugins/action/ntp_options.py action-plugin-docs
 plugins/action/ntp.py action-plugin-docs
 plugins/action/nxapi.py action-plugin-docs
-plugins/action/nxos.py action-plugin-docs
-plugins/action/ospf_interfaces.py action-plugin-docs
 plugins/action/ospf_interfaces.py action-plugin-docs
 plugins/action/ospf_vrf.py action-plugin-docs
 plugins/action/ospf.py action-plugin-docs
