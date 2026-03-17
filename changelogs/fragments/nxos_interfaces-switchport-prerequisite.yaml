@@ -1,0 +1,4 @@
+---
+doc_changes:
+  - nxos_interfaces - Added prerequisite note that ``system default switchport shutdown``
+    must not be enabled on the device for the module to function correctly.

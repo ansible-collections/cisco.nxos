@@ -24,6 +24,12 @@ author:
 notes:
   - Tested against NXOS 10.4(2) on CML
   - Unsupported for Cisco MDS
+  - This module assumes the device is configured with the default switchport
+    behavior, specifically that C(system default switchport shutdown) is not
+    enabled. If C(system default switchport shutdown) is enabled on the device,
+    the module will not function correctly. The only resolution is to revert
+    the device to the default setting using C(no system default switchport shutdown).
+    There is currently no workaround for devices with this non-default configuration.
 options:
   config:
     description: A dictionary of interface options
