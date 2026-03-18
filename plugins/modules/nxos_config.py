@@ -52,14 +52,25 @@ options:
     elements: str
   src:
     description:
-    - The I(src) argument provides a path to the configuration file to load into the
-      remote system.  The path can either be a full system path to the configuration
-      file if the value starts with / or relative to the root of the implemented role
-      or playbook. This argument is mutually exclusive with the I(lines) and I(parents)
-      arguments. The configuration lines in the source file should be similar to how it
-      will appear if present in the running-configuration of the device including indentation
-      to ensure idempotency and correct diff.
+    - Specifies the source path to the file that contains the configuration or configuration
+      template to load.  The path to the source file can either be the full path on
+      the Ansible control host or a relative path from the playbook or role root directory. This
+      argument is mutually exclusive with I(lines), I(parents), I(replace_src), and I(content). The configuration lines in the
+      source file should be similar to how it will appear if present in the running-configuration
+      of the device including the indentation to ensure idempotency and correct diff.
+    - "NOTE: The I(src) parameter will no longer process Jinja2 templates starting in January 2028.
+      To use templated configurations, render the template using C(ansible.builtin.template) lookup
+      and pass the result to the I(content) parameter instead."
     type: path
+  content:
+    description:
+    - Configuration content to apply to the device. This should be the rendered configuration
+      text, not a file path.
+    - This is the recommended way to provide templated configurations. Use C(ansible.builtin.template)
+      lookup to render your Jinja2 template and pass the output to this parameter.
+    - This argument is mutually exclusive with I(src), I(lines), I(parents), and I(replace_src).
+    - 'Example: C(content: "{{ lookup(''ansible.builtin.template'', ''config.j2'') }}")'
+    type: str
   replace_src:
     description:
     - The I(replace_src) argument provides path to the configuration file to load
@@ -226,11 +237,16 @@ options:
         type: path
     type: dict
 notes:
+- Tested against Cisco NXOS 9.3(x) on Nexus switches.
 - Unsupported for Cisco MDS
 - Abbreviated commands are NOT idempotent, see
   U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
   appear if present in the running configuration on device including the indentation.
+- This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+- The recommended way to use templated configurations is to render the template using C(ansible.builtin.template)
+  lookup and pass the result to the I(content) parameter. Using I(src) with Jinja2 templates is deprecated.
 """
 
 EXAMPLES = """
@@ -284,6 +300,32 @@ EXAMPLES = """
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
+
+- name: Render a Jinja2 template onto an NXOS device (DEPRECATED - use content parameter)
+  cisco.nxos.nxos_config:
+    backup: true
+    src: nxos_template.j2
+
+- name: Apply templated configuration using content parameter (RECOMMENDED)
+  cisco.nxos.nxos_config:
+    content: "{{ lookup('ansible.builtin.template', 'nxos_template.j2') }}"
+    backup: true
+
+- name: Apply templated configuration with backup options (RECOMMENDED)
+  cisco.nxos.nxos_config:
+    content: "{{ lookup('ansible.builtin.template', 'nxos_template.j2') }}"
+    backup: true
+    backup_options:
+      filename: backup.cfg
+      dir_path: /home/user
+
+- name: Load configuration from pre-rendered template
+  cisco.nxos.nxos_config:
+    content: |
+      interface Ethernet1/1
+       description Uplink to Core
+       ip address 10.1.1.1/24
+       no shutdown
 """
 
 RETURN = """
@@ -355,6 +397,8 @@ def get_candidate(module):
     if module.params["src"]:
         if module.params["replace"] != "config":
             candidate = module.params["src"]
+    elif module.params["content"]:
+        candidate = module.params["content"]
     if module.params["replace"] == "config":
         candidate = "config replace {0}".format(module.params["replace_src"])
     elif module.params["lines"]:
@@ -395,6 +439,7 @@ def main():
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
     argument_spec = dict(
         src=dict(type="path"),
+        content=dict(type="str"),
         replace_src=dict(),
         lines=dict(aliases=["commands"], type="list", elements="str"),
         parents=dict(type="list", elements="str"),
@@ -415,12 +460,12 @@ def main():
         diff_ignore_lines=dict(type="list", elements="str"),
     )
 
-    mutually_exclusive = [("lines", "src", "replace_src"), ("parents", "src")]
+    mutually_exclusive = [("lines", "src", "replace_src", "content"), ("parents", "src", "content")]
 
     required_if = [
-        ("match", "strict", ["lines", "src"], True),
-        ("match", "exact", ["lines", "src"], True),
-        ("replace", "block", ["lines", "src"], True),
+        ("match", "strict", ["lines", "src", "content"], True),
+        ("match", "exact", ["lines", "src", "content"], True),
+        ("replace", "block", ["lines", "src", "content"], True),
         ("replace", "config", ["replace_src"]),
         ("diff_against", "intended", ["intended_config"]),
     ]
@@ -454,7 +499,7 @@ def main():
         if module.params["backup"]:
             result["__backup__"] = contents
 
-    if any((module.params["src"], module.params["lines"], replace_src)):
+    if any((module.params["src"], module.params["lines"], module.params["content"], replace_src)):
         match = module.params["match"]
         replace = module.params["replace"]
 
@@ -583,13 +628,13 @@ def main():
                     },
                 )
 
-    if result.get("changed") and any((module.params["src"], module.params["lines"])):
+    if result.get("changed") and any((module.params["src"], module.params["lines"], module.params["content"])):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"
             " the running configuration on device"
         )
-        if module.params["src"]:
+        if module.params["src"] or module.params["content"]:
             msg += " including the indentation"
         if "warnings" in result:
             result["warnings"].append(msg)

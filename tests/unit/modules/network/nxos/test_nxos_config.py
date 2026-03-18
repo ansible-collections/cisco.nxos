@@ -313,3 +313,70 @@ class TestNxosConfigModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(self.get_config.call_count, 1)
         self.assertEqual(self.get_config.call_args[1], dict(flags=["all"]))
+
+    def test_nxos_config_content(self):
+        content = load_fixture("nxos_config", "candidate.cfg")
+        args = dict(content=content)
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(content, self.running_config),
+        )
+        set_module_args(args)
+
+        result = self.execute_module(changed=True)
+        config = [
+            "hostname switch01",
+            "interface Ethernet1",
+            "description test interface",
+            "no shutdown",
+            "ip routing",
+        ]
+
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
+
+    def test_nxos_config_content_and_lines_fails(self):
+        args = dict(content="foo", lines=["foo"])
+        set_module_args(args)
+        result = self.execute_module(failed=True)
+
+    def test_nxos_config_content_and_src_fails(self):
+        args = dict(content="foo", src="foo")
+        set_module_args(args)
+        result = self.execute_module(failed=True)
+
+    def test_nxos_config_content_and_parents_fails(self):
+        args = dict(content="foo", parents=["foo"])
+        set_module_args(args)
+        result = self.execute_module(failed=True)
+
+    def test_nxos_replace_block_content(self):
+        content = load_fixture("nxos_config", "candidate.cfg")
+        args = dict(content=content, replace="block")
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(content, self.running_config),
+        )
+        set_module_args(args)
+
+        result = self.execute_module(changed=True)
+        config = [
+            "hostname switch01",
+            "interface Ethernet1",
+            "description test interface",
+            "no shutdown",
+            "ip routing",
+        ]
+
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
+
+    def test_nxos_config_match_strict_requires_lines_or_src_or_content(self):
+        args = dict(match="strict")
+        set_module_args(args)
+        result = self.execute_module(failed=True)
+
+    def test_nxos_config_match_exact_with_content(self):
+        content = "hostname switch01\nip routing"
+        args = dict(content=content, match="exact")
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(content, self.running_config, diff_match="exact"),
+        )
+        set_module_args(args)
+        result = self.execute_module(changed=True)
