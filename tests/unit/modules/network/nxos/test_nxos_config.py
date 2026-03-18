@@ -376,7 +376,9 @@ class TestNxosConfigModule(TestNxosModule):
         content = "hostname switch01\nip routing"
         args = dict(content=content, match="exact")
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(content, self.running_config, diff_match="exact"),
+            return_value=self.cliconf_obj.get_diff(
+                content, self.running_config, diff_match="exact"
+            ),
         )
         set_module_args(args)
         result = self.execute_module(changed=True)
