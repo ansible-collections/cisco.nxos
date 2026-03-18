@@ -1,0 +1,3 @@
+bugfixes:
+  - cisco.nxos.nxos_static_routes - Fix non-existent routes deletion incorrectly removing existing routes. (https://github.com/ansible-collections/cisco.nxos/issues/985)
+  - cisco.nxos.nxos_static_routes - Fix parsing of routes on VLAN interfaces. (https://github.com/ansible-collections/cisco.nxos/issues/986)

@@ -846,7 +846,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                                 "route_name": "replaced_route2",
                                             },
                                         ],
-                                        "dest": "192.0.2.16/28",
+                                        "dest": "192.0.2.17/28",
                                     },
                                     {
                                         "next_hops": [
@@ -855,7 +855,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                                 "tag": 12,
                                             },
                                         ],
-                                        "dest": "192.0.2.80/28",
+                                        "dest": "192.0.2.79/28",
                                     },
                                 ],
                             },
@@ -1371,3 +1371,90 @@ class TestNxosStaticRoutesModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], expected_commands)
+
+    def test_nxos_static_routes_deleted_vlan(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 192.0.2.20/28 Vlan274 192.0.2.21 name vlan_route1
+            ip route 192.0.2.22/28 Vlan275 192.0.2.23 name vlan_route2
+            ip route 192.0.2.17/28 192.0.2.23 name replaced_route1 3
+            ip route 192.0.2.17/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
+            ip route 192.0.2.79/28 192.0.2.26 tag 12
+            vrf context Test
+              ip route 192.0.2.48/28 192.0.2.13
+              ip route 192.0.2.48/28 192.0.2.14 5
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "next_hops": [
+                                            {
+                                                "interface": "Vlan274",
+                                                "forward_router_address": "192.0.2.21",
+                                                "route_name": "vlan_route1",
+                                            },
+                                        ],
+                                        "dest": "192.0.2.20/28",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="deleted",
+            ),
+        )
+        commands = [
+            "no ip route 192.0.2.20/28 Vlan274 192.0.2.21 name vlan_route1",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_static_routes_deleted_vlan_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 192.0.2.22/28 Vlan275 192.0.2.23 name vlan_route2
+            ip route 192.0.2.17/28 192.0.2.23 name replaced_route1 3
+            ip route 192.0.2.17/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
+            ip route 192.0.2.79/28 192.0.2.26 tag 12
+            vrf context Test
+              ip route 192.0.2.48/28 192.0.2.13
+              ip route 192.0.2.48/28 192.0.2.14 5
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "next_hops": [
+                                            {
+                                                "interface": "Vlan274",
+                                                "forward_router_address": "192.0.2.21",
+                                                "route_name": "vlan_route1",
+                                            },
+                                        ],
+                                        "dest": "192.0.2.20/28",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="deleted",
+            ),
+        )
+        commands = []
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], commands)
