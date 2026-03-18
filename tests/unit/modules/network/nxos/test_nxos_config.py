@@ -377,7 +377,9 @@ class TestNxosConfigModule(TestNxosModule):
         args = dict(content=content, match="exact")
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                content, self.running_config, diff_match="exact"
+                content,
+                self.running_config,
+                diff_match="exact",
             ),
         )
         set_module_args(args)
