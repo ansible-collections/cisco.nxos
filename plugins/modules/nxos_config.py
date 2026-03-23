@@ -243,8 +243,6 @@ notes:
   U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
   appear if present in the running configuration on device including the indentation.
-- This module works with connection C(network_cli) and C(httpapi).
-  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 - The recommended way to use templated configurations is to render the template using C(ansible.builtin.template)
   lookup and pass the result to the I(content) parameter. Using I(src) with Jinja2 templates is deprecated.
 """
