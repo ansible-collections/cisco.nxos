@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 DOCUMENTATION = """
 module: nxos_devicealias
 short_description: Configuration of device alias for Cisco NXOS MDS Switches.
@@ -109,7 +108,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
-
 
 __metaclass__ = type
 

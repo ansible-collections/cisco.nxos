@@ -19,7 +19,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from textwrap import dedent
@@ -29,7 +28,6 @@ from ansible_collections.cisco.nxos.plugins.modules import nxos_l2_interfaces
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
 from .nxos_module import TestNxosModule
-
 
 ignore_provider_arg = True
 
