@@ -93,35 +93,34 @@ class L2_interfacesFacts(object):
 
         return ansible_facts
 
-    
-    def _flatten_vlans(self,data):
+    def _flatten_vlans(self, data):
         """
         Flatten the vlan lines if it also contains lines that mention 'switchport trunk allowed vlan add'
         as we will merge all the entries in a list
         :param obj: data
         :returns: flattened vlan entries as switchport trunk allowed vlan
         """
-        lines = data.split('\n')
+        lines = data.split("\n")
         vlans = ""
         cur_indent = 0
         result = []
         for line_index in range(len(lines)):
             line = str(lines[line_index])
             # If line starts with one of these entries, that is special one liner entry
-            if re.match(r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)",line):
+            if re.match(r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)", line):
                 result.append(line)
 
             # If line starts with  allowed vlan add
-            elif re.match(r"\s+switchport\strunk\sallowed\svlan\sadd",line):
+            elif re.match(r"\s+switchport\strunk\sallowed\svlan\sadd", line):
                 if vlans:
-                    vlans += "," + line.split('add')[-1].strip()
+                    vlans += "," + line.split("add")[-1].strip()
                 else:
-                    vlans = line.split('add')[-1].strip()
+                    vlans = line.split("add")[-1].strip()
                 cur_indent = len(line) - len(line.lstrip())
 
             # If line starts only with allowed vlan
-            elif re.match(r"\s+switchport\strunk\sallowed\svlan",line):
-                vlans = line.split('vlan')[-1].strip()
+            elif re.match(r"\s+switchport\strunk\sallowed\svlan", line):
+                vlans = line.split("vlan")[-1].strip()
                 cur_indent = len(line) - len(line.lstrip())
 
             else:
@@ -132,5 +131,5 @@ class L2_interfacesFacts(object):
 
         if vlans:
             result.append(f"{' ' * cur_indent}switchport trunk allowed vlan {vlans}")
-        
-        return '\n'.join(result)
+
+        return "\n".join(result)
