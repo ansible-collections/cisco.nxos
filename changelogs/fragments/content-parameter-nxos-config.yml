@@ -4,5 +4,5 @@ minor_changes:
   - which provides a cleaner alternative to the deprecated template auto-processing behavior of the ``src`` parameter.
 
 deprecated_features:
-  - The ``src`` parameter's automatic Jinja2 template processing is deprecated and will be removed in march 2028 from nxos_config module
+  - The ``src`` parameter's automatic Jinja2 template processing is deprecated and will be removed in March 2028 from nxos_config module
   - Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.
