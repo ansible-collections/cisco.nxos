@@ -68,6 +68,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
              switchport access vlan 20
              switchport trunk native vlan 40
              switchport trunk allowed vlan 30-45,47
+             switchport trunk allowed vlan add 50,52,54
             interface Ethernet1/2
              switchport mode trunk
              switchport trunk native vlan 20
@@ -91,7 +92,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 "mode": "trunk",
                 "name": "Ethernet1/6",
                 "trunk": {
-                    "allowed_vlans": "30-45,47",
+                    "allowed_vlans": "30-45,47,50,52,54",
                     "native_vlan": 40,
                 },
             },
@@ -126,6 +127,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                     interface Ethernet1/800
                      switchport access vlan 18
                      switchport trunk allowed vlan 210
+                     switchport trunk allowed vlan add 300,310
                     interface Ethernet1/801
                      switchport trunk allowed vlan 2,4,15
                     interface Ethernet1/802
@@ -153,7 +155,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 },
                 "name": "Ethernet1/800",
                 "trunk": {
-                    "allowed_vlans": "210",
+                    "allowed_vlans": "210,300,310",
                 },
             },
             {
