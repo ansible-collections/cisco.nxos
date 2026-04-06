@@ -113,14 +113,14 @@ class L2_interfacesFacts(object):
             # If line starts with  allowed vlan add
             elif re.match(r"\s+switchport\strunk\sallowed\svlan\sadd", line):
                 if vlans:
-                    vlans += "," + line.split("add")[-1].strip()
+                    vlans += "," + line.rsplit('add', maxsplit=1)[-1].strip()
                 else:
-                    vlans = line.split("add")[-1].strip()
+                    vlans = line.rsplit('add', maxsplit=1)[-1].strip()
                 cur_indent = len(line) - len(line.lstrip())
 
             # If line starts only with allowed vlan
             elif re.match(r"\s+switchport\strunk\sallowed\svlan", line):
-                vlans = line.split("vlan")[-1].strip()
+                vlans = line.rsplit('vlan', maxsplit=1)[-1].strip()
                 cur_indent = len(line) - len(line.lstrip())
 
             else:
