@@ -47,11 +47,22 @@
           - "result.commands | length == 3"
 
     - name: Setup overlapping routes for targeted VRF vs Global delete test
-      cisco.nxos.nxos_config:
-        lines:
-          - ip route 192.0.2.200/32 192.0.2.222
-          - vrf context trial_vrf
-          - ip route 192.0.2.200/32 192.0.2.222
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+        state: merged
 
     - name: Delete ONLY the non-VRF (global) route
       cisco.nxos.nxos_static_routes:
