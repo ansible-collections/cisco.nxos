@@ -104,14 +104,19 @@ class L2_interfacesFacts(object):
         vlans = ""
         cur_indent = 0
         result = []
-        for line_index in range(len(lines)):
-            line = str(lines[line_index])
+        regex_vlan_special_case = re.compile(
+            r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)"
+        )
+        regex_vlan_add_line = re.compile(r"\s+switchport\strunk\sallowed\svlan\sadd")
+        regex_vlan_set_line = re.compile(r"\s+switchport\strunk\sallowed\svlan")
+
+        for line in lines:
             # If line starts with one of these entries, that is special one liner entry
-            if re.match(r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)", line):
+            if regex_vlan_special_case.match(line):
                 result.append(line)
 
             # If line starts with  allowed vlan add
-            elif re.match(r"\s+switchport\strunk\sallowed\svlan\sadd", line):
+            elif regex_vlan_add_line.match(line):
                 if vlans:
                     vlans += "," + line.rsplit("add", maxsplit=1)[-1].strip()
                 else:
@@ -119,7 +124,7 @@ class L2_interfacesFacts(object):
                 cur_indent = len(line) - len(line.lstrip())
 
             # If line starts only with allowed vlan
-            elif re.match(r"\s+switchport\strunk\sallowed\svlan", line):
+            elif regex_vlan_set_line.match(line):
                 vlans = line.rsplit("vlan", maxsplit=1)[-1].strip()
                 cur_indent = len(line) - len(line.lstrip())
 
