@@ -46,5 +46,60 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
+    - name: Setup overlapping routes for targeted VRF vs Global delete test
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+        state: merged
+
+    - name: Delete ONLY the non-VRF (global) route
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+        state: deleted
+      register: result
+
+    - ansible.builtin.assert:
+        that:
+          - "result.changed == true"
+          - "'no ip route 192.0.2.200/32 192.0.2.222' in result.commands"
+          - "'vrf trial_vrf' not in (result.commands | join(' '))"
+
+    - name: Delete ONLY the VRF route
+      cisco.nxos.nxos_static_routes:
+        config:
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.200/32
+                    next_hops:
+                      - forward_router_address: 192.0.2.222
+        state: deleted
+      register: result
+
+    - ansible.builtin.assert:
+        that:
+          - "result.changed == true"
+          - "'vrf context trial_vrf' in result.commands"
+          - "'no ip route 192.0.2.200/32 192.0.2.222' in result.commands"
+
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
