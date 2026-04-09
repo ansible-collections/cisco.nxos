@@ -105,7 +105,7 @@ class L2_interfacesFacts(object):
         cur_indent = 0
         result = []
         regex_vlan_special_case = re.compile(
-            r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)"
+            r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)",
         )
         regex_vlan_add_line = re.compile(r"\s+switchport\strunk\sallowed\svlan\sadd")
         regex_vlan_set_line = re.compile(r"\s+switchport\strunk\sallowed\svlan")
