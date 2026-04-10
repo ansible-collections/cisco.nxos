@@ -135,6 +135,24 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>content</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configuration content to apply to the device. This should be the rendered configuration text, not a file path.</div>
+                        <div>This is the recommended way to provide templated configurations. Use <code>ansible.builtin.template</code> lookup to render your Jinja2 template and pass the output to this parameter.</div>
+                        <div>This argument is mutually exclusive with <em>src</em>, <em>lines</em>, <em>parents</em>, and <em>replace_src</em>.</div>
+                        <div>Example: <code>content: &quot;{{ lookup(&#x27;ansible.builtin.template&#x27;, &#x27;config.j2&#x27;</code> }}&quot;)</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>defaults</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -343,7 +361,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <em>src</em> argument provides a path to the configuration file to load into the remote system.  The path can either be a full system path to the configuration file if the value starts with / or relative to the root of the implemented role or playbook. This argument is mutually exclusive with the <em>lines</em> and <em>parents</em> arguments. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including indentation to ensure idempotency and correct diff.</div>
+                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>, <em>replace_src</em>, and <em>content</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
+                        <div>NOTE: The <em>src</em> parameter will no longer process Jinja2 templates starting in January 2028. To use templated configurations, render the template using <code>ansible.builtin.template</code> lookup and pass the result to the <em>content</em> parameter instead.</div>
                 </td>
             </tr>
     </table>
@@ -354,9 +373,11 @@ Notes
 -----
 
 .. note::
+   - Tested against Cisco NXOS 9.3(x) on Nexus switches.
    - Unsupported for Cisco MDS
    - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands.
    - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
+   - The recommended way to use templated configurations is to render the template using ``ansible.builtin.template`` lookup and pass the result to the *content* parameter. Using *src* with Jinja2 templates is deprecated.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
@@ -418,6 +439,32 @@ Examples
         backup_options:
           filename: backup.cfg
           dir_path: /home/user
+
+    - name: Render a Jinja2 template onto an NXOS device (DEPRECATED - use content parameter)
+      cisco.nxos.nxos_config:
+        backup: true
+        src: nxos_template.j2
+
+    - name: Apply templated configuration using content parameter (RECOMMENDED)
+      cisco.nxos.nxos_config:
+        content: "{{ lookup('ansible.builtin.template', 'nxos_template.j2') }}"
+        backup: true
+
+    - name: Apply templated configuration with backup options (RECOMMENDED)
+      cisco.nxos.nxos_config:
+        content: "{{ lookup('ansible.builtin.template', 'nxos_template.j2') }}"
+        backup: true
+        backup_options:
+          filename: backup.cfg
+          dir_path: /home/user
+
+    - name: Load configuration from pre-rendered template
+      cisco.nxos.nxos_config:
+        content: |
+          interface Ethernet1/1
+           description Uplink to Core
+           ip address 10.1.1.1/24
+           no shutdown
 
 
 
