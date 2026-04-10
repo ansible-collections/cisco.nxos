@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 DOCUMENTATION = """
 module: nxos_vsan
 short_description: Configuration of vsan for Cisco NXOS MDS Switches.
@@ -93,7 +92,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
-
 
 __metaclass__ = type
 

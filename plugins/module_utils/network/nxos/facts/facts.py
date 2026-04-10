@@ -5,7 +5,6 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 """
 The facts class for nxos
@@ -120,7 +119,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_interfaces.vrf_interfaces import (
     Vrf_interfacesFacts,
 )
-
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
