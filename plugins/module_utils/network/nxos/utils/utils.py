@@ -219,7 +219,7 @@ class Version:
     """Simple class to compare arbitrary versions"""
 
     def __init__(self, version_string):
-        self.components = version_string.split(".")
+        self.components = list(map(int, version_string.split(".")))
 
     def __eq__(self, other):
         other = _coerce(other)
