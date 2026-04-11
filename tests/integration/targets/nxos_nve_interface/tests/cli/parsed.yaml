@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START Parsed nxos_nve_interface state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Parse externally provided NVE interface config.
+      cisco.nxos.nxos_nve_interface:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: Assert the result.
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - parsed['config'] == result['parsed']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
