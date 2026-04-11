@@ -4,6 +4,26 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.2.0
+=======
+
+Minor Changes
+-------------
+
+- nxos_l2_interfaces - Add `trunk.allowed_vlans_none` option to explicitly configure `switchport trunk allowed vlan none` on interfaces.
+
+Bugfixes
+--------
+
+- nxos_l2_interfaces - Fix VLAN range sorting to use numeric order instead of lexicographic string sorting, which caused incorrect range generation (e.g., "1,10,100,11" instead of "1-100").
+- nxos_l2_interfaces - Fix default allowed VLANs handling - trunk interfaces now correctly assume 1-4094 as default when no explicit allowed_vlans is configured.
+- nxos_l2_interfaces - Fix state handling logic for merged, replaced, overridden, and deleted states to correctly add/remove VLANs based on the desired state.
+
+Documentation Changes
+---------------------
+
+- nxos_interfaces - Added prerequisite note that ``system default switchport shutdown`` must not be enabled on the device for the module to function correctly.
+
 v11.1.3
 =======
 
