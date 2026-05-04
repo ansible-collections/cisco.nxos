@@ -1,12 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 import socket
 
 from functools import total_ordering
 from itertools import count, groupby
-
 
 LOGGING_SEVMAP = {
     0: "emergency",
