@@ -579,6 +579,47 @@ releases:
     fragments:
       - fix_nxos_facts.yaml
     release_date: "2026-01-29"
+  11.2.0:
+    changes:
+      bugfixes:
+        - nxos_l2_interfaces - Fix VLAN range sorting to use numeric order instead of
+          lexicographic string sorting, which caused incorrect range generation (e.g.,
+          "1,10,100,11" instead of "1-100").
+        - nxos_l2_interfaces - Fix default allowed VLANs handling - trunk interfaces
+          now correctly assume 1-4094 as default when no explicit allowed_vlans is configured.
+        - nxos_l2_interfaces - Fix state handling logic for merged, replaced, overridden,
+          and deleted states to correctly add/remove VLANs based on the desired state.
+        - nxos_l2_interfaces - Fix to facts parsing when multiple vlan add lines are
+          sent/parsed. These lines are now instead merged into a single command first
+          via _flatten_vlan function, and then sent as data to be parsed
+        - nxos_static_routes - Fixed incorrect deletion of route in VRF even when VRF
+          is not specified.
+      deprecated_features:
+        - The ``src`` parameter's automatic Jinja2 template processing is deprecated
+          and will be removed in March 2028 from nxos_config module
+        - Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.
+      doc_changes:
+        - nxos_interfaces - Added prerequisite note that ``system default switchport
+          shutdown`` must not be enabled on the device for the module to function correctly.
+      minor_changes:
+        - Added ``content`` parameter to support pre-rendered template configurations
+          in nxos_config module
+        - Updated ansible.netcommon dependency minimum required version from >=8.1.0
+          to >=8.5.1.
+        - nxos_l2_interfaces - Add `trunk.allowed_vlans_none` option to explicitly configure
+          `switchport trunk allowed vlan none` on interfaces.
+        - which provides a cleaner alternative to the deprecated template auto-processing
+          behavior of the ``src`` parameter.
+    fragments:
+      - ci_enhancement.yaml
+      - content-parameter-nxos-config.yml
+      - incorrect_vrf_deletion_fix.yaml
+      - issue_1054_vlan_add.yml
+      - issue_920.yaml
+      - nxos_interfaces-switchport-prerequisite.yaml
+      - sanicifix.yaml
+      - sanity-fix-222.yaml
+    release_date: "2026-05-06"
   2.0.0:
     changes:
       bugfixes:
