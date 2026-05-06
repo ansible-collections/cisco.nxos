@@ -1,3 +1,0 @@
----
-bugfixes:
-  - nxos_static_routes - Fixed incorrect deletion of route in VRF even when VRF is not specified.

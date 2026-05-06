@@ -1,5 +1,0 @@
----
-bugfixes:
-  - nxos_l2_interfaces - Fix to facts parsing when multiple vlan add lines are sent/parsed.
-    These lines are now instead merged into a single command first via _flatten_vlan function,
-    and then sent as data to be parsed
