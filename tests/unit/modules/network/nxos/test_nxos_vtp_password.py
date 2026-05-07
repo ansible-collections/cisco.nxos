@@ -42,11 +42,15 @@ class TestNxosVtpPasswordModule(TestNxosModule):
 
     def _set_existing(self, domain="testing", version="2", password="oldpass"):
         vtp_status = "VTP version running  : {0}\nVTP Domain Name  : {1}\n".format(
-            version, domain,
+            version,
+            domain,
         )
         vtp_password = {"passwd": password}
         self.run_commands.side_effect = [
-            [vtp_status], [vtp_password], [vtp_status], [vtp_password],
+            [vtp_status],
+            [vtp_password],
+            [vtp_status],
+            [vtp_password],
         ]
 
     def test_nxos_vtp_password_set(self):

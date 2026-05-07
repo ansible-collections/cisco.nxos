@@ -160,7 +160,7 @@ class TestNxosInstallOsParseFunctions(unittest.TestCase):
             "Cisco Nexus Operating System (NX-OS) Software\n"
             "  BIOS: version 08.36\n"
             "  NXOS: version 7.0(3)I7(1)\n"
-            "  System version: 7.0(3)I7(1)\n"
+            "  System version: 7.0(3)I7(1)\n",
         ]
         result = parse_show_version(data)
         self.assertEqual(result["version"], "7.0(3)I7(1)")
