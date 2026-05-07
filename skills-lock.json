@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "aap-sdlc": {
+      "source": "/Users/kodesairedhat.com/harness",
+      "sourceType": "local",
+      "computedHash": "bc198a11dd23344cd59e72dd11c7cdafcbe1278fafa0bc18688e32001f31af8a"
+    },
+    "test-unit-workflow": {
+      "source": "/Users/kodesairedhat.com/harness",
+      "sourceType": "local",
+      "computedHash": "052da4d2fac4fb59ec0a9308b806c97fd68c83c132793b11cff8d7270bbfa742"
+    }
+  }
+}
