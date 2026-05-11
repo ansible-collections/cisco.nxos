@@ -63,9 +63,9 @@ class TestNxosVrfInterfaceModule(TestNxosModule):
                 return [
                     {
                         "TABLE_interface": {
-                            "ROW_interface": {"interface": "Ethernet1/1", "eth_mode": "layer3"}
-                        }
-                    }
+                            "ROW_interface": {"interface": "Ethernet1/1", "eth_mode": "layer3"},
+                        },
+                    },
                 ]
             elif "show run interface" in cmd:
                 return ["interface Ethernet1/1\n"]
@@ -84,9 +84,9 @@ class TestNxosVrfInterfaceModule(TestNxosModule):
                 return [
                     {
                         "TABLE_interface": {
-                            "ROW_interface": {"interface": "Ethernet1/1", "eth_mode": "layer3"}
-                        }
-                    }
+                            "ROW_interface": {"interface": "Ethernet1/1", "eth_mode": "layer3"},
+                        },
+                    },
                 ]
             elif "show run interface" in cmd:
                 return ["interface Ethernet1/1\n  vrf member ntc\n"]
