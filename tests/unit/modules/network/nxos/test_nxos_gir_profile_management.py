@@ -50,7 +50,11 @@ class TestNxosGirProfileManagementModule(TestNxosModule):
 
     def test_nxos_gir_profile_absent_with_existing(self):
         self.get_config.return_value = (
+<<<<<<< HEAD
             "configure maintenance profile maintenance-mode\n" "  router eigrp 11\n" "  isolate\n"
+=======
+            "configure maintenance profile maintenance-mode\n  router eigrp 11\n  isolate\n"
+>>>>>>> bd171a93 (fixed sanity erros)
         )
         set_module_args(dict(mode="maintenance", state="absent"))
         result = self.execute_module(changed=True)
@@ -63,7 +67,11 @@ class TestNxosGirProfileManagementModule(TestNxosModule):
 
     def test_nxos_gir_profile_idempotent(self):
         self.get_config.return_value = (
+<<<<<<< HEAD
             "configure maintenance profile maintenance-mode\n" "  router eigrp 11\n" "  isolate\n"
+=======
+            "configure maintenance profile maintenance-mode\n  router eigrp 11\n  isolate\n"
+>>>>>>> bd171a93 (fixed sanity erros)
         )
         set_module_args(
             dict(mode="maintenance", commands=["router eigrp 11", "isolate"], state="present"),
