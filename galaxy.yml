@@ -10,6 +10,6 @@ readme: README.md
 repository: https://github.com/ansible-collections/cisco.nxos
 issues: https://github.com/ansible-collections/cisco.nxos/issues
 tags: [cisco, nxos, networking, nxapi, netconf]
-version: "11.1.3"
+version: "11.2.0"
 build_ignore:
   - .ansible-lint
