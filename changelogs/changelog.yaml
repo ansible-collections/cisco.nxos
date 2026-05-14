@@ -579,6 +579,65 @@ releases:
     fragments:
       - fix_nxos_facts.yaml
     release_date: "2026-01-29"
+  11.2.0:
+    changes:
+      bugfixes:
+        - action plugins - Remove orphaned legacy action plugins ``acl_interface.py
+          acl.py bgp_af.py``, ``bgp_neighbor_af.py bgp_neighbor.py bgp.py interface.py
+          l2_interface.py l3_interface.py``, ``linkagg.py lldp.py logging.py ntp_auth.py
+          ntp_options.py ntp.py ospf_vrf.py smu.py``, ``snmp_community.py snmp_contact.py
+          snmp_host.py snmp_location.py snmp_traps.py snmp_user.py``, ``static_route.py
+          vlan.py ospf.py`` that had no corresponding module.
+        - action plugins - Rename multiple resource module action plugins to use the
+          ``nxos_`` prefix to match their module names and fix ``action-plugin-docs``
+          sanity failures blocking Automation Hub certification.
+        - meta/runtime.yml - Add ``plugin_routing.action`` redirects for all short-name
+          aliases so alias-based invocations continue to resolve the renamed action
+          plugins.
+        - nxos_l2_interfaces - Fix VLAN range sorting to use numeric order instead of
+          lexicographic string sorting, which caused incorrect range generation (e.g.,
+          "1,10,100,11" instead of "1-100").
+        - nxos_l2_interfaces - Fix default allowed VLANs handling - trunk interfaces
+          now correctly assume 1-4094 as default when no explicit allowed_vlans is configured.
+        - nxos_l2_interfaces - Fix state handling logic for merged, replaced, overridden,
+          and deleted states to correctly add/remove VLANs based on the desired state.
+        - nxos_l2_interfaces - Fix to facts parsing when multiple vlan add lines are
+          sent/parsed. These lines are now instead merged into a single command first
+          via _flatten_vlan function, and then sent as data to be parsed
+        - nxos_static_routes - Fixed incorrect deletion of route in VRF even when VRF
+          is not specified.
+        - plugins/action/nxos.py - Remove unused ``warnings`` list and unreachable dead
+          code block that never executed due to ``warnings`` always being empty.
+      deprecated_features:
+        - The ``src`` parameter's automatic Jinja2 template processing is deprecated
+          and will be removed in March 2028 from nxos_config module
+        - Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.
+      doc_changes:
+        - nxos_interfaces - Added prerequisite note that ``system default switchport
+          shutdown`` must not be enabled on the device for the module to function correctly.
+      minor_changes:
+        - Added ``content`` parameter to support pre-rendered template configurations
+          in nxos_config module
+        - Updated ansible.netcommon dependency minimum required version from >=8.1.0
+          to >=8.5.1.
+        - Updated ansible.netcommon dependency minimum required version from >=8.5.1
+          to >=8.5.2.
+        - nxos_l2_interfaces - Add `trunk.allowed_vlans_none` option to explicitly configure
+          `switchport trunk allowed vlan none` on interfaces.
+        - which provides a cleaner alternative to the deprecated template auto-processing
+          behavior of the ``src`` parameter.
+    fragments:
+      - action_plugins_fix.yml
+      - bump_netcommon.yaml
+      - ci_enhancement.yaml
+      - content-parameter-nxos-config.yml
+      - incorrect_vrf_deletion_fix.yaml
+      - issue_1054_vlan_add.yml
+      - issue_920.yaml
+      - nxos_interfaces-switchport-prerequisite.yaml
+      - sanicifix.yaml
+      - sanity-fix-222.yaml
+    release_date: "2026-05-13"
   2.0.0:
     changes:
       bugfixes:

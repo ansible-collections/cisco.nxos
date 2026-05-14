@@ -1,8 +1,0 @@
----
-minor_changes:
-  - Added ``content`` parameter to support pre-rendered template configurations in nxos_config module
-  - which provides a cleaner alternative to the deprecated template auto-processing behavior of the ``src`` parameter.
-
-deprecated_features:
-  - The ``src`` parameter's automatic Jinja2 template processing is deprecated and will be removed in March 2028 from nxos_config module
-  - Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.

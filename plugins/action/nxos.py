@@ -39,8 +39,6 @@ class ActionModule(ActionNetworkModule):
         self._config_module = True if module_name in ["nxos_config", "config"] else False
         persistent_connection = self._play_context.connection.split(".")[-1]
 
-        warnings = []
-
         if (self._play_context.connection == "httpapi") and module_name in (
             "nxos_file_copy",
             "nxos_nxapi",
@@ -124,10 +122,4 @@ class ActionModule(ActionNetworkModule):
                 "msg": f"Connection type {self._play_context.connection} is not valid for this module",
             }
 
-        result = super(ActionModule, self).run(task_vars=task_vars)
-        if warnings:
-            if "warnings" in result:
-                result["warnings"].extend(warnings)
-            else:
-                result["warnings"] = warnings
-        return result
+        return super(ActionModule, self).run(task_vars=task_vars)
