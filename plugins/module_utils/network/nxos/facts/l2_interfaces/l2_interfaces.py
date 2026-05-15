@@ -14,6 +14,7 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
+import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -68,6 +69,8 @@ class L2_interfacesFacts(object):
         if not data:
             data = self._get_interface_config(connection)
 
+        data = self._flatten_vlans(data)
+
         # parse native config using the L2_interfaces template
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
@@ -89,3 +92,49 @@ class L2_interfacesFacts(object):
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
+
+    def _flatten_vlans(self, data):
+        """
+        Flatten the vlan lines if it also contains lines that mention 'switchport trunk allowed vlan add'
+        as we will merge all the entries in a list
+        :param obj: data
+        :returns: flattened vlan entries as switchport trunk allowed vlan
+        """
+        lines = data.split("\n")
+        vlans = ""
+        cur_indent = 0
+        result = []
+        regex_vlan_special_case = re.compile(
+            r"\s+switchport\strunk\sallowed\svlan\s(none|all|except|remove)",
+        )
+        regex_vlan_add_line = re.compile(r"\s+switchport\strunk\sallowed\svlan\sadd")
+        regex_vlan_set_line = re.compile(r"\s+switchport\strunk\sallowed\svlan")
+
+        for line in lines:
+            # If line starts with one of these entries, that is special one liner entry
+            if regex_vlan_special_case.match(line):
+                result.append(line)
+
+            # If line starts with  allowed vlan add
+            elif regex_vlan_add_line.match(line):
+                if vlans:
+                    vlans += "," + line.rsplit("add", maxsplit=1)[-1].strip()
+                else:
+                    vlans = line.rsplit("add", maxsplit=1)[-1].strip()
+                cur_indent = len(line) - len(line.lstrip())
+
+            # If line starts only with allowed vlan
+            elif regex_vlan_set_line.match(line):
+                vlans = line.rsplit("vlan", maxsplit=1)[-1].strip()
+                cur_indent = len(line) - len(line.lstrip())
+
+            else:
+                if vlans:
+                    result.append(f"{' ' * cur_indent}switchport trunk allowed vlan {vlans}")
+                    vlans = ""
+                result.append(line)
+
+        if vlans:
+            result.append(f"{' ' * cur_indent}switchport trunk allowed vlan {vlans}")
+
+        return "\n".join(result)
