@@ -1,6 +1,8 @@
 vlan 1,3-5,8
 vlan 3
   name test-vlan3
+vlan 4
+  vn-segment 402
 vlan 5
   shutdown
   name test-changeme
