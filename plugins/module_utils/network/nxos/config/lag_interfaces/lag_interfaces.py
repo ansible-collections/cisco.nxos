@@ -255,6 +255,11 @@ class Lag_interfaces(ConfigBase):
         return diff
 
     def intersect_list_of_dicts(self, w, h):
+        if w is None:
+            w = []
+        if h is None:
+            h = []
+
         intersect = []
         wmem = []
         hmem = []
