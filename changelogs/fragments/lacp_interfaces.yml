@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "lacp_interfaces - Fixed the notation of the lacp suspend individual command in the del_attribs function"
