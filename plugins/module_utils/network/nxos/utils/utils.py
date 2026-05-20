@@ -140,8 +140,8 @@ def get_port_channel_members(config_text):
     return members
 
 
-def vlan_range_to_list(vlans):
-    result = []
+def vlan_range_to_dict(vlans):
+    result = {}
     if vlans:
         for part in vlans.split(","):
             if part == "none":
@@ -149,11 +149,11 @@ def vlan_range_to_list(vlans):
             if "-" in part:
                 a, b = part.split("-")
                 a, b = int(a), int(b)
-                result.extend(range(a, b + 1))
+                for vlan in range(a, b + 1):
+                    result[str(vlan)] = vlan
             else:
                 a = int(part)
-                result.append(a)
-        return numerical_sort(result)
+                result[str(a)] = a
     return result
 
 
