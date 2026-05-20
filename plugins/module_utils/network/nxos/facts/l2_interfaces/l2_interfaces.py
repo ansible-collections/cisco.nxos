@@ -42,6 +42,20 @@ class L2_interfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
+    def _get_port_channel_members_from_device(self, connection):
+        """Get port-channel member interfaces using 'show port-channel summary'."""
+        members = set()
+        try:
+            output = connection.get("show port-channel summary")
+        except Exception:
+            return members
+
+        for line in output.splitlines():
+            for match in re.finditer(r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)", line):
+                members.add(normalize_interface(match.group(1)))
+
+        return members
+
     def _default_for_allowed_vlans(self, parsed_config):
         """Handle default for allowed vlans"""
 
@@ -70,6 +84,7 @@ class L2_interfacesFacts(object):
         facts = {}
         objs = []
 
+        fetched_from_device = not data
         if not data:
             data = self._get_interface_config(connection)
 
@@ -82,7 +97,10 @@ class L2_interfacesFacts(object):
         # process defaults for allowed vlan
         self._default_for_allowed_vlans(objs)
 
-        pc_members = get_port_channel_members(data)
+        if fetched_from_device:
+            pc_members = self._get_port_channel_members_from_device(connection)
+        else:
+            pc_members = get_port_channel_members(data)
         self._module._l2_pc_members = pc_members
         objs = [
             obj for obj in objs
