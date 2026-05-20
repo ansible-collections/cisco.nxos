@@ -84,8 +84,8 @@ class L2_interfacesFacts(object):
 
         pc_members = get_port_channel_members(data)
         self._module._l2_pc_members = pc_members
-        final_objs = [
-            obj for obj in final_objs
+        objs = [
+            obj for obj in objs
             if normalize_interface(obj.get("name", "")) not in pc_members
         ]
 
