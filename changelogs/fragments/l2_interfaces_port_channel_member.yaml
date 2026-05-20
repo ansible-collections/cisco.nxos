@@ -1,3 +1,5 @@
 ---
 bugfixes:
-  - nxos_l2_interfaces - Skip port-channel member interfaces during facts gathering and command generation. Member interfaces inherit L2 config from the port-channel and cannot be configured directly. The module now detects channel-group membership, filters members from gathered/parsed facts, and fails with a clear error message when users attempt to configure a member interface directly.
+  - nxos_l2_interfaces - Skip port-channel member interfaces during facts
+    gathering and command generation. Member interfaces inherit L2 config
+    from the port-channel and cannot be configured directly.
