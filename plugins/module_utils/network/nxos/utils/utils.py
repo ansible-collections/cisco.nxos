@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+import re
 import socket
 
 from functools import total_ordering
@@ -125,8 +126,22 @@ def remove_rsvd_interfaces(interfaces):
     return [i for i in interfaces if get_interface_type(i["name"]) != "management"]
 
 
-def vlan_range_to_dict(vlans):
-    result = {}
+def get_port_channel_members(config_text):
+    """Parse running config and return set of normalized interface names that are port-channel members."""
+    members = set()
+    current_intf = None
+    for line in config_text.splitlines():
+        intf_match = re.match(r"^interface\s+(\S+)", line)
+        if intf_match:
+            current_intf = intf_match.group(1)
+        elif current_intf and re.search(r"channel-group\s+\d+", line):
+            members.add(normalize_interface(current_intf))
+            current_intf = None
+    return members
+
+
+def vlan_range_to_list(vlans):
+    result = []
     if vlans:
         for part in vlans.split(","):
             if part == "none":
@@ -134,11 +149,11 @@ def vlan_range_to_dict(vlans):
             if "-" in part:
                 a, b = part.split("-")
                 a, b = int(a), int(b)
-                for vlan in range(a, b + 1):
-                    result[str(vlan)] = vlan
+                result.extend(range(a, b + 1))
             else:
                 a = int(part)
-                result[str(a)] = a
+                result.append(a)
+        return numerical_sort(result)
     return result
 
 

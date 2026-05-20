@@ -1,0 +1,159 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_l2_interfaces port-channel member filtering integration tests connection={{ ansible_connection }}
+
+- name: Set a fact for 'test_int1', 'test_int2' and 'test_int3'
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
+    test_int3: "{{ nxos_int3 }}"
+
+- name: Setup - reset interfaces
+  ignore_errors: true
+  cisco.nxos.nxos_config: &cleanup
+    lines:
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
+      - "default interface {{ test_int3 }}"
+      - "no interface port-channel10"
+      - "no feature lacp"
+
+- block:
+    - name: Enable LACP
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature lacp"
+
+    - name: Setup - configure test_int1 as a normal switchport
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport access vlan 5"
+        parents: "interface {{ test_int1 }}"
+
+    - name: Setup - create port-channel and add test_int2 as member
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface port-channel10"
+          - "  switchport"
+          - "  switchport mode trunk"
+          - "  switchport trunk allowed vlan 100-200"
+
+    - name: Setup - add test_int2 to port-channel10
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "channel-group 10 mode active"
+        parents: "interface {{ test_int2 }}"
+
+    # Test 1: Gathered state should exclude port-channel member
+    - name: Gathered - should not include port-channel member interface
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Verify port-channel member is not in gathered facts
+      ansible.builtin.assert:
+        that:
+          - result.gathered | selectattr('name', 'equalto', test_int2) | list | length == 0
+          - result.gathered | selectattr('name', 'equalto', test_int1) | list | length == 1
+
+    # Test 2: Merged state with port-channel member should fail
+    - name: Merged - attempt to configure port-channel member (should fail)
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+            trunk:
+              allowed_vlans: "10-12"
+        state: merged
+
+    - name: Verify error is raised for merged state
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'port-channel member' in result.msg"
+
+    # Test 3: Replaced state with port-channel member should fail
+    - name: Replaced - attempt to configure port-channel member (should fail)
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+            trunk:
+              allowed_vlans: "50-60"
+        state: replaced
+
+    - name: Verify error is raised for replaced state
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'port-channel member' in result.msg"
+
+    # Test 4: Overridden state should not send negation to port-channel member
+    - name: Setup - add config to test_int3
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport trunk allowed vlan 30"
+        parents: "interface {{ test_int3 }}"
+
+    - name: Overridden - should skip port-channel member in negation
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            access:
+              vlan: 10
+        state: overridden
+
+    - name: Verify no negation commands for port-channel member
+      ansible.builtin.assert:
+        that:
+          - "'interface {{ test_int2 }}' not in result.commands"
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'interface {{ test_int3 }}' in result.commands"
+
+    # Test 5: Deleted state with specific port-channel member should fail
+    - name: Deleted - attempt to delete port-channel member config (should fail)
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+        state: deleted
+
+    - name: Verify error for deleted state on port-channel member
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'port-channel member' in result.msg"
+
+    # Test 6: Deleted state (all) should skip port-channel members
+    - name: Setup - re-add config to test_int1
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport trunk native vlan 15"
+        parents: "interface {{ test_int1 }}"
+
+    - name: Deleted all - should not delete port-channel member config
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        state: deleted
+
+    - name: Verify port-channel member not touched by delete all
+      ansible.builtin.assert:
+        that:
+          - "'interface {{ test_int2 }}' not in result.commands"
+          - "'interface {{ test_int1 }}' in result.commands"
+
+  always:
+    - name: Teardown
+      ignore_errors: true
+      cisco.nxos.nxos_config: *cleanup
+
+    - ansible.builtin.debug:
+        msg: END nxos_l2_interfaces port-channel member filtering integration tests on connection={{ ansible_connection }}

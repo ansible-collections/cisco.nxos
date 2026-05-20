@@ -650,3 +650,280 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_gathered_filters_pc_members(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport mode trunk
+             switchport trunk allowed vlan 30-45,47
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk allowed vlan 10,20,30
+             channel-group 10 mode active
+            interface Ethernet1/2
+             switchport mode trunk
+             switchport trunk native vlan 20
+            """,
+        )
+
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+
+        expected = [
+            {
+                "mode": "trunk",
+                "name": "Ethernet1/6",
+                "trunk": {
+                    "allowed_vlans": "30-45,47",
+                },
+            },
+            {
+                "mode": "trunk",
+                "name": "Ethernet1/2",
+                "trunk": {
+                    "native_vlan": 20,
+                },
+            },
+        ]
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], expected)
+
+    def test_l2_interfaces_parsed_filters_pc_members(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """
+                    interface Ethernet1/800
+                     switchport access vlan 18
+                    interface Ethernet1/801
+                     switchport trunk allowed vlan 2,4,15
+                     channel-group 20 mode active
+                    interface Ethernet1/802
+                     switchport mode fex-fabric
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+
+        expected = [
+            {
+                "access": {
+                    "vlan": 18,
+                },
+                "name": "Ethernet1/800",
+            },
+            {
+                "mode": "fex-fabric",
+                "name": "Ethernet1/802",
+            },
+        ]
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], expected)
+
+    def test_l2_interfaces_merged_fails_pc_member(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+            interface Ethernet1/4
+             switchport mode trunk
+             channel-group 10 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/6",
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        result = self.execute_module(failed=True)
+        self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
+
+    def test_l2_interfaces_replaced_fails_pc_member(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport access vlan 5
+            interface Ethernet1/4
+             switchport mode trunk
+             channel-group 10 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                    {
+                        "name": "Ethernet1/6",
+                        "access": {
+                            "vlan": "8",
+                        },
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(failed=True)
+        self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
+
+    def test_l2_interfaces_overridden_skips_pc_members(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport trunk allowed vlan 11
+            interface Ethernet1/7
+             switchport
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk allowed vlan 100-200
+             channel-group 10 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/7",
+                        "access": {
+                            "vlan": "6",
+                        },
+                        "trunk": {
+                            "allowed_vlans": "10-12",
+                        },
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "no switchport trunk allowed vlan",
+            "interface Ethernet1/7",
+            "switchport access vlan 6",
+            "switchport trunk allowed vlan 10-12",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_deleted_fails_pc_member(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport trunk native vlan 10
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk allowed vlan 20
+             channel-group 10 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                    },
+                ],
+                state="deleted",
+            ),
+        )
+
+        result = self.execute_module(failed=True)
+        self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
+
+    def test_l2_interfaces_deleted_all_skips_pc_members(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport trunk native vlan 10
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk allowed vlan 20
+             channel-group 10 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(state="deleted"),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "no switchport trunk native vlan 10",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_replaced_pc_member_only(self):
+        """Exact reproduction of user's playbook: replaced state with only a port-channel member."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/1
+             switchport
+             switchport mode trunk
+             switchport trunk native vlan 20
+             switchport trunk allowed vlan 100-102,300
+             channel-group 10 mode active
+            interface Ethernet1/2
+             switchport
+             switchport access vlan 5
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Eth1/1",
+                        "cdp_enable": True,
+                        "mode": "trunk",
+                        "trunk": {
+                            "allowed_vlans": "100-102,300",
+                            "native_vlan": 20,
+                        },
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(failed=True)
+        self.assertIn("Ethernet1/1 is a port-channel member", result["msg"])
