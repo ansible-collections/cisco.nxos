@@ -102,10 +102,7 @@ class L2_interfacesFacts(object):
         else:
             pc_members = get_port_channel_members(data)
         self._module._l2_pc_members = pc_members
-        objs = [
-            obj for obj in objs
-            if normalize_interface(obj.get("name", "")) not in pc_members
-        ]
+        objs = [obj for obj in objs if normalize_interface(obj.get("name", "")) not in pc_members]
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
