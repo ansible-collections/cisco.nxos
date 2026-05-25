@@ -51,7 +51,9 @@ class L2_interfacesFacts(object):
             return members
 
         for line in output.splitlines():
-            for match in re.finditer(r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)", line, re.IGNORECASE):
+            for match in re.finditer(
+                r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)", line, re.IGNORECASE
+            ):
                 members.add(normalize_interface(match.group(1)))
 
         return members
