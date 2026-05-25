@@ -1,3 +1,4 @@
 ---
 trivial:
-  - Update integration-libssh CI workflow to test against all supported ansible-core versions (stable-2.19, stable-2.20, stable-2.21, milestone, devel) and update CML lab topology with corresponding nodes.
+  - Update integration-libssh CI workflow to test against supported ansible-core versions.
+  - Update CML lab topology with nodes for stable-2.19, stable-2.20, stable-2.21, milestone, and devel.
