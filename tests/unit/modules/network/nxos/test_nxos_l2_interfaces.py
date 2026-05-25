@@ -945,3 +945,262 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         result = self.execute_module(failed=True)
         self.assertIn("Ethernet1/1 is a port-channel member", result["msg"])
+
+    def test_l2_interfaces_merged_cdp_disable(self):
+        """Test merged state with cdp_enable explicitly set to False (line 214)."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             switchport access vlan 10
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/6",
+                        "access": {"vlan": 10},
+                        "cdp_enable": False,
+                    },
+                ],
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "no cdp enable",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_deleted_all_restores_cdp(self):
+        """Test deleted state with no config restores cdp when have_cdp is False (lines 216-217)."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/6
+             switchport
+             no cdp enable
+             switchport trunk native vlan 10
+            """,
+        )
+
+        set_module_args(
+            dict(state="deleted"),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/6",
+            "cdp enable",
+            "no switchport trunk native vlan 10",
+            "no switchport trunk allowed vlan",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_parsed_vlan_special_cases(self):
+        """Test parsing of vlan none/all/except special cases (line 143)."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """
+                    interface Ethernet1/1
+                     switchport mode trunk
+                     switchport trunk allowed vlan none
+                    interface Ethernet1/2
+                     switchport mode trunk
+                     switchport trunk allowed vlan all
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        eth1 = next(p for p in parsed if p["name"] == "Ethernet1/1")
+        self.assertEqual(eth1["mode"], "trunk")
+        self.assertNotIn("allowed_vlans", eth1.get("trunk", {}))
+
+    def test_l2_interfaces_parsed_vlan_add_without_prior_set(self):
+        """Test parsing when 'vlan add' appears without a preceding 'vlan' set line (line 150)."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """
+                    interface Ethernet1/10
+                     switchport
+                     switchport trunk allowed vlan add 100-200
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        eth10 = next(p for p in parsed if p["name"] == "Ethernet1/10")
+        self.assertEqual(eth10["trunk"]["allowed_vlans"], "100-200")
+
+    def test_l2_interfaces_parsed_trailing_vlans(self):
+        """Test parsing when data ends with vlan lines (no trailing non-vlan line) (line 165)."""
+        set_module_args(
+            dict(
+                running_config="interface Ethernet1/5\n switchport\n switchport trunk allowed vlan 50-60",
+                state="parsed",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        eth5 = next(p for p in parsed if p["name"] == "Ethernet1/5")
+        self.assertEqual(eth5["trunk"]["allowed_vlans"], "50-60")
+
+
+class TestGetPortChannelMembersFromDevice(TestNxosModule):
+    """Direct tests for _get_port_channel_members_from_device (lines 47-57)."""
+
+    module = nxos_l2_interfaces
+
+    def setUp(self):
+        super().setUp()
+        self.mock_get_resource_connection_facts = patch(
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
+            "get_resource_connection",
+        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.mock_get_resource_connection_facts.stop()
+
+    def test_parse_port_channel_summary(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
+            L2_interfacesFacts,
+        )
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        facts = L2_interfacesFacts(module)
+        connection = MagicMock()
+        connection.get.return_value = dedent(
+            """\
+            --------------------------------------------------------------------------------
+            Group Port-       Type     Protocol  Member Ports
+                  Channel
+            --------------------------------------------------------------------------------
+            10    Po10(SU)    Eth      LACP      Eth1/1(P)    Eth1/2(P)
+            20    Po20(SU)    Eth      LACP      Eth1/3(P)
+            """,
+        )
+
+        result = facts._get_port_channel_members_from_device(connection)
+        self.assertEqual(result, {"Ethernet1/1", "Ethernet1/2", "Ethernet1/3"})
+
+    def test_parse_port_channel_summary_with_3slot_interface(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
+            L2_interfacesFacts,
+        )
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        facts = L2_interfacesFacts(module)
+        connection = MagicMock()
+        connection.get.return_value = dedent(
+            """\
+            Group Port-       Type     Protocol  Member Ports
+                  Channel
+            10    Po10(SU)    Eth      LACP      Eth1/2/3(P)
+            """,
+        )
+
+        result = facts._get_port_channel_members_from_device(connection)
+        self.assertEqual(result, {"Ethernet1/2/3"})
+
+    def test_parse_port_channel_summary_exception(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
+            L2_interfacesFacts,
+        )
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        facts = L2_interfacesFacts(module)
+        connection = MagicMock()
+        connection.get.side_effect = Exception("command not supported")
+
+        result = facts._get_port_channel_members_from_device(connection)
+        self.assertEqual(result, set())
+
+    def test_parse_port_channel_summary_empty(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
+            L2_interfacesFacts,
+        )
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        facts = L2_interfacesFacts(module)
+        connection = MagicMock()
+        connection.get.return_value = ""
+
+        result = facts._get_port_channel_members_from_device(connection)
+        self.assertEqual(result, set())
+
+
+class TestGetPortChannelMembersUtil(TestNxosModule):
+    """Direct tests for get_port_channel_members utility function."""
+
+    module = nxos_l2_interfaces
+
+    def setUp(self):
+        super().setUp()
+
+    def test_get_port_channel_members_multiple(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+            get_port_channel_members,
+        )
+
+        config = dedent(
+            """\
+            interface Ethernet1/1
+             switchport
+             channel-group 10 mode active
+            interface Ethernet1/2
+             switchport
+             switchport access vlan 5
+            interface Ethernet1/3
+             switchport
+             channel-group 20 mode passive
+            """,
+        )
+
+        result = get_port_channel_members(config)
+        self.assertEqual(result, {"Ethernet1/1", "Ethernet1/3"})
+
+    def test_get_port_channel_members_none(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+            get_port_channel_members,
+        )
+
+        config = dedent(
+            """\
+            interface Ethernet1/1
+             switchport
+             switchport access vlan 5
+            interface Ethernet1/2
+             switchport mode trunk
+            """,
+        )
+
+        result = get_port_channel_members(config)
+        self.assertEqual(result, set())
+
+    def test_get_port_channel_members_empty(self):
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+            get_port_channel_members,
+        )
+
+        result = get_port_channel_members("")
+        self.assertEqual(result, set())
