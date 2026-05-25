@@ -16,13 +16,25 @@
       - "default interface {{ test_int2 }}"
       - "default interface {{ test_int3 }}"
       - "no interface port-channel10"
-      - "no feature lacp"
 
 - block:
-    - name: Enable LACP
+    - name: Setup - configure test_int2 as port-channel member
       cisco.nxos.nxos_config:
         lines:
-          - "feature lacp"
+          - "switchport"
+          - "no shutdown"
+          - "channel-group 10 force mode on"
+        parents: "interface {{ test_int2 }}"
+        match: none
+
+    - name: Setup - create port-channel10
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 100-200"
+        parents: "interface port-channel10"
+        match: none
 
     - name: Setup - configure test_int1 as a normal switchport
       cisco.nxos.nxos_config:
@@ -30,21 +42,7 @@
           - "switchport"
           - "switchport access vlan 5"
         parents: "interface {{ test_int1 }}"
-
-    - name: Setup - create port-channel and add test_int2 as member
-      cisco.nxos.nxos_config:
-        lines:
-          - "interface port-channel10"
-          - "  switchport"
-          - "  switchport mode trunk"
-          - "  switchport trunk allowed vlan 100-200"
-
-    - name: Setup - add test_int2 to port-channel10
-      cisco.nxos.nxos_config:
-        lines:
-          - "switchport"
-          - "channel-group 10 mode active"
-        parents: "interface {{ test_int2 }}"
+        match: none
 
     # Test 1: Gathered state should exclude port-channel member
     - name: Gathered - should not include port-channel member interface

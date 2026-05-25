@@ -51,7 +51,7 @@ class L2_interfacesFacts(object):
             return members
 
         for line in output.splitlines():
-            for match in re.finditer(r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)", line):
+            for match in re.finditer(r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)", line, re.IGNORECASE):
                 members.add(normalize_interface(match.group(1)))
 
         return members
@@ -99,6 +99,7 @@ class L2_interfacesFacts(object):
 
         if fetched_from_device:
             pc_members = self._get_port_channel_members_from_device(connection)
+            pc_members |= get_port_channel_members(data)
         else:
             pc_members = get_port_channel_members(data)
         self._module._l2_pc_members = pc_members
