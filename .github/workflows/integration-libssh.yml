@@ -1,5 +1,5 @@
 ---
-name: Integration tests 💻
+name: "Integration tests with CML - libssh 💻"
 on:
   pull_request_target:
     branches: [main]
@@ -23,12 +23,12 @@ jobs:
       virl_username: ${{ secrets.VIRL_USERNAME }}
       virl_password: ${{ secrets.VIRL_PASSWORD }}
 
-  integration-tests:
+  integration-tests-libssh:
     needs: lab-create
     strategy:
       fail-fast: true
       matrix:
-        ansible_version: ["stable-2.17"]
+        ansible_version: ["stable-2.19", "stable-2.20", "stable-2.21", "milestone", "devel"]
     uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
     with:
       ansible_version: ${{ matrix.ansible_version }}
@@ -36,7 +36,7 @@ jobs:
 
   lab-destroy:
     if: ${{ always() }}
-    needs: integration-tests
+    needs: integration-tests-libssh
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
     secrets:
       virl_host: ${{ secrets.VIRL_HOST }}
