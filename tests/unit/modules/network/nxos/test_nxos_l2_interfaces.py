@@ -1078,10 +1078,11 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
         self.mock_get_resource_connection_facts.stop()
 
     def test_parse_port_channel_summary(self):
+        from unittest.mock import MagicMock
+
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
             L2_interfacesFacts,
         )
-        from unittest.mock import MagicMock
 
         module = MagicMock()
         facts = L2_interfacesFacts(module)
@@ -1101,10 +1102,11 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
         self.assertEqual(result, {"Ethernet1/1", "Ethernet1/2", "Ethernet1/3"})
 
     def test_parse_port_channel_summary_with_3slot_interface(self):
+        from unittest.mock import MagicMock
+
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
             L2_interfacesFacts,
         )
-        from unittest.mock import MagicMock
 
         module = MagicMock()
         facts = L2_interfacesFacts(module)
@@ -1121,10 +1123,11 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
         self.assertEqual(result, {"Ethernet1/2/3"})
 
     def test_parse_port_channel_summary_exception(self):
+        from unittest.mock import MagicMock
+
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
             L2_interfacesFacts,
         )
-        from unittest.mock import MagicMock
 
         module = MagicMock()
         facts = L2_interfacesFacts(module)
@@ -1135,10 +1138,11 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
         self.assertEqual(result, set())
 
     def test_parse_port_channel_summary_empty(self):
+        from unittest.mock import MagicMock
+
         from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
             L2_interfacesFacts,
         )
-        from unittest.mock import MagicMock
 
         module = MagicMock()
         facts = L2_interfacesFacts(module)
