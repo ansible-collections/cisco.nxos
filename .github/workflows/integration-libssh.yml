@@ -26,7 +26,7 @@ jobs:
   integration-tests-libssh:
     needs: lab-create
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         ansible_version: ["stable-2.19", "stable-2.20", "stable-2.21", "milestone", "devel"]
     uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
