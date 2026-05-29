@@ -1724,10 +1724,6 @@ def main():
 
     :returns: the result form module invocation
     """
-    # import debugpy
-    # debugpy.listen(3000)
-    # print("Waiting for debugger on port 3000...")
-    # debugpy.wait_for_client()
     module = AnsibleModule(
         argument_spec=Bgp_globalArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
@@ -1739,6 +1735,7 @@ def main():
         ],
         supports_check_mode=True,
     )
+
     result = Bgp_global(module).execute_module()
     module.exit_json(**result)
 
