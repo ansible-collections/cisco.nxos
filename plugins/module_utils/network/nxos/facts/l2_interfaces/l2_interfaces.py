@@ -42,6 +42,7 @@ class L2_interfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
+<<<<<<< HEAD
     def _get_port_channel_members_from_device(self, connection):
         """Get port-channel member interfaces using 'show port-channel summary'."""
         members = set()
@@ -60,6 +61,8 @@ class L2_interfacesFacts(object):
 
         return members
 
+=======
+>>>>>>> ca131c49 (fixed test and config file)
     def _default_for_allowed_vlans(self, parsed_config):
         """Handle default for allowed vlans"""
 
@@ -88,7 +91,6 @@ class L2_interfacesFacts(object):
         facts = {}
         objs = []
 
-        fetched_from_device = not data
         if not data:
             data = self._get_interface_config(connection)
 
@@ -101,11 +103,7 @@ class L2_interfacesFacts(object):
         # process defaults for allowed vlan
         self._default_for_allowed_vlans(objs)
 
-        if fetched_from_device:
-            pc_members = self._get_port_channel_members_from_device(connection)
-            pc_members |= get_port_channel_members(data)
-        else:
-            pc_members = get_port_channel_members(data)
+        pc_members = get_port_channel_members(data)
         self._module._l2_pc_members = pc_members
         objs = [obj for obj in objs if normalize_interface(obj.get("name", "")) not in pc_members]
 

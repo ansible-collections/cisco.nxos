@@ -52,20 +52,12 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-        self.mock_get_pc_members = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces."
-            "L2_interfacesFacts._get_port_channel_members_from_device",
-        )
-        self.get_pc_members = self.mock_get_pc_members.start()
-        self.get_pc_members.return_value = set()
-
         self.maxDiff = None
 
     def tearDown(self):
         super(TestNxosL2InterfacesModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
-        self.mock_get_pc_members.stop()
 
     def test_l2_interfaces_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -660,7 +652,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertEqual(result["commands"], expected_commands)
 
     def test_l2_interfaces_gathered_filters_pc_members(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -739,7 +730,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertEqual(result["parsed"], expected)
 
     def test_l2_interfaces_merged_fails_pc_member(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -774,7 +764,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
 
     def test_l2_interfaces_replaced_fails_pc_member(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -810,7 +799,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
 
     def test_l2_interfaces_overridden_skips_pc_members(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -855,7 +843,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertEqual(result["commands"], expected_commands)
 
     def test_l2_interfaces_deleted_fails_pc_member(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -883,7 +870,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertIn("Ethernet1/4 is a port-channel member", result["msg"])
 
     def test_l2_interfaces_deleted_all_skips_pc_members(self):
-        self.get_pc_members.return_value = {"Ethernet1/4"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/6
@@ -911,7 +897,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
     def test_l2_interfaces_replaced_pc_member_only(self):
         """Exact reproduction of user's playbook: replaced state with only a port-channel member."""
-        self.get_pc_members.return_value = {"Ethernet1/1"}
         self.execute_show_command.return_value = dedent(
             """
             interface Ethernet1/1
@@ -1060,6 +1045,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertEqual(eth5["trunk"]["allowed_vlans"], "50-60")
 
 
+<<<<<<< HEAD
 class TestGetPortChannelMembersFromDevice(TestNxosModule):
     """Direct tests for _get_port_channel_members_from_device (lines 47-57)."""
 
@@ -1151,6 +1137,51 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
 
         result = facts._get_port_channel_members_from_device(connection)
         self.assertEqual(result, set())
+=======
+    def test_l2_interfaces_overridden_idempotent_with_pc_members(self):
+        """Overridden with port-channel members excluded is idempotent."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface port-channel20
+             switchport
+             switchport mode trunk
+             switchport trunk native vlan 20
+             switchport trunk allowed vlan 100-102,300
+            interface Ethernet1/49
+             switchport
+             switchport mode trunk
+             switchport trunk native vlan 20
+             switchport trunk allowed vlan 100-102,300
+             channel-group 20 mode active
+            interface Ethernet1/50
+             switchport
+             switchport mode trunk
+             switchport trunk native vlan 20
+             switchport trunk allowed vlan 100-102,300
+             channel-group 20 mode active
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "port-channel20",
+                        "mode": "trunk",
+                        "cdp_enable": True,
+                        "trunk": {
+                            "native_vlan": 20,
+                            "allowed_vlans": "100-102,300",
+                        },
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+>>>>>>> ca131c49 (fixed test and config file)
 
 
 class TestGetPortChannelMembersUtil(TestNxosModule):

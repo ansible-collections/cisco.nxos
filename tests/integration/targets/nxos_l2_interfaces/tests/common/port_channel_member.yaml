@@ -148,10 +148,91 @@
           - "'interface {{ test_int2 }}' not in result.commands"
           - "'interface {{ test_int1 }}' in result.commands"
 
+    # Test 7: Overridden with gathered output is idempotent when port-channel members are present
+    - name: Overridden idempotent - reset for port-channel20 test
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"
+          - "default interface {{ test_int3 }}"
+          - "no interface port-channel10"
+          - "no interface port-channel20"
+
+    - name: Overridden idempotent - configure test_int1 as port-channel20 member
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "no shutdown"
+          - "channel-group 20 force mode active"
+        parents: "interface {{ test_int1 }}"
+        match: none
+
+    - name: Overridden idempotent - configure test_int2 as port-channel20 member
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "no shutdown"
+          - "channel-group 20 force mode active"
+        parents: "interface {{ test_int2 }}"
+        match: none
+
+    - name: Overridden idempotent - configure port-channel20 with trunk VLANs
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport mode trunk"
+          - "switchport trunk native vlan 20"
+          - "switchport trunk allowed vlan 100-102,300"
+        parents: "interface port-channel20"
+        match: none
+
+    - name: Overridden idempotent - gather L2 interfaces
+      register: gathered_result
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Overridden idempotent - verify members excluded from gathered
+      ansible.builtin.assert:
+        that:
+          - gathered_result.gathered | selectattr('name', 'equalto', test_int1) | list | length == 0
+          - gathered_result.gathered | selectattr('name', 'equalto', test_int2) | list | length == 0
+          - gathered_result.gathered | selectattr('name', 'equalto', 'port-channel20') | list | length == 1
+
+    - name: Overridden idempotent - overridden with gathered output should produce no changes
+      register: overridden_result
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ gathered_result.gathered }}"
+        state: overridden
+
+    - name: Overridden idempotent - verify no commands generated
+      ansible.builtin.assert:
+        that:
+          - overridden_result.changed == false
+          - overridden_result.commands | length == 0
+
+    - name: Overridden idempotent - run overridden again to confirm idempotency
+      register: overridden_result2
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ gathered_result.gathered }}"
+        state: overridden
+
+    - name: Overridden idempotent - verify second run is also idempotent
+      ansible.builtin.assert:
+        that:
+          - overridden_result2.changed == false
+          - overridden_result2.commands | length == 0
+
   always:
     - name: Teardown
       ignore_errors: true
-      cisco.nxos.nxos_config: *cleanup
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"
+          - "default interface {{ test_int3 }}"
+          - "no interface port-channel10"
+          - "no interface port-channel20"
 
     - ansible.builtin.debug:
         msg: END nxos_l2_interfaces port-channel member filtering integration tests on connection={{ ansible_connection }}
