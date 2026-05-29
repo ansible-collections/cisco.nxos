@@ -363,10 +363,26 @@ class Bgp_global(ResourceModule):
         data = self._get_config().split("\n")
         cur_nbr = None
         cur_vrf = None
+        in_template_cxt = False
+        cur_template = {}
         gbl_data = set()
         vrf_data = {}
 
         for x in data:
+            cur_indent = len(x) - len(x.lstrip())
+
+            # Skip template peer* blocks - they are managed by nxos_bgp_templates
+            if x.strip().startswith("template peer"):
+                in_template_cxt = True
+                cur_template["indent"] = cur_indent
+                continue
+            elif in_template_cxt and cur_template and (cur_indent <= cur_template["indent"]):
+                in_template_cxt = False
+                cur_template = {}
+            elif in_template_cxt:
+                # Skip all lines within the template block
+                continue
+
             if x.strip().startswith("vrf"):
                 cur_nbr = None
                 cur_vrf = x.split(" ")[-1]

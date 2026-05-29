@@ -91,15 +91,33 @@ class Bgp_globalFacts(object):
     def _flatten_config(self, data):
         """Flatten neighbor contexts in
             the running-config for easier parsing.
+            Also filters out template peer configurations.
         :param obj: dict
         :returns: flattened running config
         """
         data = data.split("\n")
         in_nbr_cxt = False
+        in_template_cxt = False
         cur_nbr = {}
+        cur_template = {}
+        filtered_data = []
 
         for x in data:
             cur_indent = len(x) - len(x.lstrip())
+
+            # Skip template peer* blocks - they are managed by nxos_bgp_templates
+            if x.strip().startswith("template peer"):
+                in_template_cxt = True
+                cur_template["indent"] = cur_indent
+                continue
+            elif in_template_cxt and cur_template and (cur_indent <= cur_template["indent"]):
+                in_template_cxt = False
+                cur_template = {}
+            elif in_template_cxt:
+                # Skip all lines within the template block
+                continue
+
+            # Handle neighbor context flattening
             if x.strip().startswith("neighbor"):
                 in_nbr_cxt = True
                 cur_nbr["nbr"] = x
@@ -107,9 +125,12 @@ class Bgp_globalFacts(object):
             elif cur_nbr and (cur_indent <= cur_nbr["indent"]):
                 in_nbr_cxt = False
             elif in_nbr_cxt:
-                data[data.index(x)] = cur_nbr["nbr"] + " " + x.strip()
+                filtered_data.append(cur_nbr["nbr"] + " " + x.strip())
+                continue
 
-        return "\n".join(data)
+            filtered_data.append(x)
+
+        return "\n".join(filtered_data)
 
     def _post_parse(self, obj):
         """Converts the intermediate data structure

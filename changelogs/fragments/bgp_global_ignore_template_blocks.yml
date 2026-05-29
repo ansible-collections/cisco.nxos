@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - nxos_bgp_global - Update nxos_bgp_global to ignore `template peer*` sections
+    from being read during facts gathering. BGP related templates are handled
+    in nxos_bgp_template module.
