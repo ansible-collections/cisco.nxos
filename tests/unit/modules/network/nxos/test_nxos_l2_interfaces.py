@@ -1044,7 +1044,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         eth5 = next(p for p in parsed if p["name"] == "Ethernet1/5")
         self.assertEqual(eth5["trunk"]["allowed_vlans"], "50-60")
 
-
     def test_l2_interfaces_overridden_idempotent_with_pc_members(self):
         """Overridden with port-channel members excluded is idempotent."""
         self.execute_show_command.return_value = dedent(

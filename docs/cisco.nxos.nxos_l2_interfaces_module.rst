@@ -120,7 +120,8 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enable/disable CDP on the interface</div>
+                        <div>Enable/disable CDP on the interface.</div>
+                        <div>For port-channel member interfaces, configure CDP on the port-channel interface as Ansible does not support configuring CDP directly on port-channel member interfaces.</div>
                 </td>
             </tr>
             <tr>
