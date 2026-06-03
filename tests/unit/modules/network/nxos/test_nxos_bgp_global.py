@@ -249,25 +249,6 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 bfd multihop
               neighbor 198.51.100.24
                 bfd
-              template peer tmplt_1
-                bfd singlehop
-                bfd multihop interval 300 min_rx 258 multiplier 12
-                bmp-activate-server 12
-                capability suppress 4-byte-as
-                description test-neighbor-template
-                disable-connected-check
-                dont-capability-negotiate
-                dscp cs1
-                dynamic-capability
-                ebgp-multihop 5
-                graceful-shutdown activate route-map rmap1
-                inherit peer-session peer_sess_1
-                local-as 65535
-                log-neighbor-changes disable
-                low-memory exempt
-                password 7 095C4F1A0A1218000F
-                path-attribute discard 10 in
-                path-attribute treat-as-withdraw range 10 15 in
             """,
         )
         self.get_config.return_value = run_cfg
@@ -434,14 +415,6 @@ class TestNxosBgpGlobalModule(TestNxosModule):
               neighbor 198.51.100.21
                 remote-as 65537
                 password 7 12090404011C03162E
-              template peer tmplt_1
-                bfd singlehop
-                bfd multihop interval 300 min_rx 258 multiplier 12
-                bmp-activate-server 12
-              template peer tmplt_2
-                bfd
-                remote-as 65534
-                remove-private-as replace-as
               vrf site-1
                 local-as 200
                 log-neighbor-changes

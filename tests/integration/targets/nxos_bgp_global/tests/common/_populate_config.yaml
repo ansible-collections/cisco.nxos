@@ -17,8 +17,6 @@
       - "  affinity-group 160"
       - "  description NBR-1"
       - "  low-memory exempt"
-      - "template peer neighbor_tmplt_2"
-      - "  description Test_BGP_PEER_TEMPLATE_2"
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
