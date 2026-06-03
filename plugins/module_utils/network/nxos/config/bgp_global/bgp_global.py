@@ -367,6 +367,7 @@ class Bgp_global(ResourceModule):
         vrf_data = {}
 
         for x in data:
+            # No need to prepend template lines as each line is checked for keyword highlighting
             if x.strip().startswith("vrf"):
                 cur_nbr = None
                 cur_vrf = x.split(" ")[-1]
