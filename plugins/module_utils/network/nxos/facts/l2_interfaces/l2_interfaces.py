@@ -42,27 +42,6 @@ class L2_interfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
-<<<<<<< HEAD
-    def _get_port_channel_members_from_device(self, connection):
-        """Get port-channel member interfaces using 'show port-channel summary'."""
-        members = set()
-        try:
-            output = connection.get("show port-channel summary")
-        except Exception:
-            return members
-
-        for line in output.splitlines():
-            for match in re.finditer(
-                r"(Eth(?:ernet)?\d+/\d+(?:/\d+)?)\([A-Za-z]+\)",
-                line,
-                re.IGNORECASE,
-            ):
-                members.add(normalize_interface(match.group(1)))
-
-        return members
-
-=======
->>>>>>> ca131c49 (fixed test and config file)
     def _default_for_allowed_vlans(self, parsed_config):
         """Handle default for allowed vlans"""
 

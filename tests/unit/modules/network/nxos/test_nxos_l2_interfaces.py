@@ -1045,99 +1045,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.assertEqual(eth5["trunk"]["allowed_vlans"], "50-60")
 
 
-<<<<<<< HEAD
-class TestGetPortChannelMembersFromDevice(TestNxosModule):
-    """Direct tests for _get_port_channel_members_from_device (lines 47-57)."""
-
-    module = nxos_l2_interfaces
-
-    def setUp(self):
-        super().setUp()
-        self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-    def tearDown(self):
-        super().tearDown()
-        self.mock_get_resource_connection_facts.stop()
-
-    def test_parse_port_channel_summary(self):
-        from unittest.mock import MagicMock
-
-        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
-            L2_interfacesFacts,
-        )
-
-        module = MagicMock()
-        facts = L2_interfacesFacts(module)
-        connection = MagicMock()
-        connection.get.return_value = dedent(
-            """\
-            --------------------------------------------------------------------------------
-            Group Port-       Type     Protocol  Member Ports
-                  Channel
-            --------------------------------------------------------------------------------
-            10    Po10(SU)    Eth      LACP      Eth1/1(P)    Eth1/2(P)
-            20    Po20(SU)    Eth      LACP      Eth1/3(P)
-            """,
-        )
-
-        result = facts._get_port_channel_members_from_device(connection)
-        self.assertEqual(result, {"Ethernet1/1", "Ethernet1/2", "Ethernet1/3"})
-
-    def test_parse_port_channel_summary_with_3slot_interface(self):
-        from unittest.mock import MagicMock
-
-        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
-            L2_interfacesFacts,
-        )
-
-        module = MagicMock()
-        facts = L2_interfacesFacts(module)
-        connection = MagicMock()
-        connection.get.return_value = dedent(
-            """\
-            Group Port-       Type     Protocol  Member Ports
-                  Channel
-            10    Po10(SU)    Eth      LACP      Eth1/2/3(P)
-            """,
-        )
-
-        result = facts._get_port_channel_members_from_device(connection)
-        self.assertEqual(result, {"Ethernet1/2/3"})
-
-    def test_parse_port_channel_summary_exception(self):
-        from unittest.mock import MagicMock
-
-        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
-            L2_interfacesFacts,
-        )
-
-        module = MagicMock()
-        facts = L2_interfacesFacts(module)
-        connection = MagicMock()
-        connection.get.side_effect = Exception("command not supported")
-
-        result = facts._get_port_channel_members_from_device(connection)
-        self.assertEqual(result, set())
-
-    def test_parse_port_channel_summary_empty(self):
-        from unittest.mock import MagicMock
-
-        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.l2_interfaces.l2_interfaces import (
-            L2_interfacesFacts,
-        )
-
-        module = MagicMock()
-        facts = L2_interfacesFacts(module)
-        connection = MagicMock()
-        connection.get.return_value = ""
-
-        result = facts._get_port_channel_members_from_device(connection)
-        self.assertEqual(result, set())
-=======
     def test_l2_interfaces_overridden_idempotent_with_pc_members(self):
         """Overridden with port-channel members excluded is idempotent."""
         self.execute_show_command.return_value = dedent(
@@ -1181,7 +1088,6 @@ class TestGetPortChannelMembersFromDevice(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
->>>>>>> ca131c49 (fixed test and config file)
 
 
 class TestGetPortChannelMembersUtil(TestNxosModule):
