@@ -638,6 +638,12 @@ releases:
       - sanicifix.yaml
       - sanity-fix-222.yaml
     release_date: "2026-05-13"
+  11.2.1:
+    changes: {}
+    fragments:
+      - add_stale_closure_workflow.yml
+      - codecov.yml
+    release_date: "2026-06-12"
   2.0.0:
     changes:
       bugfixes:
