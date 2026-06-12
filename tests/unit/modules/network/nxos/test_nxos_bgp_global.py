@@ -307,6 +307,59 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
+    def test_nxos_bgp_global_bfd_negation(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65536
+              neighbor 198.51.100.20
+                bfd
+                remote-as 65537
+              neighbor 198.51.100.21
+                bfd singlehop
+                remote-as 65537
+              neighbor 198.51.100.22
+                bfd multihop
+                remote-as 65537
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        self.cfg_get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="198.51.100.20",
+                            bfd=dict(set=False),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.21",
+                            bfd=dict(singlehop=False),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.22",
+                            bfd=dict(multihop=dict(set=False)),
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "neighbor 198.51.100.20",
+            "no bfd",
+            "neighbor 198.51.100.21",
+            "no bfd singlehop",
+            "neighbor 198.51.100.22",
+            "no bfd multihop",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_bgp_global_merged_idempotent(self):
         run_cfg = dedent(
             """\

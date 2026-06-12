@@ -45,6 +45,13 @@ def _tmplt_bfd(proc):
     bfd = proc.get("bfd", {})
     cmd = None
 
+    if bfd.get("set") is False:
+        return "no bfd"
+    if bfd.get("singlehop") is False:
+        return "no bfd singlehop"
+    if bfd.get("multihop", {}).get("set") is False:
+        return "no bfd multihop"
+
     if bfd.get("set"):
         cmd = "bfd"
     if bfd.get("singlehop"):
