@@ -4,6 +4,9 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v11.2.1
+=======
+
 v11.2.0
 =======
 
