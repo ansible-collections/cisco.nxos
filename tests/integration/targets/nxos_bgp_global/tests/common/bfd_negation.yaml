@@ -1,0 +1,113 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_bgp_global bfd negation integration tests connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Enable BFD feature
+      cisco.nxos.nxos_config:
+        lines:
+          - feature bfd
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Setup BGP neighbors with BFD enabled
+      cisco.nxos.nxos_config:
+        lines:
+          - neighbor 198.51.100.30
+          - remote-as 65537
+          - bfd
+        parents:
+          - router bgp 65536
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Setup BGP neighbor with BFD singlehop enabled
+      cisco.nxos.nxos_config:
+        lines:
+          - neighbor 198.51.100.31
+          - remote-as 65537
+          - bfd singlehop
+        parents:
+          - router bgp 65536
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Setup BGP neighbor with BFD multihop enabled
+      cisco.nxos.nxos_config:
+        lines:
+          - neighbor 198.51.100.32
+          - remote-as 65537
+          - bfd multihop
+        parents:
+          - router bgp 65536
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Remove BFD from BGP neighbors with bfd.set false
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: "65536"
+          neighbors:
+            - neighbor_address: 198.51.100.30
+              remote_as: "65537"
+              bfd:
+                set: false
+            - neighbor_address: 198.51.100.31
+              remote_as: "65537"
+              bfd:
+                singlehop: false
+            - neighbor_address: 198.51.100.32
+              remote_as: "65537"
+              bfd:
+                multihop:
+                  set: false
+        state: merged
+      register: result
+
+    - name: Assert BFD negation commands were generated
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no bfd' in result.commands"
+          - "'no bfd singlehop' in result.commands"
+          - "'no bfd multihop' in result.commands"
+        msg: "Assert failed. 'result.commands': {{ result.commands }}"
+
+    - name: Verify BFD removed from running config
+      cisco.nxos.nxos_command:
+        commands:
+          - show running-config | section "router bgp"
+      register: bgp_cfg
+
+    - name: Assert running config no longer contains BFD on neighbors
+      ansible.builtin.assert:
+        that:
+          - bgp_cfg.stdout[0] is search('neighbor 198.51.100.30')
+          - bgp_cfg.stdout[0] is search('neighbor 198.51.100.31')
+          - bgp_cfg.stdout[0] is search('neighbor 198.51.100.32')
+          - "'bfd' not in bgp_cfg.stdout[0]"
+
+    - name: Idempotence - desired state without BFD keys
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: "65536"
+          neighbors:
+            - neighbor_address: 198.51.100.30
+              remote_as: "65537"
+            - neighbor_address: 198.51.100.31
+              remote_as: "65537"
+            - neighbor_address: 198.51.100.32
+              remote_as: "65537"
+        state: merged
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
