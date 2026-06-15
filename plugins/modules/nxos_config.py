@@ -240,7 +240,7 @@ notes:
 - Tested against Cisco NXOS 9.3(x) on Nexus switches.
 - Unsupported for Cisco MDS
 - Abbreviated commands are NOT idempotent, see
-  U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+  U(https://docs.ansible.com/projects/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
   appear if present in the running configuration on device including the indentation.
 - The recommended way to use templated configurations is to render the template using C(ansible.builtin.template)
