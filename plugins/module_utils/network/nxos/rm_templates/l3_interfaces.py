@@ -342,7 +342,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             ),
             "compval": "dhcp",
             "setval": "{{ 'ip dhcp relay source-interface ' +"
-            " dhcp.ipv4.relay.source_interface.interface_type|string + ' ' +"
+            " dhcp.ipv4.relay.source_interface.interface_type|string +"
             " dhcp.ipv4.relay.source_interface.interface_id|string "
             "if dhcp.ipv4.relay.source_interface.interface_type is defined and "
             "dhcp.ipv4.relay.source_interface.interface_id is defined else '' }}",
@@ -525,7 +525,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             ),
             "compval": "dhcp",
             "setval": "{{ 'ipv6 dhcp relay source-interface ' + "
-            "dhcp.ipv6.source_interface.interface_type + ' ' + "
+            "dhcp.ipv6.source_interface.interface_type + "
             "dhcp.ipv6.source_interface.interface_id "
             "if dhcp.ipv6.source_interface is defined else '' }}",
             "result": {
