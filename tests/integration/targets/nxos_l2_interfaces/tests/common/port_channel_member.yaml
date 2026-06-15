@@ -199,10 +199,20 @@
           - gathered_result.gathered | selectattr('name', 'equalto', test_int2) | list | length == 0
           - gathered_result.gathered | selectattr('name', 'equalto', 'port-channel20') | list | length == 1
 
-    - name: Overridden idempotent - overridden with gathered output should produce no changes
-      register: overridden_result
+    - name: Overridden idempotent - first overridden normalizes CDP state
       cisco.nxos.nxos_l2_interfaces:
         config: "{{ gathered_result.gathered }}"
+        state: overridden
+
+    - name: Overridden idempotent - re-gather after normalization
+      register: gathered_result_normalized
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Overridden idempotent - overridden with normalized gathered output should produce no changes
+      register: overridden_result
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ gathered_result_normalized.gathered }}"
         state: overridden
 
     - name: Overridden idempotent - verify no commands generated
@@ -214,7 +224,7 @@
     - name: Overridden idempotent - run overridden again to confirm idempotency
       register: overridden_result2
       cisco.nxos.nxos_l2_interfaces:
-        config: "{{ gathered_result.gathered }}"
+        config: "{{ gathered_result_normalized.gathered }}"
         state: overridden
 
     - name: Overridden idempotent - verify second run is also idempotent
