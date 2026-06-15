@@ -3,3 +3,9 @@ bugfixes:
   - nxos_l2_interfaces - Skip port-channel member interfaces during facts
     gathering and command generation. Member interfaces inherit L2 config
     from the port-channel and cannot be configured directly.
+breaking_changes:
+  - nxos_l2_interfaces - Port-channel member interfaces are now excluded
+    from gathered, parsed, and overridden/deleted states. Attempting to
+    configure L2 settings directly on a port-channel member via merged,
+    replaced, or deleted (with explicit config) states will now raise an
+    error. Apply L2 configuration on the port-channel interface instead.

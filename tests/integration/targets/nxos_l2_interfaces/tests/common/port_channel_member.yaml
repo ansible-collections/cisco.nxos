@@ -164,7 +164,7 @@
         lines:
           - "switchport"
           - "no shutdown"
-          - "channel-group 20 force mode active"
+          - "channel-group 20 force mode on"
         parents: "interface {{ test_int1 }}"
         match: none
 
@@ -173,7 +173,7 @@
         lines:
           - "switchport"
           - "no shutdown"
-          - "channel-group 20 force mode active"
+          - "channel-group 20 force mode on"
         parents: "interface {{ test_int2 }}"
         match: none
 
