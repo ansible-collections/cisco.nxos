@@ -4,7 +4,6 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import platform
@@ -19,7 +18,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     get_interface_type,
     normalize_interface,
 )
-
 
 g_config = None
 
