@@ -1,5 +1,0 @@
----
-bugfixes:
-  - nxos_bgp_global - Update nxos_bgp_global to add prefix to `template peer*`
-    sections as to avoid issues during facts gathering. BGP related templates are handled
-    in nxos_bgp_template module.

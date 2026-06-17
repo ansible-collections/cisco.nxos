@@ -1,5 +1,0 @@
----
-bugfixes:
-  - nxos_bgp_global - Generate ``no bfd``, ``no bfd singlehop``, and ``no bfd multihop``
-    when ``bfd.set``, ``bfd.singlehop``, or ``bfd.multihop.set`` is false for BGP
-    neighbors (https://github.com/ansible-collections/cisco.nxos/pull/1073).
