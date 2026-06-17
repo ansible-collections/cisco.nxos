@@ -84,13 +84,31 @@ class L2_interfaces(ResourceModule):
         for each in wantd, haved:
             self.process_list_attrs(each)
 
+        # Rebuild dicts with normalized interface name keys
+        wantd = {val["name"]: val for val in wantd.values()}
+        haved = {val["name"]: val for val in haved.values()}
+
+        # Get port-channel members detected during facts gathering
+        pc_members = getattr(self._module, "_l2_pc_members", set())
+
+        user_provided_config = bool(wantd)
+
+        for intf_name in list(wantd.keys()):
+            if intf_name in pc_members:
+                self._module.fail_json(
+                    msg="Interface {0} is a port-channel member. "
+                    "L2 configuration cannot be applied directly on port-channel "
+                    "member interfaces. Apply the configuration on the "
+                    "port-channel interface instead.".format(intf_name),
+                )
+
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not user_provided_config}
             wantd = {}
 
         # remove superfluous config for overridden and deleted

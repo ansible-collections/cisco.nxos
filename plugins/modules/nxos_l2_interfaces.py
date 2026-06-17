@@ -84,7 +84,11 @@ options:
           - switchport_mode
       cdp_enable:
         type: bool
-        description: Enable/disable CDP on the interface
+        description:
+        - Enable/disable CDP on the interface.
+        - For port-channel member interfaces, configure CDP on the
+          port-channel interface as Ansible does not support configuring
+          CDP directly on port-channel member interfaces.
       link_flap:
         type: dict
         description: Configure actions on link-flap
