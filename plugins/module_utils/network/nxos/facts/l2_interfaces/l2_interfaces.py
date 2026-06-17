@@ -26,6 +26,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l2
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_port_channel_members,
+    normalize_interface,
+)
 
 
 class L2_interfacesFacts(object):
@@ -77,6 +81,10 @@ class L2_interfacesFacts(object):
 
         # process defaults for allowed vlan
         self._default_for_allowed_vlans(objs)
+
+        pc_members = get_port_channel_members(data)
+        self._module._l2_pc_members = pc_members
+        objs = [obj for obj in objs if normalize_interface(obj.get("name", "")) not in pc_members]
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 

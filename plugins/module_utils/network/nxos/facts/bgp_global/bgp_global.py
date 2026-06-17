@@ -89,7 +89,7 @@ class Bgp_globalFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """Flatten neighbor contexts in
+        """Flatten templates and neighbor contexts in
             the running-config for easier parsing.
         :param obj: dict
         :returns: flattened running config
@@ -97,9 +97,23 @@ class Bgp_globalFacts(object):
         data = data.split("\n")
         in_nbr_cxt = False
         cur_nbr = {}
+        in_template_cxt = False
+        cur_template = {}
 
         for x in data:
             cur_indent = len(x) - len(x.lstrip())
+
+            # Prepend all template peer lines with the template name
+            if x.strip().startswith("template peer"):
+                in_template_cxt = True
+                cur_template["template"] = x
+                cur_template["indent"] = cur_indent
+            elif cur_template and (cur_indent <= cur_template["indent"]):
+                in_template_cxt = False
+            elif in_template_cxt:
+                data[data.index(x)] = cur_template["template"] + " " + x.strip()
+
+            # Prepend all neighbor lines with the neighbor address
             if x.strip().startswith("neighbor"):
                 in_nbr_cxt = True
                 cur_nbr["nbr"] = x
