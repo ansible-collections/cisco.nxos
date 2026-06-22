@@ -1,0 +1,2 @@
+bugfixes:
+  - nxos_l2_interfaces - Fix replaced and overridden states for trunk allowed VLANs to set the full desired VLAN list instead of using incremental add/remove, which could leave stale VLANs on the interface.
