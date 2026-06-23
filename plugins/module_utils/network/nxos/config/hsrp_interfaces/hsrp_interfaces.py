@@ -221,17 +221,7 @@ class Hsrp_interfaces(ResourceModule):
                         for trk in standby_grp.get("track", {}):
                             temp_track[trk.get("object_no")] = trk
                         standby_grp["track"] = temp_track
-                    self._normalize_timer(standby_grp.get("timer"))
                     temp_standby_grp[standby_grp.get("group_no")] = standby_grp
 
                 if val.get("standby_options", {}):
                     val["standby_options"] = temp_standby_grp
-
-    def _normalize_timer(self, timer):
-        if not timer:
-            return
-        for key in ("hello_interval", "hold_time"):
-            if key in timer and timer[key] is not None:
-                timer[key] = int(timer[key])
-        if not timer.get("msec"):
-            timer.pop("msec", None)

@@ -290,7 +290,6 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "{{ ' msec' if timer.msec|d(False) else ''}}"
             "{{ (' ' + timer.hello_interval|string) if timer.hello_interval is defined else '' }}"
             "{{ (' ' + timer.hold_time|string) if timer.hold_time is defined else '' }}",
-            "remval": "timers",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {

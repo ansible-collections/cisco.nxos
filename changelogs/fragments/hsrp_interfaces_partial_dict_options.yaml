@@ -7,5 +7,3 @@ minor_changes:
 bugfixes:
   - nxos_hsrp_interfaces - Update ``preempt`` and ``priority`` templates to render
     optional sub-options independently, enabling per-key command generation.
-  - nxos_hsrp_interfaces - Normalize gathered timer values before compare to improve
-    idempotency for second-based ``hello_interval`` and ``hold_time`` settings.
