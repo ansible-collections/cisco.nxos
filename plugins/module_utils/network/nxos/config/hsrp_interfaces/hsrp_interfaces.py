@@ -178,14 +178,19 @@ class Hsrp_interfaces(ResourceModule):
                 self.compare(parsers=[parser], want=want, have=have)
                 continue
 
-            for key in set(hitems) - set(witems):
-                sub = {key: hitems[key]}
+            if not witems and hitems:
                 ctx = dict(have)
-                ctx[parser] = sub
+                ctx[parser] = hitems
                 self.addcmd(ctx, parser, True)
+            else:
+                for key in set(hitems) - set(witems):
+                    sub = {key: hitems[key]}
+                    ctx = dict(have)
+                    ctx[parser] = sub
+                    self.addcmd(ctx, parser, True)
 
-            if witems and any(witems.get(k) != hitems.get(k) for k in witems):
-                self.addcmd(want, parser, False)
+                if witems and any(witems.get(k) != hitems.get(k) for k in witems):
+                    self.addcmd(want, parser, False)
 
     def handle_defaults(self, want, have):
         if not want.get("standby", {}).get("version") and want.get("standby"):

@@ -53,7 +53,6 @@
         that:
           - result.changed == true
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Gather hsrp_interfaces facts
       cisco.nxos.nxos_facts:
@@ -90,7 +89,6 @@
         that:
           - result.changed == true
           - "'preempt delay minimum 10 reload 50 sync 5' in result.commands"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Idempotence - add preempt
       register: result
@@ -120,7 +118,6 @@
         that:
           - result.changed == true
           - "'preempt delay minimum 10 reload 200 sync 5' in result.commands"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
   when: bfd_enable is defined
 
   always:

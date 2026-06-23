@@ -557,6 +557,47 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_hsrp_interfaces_replaced_remove_preempt(self):
+        # Replaced: want omits preempt entirely; all preempt sub-keys on device
+        # must be negated individually.
+        self.get_config.return_value = dedent(
+            """\
+            interface Vlan10
+              hsrp version 2
+              hsrp 10
+                preempt delay minimum 10 reload 50 sync 5
+                priority 120
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Vlan10",
+                        "standby": {"version": 2},
+                        "standby_options": [
+                            {
+                                "group_no": 10,
+                                "priority": {"level": 15},
+                            },
+                        ],
+                    },
+                ],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "interface Vlan10",
+            "hsrp 10",
+            "no preempt delay minimum 10 reload 50 sync 5",
+            "priority 15",
+        ]
+        self.assertEqual(set(result["commands"]), set(commands))
+        preempt_set_cmds = [c for c in result["commands"] if c.startswith("preempt ")]
+        self.assertEqual(preempt_set_cmds, [])
+
     def test_nxos_hsrp_interfaces_replaced_partial_preempt(self):
         self.get_config.return_value = dedent(
             """\

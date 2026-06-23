@@ -94,7 +94,6 @@
         that:
           - result.changed == true
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Idempotence - Replaced
       register: result
@@ -135,11 +134,52 @@
           - result.changed == true
           - "'no preempt delay minimum 10' in result.commands"
           - "'no preempt delay reload 50' in result.commands"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Idempotence - preempt minimum and reload removed
       register: result
       cisco.nxos.nxos_hsrp_interfaces: *drop_min_and_reload
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Setup preempt full removal
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature hsrp"
+          - "interface {{ test_int1 }}"
+          - "  no switchport"
+          - "  hsrp version 2"
+          - "  hsrp 10"
+          - "    preempt delay minimum 10 reload 50 sync 5"
+          - "    priority 120"
+
+    - name: Replaced - remove preempt entirely
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &remove_preempt
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              version: 2
+            standby_options:
+              - group_no: 10
+                priority:
+                  level: 15
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no preempt delay minimum 10 reload 50 sync 5' in result.commands"
+          - "'priority 15' in result.commands"
+          - result.commands | select('match', '^preempt ') | list | length == 0
+
+    - name: Idempotence - preempt fully removed
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: *remove_preempt
 
     - ansible.builtin.assert:
         that:
