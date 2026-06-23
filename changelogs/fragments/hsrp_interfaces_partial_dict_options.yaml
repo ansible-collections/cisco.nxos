@@ -1,0 +1,11 @@
+---
+minor_changes:
+  - nxos_hsrp_interfaces - In ``replaced`` and ``overridden`` states, negate removed
+    sub-options for ``preempt`` before applying the desired configuration. This aligns
+    command generation with NX-OS additive CLI behavior when only part of a preempt
+    delay setting is specified.
+bugfixes:
+  - nxos_hsrp_interfaces - Update ``preempt`` and ``priority`` templates to render
+    optional sub-options independently, enabling per-key command generation.
+  - nxos_hsrp_interfaces - Normalize gathered timer values before compare to improve
+    idempotency for second-based ``hello_interval`` and ``hold_time`` settings.

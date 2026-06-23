@@ -53,14 +53,16 @@ class Hsrp_interfaces(ResourceModule):
             "standby.mac_refresh",
             "standby.use_bia",
         ]
-        self.complex_parsers = [
+        self.complex_scalar_parsers = [
             "follow",
             "mac_address",
             "group_name",
-            "preempt",
             "priority",
-            "timer",
             "authentication",
+            "timer",
+        ]
+        self.complex_dict_parsers = [
+            "preempt",
         ]
         self.complex_list_parsers = [
             "ip",
@@ -95,8 +97,8 @@ class Hsrp_interfaces(ResourceModule):
         else:
             haved = {}
 
-        for each in wantd, haved:
-            self.list_to_dict(each)
+        for param in (wantd, haved):
+            self.list_to_dict(param)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -137,8 +139,12 @@ class Hsrp_interfaces(ResourceModule):
         for grp_no, standby_want in want_group.items():
             standby_have = have_group.pop(grp_no, {})
             begin_grp = len(self.commands)
-            # compare non list attributes directly
-            self.compare(parsers=self.complex_parsers, want=standby_want, have=standby_have)
+            self.compare(
+                parsers=self.complex_scalar_parsers,
+                want=standby_want,
+                have=standby_have,
+            )
+            self._complex_compare(standby_want, standby_have)
             # compare list attributes directly
             for x in self.complex_list_parsers:
                 for wkey, wentry in standby_want.get(x, {}).items():
@@ -161,6 +167,25 @@ class Hsrp_interfaces(ResourceModule):
         # remove group via numbers
         for not_req_grp in have_group.values():
             self.commands.append(self._tmplt.render(not_req_grp, "group_no", True))
+
+    def _complex_compare(self, want, have):
+        """Compare dict parsers; in replaced/overridden negate removed sub-keys first."""
+        for parser in self.complex_dict_parsers:
+            witems = want.get(parser) or {}
+            hitems = have.get(parser) or {}
+
+            if self.state not in ["overridden", "replaced"]:
+                self.compare(parsers=[parser], want=want, have=have)
+                continue
+
+            for key in set(hitems) - set(witems):
+                sub = {key: hitems[key]}
+                ctx = dict(have)
+                ctx[parser] = sub
+                self.addcmd(ctx, parser, True)
+
+            if witems and any(witems.get(k) != hitems.get(k) for k in witems):
+                self.addcmd(want, parser, False)
 
     def handle_defaults(self, want, have):
         if not want.get("standby", {}).get("version") and want.get("standby"):
@@ -196,7 +221,17 @@ class Hsrp_interfaces(ResourceModule):
                         for trk in standby_grp.get("track", {}):
                             temp_track[trk.get("object_no")] = trk
                         standby_grp["track"] = temp_track
+                    self._normalize_timer(standby_grp.get("timer"))
                     temp_standby_grp[standby_grp.get("group_no")] = standby_grp
 
                 if val.get("standby_options", {}):
                     val["standby_options"] = temp_standby_grp
+
+    def _normalize_timer(self, timer):
+        if not timer:
+            return
+        for key in ("hello_interval", "hold_time"):
+            if key in timer and timer[key] is not None:
+                timer[key] = int(timer[key])
+        if not timer.get("msec"):
+            timer.pop("msec", None)

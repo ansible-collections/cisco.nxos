@@ -234,7 +234,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 )?
                 \s*$""", re.VERBOSE,
             ),
-            "setval": "preempt delay minimum {{ preempt.minimum|string }}"
+            "setval": "preempt delay"
+            "{{ (' minimum ' + preempt.minimum|string) if preempt.minimum is defined else '' }}"
             "{{ (' reload ' + preempt.reload|string) if preempt.reload is defined else '' }}"
             "{{ (' sync ' + preempt.sync|string) if preempt.sync is defined else '' }}",
             "result": {
@@ -259,7 +260,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "priority {{ priority.level|string }}"
-            "{{ (' forwarding-threshold lower ' + priority.lower|string) if priority.lower is defined else '' }}"
+            "{{ ' forwarding-threshold' if priority.lower is defined or priority.upper is defined else '' }}"
+            "{{ (' lower ' + priority.lower|string) if priority.lower is defined else '' }}"
             "{{ (' upper ' + priority.upper|string) if priority.upper is defined else '' }}",
             "result": {
                 "{{ name }}": {
@@ -288,6 +290,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "{{ ' msec' if timer.msec|d(False) else ''}}"
             "{{ (' ' + timer.hello_interval|string) if timer.hello_interval is defined else '' }}"
             "{{ (' ' + timer.hold_time|string) if timer.hold_time is defined else '' }}",
+            "remval": "timers",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {

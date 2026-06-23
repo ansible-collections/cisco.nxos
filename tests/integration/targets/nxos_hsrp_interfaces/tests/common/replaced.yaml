@@ -104,6 +104,47 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Setup preempt partial replace
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature hsrp"
+          - "interface {{ test_int1 }}"
+          - "  no switchport"
+          - "  hsrp version 2"
+          - "  hsrp 10"
+          - "    preempt delay minimum 10 reload 50 sync 5"
+
+    - name: Replaced - remove preempt minimum and reload sub-keys
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &drop_min_and_reload
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              version: 2
+            standby_options:
+              - group_no: 10
+                preempt:
+                  sync: 5
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no preempt delay minimum 10' in result.commands"
+          - "'no preempt delay reload 50' in result.commands"
+        msg: "Assert failed. 'result.commands': {{ result.commands }}"
+
+    - name: Idempotence - preempt minimum and reload removed
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: *drop_min_and_reload
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
   when: bfd_enable is defined
 
   always:
