@@ -169,7 +169,11 @@ class Hsrp_interfaces(ResourceModule):
             self.commands.append(self._tmplt.render(not_req_grp, "group_no", True))
 
     def _complex_compare(self, want, have):
-        """Compare dict parsers; in replaced/overridden negate removed sub-keys first."""
+        """Compare dict-type standby options (e.g. preempt).
+        For merged and other states, delegates to the base compare(). For
+        replaced and overridden, negates removed sub-keys before applying
+        the desired configuration.
+        """
         for parser in self.complex_dict_parsers:
             witems = want.get(parser) or {}
             hitems = have.get(parser) or {}
@@ -178,19 +182,27 @@ class Hsrp_interfaces(ResourceModule):
                 self.compare(parsers=[parser], want=want, have=have)
                 continue
 
-            if not witems and hitems:
-                ctx = dict(have)
-                ctx[parser] = hitems
-                self.addcmd(ctx, parser, True)
-            else:
-                for key in set(hitems) - set(witems):
-                    sub = {key: hitems[key]}
-                    ctx = dict(have)
-                    ctx[parser] = sub
-                    self.addcmd(ctx, parser, True)
+            self._negate_removed_complex_dict_keys(want, have, parser, witems, hitems)
 
-                if witems and any(witems.get(k) != hitems.get(k) for k in witems):
-                    self.addcmd(want, parser, False)
+    def _negate_removed_complex_dict_keys(self, want, have, parser, witems, hitems):
+        """Negate dict sub-keys removed in replaced/overridden states.
+        If want omits the entire dict, negate all have sub-keys. Otherwise
+        negate each sub-key present on the device but absent from want, then
+        apply any remaining want values that differ from have.
+        """
+        if not witems and hitems:
+            ctx = dict(have)
+            ctx[parser] = hitems
+            self.addcmd(ctx, parser, True)
+        else:
+            for key in set(hitems) - set(witems):
+                sub = {key: hitems[key]}
+                ctx = dict(have)
+                ctx[parser] = sub
+                self.addcmd(ctx, parser, True)
+
+            if witems and any(witems.get(k) != hitems.get(k) for k in witems):
+                self.addcmd(want, parser, False)
 
     def handle_defaults(self, want, have):
         if not want.get("standby", {}).get("version") and want.get("standby"):
