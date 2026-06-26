@@ -259,48 +259,13 @@ nodes:
     hide_links: false
     id: n0
     image_definition: null
-    label: devel
+    label: stable-2.21
     node_definition: nxosv9000
     parameters: {}
     ram: null
     tags: []
     x: -1200
     y: -40
-    interfaces:
-      - id: i0
-        label: Loopback0
-        type: loopback
-      - id: i1
-        label: mgmt0
-        slot: 0
-        type: physical
-      - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
-      - id: i3
-        label: Ethernet1/2
-        slot: 2
-        type: physical
-      - id: i4
-        label: Ethernet1/3
-        slot: 3
-        type: physical
-  - boot_disk_size: null
-    configuration: *conf
-    cpu_limit: null
-    cpus: null
-    data_volume: null
-    hide_links: false
-    id: n3
-    image_definition: null
-    label: stable-2.21
-    node_definition: nxosv9000
-    parameters: {}
-    ram: null
-    tags: []
-    x: -1440
-    y: 280
     interfaces:
       - id: i0
         label: Loopback0
@@ -345,10 +310,6 @@ nodes:
         label: port1
         slot: 1
         type: physical
-      - id: i2
-        label: port2
-        slot: 2
-        type: physical
   - boot_disk_size: null
     configuration: []
     cpu_limit: null
@@ -383,14 +344,7 @@ links:
     i1: i1
     i2: i1
     conditioning: {}
-    label: slave-switch-port1<->devel-mgmt0
-  - id: l2
-    n1: n5
-    n2: n3
-    i1: i2
-    i2: i1
-    conditioning: {}
-    label: slave-switch-port2<->stable-2.21-mgmt0
+    label: slave-switch-port1<->stable-2.21-mgmt0
 lab:
   description: "Upstream test lab for cisco.nxos"
   notes: "Upstream test lab for cisco.nxos"
