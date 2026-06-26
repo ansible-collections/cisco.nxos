@@ -408,7 +408,8 @@ class Interfaces(FactsBase):
             if len(line) == 0:
                 continue
             elif line.startswith("admin") or line[0] == " ":
-                parsed[key] += "\n%s" % line
+                if key:
+                    parsed[key] += "\n%s" % line
             else:
                 match = re.match(r"^(\S+)", line)
                 if match:
