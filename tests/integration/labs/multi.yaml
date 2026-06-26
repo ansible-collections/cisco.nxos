@@ -257,15 +257,15 @@ nodes:
     cpus: null
     data_volume: null
     hide_links: false
-    id: n4
+    id: n0
     image_definition: null
-    label: stable-2.17
+    label: stable-2.21
     node_definition: nxosv9000
     parameters: {}
     ram: null
     tags: []
-    x: 240
-    y: 120
+    x: -1200
+    y: -40
     interfaces:
       - id: i0
         label: Loopback0
@@ -299,8 +299,8 @@ nodes:
     parameters: {}
     ram: null
     tags: []
-    x: -80
-    y: -40
+    x: -1320
+    y: 120
     interfaces:
       - id: i0
         label: port0
@@ -309,30 +309,6 @@ nodes:
       - id: i1
         label: port1
         slot: 1
-        type: physical
-      - id: i2
-        label: port2
-        slot: 2
-        type: physical
-      - id: i3
-        label: port3
-        slot: 3
-        type: physical
-      - id: i4
-        label: port4
-        slot: 4
-        type: physical
-      - id: i5
-        label: port5
-        slot: 5
-        type: physical
-      - id: i6
-        label: port6
-        slot: 6
-        type: physical
-      - id: i7
-        label: port7
-        slot: 7
         type: physical
   - boot_disk_size: null
     configuration: []
@@ -347,8 +323,8 @@ nodes:
     parameters: {}
     ram: null
     tags: []
-    x: -80
-    y: -160
+    x: -640
+    y: 120
     interfaces:
       - id: i0
         label: port
@@ -356,21 +332,21 @@ nodes:
         type: physical
 links:
   - id: l0
-    n1: n6
-    n2: n5
+    n1: n5
+    n2: n6
     i1: i0
     i2: i0
     conditioning: {}
-    label: ci-god-port<->slave-switch-port0
-  - id: l5
+    label: slave-switch-port0<->ci-god-port
+  - id: l1
     n1: n5
-    n2: n4
-    i1: i5
+    n2: n0
+    i1: i1
     i2: i1
     conditioning: {}
-    label: slave-switch-port5<->stable-2.17-mgmt0
+    label: slave-switch-port1<->stable-2.21-mgmt0
 lab:
   description: "Upstream test lab for cisco.nxos"
   notes: "Upstream test lab for cisco.nxos"
-  title: cisco.nxos.nxos
+  title: cisco.nxos.nxos-wip
   version: 0.2.2

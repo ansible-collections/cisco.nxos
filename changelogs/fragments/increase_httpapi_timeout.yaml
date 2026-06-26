@@ -1,0 +1,3 @@
+---
+trivial:
+  - Increase CML integration inventory httpapi timeouts to 500 seconds.

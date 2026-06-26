@@ -1,0 +1,4 @@
+---
+trivial:
+  - Update integration-libssh CI workflow to test against supported ansible-core versions.
+  - Update CML lab topology with a node for stable-2.21.
