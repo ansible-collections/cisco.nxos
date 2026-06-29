@@ -405,19 +405,19 @@ class Interfaces(FactsBase):
         parsed = dict()
         key = ""
         for line in data.split("\n"):
-            if len(line) == 0:
+            if not line:
                 continue
-            elif line.startswith("admin") or line[0] == " ":
-                if key:
-                    parsed[key] += "\n%s" % line
-            else:
-                match = re.match(r"^(\S+)", line)
-                if match:
-                    key = match.group(1)
-                    if not key.startswith("admin") or not key.startswith(
-                        "IPv6 Interface",
-                    ):
-                        parsed[key] = line
+            if (line.startswith("admin") or line[0] == " ") and key:
+                parsed[key] += "\n%s" % line
+                continue
+            match = re.match(r"^(\S+)", line)
+            if not match:
+                continue
+            key = match.group(1)
+            if not key.startswith("admin") or not key.startswith(
+                "IPv6 Interface",
+            ):
+                parsed[key] = line
         return parsed
 
     def populate_interfaces(self, interfaces):
