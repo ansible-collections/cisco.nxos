@@ -4,3 +4,6 @@ bugfixes:
     Fix nxos_nxapi integration test assertions to use boolean conditions compatible
     with ansible-core 2.19+.
   - Fix nxos_user auth integration test assert for results.failed.
+  - >-
+    Fix nxos_static_routes rtt integration test assert missing
+    `in result.commands` for ansible-core 2.19+.
