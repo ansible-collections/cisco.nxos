@@ -1,0 +1,5 @@
+---
+trivial:
+  - >-
+    Update integration-libssh CI workflow and CML lab topology to use
+    ansible-core stable-2.21 instead of stable-2.17.
