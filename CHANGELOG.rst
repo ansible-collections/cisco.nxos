@@ -4,6 +4,28 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v12.0.0
+=======
+
+Release Summary
+---------------
+
+This is a major release of the ``cisco.nxos`` collection.
+This changelog contains all changes to the modules and plugins in this collection
+that have been made after the previous release.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- nxos_l2_interfaces - Port-channel member interfaces are now excluded from gathered, parsed, and overridden/deleted states. Attempting to configure L2 settings directly on a port-channel member via merged, replaced, or deleted (with explicit config) states will now raise an error. Apply L2 configuration on the port-channel interface instead.
+
+Bugfixes
+--------
+
+- nxos_bgp_global - Generate ``no bfd``, ``no bfd singlehop``, and ``no bfd multihop`` when ``bfd.set``, ``bfd.singlehop``, or ``bfd.multihop.set`` is false for BGP neighbors (https://github.com/ansible-collections/cisco.nxos/pull/1073).
+- nxos_bgp_global - Update nxos_bgp_global to add prefix to `template peer*` sections as to avoid issues during facts gathering. BGP related templates are handled in nxos_bgp_template module.
+- nxos_l2_interfaces - Skip port-channel member interfaces during facts gathering and command generation. Member interfaces inherit L2 config from the port-channel and cannot be configured directly.
+
 v11.2.0
 =======
 
