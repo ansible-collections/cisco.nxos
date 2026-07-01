@@ -53,7 +53,6 @@
         that:
           - result.changed == true
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-        msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
     - name: Gather hsrp_interfaces facts
       cisco.nxos.nxos_facts:
@@ -70,6 +69,55 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+
+    - name: Merged - add preempt
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &add_preempt
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              version: 2
+            standby_options:
+              - group_no: 10
+                preempt:
+                  minimum: 10
+                  reload: 50
+                  sync: 5
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'preempt delay minimum 10 reload 50 sync 5' in result.commands"
+
+    - name: Idempotence - add preempt
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: *add_preempt
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - name: Merged - change preempt reload sub-key only
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              version: 2
+            standby_options:
+              - group_no: 10
+                preempt:
+                  minimum: 10
+                  reload: 200
+                  sync: 5
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'preempt delay minimum 10 reload 200 sync 5' in result.commands"
   when: bfd_enable is defined
 
   always:
