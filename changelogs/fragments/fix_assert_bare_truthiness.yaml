@@ -1,0 +1,15 @@
+---
+bugfixes:
+  - >-
+    Fix nxos_nxapi integration test assertions to use boolean conditions compatible
+    with ansible-core 2.19+.
+  - Fix nxos_user auth integration test assert for results.failed.
+  - >-
+    Fix nxos_user basic integration test weak-password warnings assertions
+    to be conditional on warnings presence for ansible-core 2.21+.
+  - >-
+    Fix nxos_static_routes rtt integration test assert missing
+    `in result.commands` for ansible-core 2.19+.
+  - >-
+    Fix nxos_telemetry integration test asserts to use boolean Jinja
+    expressions without template delimiters for ansible-core 2.19+.
