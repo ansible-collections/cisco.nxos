@@ -155,7 +155,7 @@
           - "'subscription 55' in result.commands"
           - "'dst-grp 10' in result.commands"
           - "'snsr-grp 55 sample-interval 2000' in result.commands"
-          - result.commands|length == {{ command_list_length }}
+          - result.commands | length == command_list_length
 
     - ansible.builtin.assert:
         that:

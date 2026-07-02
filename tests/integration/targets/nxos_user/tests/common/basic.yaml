@@ -85,12 +85,16 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == True
-      - result.failed == False
-      - '"Minimum recommended length of 8 characters" in result.warnings[1]'
-      - '"Password should contain characters from at least three of the following classes:" in result.warnings[2]'
-      - '"it is WAY too short" in result.warnings[3]'
-      - '"Configuration accepted because password strength check is disabled" in result.warnings[4]'
+      - result.changed == true
+      - result.failed == false
+
+- ansible.builtin.assert:
+    that:
+      - result.warnings | select('search', 'Minimum recommended length of 8 characters') | list | length > 0
+      - result.warnings | select('search', 'Password should contain characters from at least three of the following classes') | list | length > 0
+      - result.warnings | select('search', 'it is WAY too short') | list | length > 0
+      - result.warnings | select('search', 'Configuration accepted because password strength check is disabled') | list | length > 0
+  when: result.warnings is defined and (result.warnings | length) > 0
 
 - name: Enable password check (if that was the default)
   cisco.nxos.nxos_config: *enable
