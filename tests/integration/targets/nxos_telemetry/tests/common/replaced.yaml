@@ -99,7 +99,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - result.before|length == {{ dict_facts_length }}
+          - result.before | length == dict_facts_length
           - result.before.certificate|length == 2
           - result.before.destination_groups|length == 7
           - result.before.sensor_groups|length == 8
@@ -131,7 +131,7 @@
           - "'certificate /bootflash/new_server.crt newhost.example.com' in result.commands"
           - "'destination-profile' in result.commands"
           - "'use-vrf management' in result.commands"
-          - result.commands|length == {{ command_list_length }}
+          - result.commands | length == command_list_length
 
     - ansible.builtin.assert:
         that:

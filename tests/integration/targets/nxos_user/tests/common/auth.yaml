@@ -36,7 +36,7 @@
     - name: Check that attempt failed
       ansible.builtin.assert:
         that:
-          - results.failed
+          - results.failed == true
   always:
     - name: Delete user
       register: result
