@@ -168,28 +168,14 @@ class L2_interfaces(ResourceModule):
             return
 
         if self.state in ("replaced", "overridden"):
-            # Replaced/overridden: make device match want_set exactly
-            # Remove vlans that are in have but not in want
-            vlans_to_remove = have_set - want_set
-            # Add vlans that are in want but not in have
-            vlans_to_add = want_set - have_set
-
             if not want_set and have_set:
-                # Want is empty but have has vlans - remove all
                 self.commands.append("no switchport trunk allowed vlan")
-            elif vlans_to_remove:
-                # Remove excess vlans first
-                self.commands.append(
-                    f"switchport trunk allowed vlan remove {vlan_list_to_range(sorted(vlans_to_remove, key=int))}",
-                )
-
-            if vlans_to_add:
-                # Add missing vlans
+            elif want_set and want_set != have_set:
                 self.commands.extend(
                     generate_switchport_trunk(
                         "allowed",
-                        True,
-                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                        False,
+                        vlan_list_to_range(sorted(want_set, key=int)),
                     ),
                 )
 
