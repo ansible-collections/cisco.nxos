@@ -129,7 +129,7 @@
         that:
           - result.changed == true
           - "'no telemetry' in result.commands"
-          - result.before|dict2items|length == {{ before_keys_length }}
+          - result.before | dict2items | length == before_keys_length
 
     - ansible.builtin.assert:
         that:

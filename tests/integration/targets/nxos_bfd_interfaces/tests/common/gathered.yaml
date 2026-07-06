@@ -14,7 +14,7 @@
 
     - ansible.builtin.assert:
         that:
-          - not result.changed
+          - result.changed == false
           - >
             {{
               result['gathered']
