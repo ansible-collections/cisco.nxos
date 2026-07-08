@@ -215,12 +215,14 @@ vlan_list:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def get_chassis_type(connection):

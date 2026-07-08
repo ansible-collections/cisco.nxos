@@ -124,8 +124,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    emit_warnings,
     ComplexList,
+    emit_warnings,
 )
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (

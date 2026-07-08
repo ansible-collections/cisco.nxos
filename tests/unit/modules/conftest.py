@@ -2,14 +2,17 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import json
 
+from collections.abc import MutableMapping
+
 import pytest
 
 from ansible.module_utils.common.text.converters import to_bytes
-from collections.abc import MutableMapping
+
 
 string_types = (str,)
 
