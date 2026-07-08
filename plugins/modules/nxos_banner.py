@@ -101,7 +101,7 @@ commands:
 
 import re
 
-from ansible.module_utils._text import to_text
+from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (

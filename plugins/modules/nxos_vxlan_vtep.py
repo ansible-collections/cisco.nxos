@@ -426,8 +426,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
-    result = {"changed": False, "commands": [], "warnings": warnings}
+    result = {"changed": False, "commands": []}
 
     state = module.params["state"]
 
@@ -454,7 +453,7 @@ def main():
         gsa_tcam_check(module)
     if state == "present":
         if not existing:
-            warnings.append(
+            module.warn(
                 "The proposed NVE interface did not exist. "
                 "It's recommended to use nxos_interfaces to create "
                 "all logical interfaces.",

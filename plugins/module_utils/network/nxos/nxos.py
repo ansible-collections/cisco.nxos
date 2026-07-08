@@ -37,8 +37,8 @@ import re
 
 from copy import deepcopy
 
-from ansible.module_utils._text import to_text
-from ansible.module_utils.common._collections_compat import Mapping
+from ansible.module_utils.common.text.converters import to_text
+from collections.abc import Mapping
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,

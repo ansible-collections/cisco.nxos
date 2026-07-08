@@ -133,7 +133,7 @@ failed_conditions:
 """
 import time
 
-from ansible.module_utils._text import to_text
+from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
     Conditional,
@@ -147,13 +147,13 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
-def parse_commands(module, warnings):
+def parse_commands(module):
     commands = transform_commands(module)
 
     if module.check_mode:
         for item in list(commands):
             if not item["command"].startswith("show"):
-                warnings.append(
+                module.warn(
                     "Only show commands are supported when using check mode, not "
                     "executing %s" % item["command"],
                 )
@@ -182,9 +182,8 @@ def main():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    result = {"changed": False, "warnings": warnings}
-    commands = parse_commands(module, warnings)
+    result = {"changed": False}
+    commands = parse_commands(module)
     wait_for = module.params["wait_for"] or list()
     conditionals = []
 
