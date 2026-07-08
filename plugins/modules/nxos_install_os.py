@@ -568,6 +568,8 @@ def main():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
+    warnings = list()
+
     # Get system_image_file(sif), kickstart_image_file(kif) and
     # issu settings from module params.
     sif = module.params["system_image_file"]
@@ -588,7 +590,7 @@ def main():
 
     state = install_result["processed"]
     changed = install_result["upgrade_needed"]
-    module.exit_json(changed=changed, install_state=state)
+    module.exit_json(changed=changed, install_state=state, warnings=warnings)
 
 
 if __name__ == "__main__":

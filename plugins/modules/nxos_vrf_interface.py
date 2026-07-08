@@ -186,7 +186,8 @@ def main():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    results = {"changed": False, "commands": []}
+    warnings = list()
+    results = {"changed": False, "commands": [], "warnings": warnings}
 
     vrf = module.params["vrf"]
     interface = normalize_interface(module.params["interface"])
@@ -197,7 +198,7 @@ def main():
 
     current_vrfs = get_vrf_list(module)
     if vrf not in current_vrfs:
-        module.warn("The VRF is not present/active on the device. Use nxos_vrf to fix this.")
+        warnings.append("The VRF is not present/active on the device. Use nxos_vrf to fix this.")
 
     intf_type = get_interface_type(interface)
     if intf_type != "ethernet" and network_api == "cliconf":

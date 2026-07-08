@@ -168,7 +168,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import Version
 
 
-def check_args(module, capabilities):
+def check_args(module, warnings, capabilities):
     network_api = capabilities.get("network_api", "nxapi")
     if network_api == "nxapi":
         module.fail_json(msg="module not supported over nxapi transport")
@@ -183,13 +183,13 @@ def check_args(module, capabilities):
 
     if state == "started":
         module.params["state"] = "present"
-        module.warn(
+        warnings.append(
             "state=started is deprecated and will be removed in a "
             "a future release.  Please use state=present instead",
         )
     elif state == "stopped":
         module.params["state"] = "absent"
-        module.warn(
+        warnings.append(
             "state=stopped is deprecated and will be removed in a "
             "a future release.  Please use state=absent instead",
         )
@@ -199,8 +199,10 @@ def check_args(module, capabilities):
             if not 1 <= module.params[key] <= 65535:
                 module.fail_json(msg="%s must be between 1 and 65535" % key)
 
+    return warnings
 
-def map_obj_to_commands(want, have, module, capabilities):
+
+def map_obj_to_commands(want, have, module, warnings, capabilities):
     send_commands = list()
     commands = dict()
     os_platform = None
@@ -272,7 +274,7 @@ def map_obj_to_commands(want, have, module, capabilities):
                     " ".join([want_ssl_protocols, have_ssl_protocols])
                 )
     else:
-        module.warn(
+        warnings.append(
             "os_version and/or os_platform keys from "
             "platform capabilities are not available.  "
             "Any NXAPI SSL optional arguments will be ignored",
@@ -393,6 +395,7 @@ def main():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
+    warnings = list()
     warning_msg = "Module nxos_nxapi currently defaults to configure 'http port 80'. "
     warning_msg += "Default behavior is changing to configure 'https port 443'"
     warning_msg += " when params 'http, http_port, https, https_port' are not set in the playbook"
@@ -400,14 +403,14 @@ def main():
 
     capabilities = get_capabilities(module)
 
-    check_args(module, capabilities)
+    check_args(module, warnings, capabilities)
 
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
 
-    commands = map_obj_to_commands(want, have, module, capabilities)
+    commands = map_obj_to_commands(want, have, module, warnings, capabilities)
 
-    result = {"changed": False, "commands": commands}
+    result = {"changed": False, "warnings": warnings, "commands": commands}
 
     if commands:
         if not module.check_mode:

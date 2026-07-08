@@ -250,6 +250,8 @@ def main():
     connection = Connection(module._socket_path)
     facts = Facts(module, chassis_type=get_chassis_type(connection))
 
+    warnings = []
+
     ansible_facts = {}
     if module.params.get("available_network_resources"):
         ansible_facts["available_network_resources"] = sorted(facts.get_resource_subsets().keys())
@@ -257,10 +259,9 @@ def main():
     result = facts.get_facts()
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)
-    for warning in additional_warnings:
-        module.warn(warning)
+    warnings.extend(additional_warnings)
 
-    module.exit_json(ansible_facts=ansible_facts)
+    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
 
 
 if __name__ == "__main__":
