@@ -593,7 +593,7 @@ def main():
 
     state = install_result["processed"]
     changed = install_result["upgrade_needed"]
-    result = dict(changed=changed, install_state=state, warnings=warnings)
+    result = {"changed": changed, "install_state": state, "warnings": warnings}
     emit_warnings(module, result)
     module.exit_json(**result)
 

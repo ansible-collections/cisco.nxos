@@ -264,7 +264,7 @@ def main():
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)
 
-    result = dict(ansible_facts=ansible_facts, warnings=warnings)
+    result = {"ansible_facts": ansible_facts, "warnings": warnings}
     emit_warnings(module, result)
     module.exit_json(**result)
 
