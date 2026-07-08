@@ -170,6 +170,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 CONFIG_ARGS = {
@@ -485,6 +486,7 @@ def main():
             if "configure" in cmds:
                 cmds.pop(0)
 
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

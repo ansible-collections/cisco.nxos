@@ -150,6 +150,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 PARAM_TO_DEFAULT_KEYMAP = {
@@ -482,6 +483,7 @@ def main():
 
     if commands:
         if module.check_mode:
+            emit_warnings(module, results)
             module.exit_json(**results)
         else:
             load_config(module, commands)
@@ -498,6 +500,7 @@ def main():
                 commands.pop(0)
 
     results["commands"] = commands
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

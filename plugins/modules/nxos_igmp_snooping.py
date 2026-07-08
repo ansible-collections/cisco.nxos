@@ -105,6 +105,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def execute_show_command(command, module, output="text"):
@@ -312,6 +313,7 @@ def main():
             cmds.pop(0)
         results["commands"] = cmds
 
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

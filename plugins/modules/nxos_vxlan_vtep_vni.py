@@ -124,6 +124,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     load_config,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 BOOL_PARAMS = ["assoc_vrf", "suppress_arp", "suppress_arp_disable"]
@@ -413,6 +414,7 @@ def main():
             module.fail_json(msg="Only 1 NVE interface is allowed on the switch.")
     elif state == "absent":
         if interface_exist != module.params["interface"]:
+            emit_warnings(module, result)
             module.exit_json(**result)
         elif existing and existing["vni"] != module.params["vni"]:
             module.fail_json(
@@ -445,6 +447,7 @@ def main():
         if not module.check_mode:
             load_config(module, candidate)
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

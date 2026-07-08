@@ -18,14 +18,13 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import json
 import re
 
 from ansible.errors import AnsibleConnectionFailure
-from ansible.module_utils._text import to_bytes, to_text
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
 
 

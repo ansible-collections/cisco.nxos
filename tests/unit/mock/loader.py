@@ -18,13 +18,12 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import os
 
 from ansible.errors import AnsibleParserError
-from ansible.module_utils._text import to_bytes, to_text
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.parsing.dataloader import DataLoader
 
 

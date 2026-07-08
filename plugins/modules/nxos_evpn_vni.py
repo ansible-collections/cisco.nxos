@@ -114,6 +114,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     load_config,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 PARAM_TO_COMMAND_KEYMAP = {
@@ -294,6 +295,7 @@ def main():
         results["commands"] = candidate
     else:
         results["commands"] = []
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

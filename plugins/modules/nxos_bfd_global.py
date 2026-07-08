@@ -143,6 +143,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     NxosCmdRef,
     load_config,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 BFD_CMD_REF = """
@@ -326,6 +327,7 @@ def main():
         if not module.check_mode:
             load_config(module, cmds)
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

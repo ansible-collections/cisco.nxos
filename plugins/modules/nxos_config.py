@@ -370,7 +370,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+    to_list,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
@@ -641,6 +644,7 @@ def main():
         else:
             result["warnings"] = msg
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

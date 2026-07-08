@@ -168,6 +168,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     load_config,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def match_current_rt(rt, direction, current, rt_commands):
@@ -277,6 +278,7 @@ def main():
 
     result["commands"] = commands
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

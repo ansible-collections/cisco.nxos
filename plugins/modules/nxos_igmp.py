@@ -91,6 +91,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def get_current(module):
@@ -155,6 +156,7 @@ def main():
         cmd = {"command": "restart igmp", "output": "text"}
         run_commands(module, cmd)
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

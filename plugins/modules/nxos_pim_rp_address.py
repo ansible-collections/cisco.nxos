@@ -93,6 +93,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     load_config,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def get_existing(module, args, gl):
@@ -241,6 +242,7 @@ def main():
                             new_cmd = "no ip pim rp-address {0}".format(addr)
                             load_config(module, new_cmd)
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

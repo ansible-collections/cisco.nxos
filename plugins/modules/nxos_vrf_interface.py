@@ -93,6 +93,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     normalize_interface,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def execute_show_command(command, module):
@@ -260,6 +261,7 @@ def main():
     results["commands"] = commands
     results["changed"] = changed
 
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

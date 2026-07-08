@@ -125,6 +125,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def flatten_list(command_lists):
@@ -294,6 +295,7 @@ def main():
     results["changed"] = changed
     results["warnings"] = warnings
 
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

@@ -140,6 +140,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.p
     FailedConditionalError,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
     to_lines,
     transform_commands,
 )
@@ -223,6 +224,7 @@ def main():
 
     result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

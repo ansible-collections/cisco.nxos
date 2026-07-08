@@ -220,6 +220,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fa
     FactsArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def get_chassis_type(connection):
@@ -261,7 +262,9 @@ def main():
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)
 
-    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
+    result = dict(ansible_facts=ansible_facts, warnings=warnings)
+    emit_warnings(module, result)
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":

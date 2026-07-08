@@ -109,6 +109,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 __metaclass__ = type
@@ -557,6 +558,7 @@ def main():
     result["messages"] = messages
     result["commands"] = commands_to_execute
     result["warnings"] = warnings
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

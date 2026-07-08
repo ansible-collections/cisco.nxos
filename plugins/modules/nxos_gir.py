@@ -171,6 +171,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 def get_system_mode(module):
@@ -335,6 +336,7 @@ def main():
 
     result["warnings"] = warnings
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

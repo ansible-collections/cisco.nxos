@@ -233,6 +233,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
     get_resource_connection,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import emit_warnings
 
 
 class FileCopy:
@@ -490,6 +491,7 @@ def main():
 
     result["warnings"] = warnings
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 
