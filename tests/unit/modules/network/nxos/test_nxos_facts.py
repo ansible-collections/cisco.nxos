@@ -234,3 +234,41 @@ class TestNxosFactsModule(TestNxosModule):
         self.assertEqual(len(interfaces_obj.facts["all_ipv6_addresses"]), 2)
         self.assertIn("2001:db8::1/64", interfaces_obj.facts["all_ipv6_addresses"])
         self.assertIn("2001:db8::2/64", interfaces_obj.facts["all_ipv6_addresses"])
+
+    def test_parse_interfaces_admin_preamble_before_interface(self):
+        """Regression for 8-slot chassis show interface text with admin line first.
+
+        Reporter devices (e.g. N9K-C9508) can emit chassis-level admin output
+        before the first interface header. Lab devices may use the opposite order,
+        so this test uses mock fixture text rather than live device capture.
+        """
+        from unittest.mock import MagicMock
+
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+
+        interfaces_obj = Interfaces(MagicMock())
+        data = load_fixture("nxos_facts", "show_interface_text_admin_preamble")
+        parsed = interfaces_obj.parse_interfaces(data)
+
+        self.assertIn("Ethernet1/1", parsed)
+        self.assertTrue(parsed["Ethernet1/1"].startswith("Ethernet1/1 is up"))
+        self.assertIn("admin state is up, admin port state is up", parsed["Ethernet1/1"])
+        self.assertNotIn("some indented chassis line", parsed["Ethernet1/1"])
+
+    def test_parse_interfaces_interface_before_admin(self):
+        """Regression for lab device ordering: interface header before admin line."""
+        from unittest.mock import MagicMock
+
+        from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.legacy.base import (
+            Interfaces,
+        )
+
+        interfaces_obj = Interfaces(MagicMock())
+        data = load_fixture("nxos_facts", "show_interface_text_interface_first")
+        parsed = interfaces_obj.parse_interfaces(data)
+
+        self.assertIn("Ethernet1/1", parsed)
+        self.assertIn("admin state is up", parsed["Ethernet1/1"])
+        self.assertIn("Hardware is Ethernet", parsed["Ethernet1/1"])
