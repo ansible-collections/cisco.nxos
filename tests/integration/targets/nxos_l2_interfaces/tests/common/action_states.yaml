@@ -28,7 +28,7 @@
           - "'interface Ethernet1/8' in result_replaced.commands"
           - "'switchport access vlan 6' in result_replaced.commands"
           - "'no switchport trunk native vlan 10' in result_replaced.commands"
-          - "'switchport trunk allowed vlan remove 1-199,201-559,1001-4094' in result_replaced.commands | join(' ')"
+          - "'switchport trunk allowed vlan 200,560-1000' in result_replaced.commands"
 
     - name: Replaced - idempotent
       register: result_replaced_idempotent
