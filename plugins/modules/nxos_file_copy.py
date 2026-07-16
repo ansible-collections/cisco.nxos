@@ -228,7 +228,7 @@ import hashlib
 import os
 import re
 
-from ansible.module_utils._text import to_bytes, to_text
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
     get_resource_connection,
