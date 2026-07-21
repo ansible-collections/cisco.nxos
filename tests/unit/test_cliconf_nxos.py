@@ -26,13 +26,13 @@ def make_cliconf():
 
 class TestCliconfNxosModuleContext(TestCase):
     def test_save_and_read_module_context(self):
-        cliconf, _ = make_cliconf()
+        cliconf, _conn = make_cliconf()
         cliconf.save_module_context("test_key", {"data": "value"})
         result = cliconf.read_module_context("test_key")
         self.assertEqual(result, {"data": "value"})
 
     def test_read_module_context_missing_key(self):
-        cliconf, _ = make_cliconf()
+        cliconf, _conn = make_cliconf()
         result = cliconf.read_module_context("nonexistent")
         self.assertIsNone(result)
 
@@ -50,7 +50,7 @@ class TestCliconfNxosDeviceInfo(TestCase):
             "  system image file is: bootflash:///nxos.9.3.7.bin\n"
         )
         show_inventory_output = (
-            'NAME: "Chassis",   DESCR: "Nexus9000 C9300v Chassis"\n' "PID: N9K-C9300v\n"
+            'NAME: "Chassis",   DESCR: "Nexus9000 C9300v Chassis"\nPID: N9K-C9300v\n'
         )
 
         def mock_get(cmd, *args, **kwargs):
@@ -80,7 +80,7 @@ class TestCliconfNxosDeviceInfo(TestCase):
             "  kickstart:  version 8.2(1)\n"
             "  kickstart image file is: bootflash:///n7000-s2-kickstart.8.2.1.bin\n"
         )
-        show_inventory_output = 'NAME: "Chassis",   DESCR: "Nexus7000 Chassis"\n' "PID: N7K-C7009\n"
+        show_inventory_output = 'NAME: "Chassis",   DESCR: "Nexus7000 Chassis"\nPID: N7K-C7009\n'
 
         def mock_get(cmd, *args, **kwargs):
             if "show version" in cmd:
@@ -105,7 +105,7 @@ class TestCliconfNxosDeviceInfo(TestCase):
             "  NXOS:  version 10.2(3)\n"
             "  NXOS image file is: bootflash:///nxos64-cs.10.2.3.M.bin\n"
         )
-        show_inventory_output = 'NAME: "Chassis",   DESCR: "Nexus 9000"\n' "PID: N9K-C93180YC-FX\n"
+        show_inventory_output = 'NAME: "Chassis",   DESCR: "Nexus 9000"\nPID: N9K-C93180YC-FX\n'
 
         def mock_get(cmd, *args, **kwargs):
             if "show version" in cmd:

@@ -1023,7 +1023,7 @@ class TestNxosInstallOsModule(TestNxosModule):
     def test_parse_show_install_error_stops_processing(self):
         """Once an error is found, processing should stop (break)."""
         data = [
-            "Pre-upgrade check failed\n" "Install has been successful",
+            "Pre-upgrade check failed\nInstall has been successful",
         ]
         result = nxos_install_os.parse_show_install(data)
         self.assertTrue(result["error"])

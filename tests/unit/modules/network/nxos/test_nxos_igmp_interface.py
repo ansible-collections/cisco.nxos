@@ -814,7 +814,7 @@ class TestNxosIgmpInterfaceHelpers(unittest.TestCase):
 
     def test_get_igmp_interface_multiple_oif_entries(self):
         json_body = _igmp_json_body()
-        oif_text = "  ip igmp static-oif route-map MY_MAP\n" "  ip igmp static-oif 238.2.2.6\n"
+        oif_text = "  ip igmp static-oif route-map MY_MAP\n  ip igmp static-oif 238.2.2.6\n"
         self.run_commands.side_effect = [
             [json_body],
             [oif_text],

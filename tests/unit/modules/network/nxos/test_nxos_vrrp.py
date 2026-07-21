@@ -756,13 +756,13 @@ class TestNxosVrrpHelpers(unittest.TestCase):
     # ------------------------------------------------------------------
 
     def test_get_vrr_status_no_shutdown_found(self):
-        body = "interface Vlan10\n" "  vrrp 10\n" "    priority 100\n" "    no shutdown\n" "end"
+        body = "interface Vlan10\n  vrrp 10\n    priority 100\n    no shutdown\nend"
         self.run_commands.return_value = [body]
         result = get_vrr_status("10", self.module, "Vlan10")
         self.assertEqual(result, "no shutdown")
 
     def test_get_vrr_status_no_match_returns_shutdown(self):
-        body = "interface Vlan10\n" "  vrrp 10\n" "    priority 100\n" "    shutdown\n" "end"
+        body = "interface Vlan10\n  vrrp 10\n    priority 100\n    shutdown\nend"
         self.run_commands.return_value = [body]
         result = get_vrr_status("10", self.module, "Vlan10")
         self.assertEqual(result, "shutdown")
@@ -784,7 +784,7 @@ class TestNxosVrrpHelpers(unittest.TestCase):
                 },
             },
         }
-        vrr_body = "interface Vlan10\n" "  vrrp 10\n" "    no shutdown\n" "end"
+        vrr_body = "interface Vlan10\n  vrrp 10\n    no shutdown\nend"
         self.run_commands.side_effect = [
             [json_body],
             [vrr_body],
@@ -820,7 +820,7 @@ class TestNxosVrrpHelpers(unittest.TestCase):
                 },
             ],
         }
-        vrr_body = "interface Vlan10\n" "  vrrp 10\n" "    shutdown\n" "end"
+        vrr_body = "interface Vlan10\n  vrrp 10\n    shutdown\nend"
         self.run_commands.side_effect = [
             [json_body],
             [vrr_body],

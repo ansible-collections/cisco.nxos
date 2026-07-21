@@ -173,7 +173,7 @@ class TestNxosVrfInterfaceModule(TestNxosModule):
                 sort=False,
             )
             self.assertIn(
-                "The VRF is not present/active on the device. " "Use nxos_vrf to fix this.",
+                "The VRF is not present/active on the device. Use nxos_vrf to fix this.",
                 result["warnings"],
             )
 
