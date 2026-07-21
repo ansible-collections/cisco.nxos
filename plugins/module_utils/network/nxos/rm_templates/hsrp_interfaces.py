@@ -283,12 +283,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s*timers
                 (\s*(?P<msec>msec))?
                 (\s*(?P<hello_interval>\d+))
+                (\s*(?P<hold_msec>msec))?
                 (\s*(?P<hold_time>\d+))
                 $""", re.VERBOSE,
             ),
             "setval": "timers"
             "{{ ' msec' if timer.msec|d(False) else ''}}"
             "{{ (' ' + timer.hello_interval|string) if timer.hello_interval is defined else '' }}"
+            "{{ ' msec' if timer.hold_msec|d(False) else ''}}"
             "{{ (' ' + timer.hold_time|string) if timer.hold_time is defined else '' }}",
             "result": {
                 "{{ name }}": {
@@ -296,6 +298,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "timer": {
                             "msec": "{{ not not msec }}",
                             "hello_interval": "{{ hello_interval }}",
+                            "hold_msec": "{{ not not hold_msec }}",
                             "hold_time": "{{ hold_time }}",
                         },
                     },
