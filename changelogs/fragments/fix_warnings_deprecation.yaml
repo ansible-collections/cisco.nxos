@@ -14,3 +14,5 @@ minor_changes:
     ``ansible.module_utils.common._collections_compat`` imports with their
     modern equivalents (``ansible.module_utils.common.text.converters`` and
     ``collections.abc``).
+  - Add significant number of testcases across multiple modules that were not
+    covered due to which sonar coverage failures were being caused
