@@ -1,4 +1,4 @@
 ---
-bugfixes:
-  - nxos_hsrp_interfaces - Update ``timers`` with ``hold_msec``
-    to ensure we support both hold and hello interval in milliseconds
+minor_changes:
+  - nxos_hsrp_interfaces - Adds an additional parameter called ``hold_msec``
+    to separately support hold interval values in milliseconds
