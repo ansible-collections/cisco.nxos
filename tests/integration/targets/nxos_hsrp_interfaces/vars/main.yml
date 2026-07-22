@@ -37,6 +37,7 @@ parsed:
           hello_interval: 250
           hold_time: 255
           msec: true
+          hold_msec: true
   - name: Vlan10
     standby:
       bfd: true
@@ -115,7 +116,7 @@ rendered:
   - hsrp version 2
   - hsrp 10
   - priority 100
-  - timers msec 250 255
+  - timers msec 250 msec 255
   - interface Vlan10
   - hsrp bfd
   - hsrp version 2

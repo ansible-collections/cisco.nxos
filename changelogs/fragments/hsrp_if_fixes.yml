@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_hsrp_interfaces - Update ``timers`` with ``hold_msec``
+    to ensure we support both hold and hello interval in milliseconds

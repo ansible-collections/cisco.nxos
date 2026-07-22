@@ -11,7 +11,7 @@
           interface Vlan1
             hsrp version 2
             hsrp 10
-              timers msec 250  255
+              timers msec 250 msec 255
           interface Vlan10
             hsrp bfd
             hsrp version 2
