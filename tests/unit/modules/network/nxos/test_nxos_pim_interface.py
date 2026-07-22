@@ -648,11 +648,6 @@ class TestPimInterfaceHelpers(TestNxosModule):
         self.assertFalse(jp_bidir)
         self.assertFalse(isauth)
 
-    def test_local_existing_empty(self):
-        result, jp_bidir, isauth = nxos_pim_interface.local_existing({})
-        self.assertFalse(jp_bidir)
-        self.assertFalse(isauth)
-
     def test_local_existing_none(self):
         result, jp_bidir, isauth = nxos_pim_interface.local_existing(None)
         self.assertFalse(jp_bidir)

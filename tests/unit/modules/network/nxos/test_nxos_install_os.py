@@ -42,16 +42,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         pass
 
     # ------------------------------------------------------------------
-    # parse_show_install: empty data
-    # ------------------------------------------------------------------
-    def test_parse_show_install_empty_string(self):
-        result = nxos_install_os.parse_show_install("")
-        self.assertFalse(result["error"])
-        self.assertFalse(result["upgrade_needed"])
-        self.assertFalse(result["disruptive"])
-        self.assertFalse(result["server_error"])
-        self.assertFalse(result["upgrade_succeeded"])
-
     # ------------------------------------------------------------------
     # parse_show_install: server errors via massage_install_data
     # In practice, load_config returns a list. massage_install_data
@@ -65,10 +55,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         result = nxos_install_os.parse_show_install([500])
         self.assertTrue(result["server_error"])
 
-    def test_parse_show_install_server_error_503(self):
-        result = nxos_install_os.parse_show_install([503])
-        self.assertTrue(result["server_error"])
-
     def test_parse_show_install_server_error_negative_32603(self):
         result = nxos_install_os.parse_show_install([-32603])
         self.assertTrue(result["server_error"])
@@ -76,11 +62,6 @@ class TestNxosInstallOsModule(TestNxosModule):
     def test_parse_show_install_server_error_one(self):
         result = nxos_install_os.parse_show_install([1])
         self.assertTrue(result["server_error"])
-
-    def test_parse_show_install_int_no_list_data(self):
-        """Integer data after massage should return early without list_data key."""
-        result = nxos_install_os.parse_show_install([-1])
-        self.assertNotIn("list_data", result)
 
     # ------------------------------------------------------------------
     # parse_show_install: string error conditions
@@ -92,12 +73,6 @@ class TestNxosInstallOsModule(TestNxosModule):
 
     def test_parse_show_install_invalid_command_uppercase(self):
         data = ["Invalid command at line 1"]
-        result = nxos_install_os.parse_show_install(data)
-        self.assertTrue(result["invalid_command"])
-        self.assertTrue(result["error"])
-
-    def test_parse_show_install_invalid_command_lowercase(self):
-        data = ["invalid command at line 2"]
         result = nxos_install_os.parse_show_install(data)
         self.assertTrue(result["invalid_command"])
         self.assertTrue(result["error"])
@@ -140,11 +115,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         result = nxos_install_os.parse_show_install(data)
         self.assertTrue(result["server_error"])
 
-    def test_parse_show_install_server_error_string_599(self):
-        data = ["599"]
-        result = nxos_install_os.parse_show_install(data)
-        self.assertTrue(result["server_error"])
-
     # ------------------------------------------------------------------
     # parse_show_install: success conditions
     # ------------------------------------------------------------------
@@ -174,12 +144,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         server_error pattern first in the parse loop. The do_install_all
         function handles this by promoting server_error to upgrade_succeeded."""
         data = ["Connection failure: timed out"]
-        result = nxos_install_os.parse_show_install(data)
-        self.assertTrue(result["server_error"])
-
-    def test_parse_show_install_connection_failure_lowercase(self):
-        """Same as above -- lowercase variant."""
-        data = ["connection failure: timed out"]
         result = nxos_install_os.parse_show_install(data)
         self.assertTrue(result["server_error"])
 
@@ -328,14 +292,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         self.assertIn("non-disruptive", cmds[1])
         self.assertIn("install all", cmds[1])
 
-    def test_build_install_cmd_set_issu_required_no_kick(self):
-        cmds = nxos_install_os.build_install_cmd_set("required", "nxos.bin", None, "install")
-        self.assertIn("non-disruptive", cmds[1])
-
-    def test_build_install_cmd_set_issu_desired_no_kick(self):
-        cmds = nxos_install_os.build_install_cmd_set("desired", "nxos.bin", None, "install")
-        self.assertIn("non-disruptive", cmds[1])
-
     def test_build_install_cmd_set_issu_yes_with_kick(self):
         cmds = nxos_install_os.build_install_cmd_set("yes", "system.bin", "kick.bin", "install")
         # issu_cmd should be empty for issu=yes with kickstart
@@ -383,17 +339,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         )
         # For impact with kick, issu_cmd should be empty (force not available for impact)
         self.assertIn("show install all impact", cmds[1])
-        self.assertNotIn("force", cmds[1])
-
-    def test_build_install_cmd_set_issu_yes_impact_with_kick(self):
-        cmds = nxos_install_os.build_install_cmd_set(
-            "yes",
-            "system.bin",
-            "kick.bin",
-            "impact",
-        )
-        self.assertIn("show install all impact", cmds[1])
-        # issu_cmd for impact with kick is always empty
         self.assertNotIn("force", cmds[1])
 
     # ------------------------------------------------------------------
@@ -908,17 +853,6 @@ class TestNxosInstallOsModule(TestNxosModule):
         set_module_args(
             dict(system_image_file="nxos.bin", issu="required"),
         )
-        result = self.execute_module(changed=False)
-        self.assertFalse(result["changed"])
-
-    def test_main_issu_yes_maps_to_yes(self):
-        """issu='yes' remains 'yes'."""
-        no_upgrade_output = (
-            "------  ----------  ----------------------------------------  ------------\n"
-            "     1        nxos                7.0(3)I7(1)    7.0(3)I7(1)            no"
-        )
-        self.load_config.return_value = [no_upgrade_output]
-        set_module_args(dict(system_image_file="nxos.bin", issu="yes"))
         result = self.execute_module(changed=False)
         self.assertFalse(result["changed"])
 

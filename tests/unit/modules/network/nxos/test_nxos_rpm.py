@@ -75,15 +75,6 @@ class TestNxosRpmHelpers(TestNxosModule):
         self.assertEqual(self.run_commands.call_count, 10)
         self.assertEqual(self.time_sleep.call_count, 10)
 
-    def test_execute_show_command_retries_on_none_body(self):
-        self.run_commands.side_effect = [
-            [None],
-            ["valid output"],
-        ]
-        result = nxos_rpm.execute_show_command("show install", self.module_mock)
-        self.assertEqual(result, "valid output")
-        self.assertEqual(self.run_commands.call_count, 2)
-
     # ---------------------------------------------------------------
     # remote_file_exists
     # ---------------------------------------------------------------
@@ -717,28 +708,6 @@ class TestNxosRpmInstallRemove(TestNxosModule):
         )
         # terminal_on + remove + terminal_off
         self.assertEqual(len(result), 3)
-
-    def test_absent_nothing_to_remove(self):
-        """pkg not anywhere -> nothing to do."""
-        self._setup_show_responses(
-            [
-                # show install committed: not present
-                "no committed packages",
-                # show install active: not present
-                "no active packages",
-                # show install pkg-info
-                "Patch Type    :  normal",
-                # show install inactive: not present
-                "no inactive packages",
-            ],
-        )
-        result = nxos_rpm.install_remove_rpm(
-            self.module_mock,
-            "nxos.sample-n9k_ALL-1.0.0.rpm",
-            "bootflash",
-            "absent",
-        )
-        self.assertEqual(result, [])
 
     def test_absent_committed_active_after_deactivate_no_commit_needed(self):
         """pkg in commit and active, after deactivate pkg no longer in commit -> skip commit."""

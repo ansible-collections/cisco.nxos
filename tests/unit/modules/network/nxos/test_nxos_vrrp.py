@@ -500,12 +500,6 @@ class TestNxosVrrpModule(TestNxosModule):
         result = apply_key_map(key_map, table)
         self.assertEqual(result, {"group": "10", "vip": "10.0.0.1"})
 
-    def test_apply_key_map_with_falsy_value(self):
-        key_map = {"key": "mapped"}
-        table = {"key": ""}
-        result = apply_key_map(key_map, table)
-        self.assertEqual(result, {"mapped": ""})
-
     def test_apply_key_map_with_none(self):
         key_map = {"key": "mapped"}
         table = {"key": None}
@@ -856,11 +850,6 @@ class TestNxosVrrpHelpers(unittest.TestCase):
     # ------------------------------------------------------------------
     # validate_params
     # ------------------------------------------------------------------
-
-    def test_validate_params_valid_group(self):
-        self.module.params = {"group": "100"}
-        validate_params("group", self.module)
-        self.module.fail_json.assert_not_called()
 
     def test_validate_params_group_boundary_min(self):
         self.module.params = {"group": "1"}

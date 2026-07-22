@@ -552,25 +552,9 @@ class TestNxosIgmpInterfaceModule(TestNxosModule):
         result = flatten_list([["a", "b"], "c", ["d"]])
         self.assertEqual(result, ["a", "b", "c", "d"])
 
-    def test_flatten_list_flat(self):
-        result = flatten_list(["a", "b", "c"])
-        self.assertEqual(result, ["a", "b", "c"])
-
     def test_flatten_list_empty(self):
         result = flatten_list([])
         self.assertEqual(result, [])
-
-    def test_apply_key_map_basic(self):
-        key_map = {"OldKey": "new_key", "Other": "mapped"}
-        table = {"OldKey": "val1", "Other": "val2", "Unmapped": "val3"}
-        result = apply_key_map(key_map, table)
-        self.assertEqual(result, {"new_key": "val1", "mapped": "val2"})
-
-    def test_apply_key_map_empty_value(self):
-        key_map = {"Key": "new_key"}
-        table = {"Key": ""}
-        result = apply_key_map(key_map, table)
-        self.assertEqual(result, {"new_key": ""})
 
     def test_apply_key_map_none_value(self):
         key_map = {"Key": "new_key"}

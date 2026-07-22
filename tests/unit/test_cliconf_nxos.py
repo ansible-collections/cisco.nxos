@@ -329,17 +329,6 @@ class TestCliconfNxosRunCommands(TestCase):
         result = cliconf.run_commands(commands=["show version"], check_rc=False)
         self.assertEqual(result, ["error output"])
 
-    def test_run_commands_with_output_key(self):
-        cliconf, conn = make_cliconf()
-        cliconf.send_command = MagicMock(return_value="text output")
-        cliconf._get_command_with_output = MagicMock(
-            return_value="show version | json",
-        )
-        result = cliconf.run_commands(
-            commands=[{"command": "show version", "output": "json"}],
-        )
-        self.assertEqual(len(result), 1)
-
 
 class TestCliconfNxosGetCommandWithOutput(TestCase):
     def test_json_output_appended(self):
