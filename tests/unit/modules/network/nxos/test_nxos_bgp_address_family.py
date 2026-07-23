@@ -2449,7 +2449,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               template peer Template1
                 address-family ipv6 unicast
                   route-map rmap1 out
-              vrf site-1 
+              vrf site-1
                 address-family ipv6 unicast
                   aggregate-address fd00::/64 summary-only
             """,
@@ -2496,7 +2496,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               template peer Template1
                 address-family ipv6 unicast
                   route-map rmap1 out
-              vrf site-1 
+              vrf site-1
                 address-family ipv6 unicast
                   aggregate-address fd00::/64 summary-only
             """,
