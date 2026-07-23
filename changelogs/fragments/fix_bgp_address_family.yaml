@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - Bgp_address_familyFacts._flatten_config
+    - fix incorrect context carry-over from template/neighbor/vrf blocks when flattening `address-family` lines
+  - add unit tests for global template with state overridden/replaced
+  - enhance integration tests with global template fixture
