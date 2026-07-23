@@ -143,6 +143,9 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
@@ -482,6 +485,7 @@ def main():
 
     if commands:
         if module.check_mode:
+            emit_warnings(module, results)
             module.exit_json(**results)
         else:
             load_config(module, commands)
@@ -498,6 +502,7 @@ def main():
                 commands.pop(0)
 
     results["commands"] = commands
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 

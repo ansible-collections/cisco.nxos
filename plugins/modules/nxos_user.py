@@ -192,6 +192,7 @@ from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
     remove_default_spec,
     to_list,
 )
@@ -502,6 +503,7 @@ def main():
 
         result["changed"] = True
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

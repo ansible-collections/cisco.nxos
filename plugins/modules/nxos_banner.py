@@ -101,8 +101,11 @@ commands:
 
 import re
 
-from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_text
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
@@ -224,6 +227,7 @@ def main():
 
         result["changed"] = True
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

@@ -215,6 +215,9 @@ vlan_list:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
@@ -261,7 +264,9 @@ def main():
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)
 
-    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
+    result = {"ansible_facts": ansible_facts, "warnings": warnings}
+    emit_warnings(module, result)
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":

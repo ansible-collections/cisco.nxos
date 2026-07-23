@@ -363,14 +363,17 @@ time:
   type: str
   sample: "22:28:34"
 """
-from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+    to_list,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
@@ -641,6 +644,7 @@ def main():
         else:
             result["warnings"] = msg
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

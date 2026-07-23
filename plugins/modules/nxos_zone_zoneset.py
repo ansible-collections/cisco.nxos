@@ -220,6 +220,9 @@ messages:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
@@ -915,6 +918,7 @@ def main():
     result["messages"] = messages
     result["commands"] = commands_executed
     result["warnings"] = warnings
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 
