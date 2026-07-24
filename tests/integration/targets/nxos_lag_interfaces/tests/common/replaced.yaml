@@ -73,6 +73,48 @@
     - ansible.builtin.assert:
         that:
           - result.changed == false
+
+    - name: Clear lag config before empty port-channel replaced (issue 819)
+      cisco.nxos.nxos_lag_interfaces: *id003
+
+    - name: Remove prior port-channels
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - no interface port-channel 10
+          - no interface port-channel 11
+
+    - name: Create empty port-channel 11
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - interface port-channel 11
+
+    - name: Replaced - empty port-channel with no members
+      register: result
+      cisco.nxos.nxos_lag_interfaces: &id004
+        config:
+          - name: port-channel11
+            members:
+              - member: "{{ test_int1 }}"
+                mode: active
+                force: true
+              - member: "{{ test_int2 }}"
+                mode: active
+                force: true
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+
+    - name: Idempotence - replaced - empty port-channel
+      register: result
+      cisco.nxos.nxos_lag_interfaces: *id004
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
   always:
     - name: Teardown1
       ignore_errors: true

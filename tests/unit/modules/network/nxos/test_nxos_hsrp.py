@@ -84,3 +84,53 @@ class TestNxosHsrpModule(TestNxosModule):
                 ],
             ),
         )
+
+    @patch(
+        "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_hsrp_group",
+    )
+    @patch(
+        "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_interface_mode",
+    )
+    def test_nxos_hsrp_no_change(self, mock_get_mode, mock_get_hsrp):
+        mock_get_mode.return_value = "layer3"
+        mock_get_hsrp.return_value = {
+            "group": "10",
+            "version": "1",
+            "priority": "100",
+            "preempt": "disabled",
+            "vip": "192.0.2.1",
+            "auth_type": "text",
+            "auth_string": "cisco",
+        }
+        set_module_args(
+            dict(
+                group="10",
+                vip="192.0.2.1",
+                priority="100",
+                interface="Ethernet1/2",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    @patch(
+        "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_hsrp_group",
+    )
+    @patch(
+        "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_interface_mode",
+    )
+    def test_nxos_hsrp_check_mode(self, mock_get_mode, mock_get_hsrp):
+        mock_get_mode.return_value = "layer3"
+        mock_get_hsrp.return_value = {}
+        set_module_args(
+            dict(
+                group="10",
+                vip="192.0.2.2/8",
+                priority="150",
+                interface="Ethernet1/2",
+                preempt="enabled",
+                _ansible_check_mode=True,
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertFalse(result["changed"])

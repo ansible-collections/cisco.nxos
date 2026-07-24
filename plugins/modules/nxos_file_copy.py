@@ -228,10 +228,13 @@ import hashlib
 import os
 import re
 
-from ansible.module_utils._text import to_bytes, to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
     get_resource_connection,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
 )
 
 
@@ -490,6 +493,7 @@ def main():
 
     result["warnings"] = warnings
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

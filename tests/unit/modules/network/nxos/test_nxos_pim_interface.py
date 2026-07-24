@@ -1,3 +1,4 @@
+# Generated with AI assistance: Claude Code (Anthropic)
 # (c) 2016 Red Hat Inc.
 #
 # This file is part of Ansible
@@ -296,3 +297,466 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
         # idempotent (default seconds)
         set_module_args(dict(interface="Ethernet9/2", hello_interval=1))
         self.execute_module(changed=False, commands=[])
+
+
+class TestNxosPimInterfaceValidationModule(TestNxosModule):
+    module = nxos_pim_interface
+
+    def setUp(self):
+        super(TestNxosPimInterfaceValidationModule, self).setUp()
+
+        self.mock_get_interface_mode = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_interface_mode",
+        )
+        self.get_interface_mode = self.mock_get_interface_mode.start()
+
+        self.mock_get_config = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config",
+        )
+        self.get_config = self.mock_get_config.start()
+
+        self.mock_load_config = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config",
+        )
+        self.load_config = self.mock_load_config.start()
+
+        self.mock_run_commands = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands",
+        )
+        self.run_commands = self.mock_run_commands.start()
+
+    def tearDown(self):
+        super(TestNxosPimInterfaceValidationModule, self).tearDown()
+        self.mock_get_interface_mode.stop()
+        self.mock_get_config.stop()
+        self.mock_load_config.stop()
+        self.mock_run_commands.stop()
+
+    def load_fixtures(self, commands=None, device=""):
+        self.load_config.return_value = None
+
+    def test_layer2_interface_rejected(self):
+        self.get_interface_mode.return_value = "layer2"
+        self.get_config.return_value = None
+        set_module_args(dict(interface="Ethernet1/1", sparse=True))
+        result = self.execute_module(failed=True)
+        self.assertIn("Layer 3", result["msg"])
+
+    def test_jp_policy_in_without_type_fails(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                jp_policy_in="TESTPOLICY",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("jp_type_in", result["msg"])
+
+    def test_jp_policy_out_without_type_fails(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                jp_policy_out="TESTPOLICY",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("jp_type_out", result["msg"])
+
+    def test_neighbor_policy_without_type_fails(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                neighbor_policy="NBPOLICY",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("neighbor_type", result["msg"])
+
+    def test_neighbor_policy_prefix(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                neighbor_policy="NBPOLICY",
+                neighbor_type="prefix",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface Ethernet1/1",
+                "ip pim neighbor-policy prefix-list NBPOLICY",
+            ],
+        )
+
+    def test_neighbor_policy_routemap(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                neighbor_policy="NBPOLICY",
+                neighbor_type="routemap",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("ip pim neighbor-policy NBPOLICY", result["commands"])
+
+    def test_jp_policy_prefix_type(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                jp_policy_in="JPIN",
+                jp_type_in="prefix",
+                jp_policy_out="JPOUT",
+                jp_type_out="prefix",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface Ethernet1/1",
+                "ip pim jp-policy prefix-list JPOUT out",
+                "ip pim jp-policy prefix-list JPIN in",
+            ],
+        )
+
+    def test_sparse_mode_present(self):
+        self.get_config.return_value = None
+        set_module_args(dict(interface="Ethernet1/1", sparse=True))
+        self.execute_module(
+            changed=True,
+            commands=["interface Ethernet1/1", "ip pim sparse-mode"],
+        )
+
+    def test_border_enable(self):
+        self.get_config.return_value = None
+        set_module_args(dict(interface="Ethernet1/1", border=True))
+        self.execute_module(
+            changed=True,
+            commands=["interface Ethernet1/1", "ip pim border"],
+        )
+
+    def test_dr_prio_change(self):
+        self.get_config.return_value = None
+        set_module_args(dict(interface="Ethernet1/1", dr_prio="50"))
+        self.execute_module(
+            changed=True,
+            commands=["interface Ethernet1/1", "ip pim dr-priority 50"],
+        )
+
+    def test_check_mode(self):
+        self.get_config.return_value = None
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                sparse=True,
+                _ansible_check_mode=True,
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertTrue(result["changed"])
+        self.load_config.assert_not_called()
+
+
+class TestNxosPimInterfaceExistingConfig(TestNxosModule):
+    module = nxos_pim_interface
+
+    def setUp(self):
+        super(TestNxosPimInterfaceExistingConfig, self).setUp()
+
+        self.mock_get_interface_mode = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_interface_mode",
+        )
+        self.get_interface_mode = self.mock_get_interface_mode.start()
+
+        self.mock_get_config = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config",
+        )
+        self.get_config = self.mock_get_config.start()
+
+        self.mock_load_config = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config",
+        )
+        self.load_config = self.mock_load_config.start()
+
+        self.mock_run_commands = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands",
+        )
+        self.run_commands = self.mock_run_commands.start()
+
+    def tearDown(self):
+        super(TestNxosPimInterfaceExistingConfig, self).tearDown()
+        self.mock_get_interface_mode.stop()
+        self.mock_get_config.stop()
+        self.mock_load_config.stop()
+        self.mock_run_commands.stop()
+
+    def load_fixtures(self, commands=None, device=""):
+        self.load_config.return_value = None
+
+    def test_default_with_existing_neighbor_policy(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim neighbor-policy prefix-list NBPOL
+              ip pim sparse-mode
+              ip pim dr-priority 5
+        """
+        set_module_args(dict(interface="Ethernet1/1", state="default"))
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip pim neighbor-policy", result["commands"])
+
+    def test_default_with_existing_jp_prefix_out(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim jp-policy prefix-list JPOUT out
+        """
+        set_module_args(dict(interface="Ethernet1/1", state="default"))
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip pim jp-policy prefix-list JPOUT out", result["commands"])
+
+    def test_default_with_existing_jp_routemap_in(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim jp-policy JPIN in
+        """
+        set_module_args(dict(interface="Ethernet1/1", state="default"))
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip pim jp-policy JPIN in", result["commands"])
+
+    def test_absent_with_existing_sparse_and_border(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim sparse-mode
+              ip pim border
+        """
+        set_module_args(dict(interface="Ethernet1/1", state="absent"))
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip pim border", result["commands"])
+        self.assertIn("no ip pim sparse-mode", result["commands"])
+
+    def test_jp_bidir_replace(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim jp-policy BIDIR
+        """
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                jp_policy_in="NEWIN",
+                jp_type_in="routemap",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip pim jp-policy BIDIR", result["commands"])
+        self.assertIn("ip pim jp-policy NEWIN in", result["commands"])
+
+    def test_existing_neighbor_policy_routemap_change_policy_name(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim neighbor-policy NBPOL
+        """
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                neighbor_policy="NEWNBPOL",
+                neighbor_type="routemap",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("ip pim neighbor-policy NEWNBPOL", result["commands"])
+
+    def test_hello_auth_key_removal(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim hello-authentication ah-md5 existingkey
+        """
+        set_module_args(
+            dict(
+                interface="Ethernet1/1",
+                sparse=True,
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("ip pim sparse-mode", result["commands"])
+
+    def test_sparse_removal_goes_last(self):
+        self.get_config.return_value = """
+            interface Ethernet1/1
+              ip pim sparse-mode
+              ip pim dr-priority 5
+              ip pim border
+        """
+        set_module_args(dict(interface="Ethernet1/1", state="absent"))
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        sparse_idx = None
+        for i, c in enumerate(cmds):
+            if c == "no ip pim sparse-mode":
+                sparse_idx = i
+        if sparse_idx is not None:
+            self.assertEqual(sparse_idx, len(cmds) - 1)
+
+
+class TestPimInterfaceHelpers(TestNxosModule):
+    module = nxos_pim_interface
+
+    def setUp(self):
+        super(TestPimInterfaceHelpers, self).setUp()
+
+    def tearDown(self):
+        super(TestPimInterfaceHelpers, self).tearDown()
+
+    def load_fixtures(self, commands=None, device=""):
+        pass
+
+    def test_get_pim_interface_defaults(self):
+        defaults = nxos_pim_interface.get_pim_interface_defaults()
+        self.assertEqual(defaults["dr_prio"], "1")
+        self.assertEqual(defaults["hello_interval"], "30000")
+        self.assertFalse(defaults["sparse"])
+        self.assertFalse(defaults["border"])
+        self.assertEqual(defaults["bfd"], "default")
+
+    def test_flatten_list_mixed(self):
+        result = nxos_pim_interface.flatten_list([["a", "b"], "c", ["d"]])
+        self.assertEqual(result, ["a", "b", "c", "d"])
+
+    def test_flatten_list_empty(self):
+        result = nxos_pim_interface.flatten_list([])
+        self.assertEqual(result, [])
+
+    def test_local_existing_with_jp_bidir_and_isauth(self):
+        existing = {
+            "jp_bidir": True,
+            "isauth": True,
+            "sparse": True,
+            "dr_prio": "1",
+        }
+        result, jp_bidir, isauth = nxos_pim_interface.local_existing(existing)
+        self.assertTrue(jp_bidir)
+        self.assertTrue(isauth)
+        self.assertNotIn("jp_bidir", result)
+        self.assertNotIn("isauth", result)
+
+    def test_local_existing_without_jp_bidir(self):
+        existing = {"sparse": True, "dr_prio": "1"}
+        result, jp_bidir, isauth = nxos_pim_interface.local_existing(existing)
+        self.assertFalse(jp_bidir)
+        self.assertFalse(isauth)
+
+    def test_local_existing_none(self):
+        result, jp_bidir, isauth = nxos_pim_interface.local_existing(None)
+        self.assertFalse(jp_bidir)
+        self.assertFalse(isauth)
+
+    def test_fix_delta_removes_defaults_when_existing_is_none(self):
+        delta = {"dr_prio": "1", "hello_interval": "30000", "sparse": False, "border": False}
+        existing = {}
+        result = nxos_pim_interface.fix_delta(delta, existing)
+        self.assertEqual(result, {})
+
+    def test_fix_delta_keeps_non_default_values(self):
+        delta = {"dr_prio": "10", "hello_interval": "5000"}
+        existing = {}
+        result = nxos_pim_interface.fix_delta(delta, existing)
+        self.assertEqual(result, {"dr_prio": "10", "hello_interval": "5000"})
+
+    def test_config_pim_interface_with_hello_auth_key(self):
+        delta = {"hello_auth_key": "mysecret"}
+        existing = {}
+        commands = nxos_pim_interface.config_pim_interface(delta, existing, False, False)
+        self.assertIn("ip pim hello-authentication ah-md5 mysecret", commands)
+
+    def test_config_pim_interface_remove_hello_auth_key(self):
+        delta = {"hello_auth_key": False}
+        existing = {}
+        commands = nxos_pim_interface.config_pim_interface(delta, existing, False, True)
+        self.assertIn("no ip pim hello-authentication ah-md5", commands)
+
+    def test_config_pim_interface_bfd_enable(self):
+        delta = {"bfd": "enable"}
+        existing = {"bfd": "default"}
+        commands = nxos_pim_interface.config_pim_interface(delta, existing, False, False)
+        self.assertIn("ip pim bfd-instance", commands)
+
+    def test_config_pim_interface_bfd_disable(self):
+        delta = {"bfd": "disable"}
+        existing = {"bfd": "default"}
+        commands = nxos_pim_interface.config_pim_interface(delta, existing, False, False)
+        self.assertIn("ip pim bfd-instance disable", commands)
+
+    def test_config_pim_interface_bfd_none(self):
+        delta = {"bfd": None}
+        existing = {"bfd": "enable"}
+        commands = nxos_pim_interface.config_pim_interface(delta, existing, False, False)
+        self.assertEqual(commands, [])
+
+    def test_default_pim_interface_policies_jp_bidir(self):
+        existing = {
+            "jp_policy_in": "BIDIR",
+            "jp_policy_out": "BIDIR",
+            "jp_type_in": "prefix",
+            "jp_type_out": "prefix",
+        }
+        commands = nxos_pim_interface.default_pim_interface_policies(existing, True)
+        self.assertIn("no ip pim jp-policy prefix-list BIDIR", commands)
+
+    def test_default_pim_interface_policies_no_bidir_prefix(self):
+        existing = {
+            "jp_policy_in": "JPIN",
+            "jp_policy_out": "JPOUT",
+            "jp_type_in": "prefix",
+            "jp_type_out": "prefix",
+        }
+        commands = nxos_pim_interface.default_pim_interface_policies(existing, False)
+        self.assertIn("no ip pim jp-policy prefix-list JPIN in", commands)
+        self.assertIn("no ip pim jp-policy prefix-list JPOUT out", commands)
+
+    def test_default_pim_interface_policies_no_bidir_routemap(self):
+        existing = {
+            "jp_policy_in": "JPIN",
+            "jp_policy_out": "JPOUT",
+            "jp_type_in": "routemap",
+            "jp_type_out": "routemap",
+        }
+        commands = nxos_pim_interface.default_pim_interface_policies(existing, False)
+        self.assertIn("no ip pim jp-policy JPIN in", commands)
+        self.assertIn("no ip pim jp-policy JPOUT out", commands)
+
+    def test_default_pim_interface_policies_with_neighbor_policy(self):
+        existing = {
+            "neighbor_policy": "NBPOL",
+        }
+        commands = nxos_pim_interface.default_pim_interface_policies(existing, False)
+        self.assertIn("no ip pim neighbor-policy", commands)
+
+    def test_normalize_proposed_values_hello_interval_seconds(self):
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        module.params = {"hello_interval_ms": False}
+        proposed = {"hello_interval": 30}
+        nxos_pim_interface.normalize_proposed_values(proposed, module)
+        self.assertEqual(proposed["hello_interval"], "30000")
+
+    def test_normalize_proposed_values_hello_interval_ms(self):
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        module.params = {"hello_interval_ms": True}
+        proposed = {"hello_interval": 5000}
+        nxos_pim_interface.normalize_proposed_values(proposed, module)
+        self.assertEqual(proposed["hello_interval"], "5000")
+
+    def test_normalize_proposed_values_bfd(self):
+        from unittest.mock import MagicMock
+
+        module = MagicMock()
+        module.params = {}
+        proposed = {"bfd": "ENABLE"}
+        nxos_pim_interface.normalize_proposed_values(proposed, module)
+        self.assertEqual(proposed["bfd"], "enable")

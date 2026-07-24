@@ -1,5 +1,0 @@
----
-bugfixes:
-  - nxos_facts - fix KeyError when show interface text output has admin preamble
-    before the first interface on multi-module chassis
-    (https://github.com/ansible-collections/cisco.nxos/pull/1076).

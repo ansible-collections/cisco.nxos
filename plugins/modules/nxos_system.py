@@ -125,6 +125,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     ComplexList,
+    emit_warnings,
 )
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
@@ -391,6 +392,7 @@ def main():
             load_config(module, commands)
         result["changed"] = True
 
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

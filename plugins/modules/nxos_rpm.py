@@ -107,6 +107,7 @@ from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
     remove_default_spec,
 )
 
@@ -389,6 +390,7 @@ def main():
             results["changed"] = True
             results["commands"].extend(cmds)
 
+    emit_warnings(module, results)
     module.exit_json(**results)
 
 
