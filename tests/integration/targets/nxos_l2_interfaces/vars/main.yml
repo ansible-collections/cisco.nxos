@@ -14,6 +14,7 @@ gathered:
   - name: Ethernet1/8
     trunk:
       allowed_vlans: "1-4094"
+      allowed_vlans_implicit: true
       native_vlan: 10
   - name: Ethernet1/9
   - name: Ethernet1/10

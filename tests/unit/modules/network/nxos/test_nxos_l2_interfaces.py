@@ -685,6 +685,7 @@ class TestNxosL2InterfacesModule(TestNxosModule):
                 "name": "Ethernet1/2",
                 "trunk": {
                     "allowed_vlans": "1-4094",
+                    "allowed_vlans_implicit": True,
                     "native_vlan": 20,
                 },
             },
@@ -1085,6 +1086,178 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+
+    def test_l2_interfaces_merged_implicit_default_trunk_set(self):
+        """Merged state uses SET when have is implicit default (1-4094).
+
+        Customer scenario: trunk port with native_vlan but no explicit
+        allowed_vlans. Using merged to restrict VLANs should generate a
+        plain SET command, not ADD (which would be a no-op).
+        """
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk native vlan 99
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "100,200",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/4",
+            "switchport trunk allowed vlan 100,200",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_merged_implicit_default_trunk_idempotent(self):
+        """Second run after implicit SET is idempotent — have is now explicit."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk native vlan 99
+             switchport trunk allowed vlan 100,200
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "100,200",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_l2_interfaces_merged_explicit_trunk_still_adds(self):
+        """Merged with explicit have VLANs still uses ADD (not SET)."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk native vlan 99
+             switchport trunk allowed vlan 100,200
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "300,400",
+                        },
+                    },
+                ],
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/4",
+            "switchport trunk allowed vlan add 300,400",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_replaced_implicit_trunk_unchanged(self):
+        """Replaced state behavior is NOT changed by the implicit marker."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk native vlan 99
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "Ethernet1/4",
+                        "trunk": {
+                            "allowed_vlans": "100,200",
+                        },
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+
+        expected_commands = [
+            "interface Ethernet1/4",
+            "no cdp enable",
+            "no switchport mode trunk",
+            "no switchport trunk native vlan 99",
+            "switchport trunk allowed vlan 100,200",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_l2_interfaces_gathered_implicit_flag(self):
+        """Gathered facts include allowed_vlans_implicit when VLANs are synthesized."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/4
+             switchport mode trunk
+             switchport trunk native vlan 99
+            interface Ethernet1/5
+             switchport mode trunk
+             switchport trunk allowed vlan 100,200
+            """,
+        )
+
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+
+        expected = [
+            {
+                "mode": "trunk",
+                "name": "Ethernet1/4",
+                "trunk": {
+                    "allowed_vlans": "1-4094",
+                    "allowed_vlans_implicit": True,
+                    "native_vlan": 99,
+                },
+            },
+            {
+                "mode": "trunk",
+                "name": "Ethernet1/5",
+                "trunk": {
+                    "allowed_vlans": "100,200",
+                },
+            },
+        ]
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], expected)
 
 
 class TestGetPortChannelMembersUtil(TestNxosModule):

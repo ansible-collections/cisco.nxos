@@ -104,6 +104,10 @@ class L2_interfaces(ResourceModule):
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
+            for k, have in haved.items():
+                if have.get("trunk", {}).get("allowed_vlans_implicit"):
+                    if k in wantd and wantd[k].get("trunk", {}).get("allowed_vlans"):
+                        have.get("trunk", {}).pop("allowed_vlans", None)
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
@@ -154,17 +158,25 @@ class L2_interfaces(ResourceModule):
             return
 
         if self.state in ("merged", "rendered"):
-            # Merged/rendered: only ADD vlans, never remove
-            # Add vlans that are in want but not in have
-            vlans_to_add = want_set - have_set
-            if vlans_to_add:
+            have_implicit = have.get("trunk", {}).get("allowed_vlans_implicit", False)
+            if have_implicit and want_set:
                 self.commands.extend(
                     generate_switchport_trunk(
                         "allowed",
-                        True,
-                        vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                        False,
+                        vlan_list_to_range(sorted(want_set, key=int)),
                     ),
                 )
+            else:
+                vlans_to_add = want_set - have_set
+                if vlans_to_add:
+                    self.commands.extend(
+                        generate_switchport_trunk(
+                            "allowed",
+                            True,
+                            vlan_list_to_range(sorted(vlans_to_add, key=int)),
+                        ),
+                    )
             return
 
         if self.state in ("replaced", "overridden"):
