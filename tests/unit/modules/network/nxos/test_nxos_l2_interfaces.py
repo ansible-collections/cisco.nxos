@@ -1087,7 +1087,6 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-
     def test_l2_interfaces_merged_implicit_default_trunk_set(self):
         """Merged state uses SET when have is implicit default (1-4094).
 
