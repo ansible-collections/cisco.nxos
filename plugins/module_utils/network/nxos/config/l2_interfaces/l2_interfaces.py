@@ -104,6 +104,8 @@ class L2_interfaces(ResourceModule):
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
+            # Strip synthesized allowed_vlans before merge so implicit
+            # 1-4094 is not treated as an explicit configured set.
             for k, have in haved.items():
                 if have.get("trunk", {}).get("allowed_vlans_implicit"):
                     if k in wantd and wantd[k].get("trunk", {}).get("allowed_vlans"):
