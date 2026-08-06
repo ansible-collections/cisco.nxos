@@ -9,7 +9,6 @@
       - "    network 192.0.2.32/27"
       - "    network 192.0.2.64/27 route-map rmap1"
       - "  template peer TMP6-PEER-EXTERNAL"
-      - "    bfd"
       - "    address-family ipv6 unicast"
       - "    route-map rmap3 out"
       - "  vrf site-1"
