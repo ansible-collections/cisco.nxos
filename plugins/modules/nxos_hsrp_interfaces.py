@@ -134,6 +134,11 @@ options:
               msec:
                 description: Specify hello interval in milliseconds
                 type: bool
+                aliases:
+                  - hello_msec
+              hold_msec:
+                description: Specify hold time in milliseconds
+                type: bool
           track:
             description: Priority tracking
             type: list

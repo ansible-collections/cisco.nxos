@@ -85,7 +85,8 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "hello_interval": {"type": "int"},
                                 "hold_time": {"type": "int"},
-                                "msec": {"type": "bool"},
+                                "msec": {"type": "bool", "aliases": ["hello_msec"]},
+                                "hold_msec": {"type": "bool"},
                             },
                         },
                         "track": {

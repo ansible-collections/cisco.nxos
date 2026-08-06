@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - nxos_hsrp_interfaces - Adds an additional parameter called ``hold_msec``
+    to separately support hold interval values in milliseconds
