@@ -228,9 +228,19 @@ class Route_maps(ResourceModule):
                 wx = w_set
                 hx = h_set
 
-            if isinstance(wx, list):
+            if x == "match.metric":
+                # list of dicts (value + optional deviation) — not hashable for set()
+                def _metric_key(entry):
+                    if isinstance(entry, dict):
+                        return (entry.get("value"), entry.get("deviation"))
+                    return entry
+
+                wx = {_metric_key(e) for e in (wx or [])}
+                hx = {_metric_key(e) for e in (hx or [])}
+
+            elif isinstance(wx, list):
                 wx = set(wx)
-            if isinstance(hx, list):
+            if x != "match.metric" and isinstance(hx, list):
                 hx = set(hx)
 
             if wx != hx:

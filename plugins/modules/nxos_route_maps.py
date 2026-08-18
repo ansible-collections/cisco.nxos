@@ -193,9 +193,22 @@ options:
                 type: list
                 elements: str
               metric:
-                description: Match metric of route.
+                description:
+                  - Match metric of route.
+                  - Supports plain metric values and NX-OS metric with deviation
+                    (C(match metric <value> +- <deviation>)).
                 type: list
-                elements: int
+                elements: dict
+                suboptions:
+                  value:
+                    description: Metric value to match.
+                    type: int
+                    required: true
+                  deviation:
+                    description:
+                      - Metric deviation for C(+-) matching
+                        (C(match metric <value> +- <deviation>)).
+                    type: int
               ospf_area:
                 description: Match ospf area.
                 type: list

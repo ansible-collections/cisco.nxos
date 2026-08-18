@@ -229,7 +229,14 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "type": "list",
                                     "elements": "str",
                                 },
-                                "metric": {"type": "list", "elements": "int"},
+                                "metric": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "value": {"type": "int", "required": True},
+                                        "deviation": {"type": "int"},
+                                    },
+                                },
                                 "ospf_area": {
                                     "type": "list",
                                     "elements": "int",
