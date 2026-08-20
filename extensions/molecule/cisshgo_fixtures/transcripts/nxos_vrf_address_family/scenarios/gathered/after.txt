@@ -1,0 +1,9 @@
+vrf context VRF1
+  address-family ipv4 unicast
+    route-target import 64512:200
+  address-family ipv6 unicast
+    route-target import 554832:500
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1
+vrf context temp

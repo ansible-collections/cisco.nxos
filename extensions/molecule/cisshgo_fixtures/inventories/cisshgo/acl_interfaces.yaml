@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_acl_interfaces
+    count: 1
+  - scenario: nxos-acl-interfaces-gathered
+    count: 1
+  - scenario: nxos-acl-interfaces-merged
+    count: 1
+  - scenario: nxos-acl-interfaces-replaced
+    count: 1
+  - scenario: nxos-acl-interfaces-overridden
+    count: 1
+  - scenario: nxos-acl-interfaces-deleted
+    count: 1

@@ -1,0 +1,33 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-bgp_global-gathered
+  - name: cisshgo-bgp_global-merged
+  - name: cisshgo-bgp_global-replaced
+  - name: cisshgo-bgp_global-deleted
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/bgp_global.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/bgp_global.yaml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

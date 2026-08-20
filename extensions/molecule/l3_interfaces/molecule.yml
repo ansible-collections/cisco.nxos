@@ -1,0 +1,34 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-l3_interfaces-merged
+  - name: cisshgo-l3_interfaces-replaced
+  - name: cisshgo-l3_interfaces-overridden
+  - name: cisshgo-l3_interfaces-deleted
+  - name: cisshgo-l3_interfaces-gathered
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/l3_interfaces.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/l3_interfaces.yaml
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

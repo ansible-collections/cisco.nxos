@@ -1,0 +1,11 @@
+devices:
+  - scenario: nxos-lldp-global-gathered
+    count: 1
+  - scenario: nxos-lldp-global-merged
+    count: 1
+  - scenario: nxos-lldp-global-replaced
+    count: 1
+  - scenario: nxos-lldp-global-overridden
+    count: 1
+  - scenario: nxos-lldp-global-deleted
+    count: 1

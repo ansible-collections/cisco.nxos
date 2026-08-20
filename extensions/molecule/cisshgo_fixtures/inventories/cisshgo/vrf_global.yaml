@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-vrf-global-gathered
+    count: 1
+  - scenario: nxos-vrf-global-gathered
+    count: 1
+  - scenario: nxos-vrf-global-merged
+    count: 1
+  - scenario: nxos-vrf-global-replaced
+    count: 1
+  - scenario: nxos-vrf-global-overridden
+    count: 1
+  - scenario: nxos-vrf-global-deleted
+    count: 1

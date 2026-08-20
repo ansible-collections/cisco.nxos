@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-bgp-templates-gathered
+    count: 1
+  - scenario: nxos-bgp-templates-gathered
+    count: 1
+  - scenario: nxos-bgp-templates-merged
+    count: 1
+  - scenario: nxos-bgp-templates-replaced
+    count: 1
+  - scenario: nxos-bgp-templates-overridden
+    count: 1
+  - scenario: nxos-bgp-templates-deleted
+    count: 1

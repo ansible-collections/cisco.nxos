@@ -1,0 +1,319 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_ntp_global — state: gathered"
+  hosts: nxos_ntp_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Gather nxos_ntp_global facts
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered == merged.after
+
+- name: "Nxos_ntp_global — state: merged"
+  hosts: nxos_ntp_global_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global merged
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl1
+            serve:
+              - access_list: ServeAcl1
+          authenticate: true
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.2
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+            - key_id: 1
+              server: 203.0.113.1
+              vrf: siteB
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl1
+            serve:
+              - access_list: ServeAcl1
+          authenticate: true
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.2
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+            - key_id: 1
+              server: 203.0.113.1
+              vrf: siteB
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ntp_global — state: replaced"
+  hosts: nxos_ntp_global_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global replaced
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl2
+            serve:
+              - access_list: ServeAcl2
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.5
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl2
+            serve:
+              - access_list: ServeAcl2
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.5
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ntp_global — state: overridden"
+  hosts: nxos_ntp_global_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global overridden
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl2
+            serve:
+              - access_list: ServeAcl2
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.5
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl2
+            serve:
+              - access_list: ServeAcl2
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.5
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ntp_global — state: deleted"
+  hosts: nxos_ntp_global_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global deleted
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_ntp_global:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_ntp_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global parsed
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_ntp_global/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.parsed == merged.after
+
+- name: Rendered state (offline)
+  hosts: nxos_ntp_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ntp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ntp_global rendered
+      register: result
+      cisco.nxos.nxos_ntp_global:
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl1
+            serve:
+              - access_list: ServeAcl1
+          authenticate: true
+          logging: true
+          master:
+            stratum: 2
+          peers:
+            - key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              peer: 192.0.2.1
+              vrf: default
+            - key_id: 2
+              peer: 192.0.2.2
+              prefer: true
+              vrf: siteA
+          servers:
+            - key_id: 2
+              server: 198.51.100.1
+              vrf: default
+            - key_id: 1
+              server: 203.0.113.1
+              vrf: siteB
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(merged.commands) | length == 0

@@ -1,0 +1,387 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_bgp_neighbor_address_family — state: gathered"
+  hosts: nxos_bgp_neighbor_address_family_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Gather nxos_bgp_neighbor_address_family facts
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged.after.neighbors | symmetric_difference(result.gathered.neighbors) | length == 0
+          - merged.after.vrfs | symmetric_difference(result.gathered.vrfs) | length == 0
+          - merged.after.as_number == result.gathered.as_number
+
+- name: "Nxos_bgp_neighbor_address_family — state: merged"
+  hosts: nxos_bgp_neighbor_address_family_merged
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family merged
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  maximum_prefix:
+                    generate_warning_threshold: 75
+                    max_prefix_limit: 20
+                  prefix_list:
+                    inbound: rmap1
+                    outbound: rmap2
+                  safi: unicast
+                  weight: 100
+                - afi: ipv6
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+            - address_family:
+                - afi: ipv4
+                  inherit:
+                    sequence: 200
+                    template: BasePolicy
+                  safi: multicast
+              neighbor_address: 192.0.2.33
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      next_hop_self:
+                        set: true
+                      safi: unicast
+                      suppress_inactive: true
+                  neighbor_address: 203.0.113.1
+                - address_family:
+                    - afi: ipv6
+                      safi: unicast
+                    - afi: ipv4
+                      safi: multicast
+                      send_community:
+                        set: true
+                  neighbor_address: 203.0.113.2
+              vrf: site-1
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  maximum_prefix:
+                    generate_warning_threshold: 75
+                    max_prefix_limit: 20
+                  prefix_list:
+                    inbound: rmap1
+                    outbound: rmap2
+                  safi: unicast
+                  weight: 100
+                - afi: ipv6
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+            - address_family:
+                - afi: ipv4
+                  inherit:
+                    sequence: 200
+                    template: BasePolicy
+                  safi: multicast
+              neighbor_address: 192.0.2.33
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      next_hop_self:
+                        set: true
+                      safi: unicast
+                      suppress_inactive: true
+                  neighbor_address: 203.0.113.1
+                - address_family:
+                    - afi: ipv6
+                      safi: unicast
+                    - afi: ipv4
+                      safi: multicast
+                      send_community:
+                        set: true
+                  neighbor_address: 203.0.113.2
+              vrf: site-1
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_bgp_neighbor_address_family — state: replaced"
+  hosts: nxos_bgp_neighbor_address_family_replaced
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family replaced
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  safi: unicast
+                  weight: 110
+                - afi: ipv6
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+            - address_family:
+                - afi: ipv4
+                  inherit:
+                    sequence: 200
+                    template: BasePolicy
+                  safi: multicast
+              neighbor_address: 192.0.2.33
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      safi: unicast
+                  neighbor_address: 203.0.113.1
+                - address_family:
+                    - afi: ipv6
+                      safi: unicast
+                    - afi: ipv4
+                      safi: multicast
+                      send_community:
+                        set: true
+                  neighbor_address: 203.0.113.2
+              vrf: site-1
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  safi: unicast
+                  weight: 110
+                - afi: ipv6
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+            - address_family:
+                - afi: ipv4
+                  inherit:
+                    sequence: 200
+                    template: BasePolicy
+                  safi: multicast
+              neighbor_address: 192.0.2.33
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      safi: unicast
+                  neighbor_address: 203.0.113.1
+                - address_family:
+                    - afi: ipv6
+                      safi: unicast
+                    - afi: ipv4
+                      safi: multicast
+                      send_community:
+                        set: true
+                  neighbor_address: 203.0.113.2
+              vrf: site-1
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_bgp_neighbor_address_family — state: overridden"
+  hosts: nxos_bgp_neighbor_address_family_overridden
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family overridden
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      next_hop_self:
+                        set: true
+                      safi: unicast
+                      suppress_inactive: true
+                  neighbor_address: 203.0.113.1
+              vrf: site-1
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(overridden.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      next_hop_self:
+                        set: true
+                      safi: unicast
+                      suppress_inactive: true
+                  neighbor_address: 203.0.113.1
+              vrf: site-1
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_bgp_neighbor_address_family — state: deleted"
+  hosts: nxos_bgp_neighbor_address_family_deleted
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family deleted
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family: &deleted_config
+        config:
+          as_number: 65536
+          neighbors:
+            - neighbor_address: 192.0.2.32
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+          vrfs:
+            - vrf: site-1
+              neighbors:
+                - neighbor_address: 203.0.113.2
+                  address_family:
+                    - afi: ipv6
+                      safi: unicast
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_bgp_neighbor_address_family: *deleted_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_bgp_neighbor_address_family_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family parsed
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        running_config: >-
+          {{ lookup('file', playbook_dir
+          + '/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/tests/common/fixtures/parsed.cfg') }}
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - merged.after.neighbors | symmetric_difference(result.parsed.neighbors) | length == 0
+          - merged.after.vrfs | symmetric_difference(result.parsed.vrfs) | length == 0
+          - merged.after.as_number == result.parsed.as_number
+          - result.changed == false
+
+- name: Rendered state (offline)
+  hosts: nxos_bgp_neighbor_address_family_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_neighbor_address_family/vars/main.yml"
+  tasks:
+    - name: Run nxos_bgp_neighbor_address_family rendered
+      register: result
+      cisco.nxos.nxos_bgp_neighbor_address_family:
+        config:
+          as_number: 65536
+          neighbors:
+            - address_family:
+                - afi: ipv4
+                  maximum_prefix:
+                    generate_warning_threshold: 75
+                    max_prefix_limit: 20
+                  prefix_list:
+                    inbound: rmap1
+                    outbound: rmap2
+                  safi: unicast
+                  weight: 100
+                - afi: ipv6
+                  safi: unicast
+              neighbor_address: 192.0.2.32
+            - address_family:
+                - afi: ipv4
+                  inherit:
+                    sequence: 200
+                    template: BasePolicy
+                  safi: multicast
+              neighbor_address: 192.0.2.33
+          vrfs:
+            - neighbors:
+                - address_family:
+                    - afi: ipv4
+                      next_hop_self:
+                        set: true
+                      safi: unicast
+                      suppress_inactive: true
+                  neighbor_address: 203.0.113.1
+                - address_family:
+                    - afi: ipv6
+                      safi: unicast
+                    - afi: ipv4
+                      safi: multicast
+                      send_community:
+                        set: true
+                  neighbor_address: 203.0.113.2
+              vrf: site-1
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - merged.commands | symmetric_difference(result.rendered) | length == 0

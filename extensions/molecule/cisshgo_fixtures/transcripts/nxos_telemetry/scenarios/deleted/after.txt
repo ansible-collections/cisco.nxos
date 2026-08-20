@@ -1,0 +1,8 @@
+!Command: show running-config telemetry all
+!Running configuration last done at: Wed Aug 12 11:30:33 2026
+!Time: Wed Aug 12 11:30:46 2026
+
+version 10.4(2) Bios:version
+feature telemetry
+
+logging level telemetry 3

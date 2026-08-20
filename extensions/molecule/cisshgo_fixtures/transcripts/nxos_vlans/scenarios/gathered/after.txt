@@ -1,0 +1,58 @@
+{
+    "TABLE_vlanbrief": {
+        "ROW_vlanbrief": [
+            {
+                "vlanshowbr-vlanid": "1",
+                "vlanshowbr-vlanid-utf": "1",
+                "vlanshowbr-vlanname": "default",
+                "vlanshowbr-vlanstate": "active",
+                "vlanshowbr-shutstate": "noshutdown"
+            },
+            {
+                "vlanshowbr-vlanid": "5",
+                "vlanshowbr-vlanid-utf": "5",
+                "vlanshowbr-vlanname": "vlan5",
+                "vlanshowbr-vlanstate": "suspend",
+                "vlanshowbr-shutstate": "noshutdown"
+            },
+            {
+                "vlanshowbr-vlanid": "6",
+                "vlanshowbr-vlanid-utf": "6",
+                "vlanshowbr-vlanname": "VLAN0006",
+                "vlanshowbr-vlanstate": "active",
+                "vlanshowbr-shutstate": "noshutdown"
+            },
+            {
+                "vlanshowbr-vlanid": "7",
+                "vlanshowbr-vlanid-utf": "7",
+                "vlanshowbr-vlanname": "vlan7",
+                "vlanshowbr-vlanstate": "active",
+                "vlanshowbr-shutstate": "shutdown"
+            }
+        ]
+    },
+    "TABLE_mtuinfo": {
+        "ROW_mtuinfo": [
+            {
+                "vlanshowinfo-vlanid": "1",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            },
+            {
+                "vlanshowinfo-vlanid": "5",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            },
+            {
+                "vlanshowinfo-vlanid": "6",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            },
+            {
+                "vlanshowinfo-vlanid": "7",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            }
+        ]
+    }
+}

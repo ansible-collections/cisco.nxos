@@ -1,0 +1,2 @@
+route-map rmap_metric_dev permit 10
+  match metric 0 +- 100 100 +- 65000

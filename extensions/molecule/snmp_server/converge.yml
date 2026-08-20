@@ -1,0 +1,476 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_snmp_server — state: gathered"
+  hosts: nxos_snmp_server_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  tasks:
+    - name: Gather nxos_snmp_server facts
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.aaa_user.cache_timeout is defined
+          - result.gathered.aaa_user.cache_timeout == 36000
+          - result.gathered.communities is defined
+          - result.gathered.communities | length == 2
+          - result.gathered.communities[0].name == "private"
+          - result.gathered.communities[0].group == "network-admin"
+          - result.gathered.communities[1].name == "public"
+          - result.gathered.communities[1].group == "network-operator"
+
+- name: "Nxos_snmp_server — state: merged"
+  hosts: nxos_snmp_server_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  tasks:
+    - name: Run nxos_snmp_server merged
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-admin
+              name: private
+              use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
+            - group: network-operator
+              name: public
+          contact: nxosswitchadmin@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
+          location: serverroom-1
+          traps:
+            aaa:
+              server_state_change: true
+            system:
+              clock_change_notification: true
+          users:
+            auth:
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
+            use_acls:
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - expected_commands | difference(normalized_commands) | length == 0
+      vars:
+        newline: "\n"
+        expected_commands: >-
+          {{ merged.commands | map('regex_replace', '\\s+', ' ')
+          | map('trim') | list }}
+        normalized_commands: >-
+          {{ result.commands | map('split', newline) | flatten | map('trim')
+          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-admin
+              name: private
+              use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
+            - group: network-operator
+              name: public
+          contact: nxosswitchadmin@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
+          location: serverroom-1
+          traps:
+            aaa:
+              server_state_change: true
+            system:
+              clock_change_notification: true
+          users:
+            auth:
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
+            use_acls:
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_snmp_server — state: replaced"
+  hosts: nxos_snmp_server_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  vars:
+    snmp_replaced_users:
+      auth:
+        - user: admin
+          group: network-admin
+          authentication:
+            algorithm: md5
+            password: "0146169AD85044B5E4160AA70D1338804927"
+            localizedv2_key: true
+            priv:
+              aes_128: true
+              privacy_password: "37627BEEBEC7817007B1C374D996B24298BB"
+        - user: cisco
+          group: network-admin
+          authentication:
+            algorithm: md5
+            password: "00749D0F05537C2D802A7DA4502626BF88DC"
+            localizedv2_key: true
+            priv:
+              aes_128: true
+              privacy_password: "332CFD752312713BED674598193B38F893D3"
+        - user: snmp_user_1
+          group: network-operator
+          authentication:
+            algorithm: md5
+            password: "0x5632724fb8ac3699296af26281e1d0f1"
+            localized_key: true
+      use_acls:
+        - user: snmp_user_1
+          ipv4: acl1
+          ipv6: acl2
+  tasks:
+    - name: Run nxos_snmp_server replaced
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
+          contact: nxosswitchadmin2@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
+          location: serverroom-2
+          traps:
+            aaa:
+              server_state_change: true
+          users: "{{ snmp_replaced_users }}"
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - expected_commands | difference(normalized_commands) | length == 0
+      vars:
+        newline: "\n"
+        expected_commands: >-
+          {{ replaced.commands | reject('search', 'snmp-server user')
+          | map('regex_replace', '\\s+', ' ') | map('trim') | list }}
+        actual_commands: "{{ result.commands | reject('search', 'snmp-server user') | list }}"
+        normalized_commands: >-
+          {{ actual_commands | map('split', newline) | flatten | map('trim')
+          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
+          contact: nxosswitchadmin2@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
+          location: serverroom-2
+          traps:
+            aaa:
+              server_state_change: true
+          users: "{{ snmp_replaced_users }}"
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_snmp_server — state: overridden"
+  hosts: nxos_snmp_server_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  vars:
+    snmp_replaced_users:
+      auth:
+        - user: admin
+          group: network-admin
+          authentication:
+            algorithm: md5
+            password: "0146169AD85044B5E4160AA70D1338804927"
+            localizedv2_key: true
+            priv:
+              aes_128: true
+              privacy_password: "37627BEEBEC7817007B1C374D996B24298BB"
+        - user: cisco
+          group: network-admin
+          authentication:
+            algorithm: md5
+            password: "00749D0F05537C2D802A7DA4502626BF88DC"
+            localizedv2_key: true
+            priv:
+              aes_128: true
+              privacy_password: "332CFD752312713BED674598193B38F893D3"
+        - user: snmp_user_1
+          group: network-operator
+          authentication:
+            algorithm: md5
+            password: "0x5632724fb8ac3699296af26281e1d0f1"
+            localized_key: true
+      use_acls:
+        - user: snmp_user_1
+          ipv4: acl1
+          ipv6: acl2
+  tasks:
+    - name: Run nxos_snmp_server overridden
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
+          contact: nxosswitchadmin2@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
+          location: serverroom-2
+          traps:
+            aaa:
+              server_state_change: true
+          users: "{{ snmp_replaced_users }}"
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - expected_commands | difference(normalized_commands) | length == 0
+      vars:
+        newline: "\n"
+        expected_commands: >-
+          {{ overridden.commands | reject('search', 'snmp-server user')
+          | map('regex_replace', '\\s+', ' ') | map('trim') | list }}
+        actual_commands: "{{ result.commands | reject('search', 'snmp-server user') | list }}"
+        normalized_commands: >-
+          {{ actual_commands | map('split', newline) | flatten | map('trim')
+          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
+          contact: nxosswitchadmin2@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
+          location: serverroom-2
+          traps:
+            aaa:
+              server_state_change: true
+          users: "{{ snmp_replaced_users }}"
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_snmp_server_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  tasks:
+    - name: Run nxos_snmp_server parsed
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_snmp_server/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.parsed == parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_snmp_server_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  tasks:
+    - name: Run nxos_snmp_server rendered
+      register: result
+      cisco.nxos.nxos_snmp_server:
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - group: network-operator
+              name: public
+            - group: network-admin
+              name: private
+          contact: nxosswitchadmin@localhost
+          hosts:
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
+          location: serverroom-1
+          traps:
+            aaa:
+              server_state_change: true
+            system:
+              clock_change_notification: true
+          users:
+            auth:
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
+            use_acls:
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - expected_commands | symmetric_difference(flat_commands) | length == 0
+      vars:
+        newline: "\n"
+        expected_commands: "{{ rendered.commands }}"
+        flat_commands: "{{ result.rendered | map('split', newline) | flatten | map('trim') | reject('equalto', '') | list }}"

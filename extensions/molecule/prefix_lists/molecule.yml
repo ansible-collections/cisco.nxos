@@ -1,0 +1,34 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-prefix_lists-gathered
+  - name: cisshgo-prefix_lists-merged
+  - name: cisshgo-prefix_lists-replaced
+  - name: cisshgo-prefix_lists-overridden
+  - name: cisshgo-prefix_lists-deleted
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/prefix_lists.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/prefix_lists.yaml
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

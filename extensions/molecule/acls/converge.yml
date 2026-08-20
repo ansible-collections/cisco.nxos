@@ -1,0 +1,286 @@
+---
+- name: "Nxos_acls -- state: gathered"
+  hosts: nxos_acls_gathered
+  gather_facts: false
+  tasks:
+    - name: Gather acls facts
+      register: result
+      cisco.nxos.nxos_acls:
+        state: gathered
+
+    - name: Assert gathered matches populated config
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | length == 2
+          - >-
+            result.gathered | selectattr('afi', 'equalto', 'ipv4')
+            | map(attribute='acls') | first | map(attribute='name') | list
+            | intersect(['ACL1v4', 'ACL2v4']) | length == 2
+          - >-
+            result.gathered | selectattr('afi', 'equalto', 'ipv6')
+            | map(attribute='acls') | first | map(attribute='name') | list
+            | intersect(['ACL1v6', 'ACL2v6']) | length == 2
+
+- name: "Nxos_acls -- state: merged"
+  hosts: nxos_acls_merged
+  gather_facts: false
+  tasks:
+    - name: Apply merged config
+      register: result
+      cisco.nxos.nxos_acls: &merged_config
+        config:
+          - afi: ipv4
+            acls:
+              - name: ACL1v4
+                aces:
+                  - grant: deny
+                    destination:
+                      address: 192.0.2.64
+                      wildcard_bits: 0.0.0.255
+                    source:
+                      any: true
+                      port_protocol:
+                        lt: 25
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true
+                    sequence: 50
+                  - grant: permit
+                    protocol: ip
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    fragments: true
+                    log: true
+                    sequence: 20
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - grant: permit
+                    sequence: 10
+                    source:
+                      any: true
+                    destination:
+                      host: 2001:db8:12::128
+                    protocol: sctp
+        state: merged
+
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ip access-list ACL1v4' in result.commands"
+          - "'20 permit ip any any fragments log' in result.commands"
+          - "'50 deny tcp any lt smtp 192.0.2.64 0.0.0.255 ack fin' in result.commands"
+          - "'ipv6 access-list ACL1v6' in result.commands"
+          - "'10 permit sctp any host 2001:db8:12::128' in result.commands"
+          - result.commands | length == 5
+
+    - name: Idempotence - merged
+      register: result
+      cisco.nxos.nxos_acls: *merged_config
+
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+- name: "Nxos_acls -- state: replaced"
+  hosts: nxos_acls_replaced
+  gather_facts: false
+  tasks:
+    - name: Apply replaced config
+      register: result
+      cisco.nxos.nxos_acls: &replaced_config
+        config:
+          - afi: ipv4
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - sequence: 30
+                    grant: permit
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    protocol: pim
+                  - sequence: 40
+                    remark: Replaced ACE
+              - name: ACL2v6
+        state: replaced
+
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip access-list ACL1v4' in result.commands"
+          - "'no ip access-list ACL2v4' in result.commands"
+          - "'ipv6 access-list ACL1v6' in result.commands"
+          - "'no 10 permit sctp any any' in result.commands"
+          - "'no 20 remark IPv6 ACL' in result.commands"
+          - "'30 permit pim any any' in result.commands"
+          - "'40 remark Replaced ACE' in result.commands"
+          - "'ipv6 access-list ACL2v6' in result.commands"
+          - "'no 10 deny ipv6 any host 2001:db8:3000::36' in result.commands"
+          - "'no 20 permit tcp host 2001:db8:2000:2::2 host 2001:db8:2000:ab::2' in result.commands"
+          - result.commands | length == 10
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_acls: *replaced_config
+
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+- name: "Nxos_acls -- state: overridden"
+  hosts: nxos_acls_overridden
+  gather_facts: false
+  tasks:
+    - name: Apply overridden config (first integration sub-test)
+      register: result
+      cisco.nxos.nxos_acls: &overridden_config
+        config:
+          - afi: ipv4
+            acls:
+              - name: NewACL
+                aces:
+                  - grant: deny
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.255.255
+                    destination:
+                      any: true
+                    protocol: eigrp
+                  - remark: Example for overridden state
+        state: overridden
+
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip access-list ACL1v4' in result.commands"
+          - "'no ip access-list ACL2v4' in result.commands"
+          - "'no ipv6 access-list ACL1v6' in result.commands"
+          - "'no ipv6 access-list ACL2v6' in result.commands"
+          - "'ip access-list NewACL' in result.commands"
+          - "'deny eigrp 192.0.2.0 0.0.255.255 any' in result.commands"
+          - "'remark Example for overridden state' in result.commands"
+          - result.commands | length == 7
+
+- name: "Nxos_acls -- state: deleted"
+  hosts: nxos_acls_deleted
+  gather_facts: false
+  tasks:
+    - name: Delete ACLs by AFI (partial integration sub-test)
+      register: result
+      cisco.nxos.nxos_acls:
+        config:
+          - afi: ipv4
+          - afi: ipv6
+        state: deleted
+
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip access-list ACL1v4' in result.commands"
+          - "'no ip access-list ACL2v4' in result.commands"
+          - "'no ipv6 access-list ACL1v6' in result.commands"
+          - "'no ipv6 access-list ACL2v6' in result.commands"
+          - result.commands | length == 4
+
+- name: Parsed state (offline)
+  hosts: nxos_acls_gathered
+  gather_facts: false
+  tasks:
+    - name: Parse ACL configuration
+      register: result
+      cisco.nxos.nxos_acls:
+        running_config: |
+          ip access-list ACL1v4
+            10 permit ip any any
+            20 deny udp any any
+          ip access-list ACL2v4
+            10 permit ahp 192.0.2.0 0.0.0.255 any
+          ipv6 access-list ACL1v6
+            10 permit sctp any any
+            20 remark IPv6 ACL
+          ipv6 access-list ACL2v6
+            10 deny ipv6 any 2001:db8:3000::36/128
+            20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
+        state: parsed
+
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed | length == 2
+
+- name: Rendered state (offline)
+  hosts: nxos_acls_gathered
+  gather_facts: false
+  tasks:
+    - name: Render ACL commands
+      register: result
+      cisco.nxos.nxos_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: ACL1v4
+                aces:
+                  - grant: deny
+                    destination:
+                      address: 192.0.2.64
+                      wildcard_bits: 0.0.0.255
+                    source:
+                      any: true
+                      port_protocol:
+                        eq: 43
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true
+                    sequence: 50
+                  - destination:
+                      port_protocol:
+                        range:
+                          end: 4000
+                          start: 3949
+                      prefix: 203.0.113.0/24
+                    grant: permit
+                    protocol: tcp
+                    source:
+                      any: true
+                    sequence: 70
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - grant: permit
+                    sequence: 10
+                    source:
+                      any: true
+                    destination:
+                      prefix: 2001:db8:12::/32
+                    protocol: sctp
+        state: rendered
+
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "'ip access-list ACL1v4' in result.rendered"
+          - "'50 deny tcp any eq whois 192.0.2.64 0.0.0.255 ack fin' in result.rendered"
+          - "'70 permit tcp any 203.0.113.0/24 range drip 4000' in result.rendered"
+          - "'ipv6 access-list ACL1v6' in result.rendered"
+          - "'10 permit sctp any 2001:db8:12::/32' in result.rendered"
+          - result.rendered | length == 5

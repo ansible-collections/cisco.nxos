@@ -1,0 +1,384 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_ospfv2 — state: gathered"
+  hosts: nxos_ospfv2_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Gather nxos_ospfv2 facts
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged.after.processes | symmetric_difference(result.gathered.processes) | length == 0
+
+- name: "Nxos_ospfv2 — state: merged"
+  hosts: nxos_ospfv2_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 merged
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - process_id: 100
+              router_id: 203.0.113.20
+            - areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - direction: in
+                      route_map: rmap_1
+                    - direction: out
+                      route_map: rmap_2
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                    - cost: 120
+                      prefix: 203.0.113.0/24
+                - area_id: 0.0.0.101
+                  authentication:
+                    message_digest: true
+              process_id: 102
+              redistribute:
+                - id: 120
+                  protocol: eigrp
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              router_id: 198.51.100.1
+              vrfs:
+                - areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                  redistribute:
+                    - protocol: static
+                      route_map: zone1-static-connect
+                  router_id: 198.51.100.129
+                  summary_address:
+                    - prefix: 203.0.113.64/26
+                      tag: 121
+                    - prefix: 192.0.2.128/25
+                  vrf: zone1
+                - auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
+                  vrf: zone2
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - process_id: 100
+              router_id: 203.0.113.20
+            - areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - direction: in
+                      route_map: rmap_1
+                    - direction: out
+                      route_map: rmap_2
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                    - cost: 120
+                      prefix: 203.0.113.0/24
+                - area_id: 0.0.0.101
+                  authentication:
+                    message_digest: true
+              process_id: 102
+              redistribute:
+                - id: 120
+                  protocol: eigrp
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              router_id: 198.51.100.1
+              vrfs:
+                - areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                  redistribute:
+                    - protocol: static
+                      route_map: zone1-static-connect
+                  router_id: 198.51.100.129
+                  summary_address:
+                    - prefix: 203.0.113.64/26
+                      tag: 121
+                    - prefix: 192.0.2.128/25
+                  vrf: zone1
+                - auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
+                  vrf: zone2
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ospfv2 — state: replaced"
+  hosts: nxos_ospfv2_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 replaced
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - direction: in
+                      route_map: rmap_8
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                - area_id: 0.0.0.101
+                  stub:
+                    no_summary: true
+              process_id: 102
+              redistribute:
+                - id: 130
+                  protocol: eigrp
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              router_id: 198.51.100.1
+              vrfs:
+                - areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                  redistribute:
+                    - id: 65563
+                      protocol: bgp
+                      route_map: zone1-bgp-connect
+                  router_id: 198.51.100.129
+                  vrf: zone1
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - direction: in
+                      route_map: rmap_8
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                - area_id: 0.0.0.101
+                  stub:
+                    no_summary: true
+              process_id: 102
+              redistribute:
+                - id: 130
+                  protocol: eigrp
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              router_id: 198.51.100.1
+              vrfs:
+                - areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                  redistribute:
+                    - id: 65563
+                      protocol: bgp
+                      route_map: zone1-bgp-connect
+                  router_id: 198.51.100.129
+                  vrf: zone1
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ospfv2 — state: overridden"
+  hosts: nxos_ospfv2_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 overridden
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - process_id: 104
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              shutdown: true
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(overridden.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - process_id: 104
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              shutdown: true
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ospfv2 — state: deleted"
+  hosts: nxos_ospfv2_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 deleted
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - '"no router ospf 100" in result.commands'
+          - '"no router ospf 102" in result.commands'
+          - result.commands | length == 2
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_ospfv2:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_ospfv2_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 parsed
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_ospfv2/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - merged.after.processes | symmetric_difference(result.parsed.processes) | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_ospfv2_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ospfv2/vars/main.yml
+  tasks:
+    - name: Run nxos_ospfv2 rendered
+      register: result
+      cisco.nxos.nxos_ospfv2:
+        config:
+          processes:
+            - process_id: 100
+              router_id: 203.0.113.20
+            - areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - direction: in
+                      route_map: rmap_1
+                    - direction: out
+                      route_map: rmap_2
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                    - cost: 120
+                      prefix: 203.0.113.0/24
+                - area_id: 0.0.0.101
+                  authentication:
+                    message_digest: true
+              process_id: 102
+              redistribute:
+                - id: 120
+                  protocol: eigrp
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              router_id: 198.51.100.1
+              vrfs:
+                - areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                  redistribute:
+                    - protocol: static
+                      route_map: zone1-static-connect
+                  router_id: 198.51.100.129
+                  summary_address:
+                    - prefix: 203.0.113.64/26
+                      tag: 121
+                    - prefix: 192.0.2.128/25
+                  vrf: zone1
+                - auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
+                  vrf: zone2
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(merged.commands) | length == 0

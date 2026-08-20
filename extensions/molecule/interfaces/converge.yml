@@ -1,0 +1,246 @@
+---
+# ====================================================================
+# 1. GATHERED -- platform listener (port 10000)
+# ====================================================================
+- name: "Nxos_interfaces -- state: gathered"
+  hosts: nxos_interfaces_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_interfaces/vars/main.yml"
+  tasks:
+    - name: Gather interfaces facts from the device
+      register: result
+      cisco.nxos.nxos_interfaces:
+        state: gathered
+
+    - name: Filter out vlan interfaces that can interfere with the test
+      ansible.builtin.set_fact:
+        filtered_gathered: >-
+          {{ result['gathered'] | rejectattr('name', 'match', '(?i)^vlan\d+') | list }}
+
+    - name: Assert gathered config matches expected
+      ansible.builtin.assert:
+        that:
+          - filtered_gathered[:2] | symmetric_difference(expected_gathered) | length == 0
+          - result['changed'] == false
+      vars:
+        expected_gathered:
+          - name: Ethernet1/1
+            description: outbound-intf
+            mode: layer2
+            enabled: true
+          - name: Ethernet1/2
+            description: intf-l3
+            mode: layer3
+            speed: "1000"
+
+# ====================================================================
+# 2. MERGED -- scenario listener (port 10001)
+# ====================================================================
+- name: "Nxos_interfaces -- state: merged"
+  hosts: nxos_interfaces_merged
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    test_int1: Ethernet1/1
+    enabled: true
+  tasks:
+    - name: Apply merged config
+      register: result
+      cisco.nxos.nxos_interfaces: &merged_config
+        config:
+          - name: "{{ test_int1 }}"
+            description: Configured by Ansible
+            enabled: "{{ enabled | default(omit) }}"
+        state: merged
+
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'description Configured by Ansible' in result.commands"
+          - "'no shutdown' in result.commands"
+
+    - name: Idempotence - merged
+      register: result
+      cisco.nxos.nxos_interfaces: *merged_config
+
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0
+
+# ====================================================================
+# 3. REPLACED -- scenario listener (port 10002)
+# ====================================================================
+- name: "Nxos_interfaces -- state: replaced"
+  hosts: nxos_interfaces_replaced
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    test_int1: Ethernet1/1
+  tasks:
+    - name: Apply replaced config
+      register: result
+      cisco.nxos.nxos_interfaces: &replaced_config
+        config:
+          - name: "{{ test_int1 }}"
+            description: Configured by Ansible
+            enabled: true
+        state: replaced
+
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'description Configured by Ansible' in result.commands"
+          - "'no shutdown' in result.commands"
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_interfaces: *replaced_config
+
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0
+
+# ====================================================================
+# 4. OVERRIDDEN -- scenario listener (port 10003)
+# ====================================================================
+- name: "Nxos_interfaces -- state: overridden"
+  hosts: nxos_interfaces_overridden
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+  tasks:
+    - name: Apply overridden config
+      register: result
+      cisco.nxos.nxos_interfaces: &overridden_config
+        config:
+          - name: "{{ test_int2 }}"
+            description: Configured by Ansible
+        state: overridden
+
+    - name: Assert overridden commands (device recording)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no description outbound-intf' in result.commands"
+          - "'interface {{ test_int2 }}' in result.commands"
+          - "'description Configured by Ansible' in result.commands"
+          - "'no speed 1000' in result.commands"
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_interfaces: *overridden_config
+
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0
+
+# ====================================================================
+# 5. DELETED -- scenario listener (port 10004)
+# ====================================================================
+- name: "Nxos_interfaces -- state: deleted"
+  hosts: nxos_interfaces_deleted
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    test_int1: Ethernet1/1
+  tasks:
+    - name: Apply deleted config
+      register: result
+      cisco.nxos.nxos_interfaces: &deleted_config
+        state: deleted
+
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no description Test-interface1' in result.commands"
+
+    - name: Idempotence - deleted
+      register: result
+      cisco.nxos.nxos_interfaces: *deleted_config
+
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0
+
+# ====================================================================
+# 6. PARSED -- offline (platform listener, port 10000)
+# ====================================================================
+- name: "Nxos_interfaces -- state: parsed"
+  hosts: nxos_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_interfaces/vars/main.yml"
+  tasks:
+    - name: Parse interfaces from running config
+      register: result
+      cisco.nxos.nxos_interfaces:
+        running_config: |
+          interface Ethernet1/800
+            description test-1
+            speed 1000
+            shutdown
+            no switchport
+            duplex half
+          interface Ethernet1/801
+            description test-2
+            switchport
+            no shutdown
+            mtu 1800
+        state: parsed
+
+    - name: Assert parsed config
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result['parsed']) | length == 0
+          - result['changed'] == false
+
+# ====================================================================
+# 7. RENDERED -- offline (platform listener, port 10000)
+# ====================================================================
+- name: "Nxos_interfaces -- state: rendered"
+  hosts: nxos_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_interfaces/vars/main.yml"
+  tasks:
+    - name: Render interfaces config
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/1
+            description: outbound-intf
+            mode: layer3
+            speed: 1000
+          - name: Ethernet1/2
+            mode: layer2
+            enabled: true
+            duplex: full
+        state: rendered
+
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - rendered | symmetric_difference(result['rendered']) | length == 0
+          - result['changed'] == false

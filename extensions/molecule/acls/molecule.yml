@@ -1,0 +1,34 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-acls-gathered
+  - name: cisshgo-acls-merged
+  - name: cisshgo-acls-replaced
+  - name: cisshgo-acls-overridden
+  - name: cisshgo-acls-deleted
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/acls.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/acls.yaml
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

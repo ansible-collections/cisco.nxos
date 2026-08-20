@@ -1,0 +1,35 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-route_maps-gathered
+  - name: cisshgo-route_maps-merged
+  - name: cisshgo-route_maps-replaced
+  - name: cisshgo-route_maps-overridden
+  - name: cisshgo-route_maps-deleted
+  - name: cisshgo-route_maps-match_metric_deviation
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/route_maps.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/route_maps.yaml
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

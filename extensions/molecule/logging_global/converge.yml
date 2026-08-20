@@ -1,0 +1,293 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_logging_global — state: gathered"
+  hosts: nxos_logging_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Gather nxos_logging_global facts
+      register: result
+      cisco.nxos.nxos_logging_global:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | ansible.utils.remove_keys(target=['use_vrf']) == gathered.config
+
+- name: "Nxos_logging_global — state: merged"
+  hosts: nxos_logging_global_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global merged
+      register: result
+      cisco.nxos.nxos_logging_global:
+        config:
+          console:
+            severity: error
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - host: 203.0.113.100
+              severity: alert
+              use_vrf: management
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+          ip:
+            access_list:
+              cache:
+                entries: 16384
+                interval: 200
+                threshold: 5000
+          monitor:
+            severity: warning
+          origin_id:
+            hostname: true
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_logging_global:
+        config:
+          console:
+            severity: error
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - host: 203.0.113.100
+              severity: alert
+              use_vrf: management
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+          ip:
+            access_list:
+              cache:
+                entries: 16384
+                interval: 200
+                threshold: 5000
+          monitor:
+            severity: warning
+          origin_id:
+            hostname: true
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_logging_global — state: replaced"
+  hosts: nxos_logging_global_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global replaced
+      register: result
+      cisco.nxos.nxos_logging_global:
+        config:
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+              use_vrf: default
+            - host: 198.51.100.101
+              port: 6538
+              severity: alert
+              use_vrf: management
+          ip:
+            access_list:
+              cache:
+                entries: 4096
+          monitor:
+            severity: warning
+          origin_id:
+            ip: 192.0.2.100
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | reject('search', 'local6') | list | symmetric_difference(replaced.commands) | length == 0
+
+- name: "Nxos_logging_global — state: overridden"
+  hosts: nxos_logging_global_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global overridden
+      register: result
+      cisco.nxos.nxos_logging_global:
+        config:
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+              use_vrf: default
+            - host: 198.51.100.101
+              port: 6538
+              severity: alert
+              use_vrf: management
+          ip:
+            access_list:
+              cache:
+                entries: 4096
+          monitor:
+            severity: warning
+          origin_id:
+            ip: 192.0.2.100
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | reject('search', 'local6') | list | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_logging_global:
+        config:
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+              use_vrf: default
+            - host: 198.51.100.101
+              port: 6538
+              severity: alert
+              use_vrf: management
+          ip:
+            access_list:
+              cache:
+                entries: 4096
+          monitor:
+            severity: warning
+          origin_id:
+            ip: 192.0.2.100
+        state: overridden
+    - name: Assert idempotent (overridden — integration skips changed==false)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.commands | reject('search', 'local6') | list | length == 0
+
+- name: "Nxos_logging_global — state: deleted"
+  hosts: nxos_logging_global_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global deleted
+      register: result
+      cisco.nxos.nxos_logging_global:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | reject('search', 'local6') | list | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_logging_global:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_logging_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global parsed
+      register: result
+      cisco.nxos.nxos_logging_global:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_logging_global/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.parsed == parsed.after
+
+- name: Rendered state (offline)
+  hosts: nxos_logging_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_logging_global/vars/main.yml
+  tasks:
+    - name: Run nxos_logging_global rendered
+      register: result
+      cisco.nxos.nxos_logging_global:
+        config:
+          console:
+            severity: error
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - host: 203.0.113.100
+              severity: alert
+              use_vrf: management
+            - facility: local6
+              host: 203.0.113.101
+              severity: error
+              use_vrf: default
+          ip:
+            access_list:
+              cache:
+                entries: 16384
+                interval: 200
+                threshold: 5000
+          monitor:
+            severity: warning
+          origin_id:
+            hostname: true
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(rendered.commands) | length == 0

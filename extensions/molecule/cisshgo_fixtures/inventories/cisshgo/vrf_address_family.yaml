@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-vrf-address-family-gathered
+    count: 1
+  - scenario: nxos-vrf-address-family-gathered
+    count: 1
+  - scenario: nxos-vrf-address-family-merged
+    count: 1
+  - scenario: nxos-vrf-address-family-replaced
+    count: 1
+  - scenario: nxos-vrf-address-family-overridden
+    count: 1
+  - scenario: nxos-vrf-address-family-deleted
+    count: 1

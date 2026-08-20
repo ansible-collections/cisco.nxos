@@ -1,0 +1,8 @@
+vlan 1,5-7
+vlan 5
+  state suspend
+  name vlan5
+vlan 7
+  shutdown
+  name vlan7
+  vn-segment 190

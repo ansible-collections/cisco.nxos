@@ -1,0 +1,33 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-telemetry-gathered
+  - name: cisshgo-telemetry-merged
+  - name: cisshgo-telemetry-replaced
+  - name: cisshgo-telemetry-deleted
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/telemetry.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  config_options:
+    defaults:
+      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/telemetry.yaml
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

@@ -1,0 +1,168 @@
+---
+# Starts CISSHGO for a scenario using <scenario>/vars.yml inputs.
+- name: "Create — Start CISSHGO ({{ scenario_name | default('unknown') }})"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
+  vars:
+    ansible_network_os: ""
+    ansible_connection: local
+    molecule_dir: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') | dirname }}"
+    fixtures_dir: "{{ molecule_dir }}/cisshgo_fixtures"
+    transcript_map: "{{ fixtures_dir }}/transcript_map.yaml"
+    cisshgo_inventory_path: "{{ fixtures_dir }}/inventories/cisshgo/{{ scenario_name }}.yaml"
+    ansible_inventory_path: "{{ fixtures_dir }}/inventories/ansible/{{ scenario_name }}.yaml"
+    cisshgo_log: "/tmp/cisshgo-{{ scenario_name }}.log"
+    starting_port: "{{ listener_ports | first }}"
+    sibling_cisshgo: "{{ molecule_dir }}/../../../../cisshgo/cisshgo"
+    cisshgo_version: >-
+      {{ lookup('env', 'CISSHGO_VERSION')
+         | default(lookup('file', fixtures_dir + '/CISSHGO_VERSION') | trim, true) }}
+    cisshgo_download_dir: "/tmp/cisshgo-release/{{ cisshgo_version }}"
+
+  tasks:
+    - name: Gather localhost platform facts
+      ansible.builtin.setup:
+        gather_subset:
+          - "!all"
+          - "!min"
+          - "platform"
+
+    - name: Check CISSHGO_BIN env override
+      ansible.builtin.set_fact:
+        cisshgo_bin: "{{ lookup('env', 'CISSHGO_BIN') | default(lookup('env', 'CISSHGO_BIN_PATH'), true) }}"
+      when: (lookup('env', 'CISSHGO_BIN') | default('')) | length > 0 or (lookup('env', 'CISSHGO_BIN_PATH') | default('')) | length > 0
+
+    - name: Probe sibling cisshgo checkout
+      when: cisshgo_bin is not defined
+      block:
+        - name: Stat sibling cisshgo binary
+          ansible.builtin.stat:
+            path: "{{ sibling_cisshgo }}"
+          register: _sibling_stat
+
+        - name: Use sibling cisshgo if present
+          ansible.builtin.set_fact:
+            cisshgo_bin: "{{ sibling_cisshgo }}"
+          when: _sibling_stat.stat.exists
+
+    - name: Probe common workspace paths
+      when: cisshgo_bin is not defined
+      block:
+        - name: Check workspace tools path
+          ansible.builtin.stat:
+            path: "{{ lookup('env', 'HOME') }}/dev-workspace/tools/cisshgo/cisshgo"
+          register: _workspace_stat
+
+        - name: Use workspace tools cisshgo if present
+          ansible.builtin.set_fact:
+            cisshgo_bin: "{{ lookup('env', 'HOME') }}/dev-workspace/tools/cisshgo/cisshgo"
+          when: _workspace_stat.stat.exists
+
+    - name: Download pinned cisshgo release
+      when: cisshgo_bin is not defined
+      block:
+        - name: Compute release archive metadata
+          ansible.builtin.set_fact:
+            _release_os: "{{ 'linux' if ansible_system == 'Linux' else 'darwin' }}"
+            _release_arch: "{{ 'arm64' if ansible_architecture in ['aarch64', 'arm64'] else 'amd64' }}"
+            _version_no_v: "{{ cisshgo_version | regex_replace('^v', '') }}"
+
+        - name: Set archive name and URL
+          ansible.builtin.set_fact:
+            _archive_name: "cisshgo_{{ _version_no_v }}_{{ _release_os }}_{{ _release_arch }}.tar.gz"
+            _release_url: >-
+              https://github.com/tbotnz/cisshgo/releases/download/{{ cisshgo_version
+              }}/cisshgo_{{ _version_no_v }}_{{ _release_os }}_{{ _release_arch }}.tar.gz
+
+        - name: Ensure cisshgo download dir
+          ansible.builtin.file:
+            path: "{{ cisshgo_download_dir }}"
+            state: directory
+            mode: "0755"
+
+        - name: Download cisshgo release archive (cached per version)
+          ansible.builtin.get_url:
+            url: "{{ _release_url }}"
+            dest: "{{ cisshgo_download_dir }}/{{ _archive_name }}"
+            mode: "0644"
+            timeout: 60
+          register: _download
+
+        - name: Extract cisshgo release archive
+          ansible.builtin.unarchive:
+            src: "{{ cisshgo_download_dir }}/{{ _archive_name }}"
+            dest: "{{ cisshgo_download_dir }}"
+            remote_src: true
+            creates: "{{ cisshgo_download_dir }}/cisshgo"
+
+        - name: Set cisshgo_bin to downloaded binary
+          ansible.builtin.set_fact:
+            cisshgo_bin: "{{ cisshgo_download_dir }}/cisshgo"
+
+    - name: Verify cisshgo_bin is a regular file
+      ansible.builtin.stat:
+        path: "{{ cisshgo_bin }}"
+      register: _cisshgo_stat
+
+    - name: Fail if cisshgo_bin is missing or not a regular file
+      ansible.builtin.assert:
+        that:
+          - _cisshgo_stat.stat.exists
+          - _cisshgo_stat.stat.isreg
+        fail_msg: "cisshgo_bin missing or not a file: {{ cisshgo_bin }}"
+
+    - name: Ensure cisshgo binary is executable
+      ansible.builtin.file:
+        path: "{{ cisshgo_bin }}"
+        mode: "0755"
+
+    - name: Kill stale CISSHGO processes (shared ports 10000-10005)
+      ansible.builtin.shell: |
+        pkill -9 -f cisshgo || true
+        sleep 1
+      changed_when: false
+      failed_when: false
+
+    - name: Start CISSHGO
+      ansible.builtin.shell: |
+        cd "{{ fixtures_dir }}" && \
+        nohup "{{ cisshgo_bin }}" \
+          --transcript-map "{{ transcript_map }}" \
+          --inventory "{{ cisshgo_inventory_path }}" \
+          --starting-port {{ starting_port }} \
+          > "{{ cisshgo_log }}" 2>&1 &
+        echo "PID=$!"
+      register: _start
+      changed_when: true
+
+    - name: Brief pause to let CISSHGO bind or crash
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: Snapshot CISSHGO log after launch
+      ansible.builtin.command: cat {{ cisshgo_log }}
+      register: _startup_log
+      changed_when: false
+      failed_when: false
+
+    - name: Fail fast if CISSHGO crashed on startup
+      ansible.builtin.assert:
+        that:
+          - "'FATAL' not in _startup_log.stdout"
+          - "'panic:' not in _startup_log.stdout"
+          - "'address already in use' not in _startup_log.stdout"
+          - "'transcript map validation failed' not in _startup_log.stdout"
+          - "'unknown platform' not in _startup_log.stdout"
+          - "'not found' not in _startup_log.stdout"
+        fail_msg: "CISSHGO exited immediately or failed to bind — see log above"
+
+    - name: Wait for every listener port
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: "{{ item }}"
+        timeout: 30
+        state: started
+      loop: "{{ listener_ports }}"

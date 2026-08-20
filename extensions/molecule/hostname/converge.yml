@@ -1,0 +1,83 @@
+---
+- name: "Nxos_hostname -- state gathered"
+  hosts: nxos_hostname_gathered
+  gather_facts: false
+  vars:
+    current_hostname: nxos1
+  tasks:
+    - name: Gather nxos_hostname facts
+      register: result
+      cisco.nxos.nxos_hostname:
+        state: gathered
+
+    - name: Assert gathered config matches expected
+      ansible.builtin.assert:
+        that:
+          - result.gathered.hostname == "nxos1"
+          - result.changed == false
+
+- name: "Nxos_hostname -- state merged"
+  hosts: nxos_hostname_merged
+  gather_facts: false
+  vars:
+    current_hostname: nxos1
+  tasks:
+    - name: Apply merged config
+      register: result
+      cisco.nxos.nxos_hostname: &merged_config
+        config:
+          hostname: "NXOSv-9k"
+        state: merged
+
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.commands == ["hostname NXOSv-9k"]
+          - result.changed == true
+
+    - name: Assert merged before state
+      ansible.builtin.assert:
+        that:
+          - result.before.hostname == "nxos1"
+
+    - name: Assert merged after state
+      ansible.builtin.assert:
+        that:
+          - result.after.hostname == "NXOSv-9k"
+
+    - name: Nxos_hostname merged (idempotent)
+      register: result
+      cisco.nxos.nxos_hostname: *merged_config
+
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_hostname -- state deleted"
+  hosts: nxos_hostname_deleted
+  gather_facts: false
+  vars:
+    current_hostname: nxos1
+  tasks:
+    - name: Apply deleted config
+      register: result
+      cisco.nxos.nxos_hostname:
+        state: deleted
+
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.commands == ["no hostname nxos1"]
+          - result.changed == true
+
+    - name: Assert deleted before state
+      ansible.builtin.assert:
+        that:
+          - result.before.hostname == "nxos1"
+
+    - name: Assert deleted after state
+      ansible.builtin.assert:
+        that:
+          - result.after == {}
