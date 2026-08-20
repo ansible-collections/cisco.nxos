@@ -1,0 +1,7 @@
+---
+bugfixes:
+  - nxos_interfaces - Send an explicit ``switchport`` (or ``no switchport``) command
+    when creating an interface that is absent from gathered facts, instead of treating
+    the platform ``system default switchport`` value as already applied. This allows
+    subsequent ``nxos_l2_interfaces`` tasks to succeed on newly created Layer 2
+    interfaces.

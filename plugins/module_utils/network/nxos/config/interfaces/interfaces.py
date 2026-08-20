@@ -155,7 +155,18 @@ class Interfaces(ResourceModule):
 
         # Handle the 'mode' state separately
         want_mode = want.get("mode")
-        have_mode = have.get("mode", self.defaults.get("default_mode"))
+        # Only treat the platform-wide default as the interface's current mode
+        # when the interface already exists in gathered facts. A brand-new
+        # interface (empty `have`) has never had `switchport` / `no switchport`
+        # entered, even if `system default switchport` would eventually apply.
+        # Substituting the default in that case makes merged/replaced skip the
+        # explicit command, which then breaks nxos_l2_interfaces
+        # (`switchport mode ...` is rejected until `switchport` is entered).
+        # `rendered` always has empty `have` and documents a layer3 default.
+        if have or self.state == "rendered":
+            have_mode = have.get("mode", self.defaults.get("default_mode"))
+        else:
+            have_mode = None
         if want_mode is not None:
             if want_mode != have_mode:
                 if want_mode == "layer3":

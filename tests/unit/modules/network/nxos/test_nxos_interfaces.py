@@ -530,6 +530,49 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
+    def test_new_layer2_interface_with_system_default_switchport(self):
+        # AAP-88449: a missing interface must get an explicit "switchport"
+        # even when the platform default is already layer2. Otherwise
+        # nxos_l2_interfaces fails with "% Invalid command" on
+        # "switchport mode ...".
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer2",
+            "L2_enabled": True,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/1
+          interface port-channel2
+            switchport
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(
+                    name="port-channel30",
+                    description="test",
+                    enabled=True,
+                    mode="layer2",
+                ),
+                # Existing interfaces that already match the platform default
+                # must stay idempotent (no extra switchport line).
+                dict(name="Ethernet1/1", mode="layer2"),
+                dict(name="port-channel2", mode="layer2"),
+            ],
+            state="merged",
+        )
+        merged = [
+            "interface port-channel30",
+            "description test",
+            "switchport",
+            "no shutdown",
+        ]
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        self.assertIn("switchport", result["commands"])
+
     def test_4(self):
         # Basic idempotence test
         self.exec_get_defaults.return_value = {
