@@ -1,0 +1,8 @@
+---
+breaking_changes:
+  - >-
+    nxos_route_maps - ``match.metric`` elements changed from a list of integers
+    to a list of dictionaries with required ``value`` and optional ``deviation``
+    (for NX-OS ``match metric <value> +- <deviation>``). Update playbooks from
+    ``metric: [10, 200]`` to ``metric: [{value: 10}, {value: 200}]`` (or add
+    ``deviation`` when needed). Fixes fact-gathering failures on that CLI.

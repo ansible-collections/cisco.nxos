@@ -1,0 +1,116 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_route_maps match metric deviation integration tests on connection={{ ansible_connection }}
+
+- name: Remove metric deviation test route-map
+  cisco.nxos.nxos_config:
+    lines:
+      - no route-map rmap_metric_dev
+  ignore_errors: true
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- block:
+    - name: Populate match metric with deviation via raw CLI
+      cisco.nxos.nxos_config:
+        lines:
+          - match metric 0 +- 100
+          - match metric 100 +- 65000
+        parents:
+          - route-map rmap_metric_dev permit 10
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Gather route-maps after seeding metric deviation
+      register: gather_result
+      cisco.nxos.nxos_route_maps:
+        state: gathered
+
+    - name: Assert gathered facts include metric deviation pairs
+      ansible.builtin.assert:
+        that:
+          - gather_result is succeeded
+          - gather_result.gathered | selectattr('route_map', 'equalto', 'rmap_metric_dev') | list | length == 1
+          - >
+            (gather_result.gathered | selectattr('route_map', 'equalto', 'rmap_metric_dev') | first).entries[0].match.metric
+            == [{'value': 0, 'deviation': 100}, {'value': 100, 'deviation': 65000}]
+
+    - name: Gather via nxos_facts route_maps resource
+      register: facts_result
+      cisco.nxos.nxos_facts:
+        gather_subset: min
+        gather_network_resources:
+          - route_maps
+
+    - name: Assert nxos_facts succeeds and parses metric deviation
+      ansible.builtin.assert:
+        that:
+          - facts_result is succeeded
+          - >
+            (ansible_network_resources.route_maps
+            | selectattr('route_map', 'equalto', 'rmap_metric_dev') | first).entries[0].match.metric
+            == [{'value': 0, 'deviation': 100}, {'value': 100, 'deviation': 65000}]
+
+    - name: Remove seeded route-map before merged test
+      cisco.nxos.nxos_config:
+        lines:
+          - no route-map rmap_metric_dev
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Merge match metric deviation via resource module
+      register: merge_result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - route_map: rmap_metric_dev
+            entries:
+              - sequence: 10
+                action: permit
+                match:
+                  metric:
+                    - value: 0
+                      deviation: 100
+                    - value: 100
+                      deviation: 65000
+        state: merged
+
+    - name: Assert merge generated expected match metric command
+      ansible.builtin.assert:
+        that:
+          - merge_result is changed
+          - "'match metric 0 +- 100 100 +- 65000' in merge_result.commands"
+          - merge_result.after | selectattr('route_map', 'equalto', 'rmap_metric_dev') | list | length == 1
+          - >
+            (merge_result.after | selectattr('route_map', 'equalto', 'rmap_metric_dev') | first).entries[0].match.metric
+            == [{'value': 0, 'deviation': 100}, {'value': 100, 'deviation': 65000}]
+
+    - name: Merge match metric deviation again (idempotent)
+      register: merge_idem
+      cisco.nxos.nxos_route_maps:
+        config:
+          - route_map: rmap_metric_dev
+            entries:
+              - sequence: 10
+                action: permit
+                match:
+                  metric:
+                    - value: 0
+                      deviation: 100
+                    - value: 100
+                      deviation: 65000
+        state: merged
+
+    - name: Assert merge is idempotent
+      ansible.builtin.assert:
+        that:
+          - merge_idem is not changed
+          - merge_idem.commands | length == 0
+
+  always:
+    - name: Cleanup metric deviation test route-map
+      cisco.nxos.nxos_config:
+        lines:
+          - no route-map rmap_metric_dev
+      ignore_errors: true
+      vars:
+        ansible_connection: ansible.netcommon.network_cli

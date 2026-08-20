@@ -768,7 +768,10 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                         route_source=dict(prefix_lists=["pl3", "pl4"]),
                                     ),
                                     mac_list=["mac1", "mac2"],
-                                    metric=[100, 200],
+                                    metric=[
+                                        dict(value=100),
+                                        dict(value=200),
+                                    ],
                                     ospf_area=[200, 300],
                                     route_types=["external", "inter-area"],
                                     source_protocol=["eigrp", "ospf"],
@@ -1547,6 +1550,90 @@ class TestNxosRouteMapsModule(TestNxosModule):
         commands = [
             "no route-map test-1 permit 10",
             "route-map test-2 permit 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_match_metric_deviation_parsed(self):
+        # NX-OS match metric <value> +- <deviation> must parse without crashing
+        running_config = dedent(
+            """\
+            route-map ARY-FROM-MSO-BRC permit 10
+              match ip address prefix-list FWG-NAT-POOLS-V4
+              match metric 0 +- 100
+              set community 65139:147
+            route-map ARY-TO-COLO-BRC permit 10
+              match metric 0 +- 100 100 +- 65000
+              set metric 10
+            """,
+        )
+        set_module_args(dict(running_config=running_config, state="parsed"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        parsed = [
+            dict(
+                route_map="ARY-FROM-MSO-BRC",
+                entries=[
+                    dict(
+                        action="permit",
+                        sequence=10,
+                        match=dict(
+                            ip=dict(address=dict(prefix_lists=["FWG-NAT-POOLS-V4"])),
+                            metric=[dict(value=0, deviation=100)],
+                        ),
+                        set=dict(community=dict(number=["65139:147"])),
+                    ),
+                ],
+            ),
+            dict(
+                route_map="ARY-TO-COLO-BRC",
+                entries=[
+                    dict(
+                        action="permit",
+                        sequence=10,
+                        match=dict(
+                            metric=[
+                                dict(value=0, deviation=100),
+                                dict(value=100, deviation=65000),
+                            ],
+                        ),
+                        set=dict(metric=dict(bandwidth=10)),
+                    ),
+                ],
+            ),
+        ]
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_route_maps_match_metric_deviation_merged(self):
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="rmap1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    metric=[
+                                        dict(value=0, deviation=100),
+                                        dict(value=100, deviation=65000),
+                                    ],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map rmap1 permit 10",
+            "match metric 0 +- 100 100 +- 65000",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

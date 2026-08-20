@@ -96,6 +96,40 @@ def _tmplt_set_metric(data):
     return cmd
 
 
+def _tmplt_match_metric(data):
+    cmd = "match metric"
+    for entry in data["match"]["metric"]:
+        cmd += " {0}".format(entry["value"])
+        if entry.get("deviation") is not None:
+            cmd += " +- {0}".format(entry["deviation"])
+    return cmd
+
+
+def _parse_match_metric(tokens):
+    """Convert split match-metric tokens into list of value/deviation dicts.
+
+    Handles both plain values (``100 200``) and deviation pairs
+    (``0 +- 100 100 +- 65000``).
+    """
+    if not tokens:
+        return []
+    # Already normalized (e.g. re-entrant validate / unit fixtures)
+    if isinstance(tokens[0], dict):
+        return tokens
+
+    result = []
+    i = 0
+    while i < len(tokens):
+        entry = {"value": int(tokens[i])}
+        if i + 2 < len(tokens) and tokens[i + 1] == "+-":
+            entry["deviation"] = int(tokens[i + 2])
+            i += 3
+        else:
+            i += 1
+        result.append(entry)
+    return result
+
+
 def _tmplt_set_ip_next_hop_verify_availability(data):
     cmd = []
     for each in data["set"]["ip"]["next_hop"]["verify_availability"]:
@@ -114,6 +148,17 @@ def _tmplt_set_ip_next_hop_verify_availability(data):
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Route_mapsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+
+    def parse(self):
+        """Parse config and normalize match.metric tokens into dicts."""
+        result = super(Route_mapsTemplate, self).parse()
+        for route_map in result.values():
+            entries = route_map.get("entries") or {}
+            for entry in entries.values():
+                match = entry.get("match") or {}
+                if "metric" in match:
+                    match["metric"] = _parse_match_metric(match["metric"])
+        return result
 
     # fmt: off
     PARSERS = [
@@ -673,7 +718,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*
                 $""", re.VERBOSE,
             ),
-            "setval": "match metric {{ match.metric|join(' ') }}",
+            "setval": _tmplt_match_metric,
             "result": {
                 "{{ route_map }}": {
                     "entries": {
