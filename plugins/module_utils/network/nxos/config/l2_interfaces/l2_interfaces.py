@@ -160,8 +160,7 @@ class L2_interfaces(ResourceModule):
             return
 
         if self.state in ("merged", "rendered"):
-            have_implicit = have.get("trunk", {}).get("allowed_vlans_implicit", False)
-            if have_implicit and want_set:
+            if not have_set and want_set:
                 self.commands.extend(
                     generate_switchport_trunk(
                         "allowed",
