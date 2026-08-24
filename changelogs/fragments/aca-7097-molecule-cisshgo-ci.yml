@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Wire Molecule CISSHGO scenarios into GitHub Actions (libssh + paramiko) (https://github.com/ansible-collections/cisco.nxos/pull/1094)."

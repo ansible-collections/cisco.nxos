@@ -19,9 +19,11 @@ repos:
       - id: check-symlinks
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: ^extensions/molecule/cisshgo_fixtures/transcripts/
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: trailing-whitespace
+        exclude: ^(extensions/molecule/cisshgo_fixtures/transcripts/|extensions/molecule/cisshgo_fixtures/transcript_map\.yaml)
 
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v4.0.0
