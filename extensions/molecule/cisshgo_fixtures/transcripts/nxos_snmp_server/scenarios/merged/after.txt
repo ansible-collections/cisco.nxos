@@ -12,6 +12,5 @@ snmp-server host 192.0.2.1 source-interface Ethernet1/1
 snmp-server host 192.0.2.2 informs version 3 auth NMS
 snmp-server enable traps aaa server-state-change
 snmp-server enable traps system Clock-change-notification
-snmp-server community private group network-admin
+snmp-server community private group network-admin use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
 snmp-server community public group network-operator
-snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ

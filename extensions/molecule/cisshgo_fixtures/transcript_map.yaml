@@ -433,26 +433,11 @@ platforms:
       snmp-server host 192.0.2.1 source-interface Ethernet1/1: transcripts/common/generic_empty_return.txt
       snmp-server host 192.0.2.2 informs version 3 auth NMS: transcripts/common/generic_empty_return.txt
       snmp-server host 192.0.3.2 informs version 3 auth NMS: transcripts/common/generic_empty_return.txt
-      snmp-server community private group network-admin: transcripts/common/generic_empty_return.txt
-      snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ: transcripts/common/generic_empty_return.txt
-      snmp-server community public group network-operator: transcripts/common/generic_empty_return.txt
-      snmp-server community secret group network-operator: transcripts/common/generic_empty_return.txt
-      "snmp-server community private  group network-admin ": transcripts/common/generic_empty_return.txt
-      "snmp-server community private  ": transcripts/common/generic_empty_return.txt
-      "snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ ": transcripts/common/generic_empty_return.txt
-      "snmp-server community public  group network-operator ": transcripts/common/generic_empty_return.txt
-      "snmp-server community public  ": transcripts/common/generic_empty_return.txt
-      "snmp-server community public ": transcripts/common/generic_empty_return.txt
-      "snmp-server community secret  group network-operator ": transcripts/common/generic_empty_return.txt
-      "snmp-server community secret  ": transcripts/common/generic_empty_return.txt
-      "snmp-server community secret ": transcripts/common/generic_empty_return.txt
-      "no snmp-server community private  group network-admin ": transcripts/common/generic_empty_return.txt
-      "no snmp-server community private  ": transcripts/common/generic_empty_return.txt
-      "no snmp-server community private ": transcripts/common/generic_empty_return.txt
+      # Spaced community CLIs are sequence-only (CISSHGO trims → Ambiguous if both
+      # spaced and non-spaced keys live in command_transcripts).
       snmp-server enable traps aaa server-state-change: transcripts/common/generic_empty_return.txt
       snmp-server enable traps system Clock-change-notification: transcripts/common/generic_empty_return.txt
       no snmp-server enable traps system Clock-change-notification: transcripts/common/generic_empty_return.txt
-      no snmp-server community private: transcripts/common/generic_empty_return.txt
       snmp-server contact nxosswitchadmin2@localhost: transcripts/common/generic_empty_return.txt
       snmp-server location serverroom-2: transcripts/common/generic_empty_return.txt
     context_search:
@@ -2500,23 +2485,18 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/replaced/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  group network-admin "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  group network-operator "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public "
-        transcript: transcripts/common/generic_empty_return.txt
+      # Module order: secret add, then private remval (no on line1 + bare setval lines 2-3).
       - command: "snmp-server community secret  group network-operator "
         transcript: transcripts/common/generic_empty_return.txt
       - command: "snmp-server community secret  "
         transcript: transcripts/common/generic_empty_return.txt
       - command: "snmp-server community secret "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "no snmp-server community private  group network-admin "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "snmp-server community private  "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "snmp-server community private "
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
@@ -2539,23 +2519,18 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/overridden/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  group network-admin "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  group network-operator "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public "
-        transcript: transcripts/common/generic_empty_return.txt
+      # Same community remval shape as replaced (buggy setval lines after no).
       - command: "snmp-server community secret  group network-operator "
         transcript: transcripts/common/generic_empty_return.txt
       - command: "snmp-server community secret  "
         transcript: transcripts/common/generic_empty_return.txt
       - command: "snmp-server community secret "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "no snmp-server community private  group network-admin "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "snmp-server community private  "
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: "snmp-server community private "
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt

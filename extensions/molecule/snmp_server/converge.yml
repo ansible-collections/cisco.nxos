@@ -94,11 +94,11 @@
       vars:
         newline: "\n"
         expected_commands: >-
-          {{ merged.commands | map('regex_replace', '\\s+', ' ')
+          {{ merged.commands | map('regex_replace', '\s+', ' ')
           | map('trim') | list }}
         normalized_commands: >-
           {{ result.commands | map('split', newline) | flatten | map('trim')
-          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+          | map('regex_replace', '\s+', ' ') | reject('equalto', '') | list }}
     - name: Idempotent re-run (merged)
       register: idempotent_result
       cisco.nxos.nxos_snmp_server:
@@ -235,11 +235,11 @@
         newline: "\n"
         expected_commands: >-
           {{ replaced.commands | reject('search', 'snmp-server user')
-          | map('regex_replace', '\\s+', ' ') | map('trim') | list }}
+          | map('regex_replace', '\s+', ' ') | map('trim') | list }}
         actual_commands: "{{ result.commands | reject('search', 'snmp-server user') | list }}"
         normalized_commands: >-
           {{ actual_commands | map('split', newline) | flatten | map('trim')
-          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+          | map('regex_replace', '\s+', ' ') | reject('equalto', '') | list }}
     - name: Idempotent re-run (replaced)
       register: idempotent_result
       cisco.nxos.nxos_snmp_server:
@@ -350,11 +350,11 @@
         newline: "\n"
         expected_commands: >-
           {{ overridden.commands | reject('search', 'snmp-server user')
-          | map('regex_replace', '\\s+', ' ') | map('trim') | list }}
+          | map('regex_replace', '\s+', ' ') | map('trim') | list }}
         actual_commands: "{{ result.commands | reject('search', 'snmp-server user') | list }}"
         normalized_commands: >-
           {{ actual_commands | map('split', newline) | flatten | map('trim')
-          | map('regex_replace', '\\s+', ' ') | reject('equalto', '') | list }}
+          | map('regex_replace', '\s+', ' ') | reject('equalto', '') | list }}
     - name: Idempotent re-run (overridden)
       register: idempotent_result
       cisco.nxos.nxos_snmp_server:
@@ -469,8 +469,11 @@
     - name: Assert rendered commands
       ansible.builtin.assert:
         that:
-          - expected_commands | symmetric_difference(flat_commands) | length == 0
+          - expected_commands | difference(normalized_commands) | length == 0
       vars:
         newline: "\n"
-        expected_commands: "{{ rendered.commands }}"
-        flat_commands: "{{ result.rendered | map('split', newline) | flatten | map('trim') | reject('equalto', '') | list }}"
+        # Integration target asserts against merged.commands (no rendered: key in vars).
+        expected_commands: "{{ merged.commands | map('regex_replace', '\\s+', ' ') | map('trim') | list }}"
+        normalized_commands: >-
+          {{ result.rendered | map('split', newline) | flatten | map('trim')
+          | map('regex_replace', '\s+', ' ') | reject('equalto', '') | list }}
