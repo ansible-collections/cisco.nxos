@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_bgp_address_family - fix `_flatten_config` incorrect context
+    carry-over from template/neighbor/vrf blocks when flattening `address-family` lines
