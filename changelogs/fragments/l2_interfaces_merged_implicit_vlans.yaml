@@ -1,0 +1,9 @@
+bugfixes:
+  - nxos_l2_interfaces - Fix ``state=merged`` to use SET instead of ADD when
+    restricting trunk VLANs on interfaces with implicit default allowed VLANs
+    (1-4094). Previously, merged was a no-op on default trunks because ADD
+    against the synthesized full range added nothing. Adds
+    ``allowed_vlans_implicit`` marker in facts to distinguish synthesized
+    defaults from explicit configuration. ``replaced``/``overridden``
+    semantics are unchanged
+    (https://github.com/ansible-collections/cisco.nxos/issues/AAP-85469).
