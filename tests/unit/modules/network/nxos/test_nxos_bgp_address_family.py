@@ -2440,3 +2440,150 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_with_global_template_and_vrf_overridden(self):
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              address-family ipv6 unicast
+              template peer Template1
+                address-family ipv6 unicast
+                  route-map rmap1 out
+              vrf site-1
+                address-family ipv6 unicast
+                  aggregate-address fd00::/64 summary-only
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    address_family=[
+                        dict(
+                            vrf="site-1",
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_address=[
+                                dict(prefix="fd01::/64", summary_only=True),
+                            ],
+                        ),
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                        ),
+                    ],
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "vrf site-1",
+            "address-family ipv6 unicast",
+            "aggregate-address fd01::/64 summary-only",
+            "no aggregate-address fd00::/64 summary-only",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_bgp_with_global_template_and_vrf_replaced(self):
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              address-family ipv6 unicast
+              template peer Template1
+                address-family ipv6 unicast
+                  route-map rmap1 out
+              vrf site-1
+                address-family ipv6 unicast
+                  aggregate-address fd00::/64 summary-only
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    address_family=[
+                        dict(
+                            vrf="site-1",
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_address=[
+                                dict(prefix="fd01::/64", summary_only=True),
+                            ],
+                        ),
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "vrf site-1",
+            "address-family ipv6 unicast",
+            "aggregate-address fd01::/64 summary-only",
+            "no aggregate-address fd00::/64 summary-only",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_bgp_template_af_does_not_leak_to_global_af(self):
+        """Template peer AF must not be treated as a global address-family."""
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              address-family ipv4 multicast
+              template peer Template1
+                address-family ipv6 unicast
+                  route-map rmap1 out
+              vrf site-1
+                address-family ipv6 unicast
+                  aggregate-address fd00::/64 summary-only
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                        ),
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                        ),
+                        dict(
+                            vrf="site-1",
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_address=[
+                                dict(prefix="fd01::/64", summary_only=True),
+                            ],
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "address-family ipv6 unicast",
+            "vrf site-1",
+            "address-family ipv6 unicast",
+            "aggregate-address fd01::/64 summary-only",
+            "no aggregate-address fd00::/64 summary-only",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)

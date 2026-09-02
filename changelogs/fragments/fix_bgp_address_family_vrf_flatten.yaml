@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_bgp_address_family - fix ``_flatten_config`` to correctly track
+    VRF/neighbor/template context when flattening address-family lines (fixes
+    ACA-6752, https://github.com/ansible-collections/cisco.nxos/issues/1082).
