@@ -25,7 +25,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from textwrap import dedent
@@ -38,7 +37,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.modules import nxos_fc_interfaces
 
 from .nxos_module import TestNxosModule, set_module_args
-
 
 ignore_provider_arg = True
 

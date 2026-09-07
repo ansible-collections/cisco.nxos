@@ -7,7 +7,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from unittest.mock import MagicMock, patch
@@ -15,7 +14,6 @@ from unittest.mock import MagicMock, patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_rpm
 
 from .nxos_module import TestNxosModule, set_module_args
-
 
 MODULE_PATH = "ansible_collections.cisco.nxos.plugins.modules.nxos_rpm"
 
