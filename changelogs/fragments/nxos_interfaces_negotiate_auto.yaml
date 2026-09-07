@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - nxos_interfaces - Add ``negotiate_auto`` boolean attribute to control
+    auto-negotiation on Ethernet interfaces. Set to ``false`` to configure
+    ``no negotiate auto`` and disable auto-negotiation; set to ``true`` to
+    configure ``negotiate auto`` and re-enable it.

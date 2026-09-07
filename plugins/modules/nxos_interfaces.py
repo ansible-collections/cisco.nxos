@@ -85,6 +85,13 @@ options:
           - Associate SVI with anycast gateway under VLAN configuration mode.
             Applicable for SVI interfaces only.
         type: bool
+      negotiate_auto:
+        description:
+          - Enable or disable auto-negotiation on the interface. Set the value
+            to C(true) to enable auto-negotiation (configures C(negotiate auto))
+            or C(false) to disable it (configures C(no negotiate auto)).
+            Applicable for Ethernet interfaces only.
+        type: bool
       mac_address:
         description: E.E.E  MAC address.
         type: str
