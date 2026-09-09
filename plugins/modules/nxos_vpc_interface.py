@@ -1,345 +1,404 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2024 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+"""
+The module file for nxos_vpc_interface
+"""
+
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
-
 DOCUMENTATION = """
 module: nxos_vpc_interface
-extends_documentation_fragment:
-- cisco.nxos.nxos
-short_description: Manages interface VPC configuration
-description:
-- Manages interface VPC configuration
 version_added: 1.0.0
-author:
-- Jason Edelman (@jedelman8)
-- Gabriele Gerbino (@GGabriele)
+short_description: VPC interface resource module
+description:
+  - This module manages VPC (Virtual Port Channel) configuration on port-channel
+    interfaces of Cisco NX-OS devices.
 notes:
-- Tested against NXOSv 7.3.(0)D1(1) on VIRL
-- Unsupported for Cisco MDS
-- Either vpc or peer_link param is required, but not both.
-- C(state=absent) removes whatever VPC config is on a port-channel if one exists.
-- Re-assigning a vpc or peerlink from one portchannel to another is not supported.  The
-  module will force the user to unconfigure an existing vpc/pl before configuring
-  the same value on a new portchannel
+  - Tested against NX-OS 9.3.6.
+  - Unsupported for Cisco MDS.
+  - C(vpc) and C(peer_link) are mutually exclusive for a given port-channel.
+  - C(orphan_port_suspend) applies to any interface type, including Ethernet interfaces.
+  - This module works with connection C(network_cli) and C(httpapi).
+  - The I(parsed) state reads configuration from C(running_config) and does
+    not connect to the device.
+author: Ansible Network Eng Team
 options:
-  portchannel:
+  running_config:
     description:
-    - Group number of the portchannel that will be configured.
-    required: true
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device
+        by executing the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
     type: str
-  vpc:
+  config:
     description:
-    - VPC group/id that will be configured on associated portchannel.
-    type: str
-  peer_link:
-    description:
-    - Set to true/false for peer link config on associated portchannel.
-    type: bool
+      - A list of VPC interface configurations.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+          - Full name of the interface (e.g. C(port-channel10) or C(Ethernet1/3)).
+        type: str
+        required: true
+      vpc:
+        description:
+          - VPC ID to assign to this port-channel.
+          - Mutually exclusive with I(peer_link).
+        type: str
+      peer_link:
+        description:
+          - When C(true), configure this port-channel as the VPC peer-link.
+          - Mutually exclusive with I(vpc).
+        type: bool
+      orphan_port_suspend:
+        description:
+          - When C(true), configure the interface as a VPC orphan-port that
+            suspends when the VPC secondary peer-link goes down.
+          - Supported on any interface type.
+        type: bool
   state:
     description:
-    - Manages desired state of the resource.
-    choices:
-    - present
-    - absent
-    default: present
+      - The state the configuration should be left in.
     type: str
+    choices:
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - rendered
+      - parsed
+    default: merged
+extends_documentation_fragment:
+  - cisco.nxos.nxos
 """
 
 EXAMPLES = """
-- cisco.nxos.nxos_vpc_interface:
-    portchannel: 10
-    vpc: 100
+# Using merged
+
+# Before state:
+# -------------
+# nxos# show running-config | section ^interface port-channel
+# interface port-channel10
+#   switchport
+# interface port-channel20
+#   switchport
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+        vpc: 100
+      - name: port-channel20
+        peer_link: true
+      - name: Ethernet1/3
+        orphan_port_suspend: true
+    state: merged
+
+# Task output:
+# ------------
+# before: []
+#
+# commands:
+#   - interface port-channel10
+#   - vpc 100
+#   - interface port-channel20
+#   - vpc peer-link
+#   - interface Ethernet1/3
+#   - vpc orphan-port suspend
+#
+# after:
+#   - name: Ethernet1/3
+#     orphan_port_suspend: true
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+
+# After state:
+# ------------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+
+
+# Using replaced
+
+# Before state:
+# -------------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+
+- name: Replace the VPC configuration of listed port-channels
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+        vpc: 200
+    state: replaced
+
+# Task output:
+# ------------
+# before:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+#
+# commands:
+#   - interface port-channel10
+#   - no vpc
+#   - vpc 200
+#
+# after:
+#   - name: port-channel10
+#     vpc: "200"
+#   - name: port-channel20
+#     peer_link: true
+
+# Note: port-channel20 is unchanged because it is not in the config list.
+
+
+# Using overridden
+
+# Before state:
+# -------------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+# interface port-channel30
+#   vpc 300
+
+- name: Override all VPC interface configuration with provided configuration
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+        vpc: 100
+      - name: port-channel20
+        peer_link: true
+    state: overridden
+
+# Task output:
+# ------------
+# before:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+#   - name: port-channel30
+#     vpc: "300"
+#
+# commands:
+#   - interface port-channel30
+#   - no vpc
+#
+# after:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+
+# Note: port-channel30 is removed because it is not in the want list.
+
+
+# Using deleted
+
+# Before state:
+# -------------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+
+- name: Delete the VPC configuration of listed port-channels
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+    state: deleted
+
+# Task output:
+# ------------
+# before:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+#
+# commands:
+#   - interface port-channel10
+#   - no vpc
+#
+# after:
+#   - name: port-channel20
+#     peer_link: true
+
+# Using deleted (no config — removes all VPC interface configuration)
+
+- name: Delete the VPC configuration of all port-channels
+  cisco.nxos.nxos_vpc_interface:
+    state: deleted
+
+# Task output:
+# ------------
+# commands:
+#   - interface port-channel10
+#   - no vpc
+#   - interface port-channel20
+#   - no vpc peer-link
+
+
+# Using gathered
+
+# Existing device config:
+# -----------------------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+
+- name: Gather VPC interface facts from the device
+  cisco.nxos.nxos_vpc_interface:
+    state: gathered
+
+# Task output:
+# ------------
+# gathered:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
+
+
+# Using rendered
+
+- name: Render platform specific configuration lines
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+        vpc: 100
+      - name: port-channel20
+        peer_link: true
+    state: rendered
+
+# Task output:
+# ------------
+# rendered:
+#   - interface port-channel10
+#   - vpc 100
+#   - interface port-channel20
+#   - vpc peer-link
+
+
+# Using parsed
+
+# parsed.cfg
+# ----------
+# interface port-channel10
+#   vpc 100
+# interface port-channel20
+#   vpc peer-link
+
+- name: Parse externally supplied configuration into structured data
+  cisco.nxos.nxos_vpc_interface:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output:
+# ------------
+# parsed:
+#   - name: port-channel10
+#     vpc: "100"
+#   - name: port-channel20
+#     peer_link: true
 """
 
 RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden) or C(deleted)
+  type: list
+  sample: >
+    This output will always be in the same format as the module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: list
+  sample: >
+    This output will always be in the same format as the module argspec.
 commands:
-    description: commands sent to the device
-    returned: always
-    type: list
-    sample: ["interface port-channel100", "vpc 10"]
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden) or C(deleted)
+  type: list
+  sample:
+    - interface port-channel10
+    - vpc 100
+    - interface port-channel20
+    - vpc peer-link
+rendered:
+  description: The provided configuration rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - interface port-channel10
+    - vpc 100
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option, parsed into structured data.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    emit_warnings,
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vpc_interfaces.vpc_interfaces import (
+    Vpc_interfacesArgs,
 )
-
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-    run_commands,
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vpc_interfaces.vpc_interfaces import (
+    Vpc_interfaces,
 )
-
-
-def flatten_list(command_lists):
-    flat_command_list = []
-    for command in command_lists:
-        if isinstance(command, list):
-            flat_command_list.extend(command)
-        else:
-            flat_command_list.append(command)
-    return flat_command_list
-
-
-def get_portchannel_list(module):
-    portchannels = []
-    pc_list = []
-
-    try:
-        body = run_commands(module, ["show port-channel summary | json"])[0]
-        pc_list = body["TABLE_channel"]["ROW_channel"]
-    except (KeyError, AttributeError, TypeError):
-        return portchannels
-
-    if pc_list:
-        if isinstance(pc_list, dict):
-            pc_list = [pc_list]
-
-        for pc in pc_list:
-            portchannels.append(pc["group"])
-
-    return portchannels
-
-
-def get_existing_portchannel_to_vpc_mappings(module):
-    pc_vpc_mapping = {}
-
-    try:
-        body = run_commands(module, ["show vpc brief | json"])[0]
-        vpc_table = body["TABLE_vpc"]["ROW_vpc"]
-    except (KeyError, AttributeError, TypeError):
-        vpc_table = None
-
-    if vpc_table:
-        if isinstance(vpc_table, dict):
-            vpc_table = [vpc_table]
-
-        for vpc in vpc_table:
-            pc_vpc_mapping[str(vpc["vpc-id"])] = str(vpc["vpc-ifindex"])
-
-    return pc_vpc_mapping
-
-
-def peer_link_exists(module):
-    found = False
-    run = get_config(module, flags=["vpc"])
-
-    vpc_list = run.split("\n")
-    for each in vpc_list:
-        if "peer-link" in each:
-            found = True
-    return found
-
-
-def get_active_vpc_peer_link(module):
-    peer_link = None
-
-    try:
-        body = run_commands(module, ["show vpc brief | json"])[0]
-        peer_link = body["TABLE_peerlink"]["ROW_peerlink"]["peerlink-ifindex"]
-    except (KeyError, AttributeError, TypeError):
-        return peer_link
-
-    return peer_link
-
-
-def get_portchannel_vpc_config(module, portchannel):
-    peer_link_pc = None
-    peer_link = False
-    vpc = ""
-    pc = ""
-    config = {}
-
-    try:
-        body = run_commands(module, ["show vpc brief | json"])[0]
-        table = body["TABLE_peerlink"]["ROW_peerlink"]
-    except (KeyError, AttributeError, TypeError):
-        table = {}
-
-    if table:
-        peer_link_pc = table.get("peerlink-ifindex", None)
-
-    if peer_link_pc:
-        plpc = str(peer_link_pc[2:])
-        if portchannel == plpc:
-            config["portchannel"] = portchannel
-            config["peer-link"] = True
-            config["vpc"] = vpc
-
-    mapping = get_existing_portchannel_to_vpc_mappings(module)
-
-    for existing_vpc, port_channel in mapping.items():
-        port_ch = str(port_channel[2:])
-        if port_ch == portchannel:
-            pc = port_ch
-            vpc = str(existing_vpc)
-
-            config["portchannel"] = pc
-            config["peer-link"] = peer_link
-            config["vpc"] = vpc
-
-    return config
-
-
-def get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing):
-    commands = []
-
-    if not delta.get("peer-link") and existing.get("peer-link"):
-        commands.append("no vpc peer-link")
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
-
-    elif delta.get("peer-link") and not existing.get("peer-link"):
-        commands.append("vpc peer-link")
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
-
-    elif delta.get("vpc") and not existing.get("vpc"):
-        command = "vpc {0}".format(config_value)
-        commands.append(command)
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
-
-    return commands
-
-
-def state_present(portchannel, delta, config_value, existing):
-    commands = []
-
-    command = get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing)
-    commands.append(command)
-
-    return commands
-
-
-def state_absent(portchannel, existing):
-    commands = []
-    if existing.get("vpc"):
-        command = "no vpc"
-        commands.append(command)
-    elif existing.get("peer-link"):
-        command = "no vpc peer-link"
-        commands.append(command)
-    if commands:
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
-
-    return commands
 
 
 def main():
-    argument_spec = dict(
-        portchannel=dict(required=True, type="str"),
-        vpc=dict(required=False, type="str"),
-        peer_link=dict(required=False, type="bool"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    """
+    Main entry point for module execution.
 
+    :returns: the result from module invocation
+    """
     module = AnsibleModule(
-        argument_spec=argument_spec,
-        mutually_exclusive=[["vpc", "peer_link"]],
+        argument_spec=Vpc_interfacesArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
 
-    warnings = list()
-    commands = []
-    results = {"changed": False, "warnings": warnings}
-
-    portchannel = module.params["portchannel"]
-    vpc = module.params["vpc"]
-    peer_link = module.params["peer_link"]
-    state = module.params["state"]
-
-    args = {"portchannel": portchannel, "vpc": vpc, "peer-link": peer_link}
-    active_peer_link = None
-
-    if portchannel not in get_portchannel_list(module):
-        if not portchannel.isdigit() or int(portchannel) not in get_portchannel_list(module):
-            module.fail_json(
-                msg="The portchannel you are trying to make a"
-                " VPC or PL is not created yet. "
-                "Create it first!",
-            )
-    if vpc:
-        mapping = get_existing_portchannel_to_vpc_mappings(module)
-
-        if vpc in mapping and portchannel != mapping[vpc].strip("Po"):
-            module.fail_json(
-                msg="This vpc is already configured on "
-                "another portchannel. Remove it first "
-                "before trying to assign it here. ",
-                existing_portchannel=mapping[vpc],
-            )
-
-        for vpcid, existing_pc in mapping.items():
-            if portchannel == existing_pc.strip("Po") and vpcid != vpc:
-                module.fail_json(
-                    msg="This portchannel already has another"
-                    " VPC configured. Remove it first "
-                    "before assigning this one",
-                    existing_vpc=vpcid,
-                )
-
-        if peer_link_exists(module):
-            active_peer_link = get_active_vpc_peer_link(module)
-            if active_peer_link[-2:] == portchannel:
-                module.fail_json(
-                    msg="That port channel is the current "
-                    "PEER LINK. Remove it if you want it"
-                    " to be a VPC",
-                )
-        config_value = vpc
-
-    elif peer_link is not None:
-        if peer_link_exists(module):
-            active_peer_link = get_active_vpc_peer_link(module)[2::]
-            if active_peer_link != portchannel:
-                if peer_link:
-                    module.fail_json(
-                        msg="A peer link already exists on" " the device. Remove it first",
-                        current_peer_link="Po{0}".format(active_peer_link),
-                    )
-        config_value = "peer-link"
-
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
-    existing = get_portchannel_vpc_config(module, portchannel)
-
-    if state == "present":
-        delta = dict(set(proposed.items()).difference(existing.items()))
-        if delta:
-            commands = state_present(portchannel, delta, config_value, existing)
-
-    elif state == "absent" and existing:
-        commands = state_absent(portchannel, existing)
-
-    cmds = flatten_list(commands)
-    if cmds:
-        if module.check_mode:
-            module.exit_json(changed=True, commands=cmds)
-        else:
-            load_config(module, cmds)
-            results["changed"] = True
-            if "configure" in cmds:
-                cmds.pop(0)
-
-    results["commands"] = cmds
-    emit_warnings(module, results)
-    module.exit_json(**results)
+    result = Vpc_interfaces(module).execute_module()
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":
