@@ -15,6 +15,8 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -52,6 +54,12 @@ class InterfacesFacts(object):
 
         if not data:
             data = self._get_interface_config(connection)
+
+        data = re.sub(
+            r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)",
+            lambda m: m.group(1) + (m.group(2) if "shutdown" in m.group(2) else "  shutdown\n" + m.group(2)),
+            data,
+        )
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)
