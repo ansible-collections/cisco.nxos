@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - >-
+    nxos_snmp_server - stop deleting an SNMPv3 user when ``state: replaced``
+    updates that user (AAP-90154).

@@ -1058,6 +1058,44 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
+    def test_nxos_snmp_server_users_replaced_same_user(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user snmpv3_user vdc-operator auth sha AuthPassword123 priv aes-128 PrivPassword123 localizedV2key
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="snmpv3_user",
+                                group="vdc-operator",
+                                authentication=dict(
+                                    algorithm="sha",
+                                    password="NewAuthPassword123",
+                                    localizedv2_key=True,
+                                    priv=dict(
+                                        privacy_password="NewPrivPassword123",
+                                        aes_128=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server user snmpv3_user vdc-operator auth sha NewAuthPassword123 priv aes-128"
+            " NewPrivPassword123 localizedV2key",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_nxos_snmp_server_rendered(self):
         # test rendered
         set_module_args(
