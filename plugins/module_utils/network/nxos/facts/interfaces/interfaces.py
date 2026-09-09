@@ -57,7 +57,8 @@ class InterfacesFacts(object):
 
         data = re.sub(
             r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)",
-            lambda m: m.group(1) + (m.group(2) if "shutdown" in m.group(2) else "  shutdown\n" + m.group(2)),
+            lambda m: m.group(1)
+            + (m.group(2) if "shutdown" in m.group(2) else "  shutdown\n" + m.group(2)),
             data,
         )
 
