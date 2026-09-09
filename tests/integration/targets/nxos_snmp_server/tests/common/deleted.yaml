@@ -48,13 +48,21 @@
               | length == 0
             }}
 
+    - name: Gather snmp-server facts after delete
+      when: ansible_connection == "ansible.netcommon.httpapi"
+      cisco.nxos.nxos_snmp_server:
+        state: gathered
+      register: snmp_after_delete
+
     - name: Assert that test-owned snmp-server config was removed
       ansible.builtin.assert:
         that:
-          - result.after.contact is not defined
-          - result.after.location is not defined
-          - result.after.communities | default([]) | length == 0
-          - result.after.hosts | default([]) | length == 0
+          - after_state.contact is not defined
+          - after_state.location is not defined
+          - after_state.communities | default([]) | length == 0
+          - after_state.hosts | default([]) | length == 0
+      vars:
+        after_state: "{{ snmp_after_delete.gathered | default(result.after) }}"
 
     - name: Delete snmp-server configuration (idempotent)
       cisco.nxos.nxos_snmp_server: *del
