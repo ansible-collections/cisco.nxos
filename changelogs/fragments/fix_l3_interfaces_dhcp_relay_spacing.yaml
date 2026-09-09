@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_l3_interfaces - fix spacing in DHCP relay source-interface commands so
+    interface type and ID are concatenated without a space (fixes ACA-6753,
+    https://github.com/ansible-collections/cisco.nxos/issues/1059).
