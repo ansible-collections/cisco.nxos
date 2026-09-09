@@ -81,9 +81,21 @@ class Vpc(ResourceModule):
             ("role_priority", "role priority {0}", "no role priority"),
             ("system_priority", "system-priority {0}", "no system-priority"),
             ("delay_restore", "delay restore {0}", "no delay restore"),
-            ("delay_restore_interface_vlan", "delay restore interface-vlan {0}", "no delay restore interface-vlan"),
-            ("delay_restore_orphan_port", "delay restore orphan-port {0}", "no delay restore orphan-port"),
-            ("auto_recovery_reload_delay", "auto-recovery reload-delay {0}", "no auto-recovery reload-delay"),
+            (
+                "delay_restore_interface_vlan",
+                "delay restore interface-vlan {0}",
+                "no delay restore interface-vlan",
+            ),
+            (
+                "delay_restore_orphan_port",
+                "delay restore orphan-port {0}",
+                "no delay restore orphan-port",
+            ),
+            (
+                "auto_recovery_reload_delay",
+                "auto-recovery reload-delay {0}",
+                "no auto-recovery reload-delay",
+            ),
         ]
 
         for key, set_tmpl, unset_cmd in scalar_cmds:

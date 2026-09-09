@@ -111,14 +111,14 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.tele
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vpc.vpc import (
+    VpcFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_address_family.vrf_address_family import (
     Vrf_address_familyFacts,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_global.vrf_global import (
     Vrf_globalFacts,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vpc.vpc import (
-    VpcFacts,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_interfaces.vrf_interfaces import (
     Vrf_interfacesFacts,
