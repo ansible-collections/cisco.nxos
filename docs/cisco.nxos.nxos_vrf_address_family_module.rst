@@ -609,7 +609,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6.
-   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/projects/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

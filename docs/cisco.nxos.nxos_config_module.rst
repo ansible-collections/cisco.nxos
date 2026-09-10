@@ -375,7 +375,7 @@ Notes
 .. note::
    - Tested against Cisco NXOS 9.3(x) on Nexus switches.
    - Unsupported for Cisco MDS
-   - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands.
+   - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/projects/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands.
    - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
    - The recommended way to use templated configurations is to render the template using ``ansible.builtin.template`` lookup and pass the result to the *content* parameter. Using *src* with Jinja2 templates is deprecated.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
