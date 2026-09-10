@@ -20,13 +20,16 @@ short_description: VPC global domain resource module.
 description:
 - This module manages global VPC domain configuration on devices running Cisco NX-OS.
 notes:
-- Unsupported for Cisco MDS
-- Tested against NXOSv 7.3.(0)D1(1)
+- Tested against NX-OS 10.5(5) on N9K-C93180YC-FX3H.
+- Unsupported for Cisco MDS.
 - The feature vpc must be enabled before this module can be used.
 - If not using management vrf, the vrf must be globally configured on the device
   before using it in the peer-keepalive configuration.
 - Both pkl_src and pkl_dest are needed when changing peer-keepalive VRF.
-author: Ansible Network Eng Team
+author:
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
+- Jorgen Spange (@jorgenspange)
 options:
   running_config:
     description:
