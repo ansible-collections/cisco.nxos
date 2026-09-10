@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This module manages VPC (Virtual Port Channel) configuration on port-channel interfaces of Cisco NX-OS devices.
+- This module manages VPC-related interface configuration on Cisco NX-OS devices.
 
 
 
