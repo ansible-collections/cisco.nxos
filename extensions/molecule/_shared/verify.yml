@@ -3,11 +3,8 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  vars_files:
-    - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
   vars:
-    ansible_network_os: ""
-    ansible_connection: local
+    scenario_name: "{{ lookup('env', 'MOLECULE_SCENARIO_NAME') }}"
     cisshgo_log: "/tmp/cisshgo-{{ scenario_name }}.log"
   tasks:
     - name: Read CISSHGO log

@@ -14,9 +14,6 @@ provisioner:
     ANSIBLE_FORCE_COLOR: "true"
     ANSIBLE_HOST_KEY_CHECKING: "false"
     ANSIBLE_DEPRECATION_WARNINGS: "false"
-  config_options:
-    defaults:
-      inventory: ${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/snmp_server.yaml
   playbooks:
     create: ../_shared/create.yml
     converge: converge.yml
