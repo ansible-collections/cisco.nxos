@@ -1,4 +1,20 @@
 ---
+# Extra SNMP user used by replaced/overridden. Combined with device baseline
+# users at runtime so those states do not emit `no snmp-server user <login>`
+# (NX-OS: "<user> account cannot be deactivated" on CML `ansible`, local `cisco`).
+snmp_test_user_auth:
+  - user: snmp_user_1
+    group: network-operator
+    authentication:
+      algorithm: md5
+      password: "0x5632724fb8ac3699296af26281e1d0f1"
+      localized_key: true
+
+snmp_test_user_acls:
+  - user: snmp_user_1
+    ipv4: acl1
+    ipv6: acl2
+
 merged:
   before:
     users:
@@ -24,6 +40,7 @@ merged:
     - snmp-server host 192.0.2.1 source-interface Ethernet1/1
     - snmp-server host 192.0.2.2 informs version 3 auth NMS
     - snmp-server community private group network-admin
+    - snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
     - snmp-server community public group network-operator
     - snmp-server enable traps aaa server-state-change
     - snmp-server enable traps system Clock-change-notification
@@ -33,6 +50,7 @@ merged:
     communities:
       - group: network-admin
         name: private
+        use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
       - group: network-operator
         name: public
     contact: nxosswitchadmin@localhost
@@ -93,14 +111,10 @@ overridden:
     - snmp-server enable traps aaa server-state-change
     - no snmp-server enable traps system Clock-change-notification
     - snmp-server location serverroom-2
-    - snmp-server user cisco network-admin auth md5 00749D0F05537C2D802A7DA4502626BF88DC
-      priv aes-128 332CFD752312713BED674598193B38F893D3 localizedV2key
-    - no snmp-server user ansible
-    - no snmp-server user temp_user
     - snmp-server host 192.0.2.1 source-interface Ethernet1/1
     - snmp-server host 192.0.3.2 informs version 3 auth NMS
     - snmp-server community secret group network-operator
-    - no snmp-server community private group network-admin
+    - no snmp-server community private
 
 replaced:
   commands:
@@ -111,7 +125,7 @@ replaced:
     - snmp-server host 192.0.2.1 source-interface Ethernet1/1
     - snmp-server host 192.0.3.2 informs version 3 auth NMS
     - snmp-server community secret group network-operator
-    - no snmp-server community private group network-admin
+    - no snmp-server community private
   after:
     aaa_user:
       cache_timeout: 36000
@@ -169,6 +183,23 @@ replaced:
           ipv4: acl1
           ipv6: acl2
 
+rendered:
+  commands:
+    - snmp-server contact nxosswitchadmin@localhost
+    - snmp-server location serverroom-1
+    - snmp-server aaa-user cache-timeout 36000
+    - snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+    - snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+    - snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+    - snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+    - snmp-server host 192.0.2.1 traps version 1 public
+    - snmp-server host 192.0.2.1 source-interface Ethernet1/1
+    - snmp-server host 192.0.2.2 informs version 3 auth NMS
+    - snmp-server community private group network-admin
+    - snmp-server community public group network-operator
+    - snmp-server enable traps aaa server-state-change
+    - snmp-server enable traps system Clock-change-notification
+
 parsed:
   aaa_user:
     cache_timeout: 36000
@@ -219,3 +250,16 @@ parsed:
       - user: snmp_user_2
         ipv4: acl3
         ipv6: acl4
+
+# Commands for test-owned config from _populate_config.yaml. Login SNMP users
+# stay on the device (NX-OS will not deactivate the connected account), so the
+# deleted test treats extra `no snmp-server user` lines as out of scope.
+deleted:
+  commands:
+    - no snmp-server contact nxosswitchadmin@localhost
+    - no snmp-server location serverroom-1
+    - no snmp-server aaa-user cache-timeout 36000
+    - no snmp-server host 192.0.2.1 traps version 1 public
+    - no snmp-server community private
+    - no snmp-server community public
+    - no snmp-server enable traps system Clock-change-notification

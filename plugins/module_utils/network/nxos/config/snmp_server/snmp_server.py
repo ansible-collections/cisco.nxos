@@ -207,6 +207,13 @@ class Snmp_server(ResourceModule):
             for wkey, wentry in wantx.items():
                 hentry = havex.pop(wkey, {})
                 if wentry != hentry:
+                    # Communities are keyed by name. remval is
+                    # `no snmp-server community NAME`, which removes every
+                    # attribute. If compare set want first then negated leftover
+                    # have, a same-name group/ACL/ro/rw change would delete the
+                    # community that was just configured. Recreate instead.
+                    if x == "communities" and hentry:
+                        self.addcmd(hentry, x, negate=True)
                     self.addcmd(wentry, x)
             # remove superfluous items
             for _k, hv in havex.items():
@@ -229,7 +236,7 @@ class Snmp_server(ResourceModule):
 
         tmp = deepcopy(data)
         if "communities" in tmp:
-            tmp["communities"] = {_build_key(entry): entry for entry in tmp["communities"]}
+            tmp["communities"] = {entry["name"]: entry for entry in tmp["communities"]}
         if "users" in tmp:
             if "auth" in tmp["users"]:
                 tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}

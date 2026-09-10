@@ -87,8 +87,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
-            "snmp-server community private  group network-admin \nsnmp-server community private  ro \nsnmp-server community private ",
-            "snmp-server community public  \nsnmp-server community public  rw \nsnmp-server community public use-ipv4acl myacl ",
+            "snmp-server community private group network-admin",
+            "snmp-server community private ro",
+            "snmp-server community public rw",
+            "snmp-server community public use-ipv4acl myacl",
             "snmp-server globalEnforcePriv",
             "snmp-server tcp-session auth",
             "snmp-server counter cache timeout 1800",
@@ -591,6 +593,133 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_snmp_server_communities_replaced(self):
+        # test replaced for communities - remove unwanted community without re-adding
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-operator
+            snmp-server community public group network-operator
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="public", group="network-operator"),
+                        dict(name="secret", group="network-operator"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server community secret group network-operator",
+            "no snmp-server community private",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+        for cmd in result["commands"]:
+            if cmd.startswith("no snmp-server community"):
+                self.assertNotIn("\nsnmp-server community", cmd)
+
+    def test_nxos_snmp_server_communities_replaced_same_name_update(self):
+        # same community name with a different group must delete then recreate
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-admin
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="private", group="network-operator"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("no snmp-server community private", commands)
+        self.assertIn("snmp-server community private group network-operator", commands)
+        self.assertNotIn("snmp-server community private use-ipv4acl myacl", commands)
+        self.assertLess(
+            commands.index("no snmp-server community private"),
+            commands.index("snmp-server community private group network-operator"),
+        )
+
+    def test_nxos_snmp_server_communities_merged_name_only(self):
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="public"),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["snmp-server community public"])
+
+    def test_nxos_snmp_server_communities_merged_idempotent(self):
+        # split community lines must round-trip as one object per name
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-admin
+            snmp-server community public group network-operator
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="private", group="network-admin", use_ipv4acl="myacl"),
+                        dict(name="public", group="network-operator"),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_communities_parsed_multiline(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server community private group network-admin
+                    snmp-server community private ro
+                    snmp-server community private use-ipv4acl myacl
+                    snmp-server community public group network-operator
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            communities=[
+                dict(name="private", group="network-admin", ro=True, use_ipv4acl="myacl"),
+                dict(name="public", group="network-operator"),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
     def test_nxos_snmp_server_users_merged_1(self):
         # test merged for users
         self.get_config.return_value = dedent(
@@ -974,8 +1103,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server location lab",
             "snmp-server mib community-map public context public1",
             "snmp-server source-interface traps Ethernet1/2",
-            "snmp-server community public  \nsnmp-server community public  rw \nsnmp-server community public use-ipv4acl myacl  use-ipv6acl myaclv6",
-            "snmp-server community private  group network-admin \nsnmp-server community private  ro \nsnmp-server community private ",
+            "snmp-server community public rw",
+            "snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6",
+            "snmp-server community private group network-admin",
+            "snmp-server community private ro",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["rendered"]), set(rendered))

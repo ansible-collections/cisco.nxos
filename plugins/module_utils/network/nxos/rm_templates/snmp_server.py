@@ -22,6 +22,30 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _template_communities(data):
+    cmds = []
+    name = data["name"]
+    if data.get("group"):
+        cmds.append("snmp-server community {0} group {1}".format(name, data["group"]))
+    if data.get("ro"):
+        cmds.append("snmp-server community {0} ro".format(name))
+    if data.get("rw"):
+        cmds.append("snmp-server community {0} rw".format(name))
+    acl_parts = []
+    if data.get("use_ipv4acl"):
+        acl_parts.append("use-ipv4acl {0}".format(data["use_ipv4acl"]))
+    if data.get("use_ipv6acl"):
+        acl_parts.append("use-ipv6acl {0}".format(data["use_ipv6acl"]))
+    if acl_parts:
+        cmds.append("snmp-server community {0} {1}".format(name, " ".join(acl_parts)))
+    if not cmds:
+        # Name-only create: NX-OS accepts a bare community (defaults to read-only).
+        # Do not emit this line when other attributes are set; a trailing bare
+        # `snmp-server community NAME` resets access to network-operator.
+        cmds.append("snmp-server community {0}".format(name))
+    return cmds
+
+
 def _template_hosts(data):
     cmd = "snmp-server host {0}".format(data["host"])
     if data.get("traps"):
@@ -108,22 +132,21 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server
                 \scommunity\s(?P<community>\S+)
                 (\sgroup\s(?P<group>\S+))?
+                (\s(?P<ro>ro))?
+                (\s(?P<rw>rw))?
                 (\suse-ipv4acl\s(?P<use_ipv4acl>\S+))?
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server community {{ name }} {{ (' group ' + group) if group is defined else '' }} \n"
-                      "snmp-server community {{ name }} {{ ' ro' if ro|d(False) else ''}}"
-                      "{{ ' rw' if rw|d(False) else ''}} \n"
-                      "snmp-server community {{ name }}"
-                      "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }} "
-                      "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}",
-
+            "setval": _template_communities,
+            "remval": "snmp-server community {{ name }}",
             "result": {
                 "communities": [
                     {
                         "name": "{{ community }}",
                         "group": "{{ group }}",
+                        "ro": "{{ True if ro is defined else None }}",
+                        "rw": "{{ True if rw is defined else None }}",
                         "use_ipv4acl": "{{ use_ipv4acl }}",
                         "use_ipv6acl": "{{ use_ipv6acl }}",
                     },
