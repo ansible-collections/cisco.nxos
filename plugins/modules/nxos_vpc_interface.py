@@ -18,8 +18,7 @@ module: nxos_vpc_interface
 version_added: 1.0.0
 short_description: VPC interface resource module
 description:
-  - This module manages VPC (Virtual Port Channel) configuration on port-channel
-    interfaces of Cisco NX-OS devices.
+  - This module manages VPC-related interface configuration on Cisco NX-OS devices.
 notes:
   - Tested against NX-OS 10.5(5) on N9K-C93180YC-FX3H.
   - Unsupported for Cisco MDS.
