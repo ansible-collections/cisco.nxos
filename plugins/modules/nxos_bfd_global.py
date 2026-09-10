@@ -17,7 +17,6 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 
@@ -146,7 +145,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     NxosCmdRef,
     load_config,
 )
-
 
 BFD_CMD_REF = """
 # The cmd_ref is a yaml formatted list of module commands.

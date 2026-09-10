@@ -17,7 +17,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from textwrap import dedent
@@ -26,7 +25,6 @@ from unittest.mock import MagicMock, patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_lag_interfaces
 
 from .nxos_module import TestNxosModule, set_module_args
-
 
 ignore_provider_arg = True
 
