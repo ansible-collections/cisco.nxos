@@ -175,7 +175,7 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 9.3.6.
+   - Tested against NX-OS 10.5(5) on N9K-C93180YC-FX3H.
    - Unsupported for Cisco MDS.
    - ``vpc`` and ``peer_link`` are mutually exclusive for a given port-channel.
    - ``orphan_port_suspend`` applies to any interface type, including Ethernet interfaces.
@@ -559,4 +559,6 @@ Status
 Authors
 ~~~~~~~
 
-- Ansible Network Eng Team
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
+- Jorgen Spange (@jorgenspange)
