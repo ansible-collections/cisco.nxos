@@ -1,3 +1,4 @@
+---
 bugfixes:
   - nxos_snmp_server - Fix community removal on replaced, overridden, and deleted
     states by adding a remval template so deletes emit a single
@@ -5,3 +6,13 @@ bugfixes:
   - nxos_snmp_server - Recreate a community (delete then set) when replaced or
     overridden changes attributes on an existing community name, so
     ``no snmp-server community NAME`` cannot wipe the just-applied config.
+  - nxos_snmp_server - Merge multi-line SNMP community configuration into one
+    object per community name so group and ACL attributes round-trip correctly.
+  - nxos_snmp_server - Parse ``ro`` and ``rw`` community access flags from
+    device configuration.
+  - nxos_snmp_server - Emit only configured community attribute lines so empty
+    ``snmp-server community`` commands no longer reset access to read-only.
+  - nxos_snmp_server - Emit each community attribute as its own CLI command so
+    NX-API does not reject multi-line community configuration.
+  - nxos_snmp_server - Re-enable network_cli and NX-API integration tests,
+    including the deleted state.
