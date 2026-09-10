@@ -1,0 +1,3 @@
+bugfixes:
+  - nxos_interfaces - fix duplex and speed command ordering to correctly handle
+    transition to auto values on NX-OS (https://github.com/ansible-collections/cisco.nxos/issues/868)
