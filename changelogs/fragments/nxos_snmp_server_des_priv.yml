@@ -2,4 +2,5 @@
 bugfixes:
   - >-
     nxos_snmp_server - parse NX-OS 10.4(4)+ ``priv des`` SNMPv3 user lines
-    (AAP-89723).
+    (AAP-89723). DES remains the implicit default privacy type (``aes_128``
+    false). The module does not render ``priv des`` back to the device.
