@@ -15,6 +15,18 @@ snmp_test_user_acls:
     ipv4: acl1
     ipv6: acl2
 
+# Same-user credential change for replaced_same_user.yaml (AAP-90154).
+aap90154_user_want:
+  user: aap90154_user
+  group: vdc-operator
+  authentication:
+    algorithm: md5
+    password: "0x7d425fbf09417c44bca69e1d9e9ce889"
+    localized_key: true
+    priv:
+      aes_128: true
+      privacy_password: "0x7d425fbf09417c44bca69e1d9e9ce889"
+
 merged:
   before:
     users:
