@@ -1058,6 +1058,40 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
+    def test_nxos_snmp_server_parsed_des_priv(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server user admin network-admin auth md5 533179654128A51B230DE5CC7F25331CC60D \
+priv des 482A1501F49C1EAC8FA75840E7ACAF820FCB localizedV2key
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            users=dict(
+                auth=[
+                    dict(
+                        user="admin",
+                        group="network-admin",
+                        authentication=dict(
+                            algorithm="md5",
+                            password="533179654128A51B230DE5CC7F25331CC60D",
+                            localizedv2_key=True,
+                            priv=dict(
+                                privacy_password="482A1501F49C1EAC8FA75840E7ACAF820FCB",
+                            ),
+                        ),
+                    ),
+                ],
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
     def test_nxos_snmp_server_users_replaced_same_user(self):
         self.get_config.return_value = dedent(
             """\

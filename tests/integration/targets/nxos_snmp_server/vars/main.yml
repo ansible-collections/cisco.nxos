@@ -255,6 +255,14 @@ parsed:
           priv:
             privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
             aes_128: true
+      - user: snmp_user_des
+        group: network-admin
+        authentication:
+          algorithm: md5
+          password: "533179654128A51B230DE5CC7F25331CC60D"
+          localizedv2_key: true
+          priv:
+            privacy_password: "482A1501F49C1EAC8FA75840E7ACAF820FCB"
     use_acls:
       - user: snmp_user_1
         ipv4: acl1
