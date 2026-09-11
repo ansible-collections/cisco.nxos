@@ -1,0 +1,11 @@
+breaking_changes:
+  - >-
+    nxos_vpc_interface - rewrite as a modern resource module using the
+    ``rm_base`` pattern with all 7 states (``merged``, ``replaced``,
+    ``overridden``, ``deleted``, ``gathered``, ``rendered``, ``parsed``).
+    The flat ``portchannel`` / ``vpc`` / ``peer_link`` parameters are replaced
+    by a ``config`` list where each entry uses ``name: port-channel10``
+    (full interface name) as the identifier. Adds ``orphan_port_suspend``
+    support (``vpc orphan-port suspend``) for any interface type including
+    Ethernet. Update playbooks from ``portchannel: 10`` to
+    ``config: [{name: port-channel10, ...}]``.
