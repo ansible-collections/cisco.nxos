@@ -1,0 +1,11 @@
+breaking_changes:
+  - >-
+    nxos_vpc - rewrite as a modern resource module using the ``rm_base``
+    pattern with all 7 states (``merged``, ``replaced``, ``overridden``,
+    ``deleted``, ``gathered``, ``rendered``, ``parsed``). The flat top-level
+    parameters (``domain``, ``role_priority``, ``system_priority``,
+    ``pkl_dest``, ``pkl_src``, ``pkl_vrf``, ``peer_gw``, ``peer_sw``,
+    ``auto_recovery``, ``delay_restore``) are replaced by a ``config`` dict.
+    Update playbooks from ``domain: 100`` to ``config: {domain: "100", ...}``.
+    Includes NX-OS-specific handling for ``peer-gateway``, ``peer-switch``,
+    and composite ``peer-keepalive`` commands.
