@@ -239,7 +239,7 @@ class Snmp_server(ResourceModule):
             tmp["communities"] = {entry["name"]: entry for entry in tmp["communities"]}
         if "users" in tmp:
             if "auth" in tmp["users"]:
-                tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}
+                tmp["users"]["auth"] = {entry["user"]: entry for entry in tmp["users"]["auth"]}
             if "use_acls" in tmp["users"]:
                 tmp["users"]["use_acls"] = {
                     entry["user"]: entry for entry in tmp["users"]["use_acls"]
