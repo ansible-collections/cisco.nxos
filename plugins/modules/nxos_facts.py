@@ -43,7 +43,7 @@ options:
   gather_subset:
     description:
     - When supplied, this argument will gather operational facts only for the given subset. Possible
-      values for this argument include C(all), C(hardware), C(config), C(legacy), C(interfaces), and C(min).  Can
+      values for this argument include C(all), C(hardware), C(config), C(legacy), C(interfaces), C(features), and C(min).  Can
       specify a list of values to include a larger subset.  Values can also be used
       with an initial C(!) to specify that a specific subset should not be collected.
     required: false
