@@ -1,0 +1,12 @@
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1
+vrf context temp
+vrf context testvrf
+  ip domain-name example.com
+  description testvrfhere
+  vni 5
+  ip auto-discard
+  ip mroute 192.168.1.0/24 192.168.1.1
+  ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+  ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5

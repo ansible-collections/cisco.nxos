@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_ospf_interfaces
+    count: 1
+  - scenario: nxos-ospf-interfaces-gathered
+    count: 1
+  - scenario: nxos-ospf-interfaces-merged
+    count: 1
+  - scenario: nxos-ospf-interfaces-replaced
+    count: 1
+  - scenario: nxos-ospf-interfaces-overridden
+    count: 1
+  - scenario: nxos-ospf-interfaces-deleted
+    count: 1

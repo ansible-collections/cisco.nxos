@@ -1,0 +1,4 @@
+---
+trivial:
+  - "Wire Molecule CISSHGO scenarios into GitHub Actions (libssh + paramiko)."
+  - "Fix nxos_snmp_server Molecule asserts and CISSHGO community CLI sequences."

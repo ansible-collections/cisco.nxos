@@ -1,0 +1,13 @@
+router ospf 100
+  router-id 203.0.113.20
+router ospf 102
+  router-id 198.51.100.1
+  area 0.0.0.101 stub no-summary
+  redistribute direct route-map ospf102-direct-connect
+  redistribute eigrp 130 route-map rmap_1
+  area 0.0.0.100 filter-list route-map rmap_8 in
+  area 0.0.0.100 range 192.0.2.0/24 not-advertise
+  vrf zone1
+    router-id 198.51.100.129
+    area 0.0.0.102 nssa no-summary default-information-originate
+    redistribute bgp 65563 route-map zone1-bgp-connect

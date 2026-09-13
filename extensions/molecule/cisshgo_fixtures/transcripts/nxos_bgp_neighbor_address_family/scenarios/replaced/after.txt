@@ -1,0 +1,15 @@
+router bgp 65536
+  neighbor 192.0.2.32
+    address-family ipv4 unicast
+      weight 110
+    address-family ipv6 unicast
+  neighbor 192.0.2.33
+    address-family ipv4 multicast
+      inherit peer-policy BasePolicy 200
+  vrf site-1
+    neighbor 203.0.113.1
+      address-family ipv4 unicast
+    neighbor 203.0.113.2
+      address-family ipv4 multicast
+        send-community
+      address-family ipv6 unicast

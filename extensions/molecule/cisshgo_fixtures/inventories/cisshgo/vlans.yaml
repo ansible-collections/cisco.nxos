@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-vlans-gathered
+    count: 1
+  - scenario: nxos-vlans-gathered
+    count: 1
+  - scenario: nxos-vlans-merged
+    count: 1
+  - scenario: nxos-vlans-replaced
+    count: 1
+  - scenario: nxos-vlans-overridden
+    count: 1
+  - scenario: nxos-vlans-deleted
+    count: 1

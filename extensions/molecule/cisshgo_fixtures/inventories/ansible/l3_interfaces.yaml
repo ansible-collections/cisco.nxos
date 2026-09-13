@@ -1,0 +1,35 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_become: false
+      children:
+        nxos_l3_interfaces_gathered:
+          hosts:
+            cisshgo-l3_interfaces-gathered:
+              ansible_port: 10005
+        nxos_l3_interfaces_merged:
+          hosts:
+            cisshgo-l3_interfaces-merged:
+              ansible_port: 10001
+        nxos_l3_interfaces_replaced:
+          hosts:
+            cisshgo-l3_interfaces-replaced:
+              ansible_port: 10002
+        nxos_l3_interfaces_overridden:
+          hosts:
+            cisshgo-l3_interfaces-overridden:
+              ansible_port: 10003
+        nxos_l3_interfaces_deleted:
+          hosts:
+            cisshgo-l3_interfaces-deleted:
+              ansible_port: 10004

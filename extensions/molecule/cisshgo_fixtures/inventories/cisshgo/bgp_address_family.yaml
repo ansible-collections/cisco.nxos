@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-bgp-address-family-gathered
+    count: 1
+  - scenario: nxos-bgp-address-family-gathered
+    count: 1
+  - scenario: nxos-bgp-address-family-merged
+    count: 1
+  - scenario: nxos-bgp-address-family-replaced
+    count: 1
+  - scenario: nxos-bgp-address-family-overridden
+    count: 1
+  - scenario: nxos-bgp-address-family-deleted
+    count: 1

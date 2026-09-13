@@ -1,0 +1,220 @@
+---
+- name: "Nxos_lldp_global -- state: gathered"
+  hosts: nxos_lldp_global_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_lldp_global/vars/main.yml"
+  tasks:
+    - name: Gather lldp_global facts
+      register: result
+      cisco.nxos.nxos_lldp_global:
+        state: gathered
+
+    - name: Assert gathered matches expected
+      ansible.builtin.assert:
+        that:
+          - gathered == result.gathered
+          - result.changed == false
+
+- name: "Nxos_lldp_global -- state: merged"
+  hosts: nxos_lldp_global_merged
+  gather_facts: false
+  tasks:
+    - name: Apply merged config
+      register: result
+      cisco.nxos.nxos_lldp_global: &merged_config
+        config:
+          reinit: 5
+          timer: 40
+          port_id: 1
+          tlv_select:
+            power_management: false
+        state: merged
+
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(merged_commands) | length == 0
+      vars:
+        merged_commands:
+          - lldp timer 40
+          - no lldp tlv-select power-management
+          - lldp portid-subtype 1
+          - lldp reinit 5
+
+    - name: Idempotence - merged
+      register: result
+      cisco.nxos.nxos_lldp_global: *merged_config
+
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_lldp_global -- state: replaced"
+  hosts: nxos_lldp_global_replaced
+  gather_facts: false
+  tasks:
+    - name: Apply replaced config
+      register: result
+      cisco.nxos.nxos_lldp_global: &replaced_config
+        config:
+          holdtime: 125
+          timer: 35
+          tlv_select:
+            system:
+              name: false
+              description: false
+            port:
+              vlan: false
+            dcbxp: false
+        state: replaced
+
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(replaced_commands) | length == 0
+      vars:
+        replaced_commands:
+          - no lldp portid-subtype 1
+          - lldp tlv-select power-management
+          - no lldp tlv-select system-name
+          - no lldp tlv-select system-description
+          - no lldp tlv-select dcbxp
+          - lldp timer 35
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_lldp_global: *replaced_config
+
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_lldp_global -- state: overridden"
+  hosts: nxos_lldp_global_overridden
+  gather_facts: false
+  tasks:
+    - name: Apply overridden config
+      register: result
+      cisco.nxos.nxos_lldp_global: &overridden_config
+        config:
+          holdtime: 125
+          timer: 35
+          tlv_select:
+            system:
+              name: false
+              description: false
+            port:
+              vlan: false
+            dcbxp: false
+        state: overridden
+
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(overridden_commands) | length == 0
+      vars:
+        overridden_commands:
+          - no lldp portid-subtype 1
+          - lldp tlv-select power-management
+          - no lldp tlv-select system-name
+          - no lldp tlv-select system-description
+          - no lldp tlv-select dcbxp
+          - lldp timer 35
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_lldp_global: *overridden_config
+
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_lldp_global -- state: deleted"
+  hosts: nxos_lldp_global_deleted
+  gather_facts: false
+  tasks:
+    - name: Apply deleted state
+      register: result
+      cisco.nxos.nxos_lldp_global:
+        state: deleted
+
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(deleted_commands) | length == 0
+      vars:
+        deleted_commands:
+          - no lldp holdtime 125
+          - no lldp portid-subtype 1
+          - no lldp timer 32
+          - lldp tlv-select dcbxp
+          - lldp tlv-select power-management
+          - lldp tlv-select system-description
+
+    - name: Idempotence - deleted
+      register: result
+      cisco.nxos.nxos_lldp_global:
+        state: deleted
+
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_lldp_global -- state: parsed"
+  hosts: nxos_lldp_global_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_lldp_global/vars/main.yml"
+  tasks:
+    - name: Run nxos_lldp_global parsed
+      register: result
+      cisco.nxos.nxos_lldp_global:
+        running_config: |
+          lldp holdtime 131
+          lldp reinit 7
+          no lldp tlv-select system-name
+          no lldp tlv-select system-description
+        state: parsed
+
+    - name: Assert parsed config
+      ansible.builtin.assert:
+        that:
+          - parsed == result.parsed
+          - result.changed == false
+
+- name: "Nxos_lldp_global -- state: rendered"
+  hosts: nxos_lldp_global_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_lldp_global/vars/main.yml"
+  tasks:
+    - name: Render lldp_global configuration
+      register: result
+      cisco.nxos.nxos_lldp_global:
+        config:
+          holdtime: 130
+          port_id: 1
+          reinit: 5
+          tlv_select:
+            dcbxp: true
+            power_management: true
+        state: rendered
+
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - rendered | symmetric_difference(result.rendered) | length == 0
+          - result.changed == false

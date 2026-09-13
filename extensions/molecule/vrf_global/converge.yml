@@ -1,0 +1,304 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_vrf_global — state: gathered"
+  hosts: nxos_vrf_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  tasks:
+    - name: Gather nxos_vrf_global facts
+      register: result
+      cisco.nxos.nxos_vrf_global:
+        state: gathered
+    - name: Remove management from gathered result
+      ansible.builtin.set_fact:
+        res_parsed:
+          gathered:
+            vrfs: "{{ result.gathered.vrfs | rejectattr('name', '==', 'management') | list }}"
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered.after == res_parsed.gathered
+
+- name: "Nxos_vrf_global — state: merged"
+  hosts: nxos_vrf_global_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  vars:
+    # Lab recording used the isci path (no service-reflect / group-range extras).
+    symmetric_diff:
+      - ip multicast multipath legacy
+      - ipv6 multicast group-range prefix-list temp
+      - multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+      - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+    vrf_config:
+      vrfs:
+        - description: this-is-test
+          ip:
+            auto_discard: true
+            domain_list:
+              - example.net
+            domain_name: example.org
+            icmp_err:
+              source_interface:
+                interface: port-channel
+                interface_value: "1"
+            igmp:
+              ssm_translate:
+                - group: 232.0.0.0/8
+                  source: 10.1.1.1
+                - group: 239.1.2.0/24
+                  source: 192.168.1.1
+            mroutes:
+              - group: 192.168.1.0/24
+                source: 192.168.1.1
+              - group: 192.168.1.0/24
+                preference: 2
+                source: 192.168.1.2
+                vrf: temp
+            multicast:
+              multipath:
+                resilient: true
+              rpf:
+                - group_list_range: 238.1.0.0/24
+                  vrf_name: temp
+                - group_list_range: 239.1.0.0/24
+                  vrf_name: temp
+            name_server:
+              address_list:
+                - 192.168.0.1
+                - 192.168.0.2
+                - 192.168.1.1
+                - 192.169.1.3
+              use_vrf:
+                source_address: 192.168.0.1
+                vrf: temp
+            route:
+              - destination: 192.0.2.22
+                source: 192.0.0.0/24
+              - destination: 192.0.2.22
+                source: 192.0.0.0/24
+                vrf: temp
+              - destination: 192.0.2.22
+                source: 192.0.2.0/24
+                tags:
+                  route_pref: 4
+                  tag_value: 2
+          ipv6:
+            mld_ssm_translate:
+              - group: ff28::/16
+                source: 2001:db8:0:abcd::2
+              - group: ff30::/16
+                source: 2001:db8:0:abcd::5
+            multicast:
+              multipath:
+                resilient: true
+                splitting_type:
+                  none: true
+          name: VRF7
+          vni:
+            vni_number: 5
+  tasks:
+    - name: Run nxos_vrf_global merged
+      register: result
+      cisco.nxos.nxos_vrf_global: &merged
+        config: "{{ vrf_config }}"
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged.commands | difference(symmetric_diff) | symmetric_difference(result.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_global: *merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_global — state: replaced"
+  hosts: nxos_vrf_global_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_global replaced
+      register: result
+      cisco.nxos.nxos_vrf_global: &replaced
+        config:
+          vrfs:
+            - name: temp
+              rd: auto
+              description: Test
+              ip:
+                auto_discard: true
+                domain_list:
+                  - example.com
+                domain_name: example.org
+            - name: testvrf
+              description: Test
+              ip:
+                auto_discard: true
+                domain_list:
+                  - example.com
+                domain_name: example.net
+                mroutes:
+                  - group: 192.168.1.0/24
+                    source: 192.168.1.1
+                  - group: 192.168.1.0/24
+                    preference: 2
+                    source: 192.168.1.2
+                    vrf: temp
+                name_server:
+                  address_list:
+                    - 192.168.0.1
+                    - 192.168.0.2
+                    - 192.168.1.1
+                    - 192.169.1.3
+                  use_vrf:
+                    source_address: 192.168.0.1
+                    vrf: temp
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_global: *replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_global — state: overridden"
+  hosts: nxos_vrf_global_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  vars:
+    management:
+      - ip:
+          name_server:
+            address_list:
+              - 192.168.255.1
+          route:
+            - destination: 192.168.255.1
+              source: 0.0.0.0/0
+        name: management
+  tasks:
+    - name: Run nxos_vrf_global overridden
+      register: result
+      cisco.nxos.nxos_vrf_global: &overridden
+        config:
+          vrfs:
+            - "{{ management[0] }}"
+            - name: testvrf
+              description: Test
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(overridden.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_global: *overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_global — state: deleted"
+  hosts: nxos_vrf_global_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_global deleted
+      register: result
+      cisco.nxos.nxos_vrf_global: &deleted
+        config:
+          vrfs:
+            - name: testvrf
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_global: *deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_vrf_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_global parsed
+      register: result
+      cisco.nxos.nxos_vrf_global:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_vrf_global/tests/common/_parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed.after == result.parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_vrf_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_global/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_global rendered
+      register: result
+      cisco.nxos.nxos_vrf_global:
+        config:
+          vrfs:
+            - description: Test
+              ip:
+                auto_discard: true
+                domain_list:
+                  - example.com
+                domain_name: example.net
+                mroutes:
+                  - group: 192.168.1.0/24
+                    source: 192.168.1.1
+                  - group: 192.168.1.0/24
+                    preference: 2
+                    source: 192.168.1.2
+                    vrf: temp
+                name_server:
+                  address_list:
+                    - 192.168.0.1
+                    - 192.168.0.2
+                    - 192.168.1.1
+                    - 192.169.1.3
+                  use_vrf:
+                    source_address: 192.168.0.1
+                    vrf: temp
+              name: testvrf
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(rendered.commands) | length == 0

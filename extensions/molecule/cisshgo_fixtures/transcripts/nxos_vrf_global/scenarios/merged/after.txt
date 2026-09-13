@@ -1,0 +1,26 @@
+vrf context VRF7
+  ip domain-name example.org
+  ip domain-list example.net
+  ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+  ip name-server 192.168.0.1 use-vrf temp
+  description this-is-test
+  vni 5
+  ip auto-discard
+  ip route 192.0.0.0/24 192.0.2.22
+  ip route 192.0.0.0/24 192.0.2.22 vrf temp
+  ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+  ip mroute 192.168.1.0/24 192.168.1.1
+  ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+  ip icmp-errors source-interface po1
+  ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+  ip igmp ssm-translate 239.1.2.0/24 192.168.1.1
+  ip multicast multipath resilient
+  ip multicast rpf select vrf temp group-list 238.1.0.0/24
+  ip multicast rpf select vrf temp group-list 239.1.0.0/24
+  ipv6 multicast multipath none
+  ipv6 multicast multipath resilient
+  ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+  ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1

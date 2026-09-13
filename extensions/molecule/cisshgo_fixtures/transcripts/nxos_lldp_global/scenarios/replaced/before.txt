@@ -1,0 +1,5 @@
+feature lldp
+lldp holdtime 125
+lldp portid-subtype 1
+no lldp tlv-select port-vlan
+no lldp tlv-select power-management

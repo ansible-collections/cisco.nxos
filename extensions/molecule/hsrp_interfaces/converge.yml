@@ -1,0 +1,290 @@
+---
+# Mirrors tests/integration/targets/nxos_hsrp_interfaces/tests/common/*.yaml
+# Primary module invocation per state (not preempt sub-tests in merged/replaced).
+
+- name: "Nxos_hsrp_interfaces — state: merged"
+  hosts: nxos_hsrp_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+    platform: N9K
+    bfd_enable: enable
+    bfd_disable: disable
+  tasks:
+    - name: Run nxos_hsrp_interfaces merged
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &merged_config
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - group_name: VLAN10-GROUP
+                group_no: 10
+                ip:
+                  - secondary: true
+                    virtual_ip: 10.10.10.2
+                mac_address: 00CC.10DD.10EE
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged.commands | symmetric_difference(result.commands) | length == 0
+    - name: Gather hsrp_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: hsrp_interfaces
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *merged_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_hsrp_interfaces — state: replaced"
+  hosts: nxos_hsrp_interfaces_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+    platform: N9K
+    bfd_enable: enable
+    bfd_disable: disable
+  tasks:
+    - name: Run nxos_hsrp_interfaces replaced
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &replaced_config
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - group_name: VLAN11-GROUP
+                group_no: 11
+                mac_address: 00CC.10DD.10EE
+          - name: "{{ test_int2 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_chain: SECUREKEY20
+                group_name: VLAN20-GROUP
+                group_no: 20
+                mac_address: 00CC.10DD.10EF
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced.commands | symmetric_difference(result.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *replaced_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_hsrp_interfaces — state: overridden"
+  hosts: nxos_hsrp_interfaces_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+    platform: N9K
+    bfd_enable: enable
+    bfd_disable: disable
+  tasks:
+    - name: Run nxos_hsrp_interfaces overridden
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &overridden_config
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - group_name: VLAN11-GROUP
+                group_no: 11
+                mac_address: 00CC.10DD.10EE
+          - name: "{{ test_int2 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_chain: SECUREKEY20
+                group_name: VLAN20-GROUP
+                group_no: 20
+                mac_address: 00CC.10DD.10EF
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced.commands | symmetric_difference(result.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *overridden_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_hsrp_interfaces — state: deleted"
+  hosts: nxos_hsrp_interfaces_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+    platform: N9K
+    bfd_enable: enable
+    bfd_disable: disable
+  tasks:
+    - name: Deleted
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &deleted_config
+        config:
+          - name: "{{ test_int1 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_string: SECUREKEY10
+                group_name: VLAN11-GROUP
+                group_no: 11
+                mac_address: 00CC.10DD.10EE
+          - name: "{{ test_int2 }}"
+            standby:
+              bfd: true
+              mac_refresh: 400
+              version: 2
+            standby_options:
+              - authentication:
+                  key_chain: SECUREKEY20
+                group_name: VLAN20-GROUP
+                group_no: 20
+                mac_address: 00CC.10DD.10EF
+        state: deleted
+    - name: Assert deleted changed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *deleted_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_hsrp_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_hsrp_interfaces parsed
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &parsed_config
+        running_config: |
+          interface Vlan1
+            hsrp version 2
+            hsrp 10
+              timers msec 250 msec 255
+          interface Vlan10
+            hsrp bfd
+            hsrp version 2
+            hsrp mac-refresh 400
+            hsrp 10
+              name VLAN10-GROUP
+              mac-address 00CC.10DD.10EE
+              preempt delay minimum 15 reload 120 sync 10
+              ip 10.10.10.2 secondary
+          interface Vlan14
+            bandwidth 99999
+            hsrp bfd
+            hsrp version 2
+            hsrp delay minimum 22 reload 123
+            hsrp mac-refresh 300
+            hsrp 14
+              follow VLAN14-GROUP
+              mac-address 00AA.14BB.14CC
+              ip 192.168.14.1 secondary
+              ip 192.168.14.2 secondary
+            hsrp 15
+              mac-address 00BB.14CC.15DD
+              preempt delay minimum 10 reload 100 sync 5
+              priority 22 forwarding-threshold lower 12 upper 22
+              timers msec 456  33
+          interface Vlan1000
+            hsrp 10
+              noauthentication md5 key-string testmesecurte
+              name testhsr
+              mac-address 0423.4567.89AB
+              preempt delay minimum 33 reload 23 sync 22
+              priority 22 forwarding-threshold lower 12 upper 22
+              timers msec 456  33
+              ip 10.15.8.1 secondary
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result.parsed) | length == 0
+    - name: Idempotent re-run (parsed)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *parsed_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+
+- name: Rendered state (offline)
+  hosts: nxos_hsrp_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_hsrp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_hsrp_interfaces rendered
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &rendered_config
+        config: "{{ parsed }}"
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - rendered | symmetric_difference(result.rendered) | length == 0
+    - name: Idempotent re-run (rendered)
+      register: idempotent_result
+      cisco.nxos.nxos_hsrp_interfaces: *rendered_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false

@@ -1,0 +1,219 @@
+---
+# AUTO-GENERATED — promoted from converge_draft.yml with validate-time fixture fixes.
+
+- name: "Nxos_lldp_interfaces — state: gathered"
+  hosts: nxos_lldp_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Gather nxos_lldp_interfaces facts
+      register: result
+      cisco.nxos.nxos_lldp_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered is defined
+          - result.gathered | selectattr('name', 'equalto', 'Ethernet1/1') | map(attribute='transmit') | first == false
+          - result.gathered | selectattr('name', 'equalto', 'Ethernet1/2') | map(attribute='receive') | first == false
+          - result.gathered | selectattr('name', 'equalto', 'Ethernet1/2') | map(attribute='tlv_set.vlan') | first == 12
+          - result.gathered | selectattr('name', 'equalto', 'Ethernet1/3') | map(attribute='tlv_set.management_address') | first == '192.0.2.12'
+
+- name: "Nxos_lldp_interfaces — state: merged"
+  hosts: nxos_lldp_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces merged
+      register: result
+      cisco.nxos.nxos_lldp_interfaces: &merged_config
+        config:
+          - name: Ethernet 1/1
+            receive: false
+            tlv_set:
+              vlan: 123
+          - name: Ethernet1/2
+            tlv_set:
+              management_address: 10.0.0.1
+            transmit: false
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/1' in result.commands"
+          - "'no lldp receive' in result.commands"
+          - "'lldp tlv-set vlan 123' in result.commands"
+          - "'interface Ethernet1/2' in result.commands"
+          - "'no lldp transmit' in result.commands"
+          - "'lldp tlv-set management-address 10.0.0.1' in result.commands"
+          - result.commands | length == 6
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_lldp_interfaces: *merged_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lldp_interfaces — state: replaced"
+  hosts: nxos_lldp_interfaces_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces replaced
+      register: result
+      cisco.nxos.nxos_lldp_interfaces: &replaced_config
+        config:
+          - name: Ethernet1/2
+            tlv_set:
+              vlan: 2
+            transmit: false
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/2' in result.commands"
+          - "'lldp receive' in result.commands"
+          - "'no lldp tlv-set management-address 192.168.122.64' in result.commands"
+          - "'no lldp transmit' in result.commands"
+          - "'lldp tlv-set vlan 2' in result.commands"
+          - result.commands | length == 5
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_lldp_interfaces: *replaced_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lldp_interfaces — state: overridden"
+  hosts: nxos_lldp_interfaces_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces overridden
+      register: result
+      cisco.nxos.nxos_lldp_interfaces: &overridden_config
+        config:
+          - name: Ethernet1/2
+            receive: false
+            tlv_set:
+              vlan: 12
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/1' in result.commands"
+          - "'lldp receive' in result.commands"
+          - "'no lldp tlv-set management-address 12.12.12.12' in result.commands"
+          - "'interface Ethernet1/2' in result.commands"
+          - "'no lldp receive' in result.commands"
+          - "'lldp tlv-set vlan 12' in result.commands"
+          - result.commands | length == 6
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_lldp_interfaces: *overridden_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lldp_interfaces — state: deleted"
+  hosts: nxos_lldp_interfaces_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces deleted
+      register: result
+      cisco.nxos.nxos_lldp_interfaces:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/1' in result.commands"
+          - "'lldp transmit' in result.commands"
+          - "'interface Ethernet1/3' in result.commands"
+          - "'no lldp tlv-set management-address 192.0.2.12' in result.commands"
+          - result.commands | length == 4
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_lldp_interfaces:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_lldp_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces parsed
+      register: result
+      cisco.nxos.nxos_lldp_interfaces:
+        running_config: |
+          interface Ethernet1/1
+            lldp receive
+            no lldp transmit
+          interface Ethernet1/2
+            no lldp receive
+            lldp tlv-set vlan 12
+          interface Ethernet1/3
+            lldp tlv-set management-address 192.0.2.12
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed == parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_lldp_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lldp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lldp_interfaces rendered
+      register: result
+      cisco.nxos.nxos_lldp_interfaces:
+        config:
+          - name: Ethernet1/1
+            receive: true
+            transmit: false
+          - name: Ethernet1/2
+            receive: false
+            tlv_set:
+              vlan: 12
+          - name: Ethernet1/3
+            tlv_set:
+              management_address: 192.0.2.12
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "'interface Ethernet1/1' in result.rendered"
+          - "'lldp receive' in result.rendered"
+          - "'no lldp transmit' in result.rendered"
+          - "'interface Ethernet1/2' in result.rendered"
+          - "'no lldp receive' in result.rendered"
+          - "'lldp tlv-set vlan 12' in result.rendered"
+          - "'interface Ethernet1/3' in result.rendered"
+          - "'lldp tlv-set management-address 192.0.2.12' in result.rendered"
+          - result.rendered | length == 8

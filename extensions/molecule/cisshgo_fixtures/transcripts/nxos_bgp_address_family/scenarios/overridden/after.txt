@@ -1,0 +1,6 @@
+router bgp 65536
+  address-family ipv4 multicast
+    network 192.0.2.64/27 route-map rmap1
+    aggregate-address 203.0.113.0/24 as-set summary-only
+  vrf site-1
+    address-family ipv4 unicast

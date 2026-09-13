@@ -1,0 +1,5 @@
+!Command: show running-config ntp
+!Running configuration last done at: Wed Aug 12 12:09:07 2026
+!Time: Wed Aug 12 12:09:08 2026
+
+version 10.4(2) Bios:version

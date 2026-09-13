@@ -1,0 +1,277 @@
+---
+- name: "Nxos_acl_interfaces -- state: gathered"
+  hosts: nxos_acl_interfaces_gathered
+  gather_facts: false
+  tasks:
+    - name: Gather ACL interface facts
+      register: result
+      cisco.nxos.nxos_acl_interfaces:
+        state: gathered
+
+    - name: Assert gathered matches populated config
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - >-
+            result.gathered
+            | selectattr('access_groups', 'defined')
+            | selectattr('access_groups')
+            | list
+            == expected_gathered
+      vars:
+        expected_gathered:
+          - name: Ethernet1/2
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+          - name: Ethernet1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: ACL1v4
+                    direction: out
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+
+- name: "Nxos_acl_interfaces -- state: merged"
+  hosts: nxos_acl_interfaces_merged
+  gather_facts: false
+  tasks:
+    - name: Apply merged config
+      register: result
+      cisco.nxos.nxos_acl_interfaces: &merged_config
+        config:
+          - name: Ethernet1/2
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+          - name: Eth1/6
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: PortACL
+                    direction: in
+                    port: true
+          - name: Eth1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: ACL1v4
+                    direction: out
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+        state: merged
+
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/2' in result.commands"
+          - "'ipv6 traffic-filter ACL1v6 in' in result.commands"
+          - "'interface Ethernet1/6' in result.commands"
+          - "'ip port access-group PortACL in' in result.commands"
+          - "'interface Ethernet1/5' in result.commands"
+          - "'ip access-group ACL1v4 out' in result.commands"
+          - result.commands | length == 7
+
+    - name: Idempotence - merged
+      register: result
+      cisco.nxos.nxos_acl_interfaces: *merged_config
+
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+- name: "Nxos_acl_interfaces -- state: replaced"
+  hosts: nxos_acl_interfaces_replaced
+  gather_facts: false
+  tasks:
+    - name: Apply replaced config
+      register: result
+      cisco.nxos.nxos_acl_interfaces: &replaced_config
+        config:
+          - name: Eth1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: NewACLv4
+                    direction: out
+          - name: Ethernet1/6
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: NewACLv6
+                    direction: in
+                    port: true
+        state: replaced
+
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/5' in result.commands"
+          - "'no ip access-group ACL1v4 out' in result.commands"
+          - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
+          - "'ip access-group NewACLv4 out' in result.commands"
+          - "'interface Ethernet1/6' in result.commands"
+          - "'ipv6 port traffic-filter NewACLv6 in' in result.commands"
+          - result.commands | length == 6
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_acl_interfaces: *replaced_config
+
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+- name: "Nxos_acl_interfaces -- state: overridden"
+  hosts: nxos_acl_interfaces_overridden
+  gather_facts: false
+  tasks:
+    - name: Apply overridden config
+      register: result
+      cisco.nxos.nxos_acl_interfaces: &overridden_config
+        config:
+          - name: Ethernet1/3
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: ACL1v4
+                    direction: out
+          - name: Ethernet1/6
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: PortACL
+                    port: true
+                    direction: in
+              - afi: ipv6
+                acls:
+                  - name: NewACLv6
+                    direction: in
+                    port: true
+        state: overridden
+
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/2' in result.commands"
+          - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
+          - "'interface Ethernet1/5' in result.commands"
+          - "'no ip access-group ACL1v4 out' in result.commands"
+          - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
+          - "'interface Ethernet1/3' in result.commands"
+          - "'ip access-group ACL1v4 out' in result.commands"
+          - "'interface Ethernet1/6' in result.commands"
+          - "'ip port access-group PortACL in' in result.commands"
+          - "'ipv6 port traffic-filter NewACLv6 in' in result.commands"
+          - result.commands | length == 10
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_acl_interfaces: *overridden_config
+
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+- name: "Nxos_acl_interfaces -- state: deleted"
+  hosts: nxos_acl_interfaces_deleted
+  gather_facts: false
+  tasks:
+    - name: Delete ACL bindings from Ethernet1/2
+      register: result
+      cisco.nxos.nxos_acl_interfaces:
+        config:
+          - name: Ethernet1/2
+        state: deleted
+
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface Ethernet1/2' in result.commands"
+          - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
+          - result.commands | length == 2
+
+- name: Parsed state (offline)
+  hosts: nxos_acl_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_acl_interfaces/vars/main.yml"
+  tasks:
+    - name: Parse ACL interface configuration
+      register: result
+      cisco.nxos.nxos_acl_interfaces:
+        running_config: |
+          interface Ethernet1/2
+          ipv6 traffic-filter ACL1v6 in
+          interface Ethernet1/5
+          ipv6 traffic-filter ACL1v6 in
+          ip access-group ACL1v4 out
+          ip port access-group PortACL in
+        state: parsed
+
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed == parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_acl_interfaces_gathered
+  gather_facts: false
+  tasks:
+    - name: Render ACL interface commands
+      register: result
+      cisco.nxos.nxos_acl_interfaces:
+        config:
+          - name: Ethernet1/2
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+          - name: Ethernet1/6
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: PortACL
+                    direction: in
+                    port: true
+          - name: Ethernet1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: ACL1v4
+                    direction: out
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+        state: rendered
+
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "'interface Ethernet1/2' in result.rendered"
+          - "'ipv6 traffic-filter ACL1v6 in' in result.rendered"
+          - "'interface Ethernet1/6' in result.rendered"
+          - "'ip port access-group PortACL in' in result.rendered"
+          - "'interface Ethernet1/5' in result.rendered"
+          - "'ip access-group ACL1v4 out' in result.rendered"
+          - result.rendered | length == 7

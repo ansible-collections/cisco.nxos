@@ -1,0 +1,13 @@
+snmp-server contact nxosswitchadmin2@localhost
+snmp-server location serverroom-2
+snmp-server aaa-user cache-timeout 36000
+snmp-server user admin network-admin auth md5 0146169AD85044B5E4160AA70D1338804927 priv aes-128 37627BEEBEC7817007B1C374D996B24298BB localizedV2key
+snmp-server user cisco network-admin auth md5 00749D0F05537C2D802A7DA4502626BF88DC priv aes-128 332CFD752312713BED674598193B38F893D3 localizedV2key
+snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+snmp-server host 192.0.2.1 traps version 1 public
+snmp-server host 192.0.2.1 source-interface Ethernet1/1
+snmp-server host 192.0.3.2 informs version 3 auth NMS
+snmp-server enable traps aaa server-state-change
+snmp-server community public group network-operator
+snmp-server community secret group network-operator

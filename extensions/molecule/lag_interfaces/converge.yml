@@ -1,0 +1,201 @@
+---
+# AUTO-GENERATED — promoted from converge_draft.yml with validate-time fixture fixes.
+
+- name: "Nxos_lag_interfaces — state: gathered"
+  hosts: nxos_lag_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Gather nxos_lag_interfaces facts
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered is defined
+
+- name: "Nxos_lag_interfaces — state: merged"
+  hosts: nxos_lag_interfaces_merged
+  gather_facts: false
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces merged
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel10
+            members:
+              - member: "{{ test_int1 }}"
+              - member: "{{ test_int2 }}"
+                mode: "on"
+                force: true
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 4
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel10
+            members:
+              - member: "{{ test_int1 }}"
+              - member: "{{ test_int2 }}"
+                mode: "on"
+                force: true
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lag_interfaces — state: replaced"
+  hosts: nxos_lag_interfaces_replaced
+  gather_facts: false
+  vars:
+    test_int2: Ethernet1/2
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces replaced
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel11
+            members:
+              - member: "{{ test_int2 }}"
+                mode: active
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 2
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel11
+            members:
+              - member: "{{ test_int2 }}"
+                mode: active
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lag_interfaces — state: overridden"
+  hosts: nxos_lag_interfaces_overridden
+  gather_facts: false
+  vars:
+    test_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces overridden
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel19
+            members:
+              - member: "{{ test_int3 }}"
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 6
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel19
+            members:
+              - member: "{{ test_int3 }}"
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lag_interfaces — state: deleted"
+  hosts: nxos_lag_interfaces_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces deleted
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 4
+
+- name: Parsed state (offline)
+  hosts: nxos_lag_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces parsed
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        running_config: |
+          interface port-channel10
+          interface port-channel11
+          interface port-channel12
+          interface Ethernet1/800
+            channel-group 10
+            no shutdown
+          interface Ethernet1/801
+            channel-group 10 mode active
+          interface Ethernet1/802
+            channel-group 11 mode passive
+          interface Ethernet1/803
+            channel-group 11 mode passive
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result.parsed) | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_lag_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lag_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_lag_interfaces rendered
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel10
+            members:
+              - member: Ethernet1/800
+                mode: active
+              - member: Ethernet1/801
+          - name: port-channel11
+            members:
+              - member: Ethernet1/802
+                mode: passive
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(rendered) | length == 0

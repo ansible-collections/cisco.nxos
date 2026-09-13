@@ -1,0 +1,11 @@
+devices:
+  - scenario: nxos-snmp-server-gathered
+    count: 1
+  - scenario: nxos-snmp-server-gathered
+    count: 1
+  - scenario: nxos-snmp-server-merged
+    count: 1
+  - scenario: nxos-snmp-server-replaced
+    count: 1
+  - scenario: nxos-snmp-server-overridden
+    count: 1

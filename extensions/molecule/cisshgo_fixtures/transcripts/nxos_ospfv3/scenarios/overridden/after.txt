@@ -1,0 +1,6 @@
+router ospfv3 102
+  router-id 198.51.100.1
+  shutdown
+  address-family ipv6 unicast
+router ospfv3 104
+  router-id 203.0.113.20

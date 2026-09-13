@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_lag_interfaces
+    count: 1
+  - scenario: nxos-lag-interfaces-gathered
+    count: 1
+  - scenario: nxos-lag-interfaces-merged
+    count: 1
+  - scenario: nxos-lag-interfaces-replaced
+    count: 1
+  - scenario: nxos-lag-interfaces-overridden
+    count: 1
+  - scenario: nxos-lag-interfaces-deleted
+    count: 1

@@ -1,0 +1,42 @@
+!Command: show running-config telemetry all
+!Running configuration last done at: Wed Aug 12 11:30:00 2026
+!Time: Wed Aug 12 11:30:05 2026
+
+version 10.4(2) Bios:version
+feature telemetry
+
+logging level telemetry 3
+telemetry
+  batch-dme-events
+  certificate /bootflash/server.crt localhost
+  destination-profile
+    use-vrf RED
+    use-compression gzip
+  destination-group 2
+    ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
+      no use-nodeid
+    ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
+      no use-nodeid
+  destination-group 10
+    ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
+      no use-nodeid
+    ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
+      no use-nodeid
+  sensor-group 2
+    data-source NX-API
+    path "show ip bgp neighbors" depth unbounded query-condition foo filter-condition foo
+  sensor-group 8
+    data-source NX-API
+    path "show bgp l2vpn evpn summary" depth 0 query-condition foo filter-condition foo
+  sensor-group 55
+    data-source DME
+    path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition foo filter-condition foo
+    path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
+  subscription 44
+    dst-grp 2
+    dst-grp 10
+    snsr-grp 2 sample-interval 2000
+    snsr-grp 8 sample-interval 2000
+  subscription 55
+    dst-grp 10
+    snsr-grp 55 sample-interval 2000

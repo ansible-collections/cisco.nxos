@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-logging-global-gathered
+    count: 1
+  - scenario: nxos-logging-global-gathered
+    count: 1
+  - scenario: nxos-logging-global-merged
+    count: 1
+  - scenario: nxos-logging-global-replaced
+    count: 1
+  - scenario: nxos-logging-global-overridden
+    count: 1
+  - scenario: nxos-logging-global-deleted
+    count: 1

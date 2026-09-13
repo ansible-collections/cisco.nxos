@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-ntp-global-gathered
+    count: 1
+  - scenario: nxos-ntp-global-gathered
+    count: 1
+  - scenario: nxos-ntp-global-merged
+    count: 1
+  - scenario: nxos-ntp-global-replaced
+    count: 1
+  - scenario: nxos-ntp-global-overridden
+    count: 1
+  - scenario: nxos-ntp-global-deleted
+    count: 1

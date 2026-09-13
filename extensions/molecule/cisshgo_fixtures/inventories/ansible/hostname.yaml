@@ -1,0 +1,24 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_become: false
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      children:
+        nxos_hostname_gathered:
+          hosts:
+            cisshgo-hostname-gathered:
+              ansible_port: 10000
+        nxos_hostname_merged:
+          hosts:
+            cisshgo-hostname-merged:
+              ansible_port: 10001
+        nxos_hostname_deleted:
+          hosts:
+            cisshgo-hostname-deleted:
+              ansible_port: 10002

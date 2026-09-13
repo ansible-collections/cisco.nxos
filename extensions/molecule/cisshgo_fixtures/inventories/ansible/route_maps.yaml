@@ -1,0 +1,39 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_become: false
+      children:
+        nxos_route_maps_gathered:
+          hosts:
+            cisshgo-route_maps-gathered:
+              ansible_port: 10001
+        nxos_route_maps_merged:
+          hosts:
+            cisshgo-route_maps-merged:
+              ansible_port: 10002
+        nxos_route_maps_replaced:
+          hosts:
+            cisshgo-route_maps-replaced:
+              ansible_port: 10003
+        nxos_route_maps_overridden:
+          hosts:
+            cisshgo-route_maps-overridden:
+              ansible_port: 10004
+        nxos_route_maps_deleted:
+          hosts:
+            cisshgo-route_maps-deleted:
+              ansible_port: 10005
+        nxos_route_maps_match_metric_deviation:
+          hosts:
+            cisshgo-route_maps-match_metric_deviation:
+              ansible_port: 10006

@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-lacp-gathered
+    count: 1
+  - scenario: nxos-lacp-gathered
+    count: 1
+  - scenario: nxos-lacp-merged
+    count: 1
+  - scenario: nxos-lacp-replaced
+    count: 1
+  - scenario: nxos-lacp-overridden
+    count: 1
+  - scenario: nxos-lacp-deleted
+    count: 1

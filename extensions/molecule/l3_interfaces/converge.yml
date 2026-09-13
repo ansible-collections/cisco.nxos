@@ -1,0 +1,268 @@
+---
+# AUTO-GENERATED — promoted from converge_draft.yml with validate-time fixture fixes.
+
+- name: "Nxos_l3_interfaces — state: gathered"
+  hosts: nxos_l3_interfaces_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Gather nxos_l3_interfaces facts
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | selectattr('name', 'in', [nxos_int1, nxos_int2]) | symmetric_difference(gathered) | length == 0
+
+- name: "Nxos_l3_interfaces — state: merged"
+  hosts: nxos_l3_interfaces_merged
+  gather_facts: false
+  vars:
+    nxos_int3: Ethernet1/3
+    subint3: Ethernet1/3.42
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces merged
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+            dot1q: 42
+            redirects: false
+            unreachables: true
+            ipv4:
+              - address: 192.168.10.2/24
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(expected_cmds) | length == 0
+      vars:
+        expected_cmds:
+          - interface Ethernet1/3.42
+          - encapsulation dot1q 42
+          - no ip redirects
+          - ip unreachables
+          - ip address 192.168.10.2/24
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+            dot1q: 42
+            redirects: false
+            unreachables: true
+            ipv4:
+              - address: 192.168.10.2/24
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_l3_interfaces — state: replaced"
+  hosts: nxos_l3_interfaces_replaced
+  gather_facts: false
+  vars:
+    nxos_int3: Ethernet1/3
+    subint3: Ethernet1/3.42
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces replaced
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+            dot1q: 442
+            redirects: false
+            unreachables: false
+            dhcp:
+              ipv4:
+                relay:
+                  address:
+                    - relay_ip: 10.0.0.1
+              ipv6:
+                relay:
+                  address:
+                    - relay_ip: 2001:db8::1:abcd
+            ipv4:
+              - address: 192.168.20.2/24
+                tag: 5
+              - address: 192.168.200.2/24
+                secondary: true
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 9
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+            dot1q: 442
+            redirects: false
+            unreachables: false
+            dhcp:
+              ipv4:
+                relay:
+                  address:
+                    - relay_ip: 10.0.0.1
+              ipv6:
+                relay:
+                  address:
+                    - relay_ip: 2001:db8::1:abcd
+            ipv4:
+              - address: 192.168.20.2/24
+                tag: 5
+              - address: 192.168.200.2/24
+                secondary: true
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_l3_interfaces — state: overridden"
+  hosts: nxos_l3_interfaces_overridden
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces overridden
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: Ethernet1/3
+            ipv4:
+              - address: 10.1.1.3/24
+          - name: mgmt0
+            redirects: true
+            ipv6_redirects: true
+            ipv4:
+              - address: dhcp
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 8
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: Ethernet1/3
+            ipv4:
+              - address: 10.1.1.3/24
+          - name: mgmt0
+            redirects: true
+            ipv6_redirects: true
+            ipv4:
+              - address: dhcp
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_l3_interfaces — state: deleted"
+  hosts: nxos_l3_interfaces_deleted
+  gather_facts: false
+  vars:
+    nxos_int3: Ethernet1/3
+    subint3: Ethernet1/3.42
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces deleted
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 5
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ subint3 }}"
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_l3_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces parsed
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        running_config: |
+          interface Ethernet1/800
+            ip address 192.168.1.100/24 tag 5
+            ip address 10.1.1.1/24 secondary tag 10
+            no ip redirects
+          interface Ethernet1/801
+            ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+            ip unreachables
+          interface mgmt0
+            ip address dhcp
+            vrf member management
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result.parsed) | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_l3_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_l3_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_l3_interfaces rendered
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: Ethernet1/800
+            ipv4:
+              - address: 192.168.1.100/24
+                tag: 5
+              - address: 10.1.1.1/24
+                secondary: true
+                tag: 10
+            ipv6:
+              - address: fd5d:12c9:2201:2::1/64
+                tag: 6
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(rendered) | length == 0

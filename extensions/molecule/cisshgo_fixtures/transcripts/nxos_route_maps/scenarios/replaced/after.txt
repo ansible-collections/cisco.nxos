@@ -1,0 +1,17 @@
+route-map rmap1 deny 20
+  description rmap1-20-deny
+  match ip address prefix-list AllowPrefix1
+  match community BGPCommunity4 BGPCommunity5
+  set community local-AS
+route-map rmap2 permit 20
+  description rmap2-20-permit
+  match ipv6 address prefix-list AllowIPv6Prefix
+  match interface Ethernet1/1
+  continue 40
+  set comm-list BGPCommunity  delete
+  set as-path prepend 65563 65568 65569
+route-map rmap2 deny 40
+  description rmap2-40-deny
+  match tag 2
+  match route-type level-1 level-2
+  match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM

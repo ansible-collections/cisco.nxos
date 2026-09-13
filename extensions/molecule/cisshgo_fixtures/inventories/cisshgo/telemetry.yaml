@@ -1,0 +1,11 @@
+devices:
+  - scenario: nxos-telemetry-gathered
+    count: 1
+  - scenario: nxos-telemetry-gathered
+    count: 1
+  - scenario: nxos-telemetry-merged
+    count: 1
+  - scenario: nxos-telemetry-replaced
+    count: 1
+  - scenario: nxos-telemetry-deleted
+    count: 1

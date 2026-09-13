@@ -1,0 +1,4 @@
+---
+trivial:
+  - "Add CISSHGO-based Molecule scenarios for 30 resource modules (ACA-6750)."
+  - "Exclude Molecule vars.yml and CISSHGO transcript_map from ansible-lint."

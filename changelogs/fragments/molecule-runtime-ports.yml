@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Derive CISSHGO listener ports at runtime; drop per-scenario Molecule vars.yml."

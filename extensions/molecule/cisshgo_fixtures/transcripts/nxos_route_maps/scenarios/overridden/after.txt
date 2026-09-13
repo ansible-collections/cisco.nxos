@@ -1,0 +1,5 @@
+route-map rmap1 deny 20
+  description rmap1-20-deny
+  match ip address prefix-list AllowPrefix1
+  match community BGPCommunity4 BGPCommunity5
+  set community local-AS
