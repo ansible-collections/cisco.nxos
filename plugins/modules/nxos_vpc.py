@@ -26,6 +26,16 @@ notes:
 - If not using management vrf, the vrf must be globally configured on the device
   before using it in the peer-keepalive configuration.
 - Both pkl_src and pkl_dest are needed when changing peer-keepalive VRF.
+- NX-OS does not write default values to running-config, so I(role_priority),
+  I(system_priority), I(delay_restore), I(delay_restore_interface_vlan),
+  I(delay_restore_orphan_port) and I(auto_recovery_reload_delay) are reset by
+  re-applying the platform default rather than by a C(no) form, which NX-OS
+  rejects for some of these sub-commands.
+- A boolean sub-command that is absent from running-config is reported and
+  treated as C(false).
+- Only one VPC domain can exist at a time. With I(state) C(replaced) or
+  C(overridden), supplying a different I(domain) removes the existing domain
+  first, which discards its configuration.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -68,7 +78,12 @@ options:
         type: str
       pkl_vrf:
         description:
-        - VRF used for peer keepalive link. Defaults to management.
+        - VRF used for peer keepalive link.
+        - NX-OS does not write this to running-config when it is the default
+          C(management) VRF, so an absent VRF is reported as C(management).
+        - "(Note) C(default) is an overloaded term. The default VRF context for
+          peer-keepalive is C(management); C(pkl_vrf: default) refers to the
+          literal C(default) rib."
         type: str
       peer_gw:
         description:
@@ -141,9 +156,9 @@ EXAMPLES = """
 #   - vpc domain 10
 #   - role priority 150
 #   - system-priority 2000
+#   - delay restore 150
 #   - auto-recovery
 #   - peer-gateway
-#   - delay restore 150
 #   - peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management
 
 # After state:
@@ -151,10 +166,10 @@ EXAMPLES = """
 # vpc domain 10
 #   role priority 150
 #   system-priority 2000
-#   peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management
+#   peer-keepalive destination 192.168.2.2 source 192.168.2.1
+#   delay restore 150
 #   peer-gateway
 #   auto-recovery
-#   delay restore 150
 
 # Using replaced
 
@@ -163,10 +178,10 @@ EXAMPLES = """
 # vpc domain 10
 #   role priority 150
 #   system-priority 2000
-#   peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management
+#   peer-keepalive destination 192.168.2.2 source 192.168.2.1
+#   delay restore 150
 #   peer-gateway
 #   auto-recovery
-#   delay restore 150
 
 - name: Replace VPC global domain configuration
   cisco.nxos.nxos_vpc:
@@ -179,18 +194,47 @@ EXAMPLES = """
 # Task output:
 # ------------
 # commands:
+#   - terminal dont-ask
 #   - vpc domain 10
-#   - no role priority
-#   - no system-priority
-#   - no delay restore
+#   - role priority 32667
+#   - system-priority 32667
+#   - delay restore 60
 #   - no auto-recovery
 #   - no peer-gateway
-#   - peer-keepalive destination 192.168.2.2 source 192.168.2.1
 
 # After state:
 # ------------
 # vpc domain 10
 #   peer-keepalive destination 192.168.2.2 source 192.168.2.1
+
+# Using overridden
+
+# Before state:
+# -------------
+# vpc domain 10
+#   peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
+#   peer-switch
+
+- name: Override VPC global domain configuration
+  cisco.nxos.nxos_vpc:
+    config:
+      domain: "10"
+      role_priority: "150"
+    state: overridden
+
+# Task output:
+# ------------
+# commands:
+#   - terminal dont-ask
+#   - vpc domain 10
+#   - role priority 150
+#   - no peer-switch
+#   - no peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
+
+# After state:
+# ------------
+# vpc domain 10
+#   role priority 150
 
 # Using deleted
 
@@ -215,6 +259,16 @@ EXAMPLES = """
 
 # Using gathered
 
+# Device running-config:
+# ----------------------
+# vpc domain 10
+#   role priority 150
+#   system-priority 2000
+#   peer-keepalive destination 192.168.2.2 source 192.168.2.1
+#   delay restore 150
+#   peer-gateway
+#   auto-recovery
+
 - name: Gather VPC global domain facts from the device
   cisco.nxos.nxos_vpc:
     state: gathered
@@ -227,7 +281,6 @@ EXAMPLES = """
 #   system_priority: "2000"
 #   pkl_dest: 192.168.2.2
 #   pkl_src: 192.168.2.1
-#   pkl_vrf: management
 #   peer_gw: true
 #   auto_recovery: true
 #   delay_restore: "150"
@@ -261,7 +314,7 @@ EXAMPLES = """
     running_config: |
       vpc domain 10
         role priority 150
-        peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management
+        peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
         peer-gateway
         auto-recovery
     state: parsed
@@ -273,7 +326,7 @@ EXAMPLES = """
 #   role_priority: "150"
 #   pkl_dest: 192.168.2.2
 #   pkl_src: 192.168.2.1
-#   pkl_vrf: management
+#   pkl_vrf: orange
 #   peer_gw: true
 #   auto_recovery: true
 """

@@ -61,11 +61,16 @@ class VpcFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("vpc", None)
 
-        params = utils.remove_empties(
-            vpc_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
-        )
+        if not objs.get("domain"):
+            # no VPC domain on the device; `domain` is a required suboption so
+            # validate_config would reject the empty dict
+            facts["vpc"] = {}
+        else:
+            params = utils.remove_empties(
+                vpc_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            )
+            facts["vpc"] = params.get("config", {})
 
-        facts["vpc"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

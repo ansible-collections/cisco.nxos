@@ -1,0 +1,70 @@
+---
+before:
+  domain: "100"
+  role_priority: "150"
+  pkl_dest: 192.168.100.4
+  pkl_src: 10.1.100.20
+
+merged:
+  commands:
+    - terminal dont-ask
+    - vpc domain 100
+    - system-priority 2000
+    - delay restore 150
+    - auto-recovery
+    - peer-gateway
+  after:
+    domain: "100"
+    role_priority: "150"
+    system_priority: "2000"
+    pkl_dest: 192.168.100.4
+    pkl_src: 10.1.100.20
+    delay_restore: "150"
+    auto_recovery: true
+    peer_gw: true
+
+replaced:
+  commands:
+    - vpc domain 100
+    - role priority 32667
+    - system-priority 2000
+  after:
+    domain: "100"
+    system_priority: "2000"
+    pkl_dest: 192.168.100.4
+    pkl_src: 10.1.100.20
+
+overridden:
+  commands:
+    - terminal dont-ask
+    - vpc domain 100
+    - role priority 32667
+    - peer-switch
+    - no peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management
+  after:
+    domain: "100"
+    peer_sw: true
+
+deleted:
+  commands:
+    - terminal dont-ask
+    - no vpc domain 100
+
+rendered:
+  commands:
+    - vpc domain 100
+    - role priority 150
+    - peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management
+
+parsed:
+  domain: "100"
+  role_priority: "150"
+  system_priority: "2000"
+  pkl_dest: 192.168.100.4
+  pkl_src: 10.1.100.20
+  pkl_vrf: management
+  delay_restore: "150"
+  delay_restore_interface_vlan: "20"
+  peer_gw: true
+  peer_sw: true
+  auto_recovery: true

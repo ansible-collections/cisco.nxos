@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_vpc:
+    config:
+      domain: "100"
+      role_priority: "150"
+      pkl_dest: 192.168.100.4
+      pkl_src: 10.1.100.20
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] == result['rendered']
+      - result['changed'] == false

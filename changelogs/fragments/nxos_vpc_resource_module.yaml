@@ -9,3 +9,10 @@ breaking_changes:
     Update playbooks from ``domain: 100`` to ``config: {domain: "100", ...}``.
     Includes NX-OS-specific handling for ``peer-gateway``, ``peer-switch``,
     and composite ``peer-keepalive`` commands.
+  - >-
+    nxos_vpc - the ``state: present`` and ``state: absent`` values are no
+    longer accepted. Use ``state: merged`` and ``state: deleted`` instead.
+  - >-
+    nxos_vpc - passing ``default`` as the value of a numeric option is no
+    longer supported. Omit the option under ``state: replaced`` or
+    ``state: overridden`` to reset it to the platform default.
