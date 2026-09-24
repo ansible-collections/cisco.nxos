@@ -1,0 +1,87 @@
+---
+merged:
+  before:
+    - name: port-channel10
+      vpc: "10"
+      orphan_port_suspend: true
+    - name: port-channel30
+      vpc: "30"
+  commands:
+    - interface port-channel10
+    - no vpc
+    - vpc 11
+  after:
+    - name: port-channel10
+      vpc: "11"
+      orphan_port_suspend: true
+    - name: port-channel30
+      vpc: "30"
+  orphan_off_commands:
+    - interface port-channel10
+    - no vpc orphan-port suspend
+  after_orphan_off:
+    - name: port-channel10
+      vpc: "11"
+    - name: port-channel30
+      vpc: "30"
+
+replaced:
+  commands:
+    - interface port-channel10
+    - no vpc
+    - vpc 11
+    - no vpc orphan-port suspend
+  after:
+    - name: port-channel10
+      vpc: "11"
+    - name: port-channel30
+      vpc: "30"
+
+overridden:
+  commands:
+    - interface port-channel30
+    - no vpc
+    - interface port-channel10
+    - no vpc
+    - vpc 11
+    - no vpc orphan-port suspend
+  after:
+    - name: port-channel10
+      vpc: "11"
+
+deleted:
+  commands:
+    - interface port-channel10
+    - no vpc
+    - no vpc orphan-port suspend
+  after:
+    - name: port-channel30
+      vpc: "30"
+
+deleted_all:
+  commands:
+    - interface port-channel10
+    - no vpc
+    - no vpc orphan-port suspend
+    - interface port-channel30
+    - no vpc
+
+rendered:
+  commands:
+    - interface port-channel10
+    - vpc 11
+    - interface port-channel20
+    - vpc peer-link
+    - interface port-channel30
+    - vpc orphan-port suspend
+
+peer_link:
+  commands:
+    - interface port-channel20
+    - vpc peer-link
+  after:
+    - name: port-channel20
+      peer_link: true
+  remove_commands:
+    - interface port-channel20
+    - no vpc peer-link

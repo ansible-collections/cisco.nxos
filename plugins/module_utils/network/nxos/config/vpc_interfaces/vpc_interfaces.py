@@ -21,6 +21,9 @@ created.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vpc_interfaces import (
@@ -61,6 +64,9 @@ class Vpc_interfaces(ResourceModule):
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
 
+        if self.state == "merged":
+            wantd = self._merge_with_have(wantd, haved)
+
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
@@ -75,43 +81,56 @@ class Vpc_interfaces(ResourceModule):
         for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
+    def _merge_with_have(self, wantd, haved):
+        """Layer want on top of have so that a single compare path can be used
+        for every state. Attributes the playbook does not mention are inherited
+        from the device, which is what ``merged`` means, while attributes it
+        does mention win even when they are ``false``.
+
+        Interfaces present only on the device are left out: under ``merged``
+        they can never produce a command.
+        """
+        merged = {}
+
+        for name, want in wantd.items():
+            entry = dict_merge(haved.get(name, {}), want)
+
+            # `vpc <id>` and `vpc peer-link` cannot coexist on one interface,
+            # so asking for either explicitly clears the other rather than
+            # inheriting a conflicting value from the device
+            if want.get("vpc"):
+                entry["peer_link"] = False
+            elif want.get("peer_link"):
+                entry["vpc"] = None
+
+            merged[name] = entry
+
+        return merged
+
     def _compare(self, want, have):
-        """Generate set/delete commands for a single port-channel VPC entry."""
+        """Generate set/delete commands for a single interface entry."""
         begin = len(self.commands)
 
         w_vpc = want.get("vpc")
         h_vpc = have.get("vpc")
-        w_peer_link = want.get("peer_link")
-        h_peer_link = have.get("peer_link")
 
-        if self.state in ["merged", "rendered"]:
-            # Only make changes when want explicitly specifies vpc or peer_link
-            if w_vpc and w_vpc != h_vpc:
-                if h_peer_link:
-                    self.commands.append("no vpc peer-link")
-                if h_vpc:
-                    self.commands.append("no vpc")
-                self.commands.append("vpc {0}".format(w_vpc))
-            elif w_peer_link is True and not h_peer_link:
-                if h_vpc:
-                    self.commands.append("no vpc")
-                self.commands.append("vpc peer-link")
-            if want.get("orphan_port_suspend") is True and not have.get("orphan_port_suspend"):
-                self.commands.append("vpc orphan-port suspend")
-        else:
-            # replaced / overridden / deleted: fully reconcile
-            if h_peer_link and not w_peer_link:
-                self.commands.append("no vpc peer-link")
-            if h_vpc and not w_vpc:
-                self.commands.append("no vpc")
-            if w_vpc and w_vpc != h_vpc:
-                self.commands.append("vpc {0}".format(w_vpc))
-            if w_peer_link is True and not h_peer_link:
-                self.commands.append("vpc peer-link")
-            if want.get("orphan_port_suspend") is True and not have.get("orphan_port_suspend"):
-                self.commands.append("vpc orphan-port suspend")
-            elif not want.get("orphan_port_suspend") and have.get("orphan_port_suspend"):
-                self.commands.append("no vpc orphan-port suspend")
+        # the peer-link and the VPC ID share the same `vpc` sub-command, so the
+        # existing value has to be withdrawn before a different one is applied
+        if have.get("peer_link") and not want.get("peer_link"):
+            self.commands.append("no vpc peer-link")
+        if h_vpc and w_vpc != h_vpc:
+            self.commands.append("no vpc")
+        if w_vpc and w_vpc != h_vpc:
+            self.commands.append("vpc {0}".format(w_vpc))
+        if want.get("peer_link") and not have.get("peer_link"):
+            self.commands.append("vpc peer-link")
+
+        w_orphan = bool(want.get("orphan_port_suspend"))
+        h_orphan = bool(have.get("orphan_port_suspend"))
+        if w_orphan != h_orphan:
+            self.commands.append(
+                "vpc orphan-port suspend" if w_orphan else "no vpc orphan-port suspend",
+            )
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))

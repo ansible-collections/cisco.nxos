@@ -9,3 +9,7 @@ breaking_changes:
     support (``vpc orphan-port suspend``) for any interface type including
     Ethernet. Update playbooks from ``portchannel: 10`` to
     ``config: [{name: port-channel10, ...}]``.
+    Setting ``peer_link`` or ``orphan_port_suspend`` to ``false`` now removes
+    the corresponding line under every state, including ``merged``, and
+    supplying both ``vpc`` and ``peer_link`` in the same ``config`` entry now
+    fails the task instead of silently dropping ``peer_link``.

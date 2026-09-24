@@ -22,7 +22,11 @@ description:
 notes:
   - Tested against NX-OS 10.5(5) on N9K-C93180YC-FX3H.
   - Unsupported for Cisco MDS.
-  - C(vpc) and C(peer_link) are mutually exclusive for a given port-channel.
+  - C(vpc) and C(peer_link) are mutually exclusive for a given interface.
+    Supplying both in the same C(config) entry fails the task.
+  - Setting C(peer_link) or C(orphan_port_suspend) to C(false) removes the
+    corresponding line under every state, including I(merged). Omitting an
+    attribute under I(merged) leaves whatever the device already has.
   - C(orphan_port_suspend) applies to any interface type, including Ethernet interfaces.
   - This module works with connection C(network_cli) and C(httpapi).
   - The I(parsed) state reads configuration from C(running_config) and does
@@ -133,6 +137,33 @@ EXAMPLES = """
 #   vpc 100
 # interface port-channel20
 #   vpc peer-link
+
+
+# Using merged to remove an attribute
+
+# Before state:
+# -------------
+# interface port-channel20
+#   vpc peer-link
+# interface Ethernet1/3
+#   vpc orphan-port suspend
+
+- name: Remove the peer-link and the orphan-port suspend flag
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel20
+        peer_link: false
+      - name: Ethernet1/3
+        orphan_port_suspend: false
+    state: merged
+
+# Task output:
+# ------------
+# commands:
+#   - interface port-channel20
+#   - no vpc peer-link
+#   - interface Ethernet1/3
+#   - no vpc orphan-port suspend
 
 
 # Using replaced

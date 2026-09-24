@@ -20,6 +20,7 @@ class Vpc_interfacesArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "list",
             "elements": "dict",
+            "mutually_exclusive": [["vpc", "peer_link"]],
             "options": {
                 "name": {"type": "str", "required": True},
                 "vpc": {"type": "str"},
