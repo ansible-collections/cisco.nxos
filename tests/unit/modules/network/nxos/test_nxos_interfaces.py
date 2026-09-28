@@ -761,8 +761,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
     def test_vlan_default_shutdown_gathered(self):
-        # SVIs omit their admin state from running-config when shutdown (the
-        # default), so an implicit state must be gathered as enabled: false
+        # test gathering the implicit default shutdown state of SVIs
         self.exec_get_defaults.return_value = {
             "default_mode": "layer3",
             "L2_enabled": False,
@@ -809,7 +808,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.assertEqual(result["gathered"], gathered_facts)
 
     def test_vlan_default_shutdown_idempotent(self):
-        # configuring the default state on an implicitly shutdown SVI is a no-op
+        # test that the default state of an implicitly shutdown SVI is a no-op
         self.exec_get_defaults.return_value = {
             "default_mode": "layer3",
             "L2_enabled": False,

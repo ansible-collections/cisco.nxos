@@ -40,31 +40,22 @@ class InterfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def _add_default_svi_shutdown(self, data):
-        """Make the default shutdown state of SVIs explicit.
-
-        NX-OS omits the admin state from `show running-config` for SVIs that
-        are in their default shutdown state; only `no shutdown` is written, for
-        SVIs explicitly brought up. Without this, a default-shutdown SVI is
-        indistinguishable from an enabled one and gets reported as
-        `enabled: true`.
-
-        Inject `shutdown` into any `interface VlanXXX` block that declares
-        neither `shutdown` nor `no shutdown`, so the template parses it as
-        `enabled: false`.
-
-        :param data: running-config to preprocess
-        :returns: running-config with SVI admin state made explicit
         """
-        svi_block = re.compile(r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)")
-        admin_state = re.compile(r"(?m)^[ \t]+(?:no[ \t]+)?shutdown[ \t]*$")
+        Add shutdown to Vlan interfaces that don't mention an admin state,
+        as NX-OS only writes 'no shutdown' for SVIs explicitly brought up
+        :param obj: data
+        :returns: running-config with the default SVI admin state made explicit
+        """
+        regex_svi_block = re.compile(r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)")
+        regex_admin_state = re.compile(r"(?m)^[ \t]+(?:no[ \t]+)?shutdown[ \t]*$")
 
-        def _inject(match):
-            header, body = match.group(1), match.group(2)
-            if admin_state.search(body):
-                return header + body
-            return header + "  shutdown\n" + body
+        def add_shutdown(match):
+            interface, config = match.group(1), match.group(2)
+            if regex_admin_state.search(config):
+                return interface + config
+            return interface + "  shutdown\n" + config
 
-        return svi_block.sub(_inject, data)
+        return regex_svi_block.sub(add_shutdown, data)
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Interfaces network resource
