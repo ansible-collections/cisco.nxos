@@ -760,6 +760,80 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
+    def test_vlan_default_shutdown_gathered(self):
+        # SVIs omit their admin state from running-config when shutdown (the
+        # default), so an implicit state must be gathered as enabled: false
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan10
+            description implicit default shutdown
+          interface Vlan11
+            no shutdown
+          interface Vlan12
+            shutdown
+          interface Vlan13
+            description do not shutdown this svi
+        """,
+        )
+
+        playbook = dict()
+        playbook["state"] = "gathered"
+
+        gathered_facts = [
+            {
+                "name": "Vlan10",
+                "description": "implicit default shutdown",
+                "enabled": False,
+            },
+            {
+                "name": "Vlan11",
+                "enabled": True,
+            },
+            {
+                "name": "Vlan12",
+                "enabled": False,
+            },
+            {
+                "name": "Vlan13",
+                "description": "do not shutdown this svi",
+                "enabled": False,
+            },
+        ]
+
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_facts)
+
+    def test_vlan_default_shutdown_idempotent(self):
+        # configuring the default state on an implicitly shutdown SVI is a no-op
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan10
+            description do not shutdown this svi
+          interface Vlan11
+            no shutdown
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(name="Vlan10", description="do not shutdown this svi", enabled=False),
+                dict(name="Vlan11", enabled=True),
+            ],
+        )
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
     def test_mode_mtu(self):
         # test mode change with MTU
         self.exec_get_defaults.return_value = {

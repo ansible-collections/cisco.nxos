@@ -39,6 +39,33 @@ class InterfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
+    def _add_default_svi_shutdown(self, data):
+        """Make the default shutdown state of SVIs explicit.
+
+        NX-OS omits the admin state from `show running-config` for SVIs that
+        are in their default shutdown state; only `no shutdown` is written, for
+        SVIs explicitly brought up. Without this, a default-shutdown SVI is
+        indistinguishable from an enabled one and gets reported as
+        `enabled: true`.
+
+        Inject `shutdown` into any `interface VlanXXX` block that declares
+        neither `shutdown` nor `no shutdown`, so the template parses it as
+        `enabled: false`.
+
+        :param data: running-config to preprocess
+        :returns: running-config with SVI admin state made explicit
+        """
+        svi_block = re.compile(r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)")
+        admin_state = re.compile(r"(?m)^[ \t]+(?:no[ \t]+)?shutdown[ \t]*$")
+
+        def _inject(match):
+            header, body = match.group(1), match.group(2)
+            if admin_state.search(body):
+                return header + body
+            return header + "  shutdown\n" + body
+
+        return svi_block.sub(_inject, data)
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Interfaces network resource
 
@@ -55,12 +82,7 @@ class InterfacesFacts(object):
         if not data:
             data = self._get_interface_config(connection)
 
-        data = re.sub(
-            r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)",
-            lambda m: m.group(1)
-            + (m.group(2) if "shutdown" in m.group(2) else "  shutdown\n" + m.group(2)),
-            data,
-        )
+        data = self._add_default_svi_shutdown(data)
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)
