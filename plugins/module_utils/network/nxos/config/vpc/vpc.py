@@ -94,6 +94,7 @@ class Vpc(ResourceModule):
             if have:
                 self.commands.append("terminal dont-ask")
                 self.commands.append("no vpc domain {0}".format(have.get("domain")))
+            self._restore_dont_ask()
             return
 
         # only one vpc domain can exist at a time, so changing the domain ID
@@ -109,6 +110,19 @@ class Vpc(ResourceModule):
             have = {}
 
         self._compare(want, have)
+        self._restore_dont_ask()
+
+    def _restore_dont_ask(self):
+        """Undo ``terminal dont-ask`` so the module does not leave the session
+        suppressing confirmation prompts for everything that runs after it.
+
+        This brackets the setting the same way ``nxos_vsan`` and
+        ``nxos_devicealias`` do. Without it a connection that has torn down a
+        vpc domain stays in that state, and later tasks reusing the same
+        connection do not behave as they would on a fresh one.
+        """
+        if "terminal dont-ask" in self.commands:
+            self.commands.append("no terminal dont-ask")
 
     def _compare(self, want, have):
         """Generate set/delete commands for VPC global domain configuration."""

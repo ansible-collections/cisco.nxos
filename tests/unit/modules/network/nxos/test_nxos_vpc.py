@@ -89,6 +89,7 @@ class TestNxosVpcModule(TestNxosModule):
             "auto-recovery",
             "peer-gateway",
             "peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -213,6 +214,7 @@ class TestNxosVpcModule(TestNxosModule):
             "no auto-recovery",
             "no peer-gateway",
             "no peer-switch",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -264,6 +266,7 @@ class TestNxosVpcModule(TestNxosModule):
             "delay restore 60",
             "no auto-recovery",
             "no peer-gateway",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -309,6 +312,7 @@ class TestNxosVpcModule(TestNxosModule):
             "role priority 150",
             "no peer-switch",
             "no peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -354,6 +358,7 @@ class TestNxosVpcModule(TestNxosModule):
             "no vpc domain 10",
             "vpc domain 20",
             "role priority 150",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -398,9 +403,41 @@ class TestNxosVpcModule(TestNxosModule):
             """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
-        commands = ["terminal dont-ask", "no vpc domain 10"]
+        commands = ["terminal dont-ask", "no vpc domain 10", "no terminal dont-ask"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_nxos_vpc_deleted_restores_dont_ask(self):
+        # `terminal dont-ask` must not be left set on the session, or later
+        # tasks on the same connection do not behave as on a fresh one
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              role priority 150
+            """,
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertEqual(commands[-1], "no terminal dont-ask")
+        self.assertEqual(
+            commands.count("terminal dont-ask"),
+            commands.count("no terminal dont-ask"),
+        )
+
+    def test_nxos_vpc_no_dont_ask_when_unused(self):
+        # nothing to suppress, so the setting is never touched
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+            """,
+        )
+        set_module_args(
+            dict(config=dict(domain="10", role_priority="150"), state="merged"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["vpc domain 10", "role priority 150"])
 
     def test_nxos_vpc_deleted_empty_have(self):
         self.get_config.return_value = dedent(
@@ -434,6 +471,7 @@ class TestNxosVpcModule(TestNxosModule):
             "role priority 150",
             "peer-gateway",
             "peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf management",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["rendered"], commands)
