@@ -8,8 +8,10 @@ merged:
       vpc: "30"
   commands:
     - interface port-channel10
+    - no vpc orphan-port suspend
     - no vpc
     - vpc 11
+    - vpc orphan-port suspend
   after:
     - name: port-channel10
       vpc: "11"
@@ -28,9 +30,9 @@ merged:
 replaced:
   commands:
     - interface port-channel10
+    - no vpc orphan-port suspend
     - no vpc
     - vpc 11
-    - no vpc orphan-port suspend
   after:
     - name: port-channel10
       vpc: "11"
@@ -42,9 +44,9 @@ overridden:
     - interface port-channel30
     - no vpc
     - interface port-channel10
+    - no vpc orphan-port suspend
     - no vpc
     - vpc 11
-    - no vpc orphan-port suspend
   after:
     - name: port-channel10
       vpc: "11"
@@ -52,8 +54,8 @@ overridden:
 deleted:
   commands:
     - interface port-channel10
-    - no vpc
     - no vpc orphan-port suspend
+    - no vpc
   after:
     - name: port-channel30
       vpc: "30"
@@ -61,8 +63,8 @@ deleted:
 deleted_all:
   commands:
     - interface port-channel10
-    - no vpc
     - no vpc orphan-port suspend
+    - no vpc
     - interface port-channel30
     - no vpc
 

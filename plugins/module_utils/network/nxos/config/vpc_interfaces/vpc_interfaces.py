@@ -113,6 +113,16 @@ class Vpc_interfaces(ResourceModule):
 
         w_vpc = want.get("vpc")
         h_vpc = have.get("vpc")
+        w_orphan = bool(want.get("orphan_port_suspend"))
+        h_orphan = bool(have.get("orphan_port_suspend"))
+
+        # NX-OS refuses to make a port-channel part of a VPC while it still
+        # carries `vpc orphan-port suspend`, so the suspend line is withdrawn
+        # before the VPC ID is applied and restored afterwards when it stays
+        vpc_changing = bool(w_vpc) and w_vpc != h_vpc
+
+        if h_orphan and (not w_orphan or vpc_changing):
+            self.commands.append("no vpc orphan-port suspend")
 
         # the peer-link and the VPC ID share the same `vpc` sub-command, so the
         # existing value has to be withdrawn before a different one is applied
@@ -125,12 +135,8 @@ class Vpc_interfaces(ResourceModule):
         if want.get("peer_link") and not have.get("peer_link"):
             self.commands.append("vpc peer-link")
 
-        w_orphan = bool(want.get("orphan_port_suspend"))
-        h_orphan = bool(have.get("orphan_port_suspend"))
-        if w_orphan != h_orphan:
-            self.commands.append(
-                "vpc orphan-port suspend" if w_orphan else "no vpc orphan-port suspend",
-            )
+        if w_orphan and (not h_orphan or vpc_changing):
+            self.commands.append("vpc orphan-port suspend")
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))

@@ -260,10 +260,114 @@ class TestNxosVpcInterfaceModule(TestNxosModule):
             result["commands"],
             [
                 "interface port-channel10",
+                "no vpc orphan-port suspend",
                 "no vpc",
                 "vpc 200",
-                "no vpc orphan-port suspend",
             ],
+        )
+
+    def test_nxos_vpc_interface_orphan_port_suspend_removed_before_vpc(self):
+        # NX-OS rejects `vpc <id>` while the interface still carries
+        # `vpc orphan-port suspend`, so the removal has to be sent first
+        self.get_config.return_value = dedent(
+            """\
+            interface port-channel10
+              vpc 10
+              vpc orphan-port suspend
+            """,
+        )
+        set_module_args(
+            dict(config=[dict(name="port-channel10", vpc="11")], state="replaced"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertEqual(
+            commands,
+            [
+                "interface port-channel10",
+                "no vpc orphan-port suspend",
+                "no vpc",
+                "vpc 11",
+            ],
+        )
+        self.assertLess(
+            commands.index("no vpc orphan-port suspend"),
+            commands.index("vpc 11"),
+        )
+
+    def test_nxos_vpc_interface_orphan_port_suspend_bounced_on_vpc_change(self):
+        # the suspend line has to be bounced around a VPC ID change, since the
+        # device rejects the new ID while the old suspend config is still there
+        self.get_config.return_value = dedent(
+            """\
+            interface port-channel10
+              vpc 10
+              vpc orphan-port suspend
+            """,
+        )
+        set_module_args(
+            dict(config=[dict(name="port-channel10", vpc="11")], state="merged"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface port-channel10",
+                "no vpc orphan-port suspend",
+                "no vpc",
+                "vpc 11",
+                "vpc orphan-port suspend",
+            ],
+        )
+
+    def test_nxos_vpc_interface_orphan_port_suspend_idempotent(self):
+        # an unchanged VPC ID must not bounce the suspend line
+        self.get_config.return_value = dedent(
+            """\
+            interface port-channel10
+              vpc 10
+              vpc orphan-port suspend
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="port-channel10", vpc="10", orphan_port_suspend=True)],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vpc_interface_orphan_port_suspend_added_after_vpc(self):
+        # conversely, suspend can only be applied once VPC membership is set
+        self.get_config.return_value = dedent(
+            """\
+            interface port-channel10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="port-channel10", vpc="11", orphan_port_suspend=True)],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertEqual(
+            commands,
+            [
+                "interface port-channel10",
+                "vpc 11",
+                "vpc orphan-port suspend",
+            ],
+        )
+        self.assertLess(
+            commands.index("vpc 11"),
+            commands.index("vpc orphan-port suspend"),
         )
 
     def test_nxos_vpc_interface_replaced_idempotent(self):
