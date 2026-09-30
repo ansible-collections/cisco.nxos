@@ -586,7 +586,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps
-                \sfeature-control\s(?P<featureOpStatusChange>featureOpStatusChange)
+                \sfeature-control\s(?P<featureOpStatusChange>[Ff]eatureOpStatusChange)
                 $""", re.VERBOSE,
             ),
             "setval": "snmp-server enable traps feature-control featureOpStatusChange",
