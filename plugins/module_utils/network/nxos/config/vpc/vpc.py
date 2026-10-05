@@ -18,9 +18,19 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import time
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
+
+# NX-OS tears a domain down asynchronously after 'no vpc domain'.  On a
+# reused persistent connection the next 'vpc domain <id>' is answered with
+# 'Domain delete in progress'.  Sleep this many seconds after sending the
+# delete before sending the recreate.
+_DOMAIN_DELETE_SLEEP = 8
+_MAX_RETRY = 5
+_RETRY_INTERVAL = 4
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vpc import (
@@ -79,7 +89,7 @@ class Vpc(ResourceModule):
         """
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
-            self.run_commands()
+            self._run_with_domain_wait()
         return self.result
 
     def generate_commands(self):
@@ -110,6 +120,16 @@ class Vpc(ResourceModule):
             have = {}
 
         self._compare(want, have)
+
+        # NX-OS 10.4(x): every 'no peer-keepalive' form is rejected in
+        # (config-vpc-domain)#.  The only reliable way to remove a keepalive
+        # is to delete and recreate the domain — the freshly created domain
+        # starts without one.  This is disruptive (flaps the peer relationship)
+        # but is the only approach that works on this platform.
+        if any(c.startswith("no peer-keepalive") for c in self.commands):
+            self.commands = self._rewrite_as_domain_recreate(want)
+            return
+
         self._restore_dont_ask()
 
     def _restore_dont_ask(self):
@@ -123,6 +143,89 @@ class Vpc(ResourceModule):
         """
         if "terminal dont-ask" in self.commands:
             self.commands.append("no terminal dont-ask")
+
+    def _positive_cmds_from_want(self, want):
+        """Return positive (non-default) commands from want for a fresh domain.
+
+        A freshly created domain already has platform defaults, so re-setting
+        them wastes CLI round trips.
+        """
+        cmds = []
+        for key, set_tmpl, default in self.SCALARS:
+            w_val = want.get(key)
+            if w_val is not None and w_val != default:
+                cmds.append(set_tmpl.format(w_val))
+        for key, set_cmd, _unset in self.BOOLEANS:
+            if want.get(key):
+                cmds.append(set_cmd)
+        w_pkl = self._pkl_effective(want)
+        if w_pkl:
+            cmds.append(self._pkl_cmd(w_pkl))
+        return cmds
+
+    def _rewrite_as_domain_recreate(self, want):
+        """Return a command list that deletes the current domain and recreates it.
+
+        Used when a keepalive removal is needed — NX-OS rejects every
+        'no peer-keepalive' form in (config-vpc-domain)#, so the domain must
+        be torn down and rebuilt with only the wanted (non-default) commands.
+        The freshly created domain starts with all platform defaults, so
+        explicit default-value commands are omitted.
+        """
+        domain = want.get("domain") or (self.have or {}).get("domain")
+        positive = self._positive_cmds_from_want(want)
+        cmds = [
+            "terminal dont-ask",
+            "no vpc domain {0}".format(domain),
+            "vpc domain {0}".format(domain),
+        ]
+        cmds.extend(positive)
+        cmds.append("no terminal dont-ask")
+        return cmds
+
+    def _run_with_domain_wait(self):
+        """Run commands, splitting at 'no vpc domain' to give NX-OS time to
+        finish tearing down the domain before 'vpc domain' is sent on the same
+        persistent connection.
+
+        NX-OS tears the domain down asynchronously after replying to
+        'no vpc domain'.  On a reused connection the next 'vpc domain <id>'
+        is answered with 'Domain delete in progress', and subsequent
+        sub-commands land at global config where NX-OS rejects them as
+        '% Invalid command'.  A fresh connection avoids this only because the
+        reconnect time outlasts the delete window.
+
+        Fix: send everything up to and including 'no vpc domain', sleep
+        _DOMAIN_DELETE_SLEEP seconds, then retry the remainder until NX-OS
+        accepts 'vpc domain <id>' or the retry budget is exhausted.  Over
+        NX-API 'Domain delete in progress' surfaces as a ConnectionError.
+        """
+        split_idx = next(
+            (i for i, cmd in enumerate(self.commands) if cmd.startswith("no vpc domain")),
+            None,
+        )
+
+        if split_idx is None or self._module.check_mode:
+            self.run_commands()
+            return
+
+        first = self.commands[:split_idx + 1]
+        rest = self.commands[split_idx + 1:]
+
+        self._connection.edit_config(candidate=first)
+        time.sleep(_DOMAIN_DELETE_SLEEP)
+
+        for attempt in range(1, _MAX_RETRY + 1):
+            try:
+                if rest:
+                    self._connection.edit_config(candidate=rest)
+                break
+            except Exception as exc:
+                if "Domain delete in progress" not in str(exc) or attempt == _MAX_RETRY:
+                    raise
+                time.sleep(_RETRY_INTERVAL)
+
+        self.changed = True
 
     def _compare(self, want, have):
         """Generate set/delete commands for VPC global domain configuration."""

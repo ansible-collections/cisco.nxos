@@ -16,3 +16,9 @@ breaking_changes:
     nxos_vpc - passing ``default`` as the value of a numeric option is no
     longer supported. Omit the option under ``state: replaced`` or
     ``state: overridden`` to reset it to the platform default.
+minor_changes:
+  - >-
+    nxos_vpc - removing a peer-keepalive under ``state: replaced`` or
+    ``state: overridden`` deletes and recreates the VPC domain, because
+    NX-OS rejects every ``no peer-keepalive`` form on 10.4(x). This
+    momentarily flaps the peer relationship; see the module notes for details.

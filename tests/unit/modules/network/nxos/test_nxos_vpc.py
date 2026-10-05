@@ -49,10 +49,16 @@ class TestNxosVpcModule(TestNxosModule):
         )
         self.get_config = self.mock_get_config.start()
 
+        self.mock_sleep = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vpc.vpc.time.sleep",
+        )
+        self.mock_sleep.start()
+
     def tearDown(self):
         super(TestNxosVpcModule, self).tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
+        self.mock_sleep.stop()
 
     # -- merged ------------------------------------------------------------
 
@@ -306,12 +312,15 @@ class TestNxosVpcModule(TestNxosModule):
             dict(config=dict(domain="10", role_priority="150"), state="replaced"),
             ignore_provider_arg,
         )
+        # NX-OS rejects every 'no peer-keepalive' form, so keepalive removal is
+        # expressed as a domain delete + recreate with only the wanted commands.
+        # The freshly created domain already has platform defaults, so default
+        # scalar resets and peer-switch (off by default) are not emitted.
         commands = [
             "terminal dont-ask",
+            "no vpc domain 10",
             "vpc domain 10",
             "role priority 150",
-            "no peer-switch",
-            "no peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange",
             "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
@@ -380,14 +389,14 @@ class TestNxosVpcModule(TestNxosModule):
             dict(config=dict(domain="10", role_priority="150"), state="overridden"),
             ignore_provider_arg,
         )
+        # peer-keepalive removal triggers domain recreate; a freshly created
+        # domain already has all platform defaults so no scalar resets are needed
         commands = [
+            "terminal dont-ask",
+            "no vpc domain 10",
             "vpc domain 10",
             "role priority 150",
-            "system-priority 32667",
-            "delay restore interface-vlan 10",
-            "delay restore orphan-port 0",
-            "auto-recovery reload-delay 240",
-            "no peer-keepalive destination 192.168.2.2 vrf management",
+            "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)

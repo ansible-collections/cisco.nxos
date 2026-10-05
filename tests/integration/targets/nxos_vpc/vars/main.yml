@@ -38,10 +38,9 @@ replaced:
 overridden:
   commands:
     - terminal dont-ask
+    - no vpc domain 100
     - vpc domain 100
-    - role priority 32667
     - peer-switch
-    - no peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management
     - no terminal dont-ask
   after:
     domain: "100"

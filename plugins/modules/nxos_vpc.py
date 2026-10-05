@@ -36,6 +36,10 @@ notes:
 - Only one VPC domain can exist at a time. With I(state) C(replaced) or
   C(overridden), supplying a different I(domain) removes the existing domain
   first, which discards its configuration.
+- Removing a peer-keepalive under I(state) C(replaced) or C(overridden) is
+  disruptive: NX-OS rejects every C(no peer-keepalive) form, so the module
+  deletes the domain and recreates it with only the wanted configuration.
+  This momentarily flaps the VPC peer relationship.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -226,10 +230,10 @@ EXAMPLES = """
 # ------------
 # commands:
 #   - terminal dont-ask
+#   - no vpc domain 10
 #   - vpc domain 10
 #   - role priority 150
-#   - no peer-switch
-#   - no peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
+#   - no terminal dont-ask
 
 # After state:
 # ------------
@@ -252,6 +256,7 @@ EXAMPLES = """
 # commands:
 #   - terminal dont-ask
 #   - no vpc domain 10
+#   - no terminal dont-ask
 
 # After state:
 # ------------
