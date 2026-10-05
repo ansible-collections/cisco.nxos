@@ -12,6 +12,13 @@
           - vpc domain 100
         match: none
 
+    - name: Configure peer-keepalive so vpc <id> assignments persist on 10.4(x)
+      cisco.nxos.nxos_config:
+        lines:
+          - peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management
+        parents: vpc domain 100
+        match: none
+
     - name: Create the test port-channels
       cisco.nxos.nxos_config:
         lines:
