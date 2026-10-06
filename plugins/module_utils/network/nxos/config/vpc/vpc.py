@@ -24,6 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     ResourceModule,
 )
 
+
 # NX-OS tears a domain down asynchronously after 'no vpc domain'.  On a
 # reused persistent connection the next 'vpc domain <id>' is answered with
 # 'Domain delete in progress'.  Sleep this many seconds after sending the
@@ -212,8 +213,8 @@ class Vpc(ResourceModule):
             self.run_commands()
             return
 
-        first = self.commands[:split_idx + 1]
-        rest = self.commands[split_idx + 1:]
+        first = self.commands[: split_idx + 1]
+        rest = self.commands[split_idx + 1 :]
 
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
@@ -229,7 +230,7 @@ class Vpc(ResourceModule):
                         if attempt == _MAX_RETRY:
                             raise Exception(
                                 "VPC {0!r}: domain delete still in progress"
-                                " after {1} probe attempts".format(probe[0], attempt)
+                                " after {1} probe attempts".format(probe[0], attempt),
                             )
                         time.sleep(_RETRY_INTERVAL)
                         continue

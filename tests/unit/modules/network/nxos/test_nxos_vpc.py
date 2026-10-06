@@ -582,16 +582,21 @@ class TestNxosVpcModule(TestNxosModule):
         conn = self.get_resource_connection.return_value
         # Call order: edit_config(first), edit_config(probe) x2, edit_config(rest)
         conn.edit_config.side_effect = [
-            None,                           # first batch succeeds
-            "Domain delete in progress",    # probe attempt 1 — CLI text response
-            None,                           # probe attempt 2 — domain ready
-            None,                           # rest batch succeeds
+            None,  # first batch succeeds
+            "Domain delete in progress",  # probe attempt 1 — CLI text response
+            None,  # probe attempt 2 — domain ready
+            None,  # rest batch succeeds
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
-            ["terminal dont-ask", "no vpc domain 10", "vpc domain 10",
-             "role priority 150", "no terminal dont-ask"],
+            [
+                "terminal dont-ask",
+                "no vpc domain 10",
+                "vpc domain 10",
+                "role priority 150",
+                "no terminal dont-ask",
+            ],
         )
         self.assertEqual(conn.edit_config.call_count, 4)
         conn.edit_config.assert_any_call(candidate=["vpc domain 10"])
@@ -601,16 +606,21 @@ class TestNxosVpcModule(TestNxosModule):
         self._domain_recreate_args()
         conn = self.get_resource_connection.return_value
         conn.edit_config.side_effect = [
-            None,                                                   # first batch
-            Exception("Domain delete in progress"),                 # probe attempt 1
-            None,                                                   # probe attempt 2
-            None,                                                   # rest batch
+            None,  # first batch
+            Exception("Domain delete in progress"),  # probe attempt 1
+            None,  # probe attempt 2
+            None,  # rest batch
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
-            ["terminal dont-ask", "no vpc domain 10", "vpc domain 10",
-             "role priority 150", "no terminal dont-ask"],
+            [
+                "terminal dont-ask",
+                "no vpc domain 10",
+                "vpc domain 10",
+                "role priority 150",
+                "no terminal dont-ask",
+            ],
         )
         self.assertEqual(conn.edit_config.call_count, 4)
 
