@@ -6,3 +6,5 @@ exclude_paths:
   - changelogs/changelog.yaml
   # CISSHGO transcript routing data (not a playbook)
   - extensions/molecule/cisshgo_fixtures/transcript_map.yaml
+  # Molecule extra-vars files (not playbooks)
+  - extensions/molecule/snmp_server/snmp_molecule_vars.yml

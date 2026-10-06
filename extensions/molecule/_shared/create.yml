@@ -38,7 +38,8 @@
     - name: Set cisshgo archive name and URL
       ansible.builtin.set_fact:
         _archive_name: "cisshgo_{{ _version_no_v }}_{{ _release_os }}_{{ _release_arch }}.tar.gz"
-        _release_url: "https://github.com/tbotnz/cisshgo/releases/download/{{ cisshgo_version }}/cisshgo_{{ _version_no_v }}_{{ _release_os }}_{{ _release_arch }}.tar.gz"
+        _release_url: >-
+          https://github.com/tbotnz/cisshgo/releases/download/{{ cisshgo_version }}/cisshgo_{{ _version_no_v }}_{{ _release_os }}_{{ _release_arch }}.tar.gz
 
     - name: Stat managed cisshgo binary
       ansible.builtin.stat:
