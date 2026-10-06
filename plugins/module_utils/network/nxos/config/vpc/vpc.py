@@ -196,9 +196,12 @@ class Vpc(ResourceModule):
         reconnect time outlasts the delete window.
 
         Fix: send everything up to and including 'no vpc domain', sleep
-        _DOMAIN_DELETE_SLEEP seconds, then retry the remainder until NX-OS
-        accepts 'vpc domain <id>' or the retry budget is exhausted.  Over
-        NX-API 'Domain delete in progress' surfaces as a ConnectionError.
+        _DOMAIN_DELETE_SLEEP seconds, then probe with just 'vpc domain <id>'
+        until NX-OS confirms the delete is complete before sending the rest.
+
+        Over CLI the signal is text in the edit_config return value; over
+        NX-API it is a ConnectionError whose message contains
+        'Domain delete in progress'.
         """
         split_idx = next(
             (i for i, cmd in enumerate(self.commands) if cmd.startswith("no vpc domain")),
@@ -215,16 +218,29 @@ class Vpc(ResourceModule):
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
 
-        for attempt in range(1, _MAX_RETRY + 1):
-            try:
-                if rest:
-                    self._connection.edit_config(candidate=rest)
-                break
-            except Exception as exc:
-                if "Domain delete in progress" not in str(exc) or attempt == _MAX_RETRY:
-                    raise
-                time.sleep(_RETRY_INTERVAL)
+        if rest and rest[0].startswith("vpc domain"):
+            # Probe with just 'vpc domain <id>' until the async delete
+            # completes before sending the full recreate batch.
+            probe = [rest[0]]
+            for attempt in range(1, _MAX_RETRY + 1):
+                try:
+                    output = self._connection.edit_config(candidate=probe)
+                    if "Domain delete in progress" in str(output or ""):
+                        if attempt == _MAX_RETRY:
+                            raise Exception(
+                                "VPC {0!r}: domain delete still in progress"
+                                " after {1} probe attempts".format(probe[0], attempt)
+                            )
+                        time.sleep(_RETRY_INTERVAL)
+                        continue
+                    break
+                except Exception as exc:
+                    if "Domain delete in progress" not in str(exc) or attempt == _MAX_RETRY:
+                        raise
+                    time.sleep(_RETRY_INTERVAL)
 
+        if rest:
+            self._connection.edit_config(candidate=rest)
         self.changed = True
 
     def _compare(self, want, have):

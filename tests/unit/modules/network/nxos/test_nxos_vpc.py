@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vpc
 
@@ -559,3 +559,84 @@ class TestNxosVpcModule(TestNxosModule):
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], {})
+
+    # -- domain-wait probe retry -------------------------------------------
+
+    def _domain_recreate_args(self):
+        """Module args that trigger the domain-recreate path (keepalive removal)."""
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
+              peer-switch
+            """,
+        )
+        set_module_args(
+            dict(config=dict(domain="10", role_priority="150"), state="replaced"),
+            ignore_provider_arg,
+        )
+
+    def test_domain_wait_probe_cli_retry(self):
+        """CLI path: probe returns 'Domain delete in progress' text twice, succeeds on 3rd."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        # Call order: edit_config(first), edit_config(probe) x2, edit_config(rest)
+        conn.edit_config.side_effect = [
+            None,                           # first batch succeeds
+            "Domain delete in progress",    # probe attempt 1 — CLI text response
+            None,                           # probe attempt 2 — domain ready
+            None,                           # rest batch succeeds
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["terminal dont-ask", "no vpc domain 10", "vpc domain 10",
+             "role priority 150", "no terminal dont-ask"],
+        )
+        self.assertEqual(conn.edit_config.call_count, 4)
+        conn.edit_config.assert_any_call(candidate=["vpc domain 10"])
+
+    def test_domain_wait_probe_nxapi_retry(self):
+        """NX-API path: probe raises 'Domain delete in progress' once, succeeds on retry."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = [
+            None,                                                   # first batch
+            Exception("Domain delete in progress"),                 # probe attempt 1
+            None,                                                   # probe attempt 2
+            None,                                                   # rest batch
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["terminal dont-ask", "no vpc domain 10", "vpc domain 10",
+             "role priority 150", "no terminal dont-ask"],
+        )
+        self.assertEqual(conn.edit_config.call_count, 4)
+
+    def test_domain_wait_probe_edit_config_call_order(self):
+        """edit_config must be called: first batch → probe → rest, in that order."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = [None, None, None]
+        self.execute_module(changed=True)
+        self.assertEqual(
+            conn.edit_config.call_args_list,
+            [
+                call(candidate=["terminal dont-ask", "no vpc domain 10"]),
+                call(candidate=["vpc domain 10"]),
+                call(candidate=["vpc domain 10", "role priority 150", "no terminal dont-ask"]),
+            ],
+        )
+
+    def test_domain_wait_probe_nxapi_unrelated_exception_propagates(self):
+        """An exception without 'Domain delete in progress' must not be swallowed."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = [
+            None,
+            Exception("some unrelated NX-API error"),
+        ]
+        with self.assertRaises(Exception) as ctx:
+            self.execute_module()
+        self.assertIn("some unrelated NX-API error", str(ctx.exception))
