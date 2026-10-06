@@ -36,23 +36,23 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-admin
-            name: private
-            use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
-          - group: network-operator
-            name: public
+            - group: network-admin
+              name: private
+              use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
+            - group: network-operator
+              name: public
           contact: nxosswitchadmin@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.2.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
           location: serverroom-1
           traps:
             aaa:
@@ -61,28 +61,28 @@
               clock_change_notification: true
           users:
             auth:
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_1
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-                priv:
-                  aes_128: true
-                  privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_2
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
             use_acls:
-            - ipv4: acl1
-              ipv6: acl2
-              user: snmp_user_1
-            - ipv4: acl3
-              ipv6: acl4
-              user: snmp_user_2
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
         state: merged
     - name: Assert commands
       ansible.builtin.assert:
@@ -95,23 +95,23 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-admin
-            name: private
-            use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
-          - group: network-operator
-            name: public
+            - group: network-admin
+              name: private
+              use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
+            - group: network-operator
+              name: public
           contact: nxosswitchadmin@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.2.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
           location: serverroom-1
           traps:
             aaa:
@@ -120,28 +120,28 @@
               clock_change_notification: true
           users:
             auth:
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_1
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-                priv:
-                  aes_128: true
-                  privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_2
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
             use_acls:
-            - ipv4: acl1
-              ipv6: acl2
-              user: snmp_user_1
-            - ipv4: acl3
-              ipv6: acl4
-              user: snmp_user_2
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
         state: merged
     - name: Assert idempotent (no changes)
       ansible.builtin.assert:
@@ -162,27 +162,27 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-operator
-            name: public
-          - group: network-operator
-            name: secret
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
           contact: nxosswitchadmin2@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.3.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
           location: serverroom-2
           traps:
             aaa:
               server_state_change: true
-          users: '{{ snmp_replaced_users }}'
+          users: "{{ snmp_replaced_users }}"
         state: replaced
     - name: Assert commands
       ansible.builtin.assert:
@@ -200,27 +200,27 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-operator
-            name: public
-          - group: network-operator
-            name: secret
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
           contact: nxosswitchadmin2@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.3.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
           location: serverroom-2
           traps:
             aaa:
               server_state_change: true
-          users: '{{ snmp_replaced_users }}'
+          users: "{{ snmp_replaced_users }}"
         state: replaced
     - name: Assert idempotent (no changes)
       ansible.builtin.assert:
@@ -245,27 +245,27 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-operator
-            name: public
-          - group: network-operator
-            name: secret
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
           contact: nxosswitchadmin2@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.3.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
           location: serverroom-2
           traps:
             aaa:
               server_state_change: true
-          users: '{{ snmp_replaced_users }}'
+          users: "{{ snmp_replaced_users }}"
         state: overridden
     - name: Assert commands
       ansible.builtin.assert:
@@ -283,27 +283,27 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-operator
-            name: public
-          - group: network-operator
-            name: secret
+            - group: network-operator
+              name: public
+            - group: network-operator
+              name: secret
           contact: nxosswitchadmin2@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.3.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.3.2
+              informs: true
+              version: "3"
           location: serverroom-2
           traps:
             aaa:
               server_state_change: true
-          users: '{{ snmp_replaced_users }}'
+          users: "{{ snmp_replaced_users }}"
         state: overridden
     - name: Assert idempotent (no changes)
       ansible.builtin.assert:
@@ -362,22 +362,22 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-          - group: network-operator
-            name: public
-          - group: network-admin
-            name: private
+            - group: network-operator
+              name: public
+            - group: network-admin
+              name: private
           contact: nxosswitchadmin@localhost
           hosts:
-          - community: public
-            host: 192.0.2.1
-            traps: true
-            version: '1'
-          - host: 192.0.2.1
-            source_interface: Ethernet1/1
-          - auth: NMS
-            host: 192.0.2.2
-            informs: true
-            version: '3'
+            - community: public
+              host: 192.0.2.1
+              traps: true
+              version: "1"
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - auth: NMS
+              host: 192.0.2.2
+              informs: true
+              version: "3"
           location: serverroom-1
           traps:
             aaa:
@@ -386,31 +386,30 @@
               clock_change_notification: true
           users:
             auth:
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_1
-            - authentication:
-                algorithm: md5
-                localized_key: true
-                password: '0x5632724fb8ac3699296af26281e1d0f1'
-                priv:
-                  aes_128: true
-                  privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-              group: network-operator
-              user: snmp_user_2
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_1
+              - authentication:
+                  algorithm: md5
+                  localized_key: true
+                  password: "0x5632724fb8ac3699296af26281e1d0f1"
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+                group: network-operator
+                user: snmp_user_2
             use_acls:
-            - ipv4: acl1
-              ipv6: acl2
-              user: snmp_user_1
-            - ipv4: acl3
-              ipv6: acl4
-              user: snmp_user_2
+              - ipv4: acl1
+                ipv6: acl2
+                user: snmp_user_1
+              - ipv4: acl3
+                ipv6: acl4
+                user: snmp_user_2
         state: rendered
     - name: Assert rendered commands
       ansible.builtin.assert:
         that:
           - result.rendered | symmetric_difference(rendered.commands) | length == 0
-
