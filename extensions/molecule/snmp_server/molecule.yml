@@ -22,12 +22,10 @@ provisioner:
     converge: converge.yml
     create: ../_shared/create.yml
     destroy: ../_shared/destroy.yml
-    prepare: prepare.yml
     verify: ../_shared/verify.yml
 scenario:
   test_sequence:
   - create
-  - prepare
   - converge
   - verify
   - destroy
