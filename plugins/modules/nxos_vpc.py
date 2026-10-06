@@ -37,7 +37,7 @@ notes:
   C(overridden), supplying a different I(domain) removes the existing domain
   first, which discards its configuration.
 - Removing a peer-keepalive under I(state) C(replaced) or C(overridden) is
-  disruptive: NX-OS rejects every C(no peer-keepalive) form, so the module
+  disruptive. NX-OS rejects every C(no peer-keepalive) form, so the module
   deletes the domain and recreates it with only the wanted configuration.
   This momentarily flaps the VPC peer relationship.
 author:
