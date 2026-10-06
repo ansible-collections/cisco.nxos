@@ -440,6 +440,24 @@ platforms:
       no snmp-server enable traps system Clock-change-notification: transcripts/common/generic_empty_return.txt
       snmp-server contact nxosswitchadmin2@localhost: transcripts/common/generic_empty_return.txt
       snmp-server location serverroom-2: transcripts/common/generic_empty_return.txt
+      no snmp-server aaa-user cache-timeout 36000: transcripts/common/generic_empty_return.txt
+      no snmp-server contact nxosswitchadmin@localhost: transcripts/common/generic_empty_return.txt
+      no snmp-server location serverroom-1: transcripts/common/generic_empty_return.txt
+      no snmp-server host 192.0.2.1 traps version 1 public: transcripts/common/generic_empty_return.txt
+      no snmp-server host 192.0.2.1 source-interface Ethernet1/1: transcripts/common/generic_empty_return.txt
+      no snmp-server host 192.0.2.2 informs version 3 auth NMS: transcripts/common/generic_empty_return.txt
+      no snmp-server host 192.0.3.2 informs version 3 auth NMS: transcripts/common/generic_empty_return.txt
+      no snmp-server enable traps aaa server-state-change: transcripts/common/generic_empty_return.txt
+      no snmp-server community private: transcripts/common/generic_empty_return.txt
+      no snmp-server community public: transcripts/common/generic_empty_return.txt
+      snmp-server community secret group network-operator: transcripts/common/generic_empty_return.txt
+      no snmp-server user admin: transcripts/common/generic_empty_return.txt
+      no snmp-server user snmp_user_1: transcripts/common/generic_empty_return.txt
+      no snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2: transcripts/common/generic_empty_return.txt
+      no snmp-server user snmp_user_2: transcripts/common/generic_empty_return.txt
+      no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4: transcripts/common/generic_empty_return.txt
+      no snmp-server contact nxosswitchadmin2@localhost: transcripts/common/generic_empty_return.txt
+      no snmp-server location serverroom-2: transcripts/common/generic_empty_return.txt
     context_search:
       configure terminal: (config)#
       interface: (config-if)#
@@ -2450,19 +2468,13 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/merged/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      # nxos_snmp_server setval emits three lines per community, with extra spaces.
-      # Overlapping prefixes cannot live in command_transcripts (CISSHGO v1.0.0).
-      - command: "snmp-server community private  group network-admin "
+      # Non-community config commands handled by command_transcripts (order-independent).
+      # Community commands must stay in sequence (CISSHGO prefix-trimming ambiguity).
+      - command: snmp-server community private group network-admin
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private  "
+      - command: snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  group network-operator "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community public "
+      - command: snmp-server community public group network-operator
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
@@ -2485,18 +2497,7 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/replaced/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      # Module order: secret add, then private remval (no on line1 + bare setval lines 2-3).
-      - command: "snmp-server community secret  group network-operator "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community secret  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community secret "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  group network-admin "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private "
+      - command: snmp-server community secret group network-operator
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
@@ -2519,18 +2520,7 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/overridden/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      # Same community remval shape as replaced (buggy setval lines after no).
-      - command: "snmp-server community secret  group network-operator "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community secret  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community secret "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "no snmp-server community private  group network-admin "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private  "
-        transcript: transcripts/common/generic_empty_return.txt
-      - command: "snmp-server community private "
+      - command: snmp-server community secret group network-operator
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
@@ -2546,6 +2536,27 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/overridden/after.txt
       - command: show running-config | section '^snmp-server'
         transcript: transcripts/nxos_snmp_server/scenarios/overridden/after.txt
+  nxos-snmp-server-deleted:
+    platform: nxos_snmp_server
+    sequence:
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/deleted/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/deleted/after.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/deleted/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/deleted/after.txt
   nxos-vlans-gathered:
     platform: nxos_vlans
     sequence:
