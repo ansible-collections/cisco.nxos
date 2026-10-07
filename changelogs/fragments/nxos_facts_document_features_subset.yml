@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - nxos_facts - document the ``features`` value for the ``gather_subset``
+    option. The value was already supported by the module but was missing from
+    the list of possible values in the documentation.
