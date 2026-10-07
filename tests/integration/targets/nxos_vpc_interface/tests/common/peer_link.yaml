@@ -1,0 +1,57 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_vpc_interface peer_link integration tests connection={{ ansible_connection }}"
+
+- block:
+    - name: Configure the VPC peer-link
+      cisco.nxos.nxos_vpc_interface: &id001
+        config:
+          - name: port-channel20
+            peer_link: true
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - peer_link['commands'] == result['commands']
+
+    - name: Assert that after dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - peer_link['after'] == result['after']
+
+    - name: Configure the VPC peer-link (idempotent)
+      cisco.nxos.nxos_vpc_interface: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Remove the VPC peer-link with state merged
+      cisco.nxos.nxos_vpc_interface: &id002
+        config:
+          - name: port-channel20
+            peer_link: false
+      register: result
+
+    - name: Assert that the peer-link was removed
+      ansible.builtin.assert:
+        that:
+          - peer_link['remove_commands'] == result['commands']
+          - result['after'] == []
+
+    - name: Remove the VPC peer-link with state merged (idempotent)
+      cisco.nxos.nxos_vpc_interface: *id002
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
