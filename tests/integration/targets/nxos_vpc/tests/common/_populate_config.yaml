@@ -1,0 +1,8 @@
+---
+- name: Populate VPC domain configuration
+  cisco.nxos.nxos_config:
+    lines:
+      - role priority 150
+      - peer-keepalive destination 192.168.100.4 source 10.1.100.20
+    parents: vpc domain 100
+    match: none
