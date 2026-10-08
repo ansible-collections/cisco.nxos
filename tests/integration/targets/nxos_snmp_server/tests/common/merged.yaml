@@ -13,7 +13,6 @@
           communities:
             - name: private
               group: network-admin
-              ro: true
               use_ipv4acl: PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
             - name: public
               group: network-operator
@@ -83,7 +82,12 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
+          - >
+            {{
+              result['commands']
+              | symmetric_difference(merged['commands'])
+              | length == 0
+            }}
 
     - name: Assert that 'after' contact/location/aaa_user/traps configurations were correctly generated
       ansible.builtin.assert:
@@ -96,7 +100,7 @@
     - name: Assert that 'after' community configurations are correctly generated
       ansible.builtin.assert:
         that:
-          - (result.after.communities | selectattr('name', 'equalto', item.name) | list | first) == item
+          - item in result.after.communities
         fail_msg: "The 'after' configuration for community '{{ item.name }}' is incorrect."
         success_msg: "The 'after' configuration for community '{{ item.name }}' is correct."
       loop: "{{ merged['after']['communities'] }}"

@@ -337,12 +337,12 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\sdhcp\srelay\ssource-interface
-                \s+(?P<interface_type>ethernet|vlan|port-channel|loopback)\s+(?P<interface_id>\S+)
+                \s+(?P<interface_type>ethernet|vlan|port-channel|loopback)(?P<interface_id>\S+)
                 \s*$""", re.VERBOSE,
             ),
             "compval": "dhcp",
             "setval": "{{ 'ip dhcp relay source-interface ' +"
-            " dhcp.ipv4.relay.source_interface.interface_type|string + ' ' +"
+            " dhcp.ipv4.relay.source_interface.interface_type|string +"
             " dhcp.ipv4.relay.source_interface.interface_id|string "
             "if dhcp.ipv4.relay.source_interface.interface_type is defined and "
             "dhcp.ipv4.relay.source_interface.interface_id is defined else '' }}",
@@ -519,15 +519,14 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ipv6\sdhcp\s+relay\s+source-interface
-                \s+(?P<source_interface_type>ethernet|vlan|port-channel|loopback)
-                \s+(?P<source_interface_id>\S+)
+                \s+(?P<source_interface_type>ethernet|vlan|port-channel|loopback)(?P<source_interface_id>\S+)
                 \s*$""", re.VERBOSE,
             ),
             "compval": "dhcp",
             "setval": "{{ 'ipv6 dhcp relay source-interface ' + "
-            "dhcp.ipv6.source_interface.interface_type + ' ' + "
-            "dhcp.ipv6.source_interface.interface_id "
-            "if dhcp.ipv6.source_interface is defined else '' }}",
+            "dhcp.ipv6.relay.source_interface.interface_type + "
+            "dhcp.ipv6.relay.source_interface.interface_id "
+            "if dhcp.ipv6.relay.source_interface is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "dhcp": {

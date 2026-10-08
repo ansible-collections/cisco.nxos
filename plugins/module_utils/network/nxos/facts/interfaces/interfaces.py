@@ -15,6 +15,8 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -37,6 +39,24 @@ class InterfacesFacts(object):
     def _get_interface_config(self, connection):
         return connection.get("show running-config | section ^interface")
 
+    def _add_default_svi_shutdown(self, data):
+        """
+        Add shutdown to Vlan interfaces that don't mention an admin state,
+        as NX-OS only writes 'no shutdown' for SVIs explicitly brought up
+        :param obj: data
+        :returns: running-config with the default SVI admin state made explicit
+        """
+        regex_svi_block = re.compile(r"(?m)^(interface Vlan\S+\n)((?:[ \t]+.*\n?)*)")
+        regex_admin_state = re.compile(r"(?m)^[ \t]+(?:no[ \t]+)?shutdown[ \t]*$")
+
+        def add_shutdown(match):
+            interface, config = match.group(1), match.group(2)
+            if regex_admin_state.search(config):
+                return interface + config
+            return interface + "  shutdown\n" + config
+
+        return regex_svi_block.sub(add_shutdown, data)
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Interfaces network resource
 
@@ -52,6 +72,8 @@ class InterfacesFacts(object):
 
         if not data:
             data = self._get_interface_config(connection)
+
+        data = self._add_default_svi_shutdown(data)
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)

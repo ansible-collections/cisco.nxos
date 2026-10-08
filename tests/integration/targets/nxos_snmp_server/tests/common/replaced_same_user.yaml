@@ -1,0 +1,90 @@
+---
+- ansible.builtin.debug:
+    msg: >-
+      Start nxos_snmp_server replaced same-user integration tests
+      connection={{ ansible_connection }}
+
+- name: Remove test SNMP user from prior run
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server user aap90154_user
+  ignore_errors: true
+
+- name: Create SNMPv3 user for same-user replace test
+  cisco.nxos.nxos_snmp_server:
+    config:
+      users:
+        auth:
+          - user: aap90154_user
+            group: vdc-operator
+            authentication:
+              algorithm: md5
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
+              localized_key: true
+              priv:
+                aes_128: true
+                privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+    state: merged
+
+- block:
+    - name: Gather SNMP configuration including test user
+      cisco.nxos.nxos_snmp_server:
+        state: gathered
+      register: snmp_gathered
+
+    - name: Build replaced config with updated credentials for same username
+      ansible.builtin.set_fact:
+        aap90154_replace_config: >-
+          {{
+            snmp_gathered.gathered | combine(
+              {
+                'users': {
+                  'auth': (
+                    snmp_gathered.gathered.users.auth
+                    | rejectattr('user', 'equalto', 'aap90154_user')
+                    | list
+                  ) + [aap90154_user_want],
+                  'use_acls': snmp_gathered.gathered.users.use_acls | default([]),
+                },
+              },
+              recursive=True,
+            )
+          }}
+
+    - name: Replace SNMP config updating same user credentials (AAP-90154)
+      cisco.nxos.nxos_snmp_server:
+        config: "{{ aap90154_replace_config }}"
+        state: replaced
+      register: result
+
+    - name: Assert module did not delete the user being updated
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.commands
+            | select('search', '^no snmp-server user aap90154_user$')
+            | list
+            | length == 0
+          - >-
+            result.commands
+            | select('search', 'snmp-server user aap90154_user vdc-operator auth md5')
+            | list
+            | length > 0
+        fail_msg: "AAP-90154: replaced emitted no snmp-server user for same-user update"
+
+    - name: Verify user still present on device
+      cisco.nxos.nxos_command:
+        commands: show running-config | section '^snmp-server user aap90154_user'
+      register: user_show
+
+    - name: Assert user exists after replace
+      ansible.builtin.assert:
+        that:
+          - user_show.stdout[0] is search('snmp-server user aap90154_user')
+
+  always:
+    - name: Remove test SNMP user
+      cisco.nxos.nxos_config:
+        lines:
+          - no snmp-server user aap90154_user
+      ignore_errors: true

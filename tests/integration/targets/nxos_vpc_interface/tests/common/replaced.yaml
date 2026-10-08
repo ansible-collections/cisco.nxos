@@ -1,0 +1,42 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_vpc_interface replaced integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace the VPC configuration of the listed port-channels
+      cisco.nxos.nxos_vpc_interface: &id001
+        config:
+          - name: port-channel10
+            vpc: 11
+        state: replaced
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - replaced['commands'] == result['commands']
+
+    - name: Assert that after dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] == result['after']
+
+    - name: Replace the VPC configuration of the listed port-channels (idempotent)
+      cisco.nxos.nxos_vpc_interface: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

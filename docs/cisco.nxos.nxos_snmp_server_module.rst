@@ -3981,7 +3981,7 @@ Examples
     #   - no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
     #   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
     #   - snmp-server host 192.0.3.2 informs version 3 auth NMS
-    #   - no snmp-server community private group network-admin
+    #   - no snmp-server community private
     #   - snmp-server community secret group network-operator
     #
     # after:
@@ -4164,7 +4164,7 @@ Examples
     #   - no snmp-server host 192.0.2.1 traps version 1 public
     #   - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
     #   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
-    #   - no snmp-server community private group network-admin
+    #   - no snmp-server community private
     #   - no snmp-server community public group network-operator
     #   - no snmp-server enable traps aaa server-state-change
     #   - no snmp-server enable traps system Clock-change-notification

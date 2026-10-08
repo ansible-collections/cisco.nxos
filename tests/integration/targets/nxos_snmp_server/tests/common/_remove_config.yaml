@@ -1,65 +1,38 @@
 ---
-- name: Gather snmp-server facts before deleted
-  register: result
+# NX-OS rejects `no snmp-server user admin`. network_cli continues after that
+# CLI error; NX-API fails the whole edit. Restore the pre-test gathered config
+# with overridden instead of state=deleted.
+#
+# NX-API also fails a single edit when two host-delete commands target the same
+# IP: `no snmp-server host X traps ...` removes the whole host, then
+# `no snmp-server host X source-interface ...` returns "No such SNMP target".
+# Apply NX-API restore commands one at a time so that error is not fatal.
+- name: Restore baseline snmp-server configuration
+  when: ansible_connection != "ansible.netcommon.httpapi"
   cisco.nxos.nxos_snmp_server:
-    state: gathered
+    config: "{{ snmp_baseline_config }}"
+    state: overridden
 
-- name: Delete whatever is gathered
-  register: result
+- name: Compute commands to restore baseline
+  when: ansible_connection == "ansible.netcommon.httpapi"
   cisco.nxos.nxos_snmp_server:
-    config: "{{ result.gathered }}"
-    state: deleted
+    config: "{{ snmp_baseline_config }}"
+    state: overridden
+  check_mode: true
+  register: snmp_restore
 
-- name: Gather snmp-server facts after deleted
-  register: result
-  cisco.nxos.nxos_snmp_server:
-    state: gathered
-# - name: Remove snmp-server
-#   when: ansible_connection == 'ansible.netcommon.network_cli'
-#   cisco.nxos.nxos_config:
-#     lines:
-#       - no snmp-server contact nxosswitchadmin@localhost
-#       - no snmp-server contact nxosswitchadmin2@localhost
-#       - no snmp-server location serverroom-1
-#       - no snmp-server location serverroom-2
-#       - no snmp-server aaa-user cache-timeout 36000
-#       - no snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
-#       - no snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
-#       - no snmp-server user snmp_user_1
-#       - no snmp-server user snmp_user_2
-#       - no snmp-server community private group network-admin
-#       - no snmp-server community public group network-operator
-#       - no snmp-server community secret group network-operator
-#       - no snmp-server enable traps aaa server-state-change
-#       - no snmp-server enable traps system Clock-change-notification
-#       - no snmp-server host 192.0.2.1 traps version 1 public
-#       - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
-#       - no snmp-server host 192.0.2.2 informs version 3 auth NMS
-#       - no snmp-server host 192.0.3.2 informs version 3 auth NMS
-#   ignore_errors: true
-
-# - name: Remove SNMP server configurations
-#   when: ansible_connection == 'ansible.netcommon.httpapi'
-#   cisco.nxos.nxos_config:
-#     lines:
-#       - "{{ item }}"
-#   loop:
-#     - no snmp-server contact nxosswitchadmin@localhost
-#     - no snmp-server contact nxosswitchadmin2@localhost
-#     - no snmp-server location serverroom-1
-#     - no snmp-server location serverroom-2
-#     - no snmp-server aaa-user cache-timeout 36000
-#     - no snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
-#     # - no snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
-#     - no snmp-server user snmp_user_1
-#     # - no snmp-server user snmp_user_2
-#     - no snmp-server community private group network-admin
-#     - no snmp-server community public group network-operator
-#     - no snmp-server community secret group network-operator
-#     - no snmp-server enable traps aaa server-state-change
-#     - no snmp-server enable traps system Clock-change-notification
-#     - no snmp-server host 192.0.2.1 traps version 1 public
-#     - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
-#     - no snmp-server host 192.0.2.2 informs version 3 auth NMS
-#     - no snmp-server host 192.0.3.2 informs version 3 auth NMS
-#   ignore_errors: true
+- name: Apply restore commands individually
+  when: ansible_connection == "ansible.netcommon.httpapi"
+  cisco.nxos.nxos_config:
+    lines:
+      - "{{ restore_cmd }}"
+    match: none
+  loop: "{{ (snmp_restore.commands | default([])) | map('split', newline) | flatten | map('trim') | reject('equalto', '') | list }}"
+  loop_control:
+    loop_var: restore_cmd
+  vars:
+    newline: "\n"
+  failed_when: >-
+    failed | default(false)
+    and ('No such SNMP target' not in (msg | default('') | string))
+    and ('cannot be deactivated' not in (msg | default('') | string))

@@ -170,9 +170,10 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             "ip dhcp option82 suboption circuit-id abc",
             "ip dhcp relay information trusted",
             "ip dhcp relay subnet-selection 10.0.0.7",
-            "ip dhcp relay source-interface port-channel 455",
+            "ip dhcp relay source-interface port-channel455",
             "ipv6 unreachables",
             "ipv6 dhcp smart-relay",
+            "ipv6 dhcp relay source-interface port-channel455",
             "ip address dhcp",
             "ip address 10.0.0.2 10.0.0.1 route-preference 70 tag 97",
             "ip address 10.0.0.3/9 secondary",
@@ -741,3 +742,36 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_l3_interface_dhcp_relay_source_interface_loopback(self):
+        """DHCP relay source-interface must not insert a space (ACA-6753)."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface Ethernet1/1
+             ip dhcp relay source-interface loopback100
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        dhcp=dict(
+                            ipv4=dict(
+                                relay=dict(
+                                    source_interface=dict(
+                                        interface_type="loopback",
+                                        interface_id="100",
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
