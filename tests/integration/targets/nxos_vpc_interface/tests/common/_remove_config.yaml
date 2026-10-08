@@ -1,0 +1,6 @@
+---
+- name: Remove all VPC interface configuration
+  cisco.nxos.nxos_vpc_interface:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

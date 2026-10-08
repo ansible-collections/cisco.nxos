@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc_interface parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided VPC interface configuration
+  register: result
+  cisco.nxos.nxos_vpc_interface:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that:
+      - merged['before'] == result['parsed']
