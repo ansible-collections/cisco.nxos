@@ -213,8 +213,9 @@ class Vpc(ResourceModule):
             self.run_commands()
             return
 
-        first = self.commands[: split_idx + 1]
-        rest = self.commands[split_idx + 1 :]
+        boundary = split_idx + 1
+        first = self.commands[:boundary]
+        rest = self.commands[boundary:]
 
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
