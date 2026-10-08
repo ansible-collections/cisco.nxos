@@ -330,6 +330,7 @@ Notes
    - NX-OS does not write default values to running-config, so *role_priority*, *system_priority*, *delay_restore*, *delay_restore_interface_vlan*, *delay_restore_orphan_port* and *auto_recovery_reload_delay* are reset by re-applying the platform default rather than by a ``no`` form, which NX-OS rejects for some of these sub-commands.
    - A boolean sub-command that is absent from running-config is reported and treated as ``false``.
    - Only one VPC domain can exist at a time. With *state* ``replaced`` or ``overridden``, supplying a different *domain* removes the existing domain first, which discards its configuration.
+   - Removing a peer-keepalive under *state* ``replaced`` or ``overridden`` is disruptive. NX-OS rejects every ``no peer-keepalive`` form, so the module deletes the domain and recreates it with only the wanted configuration. This momentarily flaps the VPC peer relationship.
 
 
 
@@ -435,10 +436,10 @@ Examples
     # ------------
     # commands:
     #   - terminal dont-ask
+    #   - no vpc domain 10
     #   - vpc domain 10
     #   - role priority 150
-    #   - no peer-switch
-    #   - no peer-keepalive destination 192.168.2.2 source 192.168.2.1 vrf orange
+    #   - no terminal dont-ask
 
     # After state:
     # ------------
@@ -461,6 +462,7 @@ Examples
     # commands:
     #   - terminal dont-ask
     #   - no vpc domain 10
+    #   - no terminal dont-ask
 
     # After state:
     # ------------
