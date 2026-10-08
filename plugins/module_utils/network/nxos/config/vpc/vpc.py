@@ -214,7 +214,7 @@ class Vpc(ResourceModule):
             return
 
         first = self.commands[: split_idx + 1]
-        rest = self.commands[split_idx + 1 :]
+        rest = self.commands[split_idx + 1:]
 
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
