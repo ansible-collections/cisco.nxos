@@ -1671,6 +1671,40 @@ scenarios:
         transcript: transcripts/nxos_hostname/scenarios/merged/after.txt
       - command: show running-config | section ^hostname
         transcript: transcripts/nxos_hostname/scenarios/merged/after.txt
+  nxos-hostname-overridden:
+    platform: nxos_hostname
+    sequence:
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: hostname NXOSv-9k
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+  nxos-hostname-replaced:
+    platform: nxos_hostname
+    sequence:
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: hostname NXOSv-9k
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
   nxos-hostname-deleted:
     platform: nxos_hostname
     sequence:

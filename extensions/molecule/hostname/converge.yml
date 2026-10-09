@@ -55,6 +55,84 @@
           - result.changed == false
           - result.commands | length == 0
 
+- name: "Nxos_hostname -- state overridden"
+  hosts: nxos_hostname_overridden
+  gather_facts: false
+  vars:
+    current_hostname: nxos1
+  tasks:
+    - name: Override hostname config
+      register: result
+      cisco.nxos.nxos_hostname: &overridden_config
+        config:
+          hostname: "NXOSv-9k"
+        state: overridden
+
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.commands == ["hostname NXOSv-9k"]
+          - result.changed == true
+
+    - name: Assert overridden before state
+      ansible.builtin.assert:
+        that:
+          - result.before.hostname == "nxos1"
+
+    - name: Assert overridden after state
+      ansible.builtin.assert:
+        that:
+          - result.after.hostname == "NXOSv-9k"
+
+    - name: Nxos_hostname overridden (idempotent)
+      register: result
+      cisco.nxos.nxos_hostname: *overridden_config
+
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_hostname -- state replaced"
+  hosts: nxos_hostname_replaced
+  gather_facts: false
+  vars:
+    current_hostname: nxos1
+  tasks:
+    - name: Replace hostname config
+      register: result
+      cisco.nxos.nxos_hostname: &replaced_config
+        config:
+          hostname: "NXOSv-9k"
+        state: replaced
+
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.commands == ["hostname NXOSv-9k"]
+          - result.changed == true
+
+    - name: Assert replaced before state
+      ansible.builtin.assert:
+        that:
+          - result.before.hostname == "nxos1"
+
+    - name: Assert replaced after state
+      ansible.builtin.assert:
+        that:
+          - result.after.hostname == "NXOSv-9k"
+
+    - name: Nxos_hostname replaced (idempotent)
+      register: result
+      cisco.nxos.nxos_hostname: *replaced_config
+
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
 - name: "Nxos_hostname -- state deleted"
   hosts: nxos_hostname_deleted
   gather_facts: false
