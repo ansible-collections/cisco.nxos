@@ -1,0 +1,117 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_interfaces negotiate_auto integration tests connection={{ ansible_connection }}"
+
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
+
+- block:
+    - name: Setup - default the test interface
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+
+    # ----- merged: disable auto-negotiation -----
+
+    - name: Merged - set negotiate_auto false
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            negotiate_auto: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no negotiate auto' in result.commands"
+
+    - name: Gather interfaces facts after disable
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: interfaces
+
+    - ansible.builtin.assert:
+        that:
+          - >-
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', test_int1)
+            | map(attribute='negotiate_auto')
+            | first == false
+
+    # ----- idempotent second run (negotiate_auto: false already set) -----
+
+    - name: Merged idempotent - negotiate_auto false already set
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            negotiate_auto: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    # ----- merged: re-enable auto-negotiation -----
+
+    - name: Merged - set negotiate_auto true to restore default
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            negotiate_auto: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'negotiate auto' in result.commands"
+
+    - name: Gather interfaces facts after re-enable
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: interfaces
+
+    - ansible.builtin.assert:
+        that:
+          - >-
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', test_int1)
+            | map(attribute='negotiate_auto')
+            | list
+            | first is not defined
+            or
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', test_int1)
+            | selectattr('negotiate_auto', 'defined')
+            | list
+            | length == 0
+
+    # ----- idempotent second run (negotiate_auto: true, device at default) -----
+
+    - name: Merged idempotent - negotiate_auto true when device is at default
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            negotiate_auto: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - name: Teardown - default the test interface
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+      failed_when: false

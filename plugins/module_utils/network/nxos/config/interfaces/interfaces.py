@@ -188,10 +188,12 @@ class Interfaces(ResourceModule):
         want_negotiate = want.get("negotiate_auto")
         have_negotiate = have.get("negotiate_auto")
         if want_negotiate is not None:
-            if want_negotiate != have_negotiate:
+            # Treat absent have as True (default is enabled, not shown in running-config)
+            effective_have = have_negotiate if have_negotiate is not None else True
+            if want_negotiate != effective_have:
                 # False → emit "no negotiate auto"; True → emit "negotiate auto"
                 self.addcmd(want, "negotiate_auto", not want_negotiate)
-        elif not want and self.state in ["overridden", "deleted"]:
+        elif self.state in ["replaced", "overridden"] or (not want and self.state == "deleted"):
             if have_negotiate is False:
                 # Restore default: remove "no negotiate auto"
                 self.addcmd(have, "negotiate_auto", False)
