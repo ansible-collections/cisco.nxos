@@ -1,0 +1,193 @@
+---
+# AUTO-GENERATED — promoted from converge_draft.yml with validate-time fixture fixes.
+
+- name: "Nxos_lacp — state: gathered"
+  hosts: nxos_lacp_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Gather nxos_lacp facts
+      register: result
+      cisco.nxos.nxos_lacp:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered == gathered
+
+- name: "Nxos_lacp — state: merged"
+  hosts: nxos_lacp_merged
+  gather_facts: false
+  vars:
+    mac:
+      address: 00c1.4c00.bd15
+      role: primary
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp merged
+      register: result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 11
+            mac: "{{ mac }}"
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(['lacp system-priority 11', 'lacp system-mac 00c1.4c00.bd15 role primary']) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 11
+            mac: "{{ mac }}"
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lacp — state: replaced"
+  hosts: nxos_lacp_replaced
+  gather_facts: false
+  vars:
+    mac2:
+      address: 00c1.4c00.bd15
+      role: secondary
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp replaced
+      register: result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 12
+            mac: "{{ mac2 }}"
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 4
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 12
+            mac: "{{ mac2 }}"
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lacp — state: overridden"
+  hosts: nxos_lacp_overridden
+  gather_facts: false
+  vars:
+    mac2:
+      address: 00c1.4c00.bd15
+      role: secondary
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp overridden
+      register: result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 12
+            mac: "{{ mac2 }}"
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 4
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 12
+            mac: "{{ mac2 }}"
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_lacp — state: deleted"
+  hosts: nxos_lacp_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp deleted
+      register: result
+      cisco.nxos.nxos_lacp:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 2
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_lacp:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_lacp_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp parsed
+      register: result
+      cisco.nxos.nxos_lacp:
+        running_config: |
+          lacp system-priority 10
+          lacp system-mac 00c1.4c00.bd15 role secondary
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed == result.parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_lacp_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_lacp/vars/main.yml
+  tasks:
+    - name: Run nxos_lacp rendered
+      register: result
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 10
+            mac:
+              address: 00c1.4c00.bd15
+              role: secondary
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(rendered) | length == 0

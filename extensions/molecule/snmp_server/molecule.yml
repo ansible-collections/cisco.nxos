@@ -1,0 +1,33 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-snmp_server-gathered
+  - name: cisshgo-snmp_server-merged
+  - name: cisshgo-snmp_server-replaced
+  - name: cisshgo-snmp_server-overridden
+  - name: cisshgo-snmp_server-deleted
+prerun: false
+provisioner:
+  env:
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/snmp_server.yaml
+  name: ansible
+  options:
+    e: "@snmp_molecule_vars.yml"
+  playbooks:
+    converge: converge.yml
+    create: ../_shared/create.yml
+    destroy: ../_shared/destroy.yml
+    verify: ../_shared/verify.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+verifier:
+  name: ansible

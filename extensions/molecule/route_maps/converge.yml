@@ -1,0 +1,484 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_route_maps — state: gathered"
+  hosts: nxos_route_maps_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Gather nxos_route_maps facts
+      register: result
+      cisco.nxos.nxos_route_maps:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered[0] == merged.after[0]
+          - result.gathered[1] == merged.after[1]
+
+- name: "Nxos_route_maps — state: merged"
+  hosts: nxos_route_maps_merged
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps merged
+      register: result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: permit
+                description: rmap1-10-permit
+                match:
+                  as_number:
+                    asn: 65564
+                  as_path: Allow40
+                  ip:
+                    address:
+                      access_list: acl_1
+                sequence: 10
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity1
+                      - BGPCommunity2
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                        - AllowPrefix2
+                sequence: 20
+                set:
+                  dampening:
+                    half_life: 30
+                    max_suppress_time: 120
+                    start_reuse_route: 1500
+                    start_suppress_route: 10000
+            route_map: rmap1
+          - entries:
+              - action: permit
+                continue_sequence: 40
+                description: rmap2-20-permit
+                match:
+                  interfaces: "{{ nxos_int1 }}"
+                  ipv6:
+                    address:
+                      prefix_lists: AllowIPv6Prefix
+                sequence: 20
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 65563
+                        - 65568
+                        - 65569
+                  comm_list: BGPCommunity
+              - action: deny
+                description: rmap2-40-deny
+                match:
+                  ip:
+                    multicast:
+                      group_range:
+                        first: 239.0.0.1
+                        last: 239.255.255.255
+                      rp:
+                        prefix: 192.0.2.0/24
+                        rp_type: ASM
+                      source: 203.0.113.0/24
+                  route_types:
+                    - level-1
+                    - level-2
+                  tags: 2
+                sequence: 40
+            route_map: rmap2
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: permit
+                description: rmap1-10-permit
+                match:
+                  as_number:
+                    asn: 65564
+                  as_path: Allow40
+                  ip:
+                    address:
+                      access_list: acl_1
+                sequence: 10
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity1
+                      - BGPCommunity2
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                        - AllowPrefix2
+                sequence: 20
+                set:
+                  dampening:
+                    half_life: 30
+                    max_suppress_time: 120
+                    start_reuse_route: 1500
+                    start_suppress_route: 10000
+            route_map: rmap1
+          - entries:
+              - action: permit
+                continue_sequence: 40
+                description: rmap2-20-permit
+                match:
+                  interfaces: "{{ nxos_int1 }}"
+                  ipv6:
+                    address:
+                      prefix_lists: AllowIPv6Prefix
+                sequence: 20
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 65563
+                        - 65568
+                        - 65569
+                  comm_list: BGPCommunity
+              - action: deny
+                description: rmap2-40-deny
+                match:
+                  ip:
+                    multicast:
+                      group_range:
+                        first: 239.0.0.1
+                        last: 239.255.255.255
+                      rp:
+                        prefix: 192.0.2.0/24
+                        rp_type: ASM
+                      source: 203.0.113.0/24
+                  route_types:
+                    - level-1
+                    - level-2
+                  tags: 2
+                sequence: 40
+            route_map: rmap2
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_route_maps — state: replaced"
+  hosts: nxos_route_maps_replaced
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps replaced
+      register: result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                sequence: 20
+                set:
+                  community:
+                    local_as: true
+            route_map: rmap1
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                sequence: 20
+                set:
+                  community:
+                    local_as: true
+            route_map: rmap1
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_route_maps — state: overridden"
+  hosts: nxos_route_maps_overridden
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps overridden
+      register: result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                sequence: 20
+                set:
+                  community:
+                    local_as: true
+            route_map: rmap1
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(overridden.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                sequence: 20
+                set:
+                  community:
+                    local_as: true
+            route_map: rmap1
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_route_maps — state: deleted"
+  hosts: nxos_route_maps_deleted
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps deleted
+      register: result
+      cisco.nxos.nxos_route_maps:
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.commands | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_route_maps:
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_route_maps — match_metric_deviation"
+  hosts: nxos_route_maps_match_metric_deviation
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Merge match metric deviation via resource module
+      register: result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - route_map: rmap_metric_dev
+            entries:
+              - sequence: 10
+                action: permit
+                match:
+                  metric:
+                    - value: 0
+                      deviation: 100
+                    - value: 100
+                      deviation: 65000
+        state: merged
+    - name: Assert merge generated expected match metric command
+      ansible.builtin.assert:
+        that:
+          - result is changed
+          - "'match metric 0 +- 100 100 +- 65000' in result.commands"
+    - name: Merge match metric deviation again (idempotent)
+      register: idempotent_result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - route_map: rmap_metric_dev
+            entries:
+              - sequence: 10
+                action: permit
+                match:
+                  metric:
+                    - value: 0
+                      deviation: 100
+                    - value: 100
+                      deviation: 65000
+        state: merged
+    - name: Assert merge is idempotent
+      ansible.builtin.assert:
+        that:
+          - idempotent_result is not changed
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_route_maps_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps parsed
+      register: result
+      cisco.nxos.nxos_route_maps:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_route_maps/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - merged.after | symmetric_difference(result.parsed) | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_route_maps_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+  vars_files:
+    - ../../../tests/integration/targets/nxos_route_maps/vars/main.yml
+  tasks:
+    - name: Run nxos_route_maps rendered
+      register: result
+      cisco.nxos.nxos_route_maps:
+        config:
+          - entries:
+              - action: permit
+                description: rmap1-10-permit
+                match:
+                  as_number:
+                    asn: 65564
+                  as_path: Allow40
+                  ip:
+                    address:
+                      access_list: acl_1
+                sequence: 10
+              - action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity1
+                      - BGPCommunity2
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                        - AllowPrefix2
+                sequence: 20
+                set:
+                  dampening:
+                    half_life: 30
+                    max_suppress_time: 120
+                    start_reuse_route: 1500
+                    start_suppress_route: 10000
+            route_map: rmap1
+          - entries:
+              - action: permit
+                continue_sequence: 40
+                description: rmap2-20-permit
+                match:
+                  interfaces: "{{ nxos_int1 }}"
+                  ipv6:
+                    address:
+                      prefix_lists: AllowIPv6Prefix
+                sequence: 20
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 65563
+                        - 65568
+                        - 65569
+                  comm_list: BGPCommunity
+              - action: deny
+                description: rmap2-40-deny
+                match:
+                  ip:
+                    multicast:
+                      group_range:
+                        first: 239.0.0.1
+                        last: 239.255.255.255
+                      rp:
+                        prefix: 192.0.2.0/24
+                        rp_type: ASM
+                      source: 203.0.113.0/24
+                  route_types:
+                    - level-1
+                    - level-2
+                  tags: 2
+                sequence: 40
+            route_map: rmap2
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered | symmetric_difference(merged.commands) | length == 0

@@ -1,0 +1,11 @@
+devices:
+  - platform: nxos_hsrp_interfaces
+    count: 1
+  - scenario: nxos-hsrp-interfaces-merged
+    count: 1
+  - scenario: nxos-hsrp-interfaces-replaced
+    count: 1
+  - scenario: nxos-hsrp-interfaces-overridden
+    count: 1
+  - scenario: nxos-hsrp-interfaces-deleted
+    count: 1

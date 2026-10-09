@@ -1,0 +1,8 @@
+NAME: "Chassis",  DESCR: "Nexus9000 C9300v Chassis"
+PID: N9K-C9300v          ,  VID:     ,  SN: 9TZ0BOIG8YZ
+
+NAME: "Slot 1",  DESCR: "Nexus 9000v 64 port Ethernet Module"
+PID: N9K-X9364v          ,  VID:     ,  SN: 9LZL525OS5P
+
+NAME: "Slot 27",  DESCR: "Nexus 9000v 64 port Ethernet Module"
+PID: N9K-vSUP            ,  VID:     ,  SN: 90SO24ZPFZI

@@ -1,0 +1,9 @@
+devices:
+  - scenario: nxos-bgp-global-gathered
+    count: 1
+  - scenario: nxos-bgp-global-merged
+    count: 1
+  - scenario: nxos-bgp-global-replaced
+    count: 1
+  - scenario: nxos-bgp-global-deleted
+    count: 1

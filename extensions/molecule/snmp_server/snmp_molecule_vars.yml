@@ -1,0 +1,29 @@
+---
+# Molecule extra-vars for nxos_snmp_server cisshgo scenario.
+# Values below are SNMP localized key hashes copied from fixture transcripts
+# (extensions/molecule/cisshgo_fixtures/transcripts/nxos_snmp_server/), not
+# live device credentials. Integration tests read admin hashes from the device;
+# molecule must hardcode the same fixture values for gathered/replaced asserts.
+admin_snmp_passwd: "0146169AD85044B5E4160AA70D1338804927" # gitleaks:allow
+admin_snmp_priv_key: "37627BEEBEC7817007B1C374D996B24298BB" # gitleaks:allow
+snmp_replaced_users:
+  auth:
+    - user: admin
+      group: network-admin
+      authentication:
+        algorithm: md5
+        localizedv2_key: true
+        password: "0146169AD85044B5E4160AA70D1338804927" # gitleaks:allow
+        priv:
+          aes_128: true
+          privacy_password: "37627BEEBEC7817007B1C374D996B24298BB" # gitleaks:allow
+    - user: snmp_user_1
+      group: network-operator
+      authentication:
+        algorithm: md5
+        localized_key: true
+        password: "0x5632724fb8ac3699296af26281e1d0f1" # gitleaks:allow
+  use_acls:
+    - user: snmp_user_1
+      ipv4: acl1
+      ipv6: acl2

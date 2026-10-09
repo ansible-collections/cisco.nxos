@@ -1,0 +1,178 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_vrf_interfaces — state: gathered"
+  hosts: nxos_vrf_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Gather nxos_vrf_interfaces facts
+      register: result
+      cisco.nxos.nxos_vrf_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - >-
+            result.gathered
+            | selectattr('name', 'in', 'Ethernet1/2,Ethernet1/6')
+            | list
+            | symmetric_difference(gathered.config)
+            | length == 0
+
+- name: "Nxos_vrf_interfaces — state: merged"
+  hosts: nxos_vrf_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces merged
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: &merged
+        config:
+          - name: Ethernet1/2
+            vrf_name: test
+          - name: Ethernet1/6
+            vrf_name: test2
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(merged.commands) | length == 0
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_interfaces: *merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_interfaces — state: replaced"
+  hosts: nxos_vrf_interfaces_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces replaced
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: &replaced
+        config:
+          - name: Ethernet1/2
+            vrf_name: TEST_VRF2
+          - name: Ethernet1/6
+            vrf_name: TEST_VRF3
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(replaced.commands) | length == 0
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_interfaces: *replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_interfaces — state: overridden"
+  hosts: nxos_vrf_interfaces_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces overridden
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: &overridden
+        config:
+          - name: Ethernet1/2
+            vrf_name: VRF8
+          - name: Ethernet1/6
+            vrf_name: VRF9
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(overridden.commands) | length == 0
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_interfaces: *overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_interfaces — state: deleted"
+  hosts: nxos_vrf_interfaces_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces deleted
+      register: result
+      cisco.nxos.nxos_vrf_interfaces: &deleted
+        config:
+          - name: Ethernet1/2
+            vrf_name: test
+          - name: Ethernet1/6
+            vrf_name: test2
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(deleted.commands) | length == 0
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_interfaces: *deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_vrf_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces parsed
+      register: result
+      cisco.nxos.nxos_vrf_interfaces:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_vrf_interfaces/tests/common/_parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed.after == result.parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_vrf_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_interfaces/vars/main.yaml
+  tasks:
+    - name: Run nxos_vrf_interfaces rendered
+      register: result
+      cisco.nxos.nxos_vrf_interfaces:
+        config:
+          - name: Ethernet1/2
+            vrf_name: test
+          - name: Ethernet1/6
+            vrf_name: test2
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(merged.commands) | length == 0

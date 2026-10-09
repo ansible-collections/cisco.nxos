@@ -1,0 +1,12 @@
+router ospfv3 100
+  router-id 203.0.113.20
+router ospfv3 102
+  router-id 198.51.100.1
+  address-family ipv6 unicast
+    area 0.0.0.100 range 2001:db2::/32 not-advertise
+    redistribute direct route-map ospf102-direct-connect
+    redistribute eigrp 130 route-map rmap_1
+    area 0.0.0.100 filter-list route-map rmap_8 in
+  vrf zone1
+    router-id 198.51.100.129
+    area 0.0.0.102 nssa no-summary default-information-originate

@@ -1,0 +1,4 @@
+router bgp 65536
+  template peer neighbor_tmplt_2
+    local-as 65536
+    description Test_BGP_PEER_TEMPLATE_2

@@ -1,0 +1,320 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_static_routes — state: gathered"
+  hosts: nxos_static_routes_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  vars:
+    nxos_int2: Ethernet1/2
+  tasks:
+    - name: Gather nxos_static_routes facts
+      register: result
+      cisco.nxos.nxos_static_routes:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered is defined
+
+- name: "Nxos_static_routes — state: merged"
+  hosts: nxos_static_routes_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  tasks:
+    - name: Run nxos_static_routes merged
+      register: result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.64/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.22
+                        tag: 4
+                      - admin_distance: 1
+                        forward_router_address: 192.0.2.23
+                        route_name: merged_route
+            vrf: trial_vrf
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.24
+                        route_name: new_route
+                  - dest: 192.0.2.80/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.26
+                        tag: 12
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ip route 192.0.2.16/28 192.0.2.24 name new_route' in result.commands"
+          - "'ip route 192.0.2.80/28 192.0.2.26 tag 12' in result.commands"
+          - "'vrf context trial_vrf' in result.commands"
+          - "'ip route 192.0.2.64/28 192.0.2.22 tag 4' in result.commands"
+          - "'ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
+          - result.commands | length == 5
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.64/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.22
+                        tag: 4
+                      - admin_distance: 1
+                        forward_router_address: 192.0.2.23
+                        route_name: merged_route
+            vrf: trial_vrf
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.24
+                        route_name: new_route
+                  - dest: 192.0.2.80/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.26
+                        tag: 12
+        state: merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_static_routes — state: replaced"
+  hosts: nxos_static_routes_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  vars:
+    nxos_int2: Ethernet1/2
+  tasks:
+    - name: Run nxos_static_routes replaced
+      register: result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - admin_distance: 3
+                        forward_router_address: 192.0.2.23
+                        route_name: replaced_route1
+                      - dest_vrf: destinationVRF
+                        forward_router_address: 192.0.2.45
+                        interface: "{{ nxos_int2 }}"
+                        route_name: replaced_route2
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip route 192.0.2.16/28 192.0.2.24 name new_route' in result.commands"
+          - "'ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3' in result.commands"
+          - "'ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2' in result.commands"
+          - result.commands | length == 4
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - admin_distance: 3
+                        forward_router_address: 192.0.2.23
+                        route_name: replaced_route1
+                      - dest_vrf: destinationVRF
+                        forward_router_address: 192.0.2.45
+                        interface: "{{ nxos_int2 }}"
+                        route_name: replaced_route2
+        state: replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_static_routes — state: overridden"
+  hosts: nxos_static_routes_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  vars:
+    nxos_int2: Ethernet1/2
+    var_vrf_mgmt:
+      vrf: management
+      address_families:
+        - afi: ipv4
+          routes:
+            - dest: 0.0.0.0/0
+              next_hops:
+                - forward_router_address: 192.168.255.1
+  tasks:
+    - name: Run nxos_static_routes overridden
+      register: result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - admin_distance: 3
+                        forward_router_address: 192.0.2.23
+                        route_name: overridden_route1
+                      - dest_vrf: destinationVRF
+                        forward_router_address: 192.0.2.45
+                        interface: "{{ nxos_int2 }}"
+                        route_name: overridden_route2
+            vrf: trial_vrf
+          - "{{ var_vrf_mgmt }}"
+        state: overridden
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'vrf context trial_vrf' in result.commands"
+          - "'no ip route 192.0.2.64/28 192.0.2.22 tag 4' in result.commands"
+          - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
+          - "'ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3' in result.commands"
+          - "'ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2' in result.commands"
+          - "'no ip route 192.0.2.16/28 192.0.2.24 name new_route' in result.commands"
+          - "'no ip route 192.0.2.80/28 192.0.2.26 tag 12' in result.commands"
+          - result.commands | length == 7
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - admin_distance: 3
+                        forward_router_address: 192.0.2.23
+                        route_name: overridden_route1
+                      - dest_vrf: destinationVRF
+                        forward_router_address: 192.0.2.45
+                        interface: "{{ nxos_int2 }}"
+                        route_name: overridden_route2
+            vrf: trial_vrf
+          - "{{ var_vrf_mgmt }}"
+        state: overridden
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_static_routes — state: deleted"
+  hosts: nxos_static_routes_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  tasks:
+    - name: Run nxos_static_routes deleted
+      register: result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - vrf: trial_vrf
+        state: deleted
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'vrf context trial_vrf' in result.commands"
+          - "'no ip route 192.0.2.64/28 192.0.2.22 tag 4' in result.commands"
+          - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
+          - result.commands | length == 3
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - vrf: trial_vrf
+        state: deleted
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_static_routes_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  tasks:
+    - name: Run nxos_static_routes parsed
+      register: result
+      cisco.nxos.nxos_static_routes:
+        running_config: |
+          ip route 192.0.2.16/28 192.0.2.24 name new_route
+          ip route 192.0.2.80/28 192.0.2.26 tag 12
+          vrf context trial_vrf
+          ip route 192.0.2.64/28 192.0.2.22 tag 4
+          ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed == parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_static_routes_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_static_routes/vars/main.yml
+  tasks:
+    - name: Run nxos_static_routes rendered
+      register: result
+      cisco.nxos.nxos_static_routes:
+        config:
+          - address_families:
+              - afi: ipv6
+                routes:
+                  - dest: 2001:db8:12::/32
+                    next_hops:
+                      - admin_distance: 3
+                        forward_router_address: 2001:db8::1001
+                        route_name: rendered_route
+            vrf: trial_vrf
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.24
+                        route_name: new_route
+                  - dest: 192.0.2.80/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.26
+                        tag: 12
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "'ip route 192.0.2.16/28 192.0.2.24 name new_route' in result.rendered"
+          - "'ip route 192.0.2.80/28 192.0.2.26 tag 12' in result.rendered"
+          - "'vrf context trial_vrf' in result.rendered"
+          - "'ipv6 route 2001:db8:12::/32 2001:db8::1001 name rendered_route 3' in result.rendered"
+          - result.rendered | length == 4

@@ -2,4 +2,13 @@
 profile: production
 
 exclude_paths:
+  # Generated changelog (not a playbook)
   - changelogs/changelog.yaml
+  # CISSHGO transcript routing data: a platform/command -> transcript-file
+  # lookup table (top-level mapping, not a list of plays). ansible-lint's
+  # syntax-check fails fatally on it ("A playbook must be a list of plays")
+  # because the filename/location resembles a playbook, so it must stay
+  # excluded even on the production profile.
+  - extensions/molecule/cisshgo_fixtures/transcript_map.yaml
+  # Molecule extra-vars files (not playbooks)
+  - extensions/molecule/snmp_server/snmp_molecule_vars.yml

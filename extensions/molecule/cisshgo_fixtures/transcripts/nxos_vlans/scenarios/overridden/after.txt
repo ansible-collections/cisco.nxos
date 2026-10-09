@@ -1,0 +1,34 @@
+{
+    "TABLE_vlanbrief": {
+        "ROW_vlanbrief": [
+            {
+                "vlanshowbr-vlanid": "1",
+                "vlanshowbr-vlanid-utf": "1",
+                "vlanshowbr-vlanname": "default",
+                "vlanshowbr-vlanstate": "active",
+                "vlanshowbr-shutstate": "noshutdown"
+            },
+            {
+                "vlanshowbr-vlanid": "9",
+                "vlanshowbr-vlanid-utf": "9",
+                "vlanshowbr-vlanname": "test-vlan9",
+                "vlanshowbr-vlanstate": "active",
+                "vlanshowbr-shutstate": "shutdown"
+            }
+        ]
+    },
+    "TABLE_mtuinfo": {
+        "ROW_mtuinfo": [
+            {
+                "vlanshowinfo-vlanid": "1",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            },
+            {
+                "vlanshowinfo-vlanid": "9",
+                "vlanshowinfo-media-type": "enet",
+                "vlanshowinfo-vlanmode": "ce-vlan"
+            }
+        ]
+    }
+}

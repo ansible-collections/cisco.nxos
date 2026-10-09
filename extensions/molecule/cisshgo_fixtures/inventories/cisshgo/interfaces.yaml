@@ -1,0 +1,11 @@
+devices:
+  - platform: nxos_interfaces
+    count: 1
+  - scenario: nxos-interfaces-merged
+    count: 1
+  - scenario: nxos-interfaces-replaced
+    count: 1
+  - scenario: nxos-interfaces-overridden
+    count: 1
+  - scenario: nxos-interfaces-deleted
+    count: 1

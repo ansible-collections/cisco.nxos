@@ -1,0 +1,8 @@
+logging level aaa 1
+logging ip access-list cache entries 4096
+logging server 203.0.113.101 3 facility local6
+logging server 198.51.100.101 1 port 6538 use-vrf management
+logging monitor 4
+logging level auth 2
+logging level ftp 6
+logging origin-id ip 192.0.2.100

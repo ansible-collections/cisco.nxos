@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-bgp-neighbor-address-family-gathered
+    count: 1
+  - scenario: nxos-bgp-neighbor-address-family-gathered
+    count: 1
+  - scenario: nxos-bgp-neighbor-address-family-merged
+    count: 1
+  - scenario: nxos-bgp-neighbor-address-family-replaced
+    count: 1
+  - scenario: nxos-bgp-neighbor-address-family-overridden
+    count: 1
+  - scenario: nxos-bgp-neighbor-address-family-deleted
+    count: 1

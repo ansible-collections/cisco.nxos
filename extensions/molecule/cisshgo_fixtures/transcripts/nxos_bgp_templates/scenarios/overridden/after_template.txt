@@ -1,0 +1,9 @@
+template peer neighbor_tmplt_1
+    inherit peer-session psession1
+    no remote-as 65001
+    local-as 65537
+    description Test_BGP_PEER_TEMPLATE_1
+    address-family ipv4 unicast
+      disable-peer-as-check
+      advertisement-interval 60
+      advertise-map rmap1 non-exist-map nemap1
