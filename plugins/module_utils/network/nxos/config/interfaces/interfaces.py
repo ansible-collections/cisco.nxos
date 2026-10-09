@@ -182,6 +182,22 @@ class Interfaces(ResourceModule):
                 no_cmd = True if self.defaults.get("default_mode") == "layer3" else False
                 self.addcmd(have, "mode", no_cmd)
 
+        # Handle 'negotiate_auto' separately because its default (enabled) does not
+        # appear in running-config; only 'no negotiate auto' appears when disabled.
+        # The base class compare() skips bool False vs None, so we own the full logic.
+        want_negotiate = want.get("negotiate_auto")
+        have_negotiate = have.get("negotiate_auto")
+        if want_negotiate is not None:
+            # Treat absent have as True (default is enabled, not shown in running-config)
+            effective_have = have_negotiate if have_negotiate is not None else True
+            if want_negotiate != effective_have:
+                # False → emit "no negotiate auto"; True → emit "negotiate auto"
+                self.addcmd(want, "negotiate_auto", not want_negotiate)
+        elif self.state in ["replaced", "overridden"] or (not want and self.state == "deleted"):
+            if have_negotiate is False:
+                # Restore default: remove "no negotiate auto"
+                self.addcmd(have, "negotiate_auto", False)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
