@@ -21,6 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 _DOMAIN_KEY = "{{ domain }}"
 _NEGATE_BOOL_TMPL = "{{ False if negate is defined and negate else True }}"
 
