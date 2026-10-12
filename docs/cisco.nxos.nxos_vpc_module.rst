@@ -331,6 +331,7 @@ Notes
    - A boolean sub-command that is absent from running-config is reported and treated as ``false``.
    - Only one VPC domain can exist at a time. With *state* ``replaced`` or ``overridden``, supplying a different *domain* removes the existing domain first, which discards its configuration.
    - Removing a peer-keepalive under *state* ``replaced`` or ``overridden`` is disruptive. NX-OS rejects every ``no peer-keepalive`` form, so the module deletes the domain and recreates it with only the wanted configuration. This momentarily flaps the VPC peer relationship.
+   - When a peer-keepalive removal triggers a domain recreate, the module waits and retries internally for NX-OS to finish the async domain delete before reapplying configuration. This can add up to roughly 30 seconds to the task. If NX-OS has not finished within that window, the task fails and can safely be rerun.
 
 
 
