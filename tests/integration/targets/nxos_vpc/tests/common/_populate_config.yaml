@@ -6,3 +6,7 @@
       - peer-keepalive destination 192.168.100.4 source 10.1.100.20
     parents: vpc domain 100
     match: none
+  register: populate_result
+  retries: 12
+  delay: 5
+  until: populate_result is succeeded
