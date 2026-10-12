@@ -608,7 +608,7 @@ class TestNxosVpcModule(TestNxosModule):
         conn.edit_config.side_effect = [
             None,  # first batch
             ConnectionError(
-                "Domain delete in progress"
+                "Domain delete in progress",
             ),  # probe attempt 1: NX-API raises ConnectionError
             None,  # probe attempt 2
             None,  # rest batch
