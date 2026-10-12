@@ -40,6 +40,11 @@ notes:
   disruptive. NX-OS rejects every C(no peer-keepalive) form, so the module
   deletes the domain and recreates it with only the wanted configuration.
   This momentarily flaps the VPC peer relationship.
+- When a peer-keepalive removal triggers a domain recreate, the module
+  waits and retries internally for NX-OS to finish the async domain
+  delete before reapplying configuration. This can add up to roughly
+  30 seconds to the task. If NX-OS has not finished within that window,
+  the task fails and can safely be rerun.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)

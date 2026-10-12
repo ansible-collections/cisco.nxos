@@ -652,3 +652,34 @@ class TestNxosVpcModule(TestNxosModule):
         with self.assertRaises(Exception) as ctx:
             self.execute_module()
         self.assertIn("some unrelated NX-API error", str(ctx.exception))
+
+    def test_domain_wait_rest_batch_cli_retry(self):
+        """CLI path: rest batch returns 'Domain delete in progress' text, succeeds on retry."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        # probe succeeds immediately; rest batch needs one retry
+        conn.edit_config.side_effect = [
+            None,  # first batch
+            None,  # probe succeeds immediately
+            "Domain delete in progress",  # rest batch attempt 1 — CLI text response
+            None,  # rest batch attempt 2 succeeds
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(conn.edit_config.call_count, 4)
+        self.assertIn("role priority 150", result["commands"])
+
+    def test_domain_wait_rest_batch_nxapi_retry(self):
+        """NX-API path: rest batch raises 'Domain delete in progress' once, succeeds on retry."""
+        self._domain_recreate_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = [
+            None,  # first batch
+            None,  # probe succeeds immediately
+            ConnectionError(
+                "Domain delete in progress",
+            ),  # rest batch attempt 1
+            None,  # rest batch attempt 2 succeeds
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(conn.edit_config.call_count, 4)
+        self.assertIn("role priority 150", result["commands"])

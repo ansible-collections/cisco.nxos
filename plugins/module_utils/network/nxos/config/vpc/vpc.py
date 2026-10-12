@@ -186,29 +186,33 @@ class Vpc(ResourceModule):
         cmds.append("no terminal dont-ask")
         return cmds
 
-    def _probe_domain_ready(self, probe_cmd):
-        """Poll until NX-OS confirms the async domain delete has finished.
+    def _edit_config_until_ready(self, candidate):
+        """Send candidate commands, retrying when NX-OS reports that an async
+        domain delete is still in progress.
 
         Over CLI the signal is text in the edit_config return value; over
         NX-API it is a ConnectionError whose message contains
         'Domain delete in progress'.
         """
         _DOMAIN_DELETE_MSG = "Domain delete in progress"
-        probe = [probe_cmd]
         for attempt in range(1, _MAX_RETRY + 1):
             try:
-                output = self._connection.edit_config(candidate=probe)
+                output = self._connection.edit_config(candidate=candidate)
                 if _DOMAIN_DELETE_MSG not in str(output or ""):
                     return
                 if attempt == _MAX_RETRY:
                     raise RuntimeError(
-                        "VPC {0!r}: domain delete still in progress"
-                        " after {1} probe attempts".format(probe_cmd, attempt),
+                        "VPC: domain delete still in progress"
+                        " after {0} attempts".format(attempt),
                     )
             except ConnectionError as exc:
                 if _DOMAIN_DELETE_MSG not in str(exc) or attempt == _MAX_RETRY:
                     raise
             time.sleep(_RETRY_INTERVAL)
+
+    def _probe_domain_ready(self, probe_cmd):
+        """Poll until NX-OS confirms the async domain delete has finished."""
+        self._edit_config_until_ready([probe_cmd])
 
     def _run_with_domain_wait(self):
         """Run commands, splitting at 'no vpc domain' to give NX-OS time to
@@ -246,7 +250,7 @@ class Vpc(ResourceModule):
             self._probe_domain_ready(rest[0])
 
         if rest:
-            self._connection.edit_config(candidate=rest)
+            self._edit_config_until_ready(rest)
         self.changed = True
 
     def _compare_scalars(self, want, have, prune):

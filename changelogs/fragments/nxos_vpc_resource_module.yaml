@@ -22,3 +22,7 @@ minor_changes:
     ``state: overridden`` deletes and recreates the VPC domain, because
     NX-OS rejects every ``no peer-keepalive`` form on 10.4(x). This
     momentarily flaps the peer relationship; see the module notes for details.
+  - >-
+    nxos_vpc - domain recreate on peer-keepalive removal now waits and
+    retries for NX-OS to finish the async domain delete before reapplying
+    configuration, which can add latency to the task.

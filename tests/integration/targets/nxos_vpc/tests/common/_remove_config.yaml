@@ -2,5 +2,3 @@
 - name: Remove VPC domain configuration
   cisco.nxos.nxos_vpc:
     state: deleted
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
