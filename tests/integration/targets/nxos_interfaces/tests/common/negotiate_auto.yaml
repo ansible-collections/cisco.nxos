@@ -12,6 +12,14 @@
         lines:
           - "default interface {{ test_int1 }}"
 
+    - name: Setup - fix speed and duplex (NX-OS rejects 'no negotiate auto' on speed auto)
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            speed: "1000"
+            duplex: full
+        state: merged
+
     # ----- merged: disable auto-negotiation -----
 
     - name: Merged - set negotiate_auto false
