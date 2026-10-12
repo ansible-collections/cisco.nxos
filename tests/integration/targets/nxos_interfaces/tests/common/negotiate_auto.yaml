@@ -16,7 +16,7 @@
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ test_int1 }}"
-            speed: "1000"
+            speed: "100"
             duplex: full
         state: merged
 
