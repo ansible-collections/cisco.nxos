@@ -201,7 +201,7 @@ class Vpc(ResourceModule):
                 if _DOMAIN_DELETE_MSG not in str(output or ""):
                     return
                 if attempt == _MAX_RETRY:
-                    raise Exception(
+                    raise RuntimeError(
                         "VPC {0!r}: domain delete still in progress"
                         " after {1} probe attempts".format(probe_cmd, attempt),
                     )
