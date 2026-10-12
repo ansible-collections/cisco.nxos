@@ -54,7 +54,7 @@ class VpcFacts(object):
         parsed = vpc_parser.parse()
 
         # single-instance resource: take the first (and only) domain entry
-        objs = list(parsed.values())[0] if parsed else {}
+        objs = next(iter(parsed.values())) if parsed else {}
 
         # remove any unmatched optional regex groups rendered as the string "None"
         objs = {k: v for k, v in objs.items() if v not in (None, "", "None")}

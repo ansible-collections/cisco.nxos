@@ -21,6 +21,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+_DOMAIN_KEY = "{{ domain }}"
+_NEGATE_BOOL_TMPL = "{{ False if negate is defined and negate else True }}"
+
 
 class VpcTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -38,8 +41,8 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "vpc domain {{ domain }}",
             "result": {
-                "{{ domain }}": {
-                    "domain": "{{ domain }}",
+                _DOMAIN_KEY: {
+                    "domain": _DOMAIN_KEY,
                 },
             },
             "shared": True,
@@ -54,7 +57,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "role priority {{ role_priority }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "role_priority": "{{ role_priority }}",
                 },
             },
@@ -69,7 +72,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "system-priority {{ system_priority }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "system_priority": "{{ system_priority }}",
                 },
             },
@@ -84,7 +87,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "delay restore {{ delay_restore }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "delay_restore": "{{ delay_restore }}",
                 },
             },
@@ -99,7 +102,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "delay restore interface-vlan {{ delay_restore_interface_vlan }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "delay_restore_interface_vlan": "{{ delay_restore_interface_vlan }}",
                 },
             },
@@ -114,7 +117,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "delay restore orphan-port {{ delay_restore_orphan_port }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "delay_restore_orphan_port": "{{ delay_restore_orphan_port }}",
                 },
             },
@@ -129,7 +132,7 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "auto-recovery reload-delay {{ auto_recovery_reload_delay }}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "auto_recovery_reload_delay": "{{ auto_recovery_reload_delay }}",
                 },
             },
@@ -144,8 +147,8 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "auto-recovery",
             "result": {
-                "{{ domain }}": {
-                    "auto_recovery": "{{ False if negate is defined and negate else True }}",
+                _DOMAIN_KEY: {
+                    "auto_recovery": _NEGATE_BOOL_TMPL,
                 },
             },
         },
@@ -159,8 +162,8 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "peer-gateway",
             "result": {
-                "{{ domain }}": {
-                    "peer_gw": "{{ False if negate is defined and negate else True }}",
+                _DOMAIN_KEY: {
+                    "peer_gw": _NEGATE_BOOL_TMPL,
                 },
             },
         },
@@ -174,8 +177,8 @@ class VpcTemplate(NetworkTemplate):
             ),
             "setval": "peer-switch",
             "result": {
-                "{{ domain }}": {
-                    "peer_sw": "{{ False if negate is defined and negate else True }}",
+                _DOMAIN_KEY: {
+                    "peer_sw": _NEGATE_BOOL_TMPL,
                 },
             },
         },
@@ -193,7 +196,7 @@ class VpcTemplate(NetworkTemplate):
                       "{% if pkl_src is defined and pkl_src %} source {{ pkl_src }}{% endif %}"
                       "{% if pkl_vrf is defined and pkl_vrf %} vrf {{ pkl_vrf }}{% endif %}",
             "result": {
-                "{{ domain }}": {
+                _DOMAIN_KEY: {
                     "pkl_dest": "{{ pkl_dest }}",
                     "pkl_src": "{{ pkl_src }}",
                     "pkl_vrf": "{{ pkl_vrf }}",

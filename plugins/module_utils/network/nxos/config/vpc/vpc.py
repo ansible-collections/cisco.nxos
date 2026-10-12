@@ -32,6 +32,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 _DOMAIN_DELETE_SLEEP = 8
 _MAX_RETRY = 5
 _RETRY_INTERVAL = 4
+_TERMINAL_DONT_ASK = "terminal dont-ask"
+_NO_VPC_DOMAIN_FMT = "no vpc domain {0}"
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vpc import (
@@ -103,8 +105,8 @@ class Vpc(ResourceModule):
         # if state is deleted, remove the vpc domain entirely
         if self.state == "deleted":
             if have:
-                self.commands.append("terminal dont-ask")
-                self.commands.append("no vpc domain {0}".format(have.get("domain")))
+                self.commands.append(_TERMINAL_DONT_ASK)
+                self.commands.append(_NO_VPC_DOMAIN_FMT.format(have.get("domain")))
             self._restore_dont_ask()
             return
 
@@ -116,8 +118,8 @@ class Vpc(ResourceModule):
             and want["domain"] != have.get("domain")
             and self.state in ["replaced", "overridden"]
         ):
-            self.commands.append("terminal dont-ask")
-            self.commands.append("no vpc domain {0}".format(have["domain"]))
+            self.commands.append(_TERMINAL_DONT_ASK)
+            self.commands.append(_NO_VPC_DOMAIN_FMT.format(have["domain"]))
             have = {}
 
         self._compare(want, have)
@@ -142,7 +144,7 @@ class Vpc(ResourceModule):
         vpc domain stays in that state, and later tasks reusing the same
         connection do not behave as they would on a fresh one.
         """
-        if "terminal dont-ask" in self.commands:
+        if _TERMINAL_DONT_ASK in self.commands:
             self.commands.append("no terminal dont-ask")
 
     def _positive_cmds_from_want(self, want):
@@ -176,13 +178,37 @@ class Vpc(ResourceModule):
         domain = want.get("domain") or (self.have or {}).get("domain")
         positive = self._positive_cmds_from_want(want)
         cmds = [
-            "terminal dont-ask",
-            "no vpc domain {0}".format(domain),
+            _TERMINAL_DONT_ASK,
+            _NO_VPC_DOMAIN_FMT.format(domain),
             "vpc domain {0}".format(domain),
         ]
         cmds.extend(positive)
         cmds.append("no terminal dont-ask")
         return cmds
+
+    def _probe_domain_ready(self, probe_cmd):
+        """Poll until NX-OS confirms the async domain delete has finished.
+
+        Over CLI the signal is text in the edit_config return value; over
+        NX-API it is a ConnectionError whose message contains
+        'Domain delete in progress'.
+        """
+        _DOMAIN_DELETE_MSG = "Domain delete in progress"
+        probe = [probe_cmd]
+        for attempt in range(1, _MAX_RETRY + 1):
+            try:
+                output = self._connection.edit_config(candidate=probe)
+                if _DOMAIN_DELETE_MSG not in str(output or ""):
+                    return
+                if attempt == _MAX_RETRY:
+                    raise Exception(
+                        "VPC {0!r}: domain delete still in progress"
+                        " after {1} probe attempts".format(probe_cmd, attempt),
+                    )
+            except ConnectionError as exc:
+                if _DOMAIN_DELETE_MSG not in str(exc) or attempt == _MAX_RETRY:
+                    raise
+            time.sleep(_RETRY_INTERVAL)
 
     def _run_with_domain_wait(self):
         """Run commands, splitting at 'no vpc domain' to give NX-OS time to
@@ -199,10 +225,6 @@ class Vpc(ResourceModule):
         Fix: send everything up to and including 'no vpc domain', sleep
         _DOMAIN_DELETE_SLEEP seconds, then probe with just 'vpc domain <id>'
         until NX-OS confirms the delete is complete before sending the rest.
-
-        Over CLI the signal is text in the edit_config return value; over
-        NX-API it is a ConnectionError whose message contains
-        'Domain delete in progress'.
         """
         split_idx = next(
             (i for i, cmd in enumerate(self.commands) if cmd.startswith("no vpc domain")),
@@ -221,37 +243,13 @@ class Vpc(ResourceModule):
         time.sleep(_DOMAIN_DELETE_SLEEP)
 
         if rest and rest[0].startswith("vpc domain"):
-            # Probe with just 'vpc domain <id>' until the async delete
-            # completes before sending the full recreate batch.
-            probe = [rest[0]]
-            for attempt in range(1, _MAX_RETRY + 1):
-                try:
-                    output = self._connection.edit_config(candidate=probe)
-                    if "Domain delete in progress" in str(output or ""):
-                        if attempt == _MAX_RETRY:
-                            raise Exception(
-                                "VPC {0!r}: domain delete still in progress"
-                                " after {1} probe attempts".format(probe[0], attempt),
-                            )
-                        time.sleep(_RETRY_INTERVAL)
-                        continue
-                    break
-                except Exception as exc:
-                    if "Domain delete in progress" not in str(exc) or attempt == _MAX_RETRY:
-                        raise
-                    time.sleep(_RETRY_INTERVAL)
+            self._probe_domain_ready(rest[0])
 
         if rest:
             self._connection.edit_config(candidate=rest)
         self.changed = True
 
-    def _compare(self, want, have):
-        """Generate set/delete commands for VPC global domain configuration."""
-        begin = len(self.commands)
-        needs_dont_ask = False
-        domain = want.get("domain") or have.get("domain")
-        prune = self.state not in ["merged", "rendered"]
-
+    def _compare_scalars(self, want, have, prune):
         for key, set_tmpl, default in self.SCALARS:
             w_val = want.get(key)
             h_val = have.get(key)
@@ -262,6 +260,8 @@ class Vpc(ResourceModule):
                 # replaced / overridden: reset to the platform default
                 self.commands.append(set_tmpl.format(default))
 
+    def _compare_booleans(self, want, have, prune):
+        needs_dont_ask = False
         for key, set_cmd, unset_cmd in self.BOOLEANS:
             w_val = want.get(key)
             if w_val is None and not prune:
@@ -273,13 +273,22 @@ class Vpc(ResourceModule):
                 if key in self.NEEDS_DONT_ASK:
                     needs_dont_ask = True
                 self.commands.append(set_cmd if w_val else unset_cmd)
+        return needs_dont_ask
 
+    def _compare(self, want, have):
+        """Generate set/delete commands for VPC global domain configuration."""
+        begin = len(self.commands)
+        domain = want.get("domain") or have.get("domain")
+        prune = self.state not in ["merged", "rendered"]
+
+        self._compare_scalars(want, have, prune)
+        needs_dont_ask = self._compare_booleans(want, have, prune)
         self._compare_peer_keepalive(want, have)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, "vpc domain {0}".format(domain))
             if needs_dont_ask:
-                self.commands.insert(begin, "terminal dont-ask")
+                self.commands.insert(begin, _TERMINAL_DONT_ASK)
 
     def _compare_peer_keepalive(self, want, have):
         """peer-keepalive is a single composite command, so it is compared
