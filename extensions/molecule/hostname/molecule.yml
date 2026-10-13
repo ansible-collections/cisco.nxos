@@ -3,6 +3,8 @@ driver:
 platforms:
   - name: cisshgo-hostname-gathered
   - name: cisshgo-hostname-merged
+  - name: cisshgo-hostname-overridden
+  - name: cisshgo-hostname-replaced
   - name: cisshgo-hostname-deleted
 provisioner:
   name: ansible

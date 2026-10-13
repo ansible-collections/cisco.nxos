@@ -60,6 +60,18 @@
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
 
+    - name: Empty config with state merged should be a no-op
+      register: result_empty_config
+      cisco.nxos.nxos_lldp_interfaces:
+        config: []
+        state: merged
+
+    - name: Assert empty config produces no changes (module does not raise on empty config for merged)
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.changed == false
+          - (result_empty_config.commands | default([])) | length == 0
+
 - name: "Nxos_lldp_interfaces — state: replaced"
   hosts: nxos_lldp_interfaces_replaced
   gather_facts: false

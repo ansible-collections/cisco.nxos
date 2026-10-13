@@ -149,6 +149,19 @@
           - idempotent_result.changed == false
           - (idempotent_result.commands | default([])) | length == 0
 
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_snmp_server:
+        config: {}
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
 - name: "Nxos_snmp_server — state: replaced"
   hosts: nxos_snmp_server_replaced
   gather_facts: false
@@ -348,6 +361,59 @@
             | reject('search', 'snmp-server user')
             | list
             | length == 0
+
+- name: "Nxos_snmp_server — state: replaced_same_user"
+  hosts: nxos_snmp_server_replaced_same_user
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_snmp_server/vars/main.yml
+  tasks:
+    - name: Replace SNMP config updating same user credentials (AAP-90154)
+      register: result
+      cisco.nxos.nxos_snmp_server: &replaced_same_user_config
+        config:
+          users:
+            auth:
+              - user: admin
+                group: network-admin
+                authentication:
+                  algorithm: md5
+                  localizedv2_key: true
+                  password: "{{ admin_snmp_passwd }}"
+                  priv:
+                    aes_128: true
+                    privacy_password: "{{ admin_snmp_priv_key }}"
+              - user: aap90154_user
+                group: vdc-operator
+                authentication:
+                  algorithm: md5
+                  password: "0x7d425fbf09417c44bca69e1d9e9ce889"
+                  localized_key: true
+                  priv:
+                    aes_128: true
+                    privacy_password: "0x7d425fbf09417c44bca69e1d9e9ce889"
+        state: replaced
+    - name: Assert module did not delete the user being updated
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.commands
+            | select('search', '^no snmp-server user aap90154_user$')
+            | list
+            | length == 0
+          - >-
+            result.commands
+            | select('search', 'snmp-server user aap90154_user vdc-operator auth md5')
+            | list
+            | length > 0
+    - name: Idempotent re-run (replaced_same_user)
+      register: idempotent_result
+      cisco.nxos.nxos_snmp_server: *replaced_same_user_config
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - (idempotent_result.commands | default([])) | length == 0
 
 - name: "Nxos_snmp_server — state: rendered"
   hosts: nxos_snmp_server_gathered

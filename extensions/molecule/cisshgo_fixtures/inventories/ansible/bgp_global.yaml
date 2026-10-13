@@ -29,3 +29,11 @@ all:
           hosts:
             cisshgo-bgp_global-deleted:
               ansible_port: 10003
+        nxos_bgp_global_bfd_negation:
+          hosts:
+            cisshgo-bgp_global-bfd_negation:
+              ansible_port: 10004
+        nxos_bgp_global_deleted_af:
+          hosts:
+            cisshgo-bgp_global-deleted_af:
+              ansible_port: 10005

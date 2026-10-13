@@ -25,7 +25,11 @@ all:
           hosts:
             cisshgo-telemetry-replaced:
               ansible_port: 10003
+        nxos_telemetry_overridden:
+          hosts:
+            cisshgo-telemetry-overridden:
+              ansible_port: 10004
         nxos_telemetry_deleted:
           hosts:
             cisshgo-telemetry-deleted:
-              ansible_port: 10004
+              ansible_port: 10005

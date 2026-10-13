@@ -145,6 +145,18 @@
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
 
+    - name: Empty config with state merged should be a no-op
+      register: result_empty_config
+      cisco.nxos.nxos_telemetry:
+        config: {}
+        state: merged
+
+    - name: Assert empty config produces no changes (module does not raise on empty config for merged)
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.changed == false
+          - (result_empty_config.commands | default([])) | length == 0
+
 - name: "Nxos_telemetry — state: replaced"
   hosts: nxos_telemetry_replaced
   gather_facts: false
@@ -227,6 +239,74 @@
       register: idempotent_result
       cisco.nxos.nxos_telemetry: *replaced
     - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_telemetry — state: overridden"
+  hosts: nxos_telemetry_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_telemetry/vars/main.yaml
+  tasks:
+    - name: Run nxos_telemetry overridden
+      register: result
+      cisco.nxos.nxos_telemetry: &overridden
+        config:
+          certificate:
+            key: /bootflash/new_server.crt
+            hostname: newhost.example.com
+          vrf: management
+          compression: gzip
+          destination_groups:
+            - id: 2
+              destination:
+                ip: 192.168.0.1
+                port: 65001
+                protocol: grpc
+                encoding: gpb
+            - id: 2
+              destination:
+                ip: 192.168.0.3
+                port: 55001
+                protocol: grpc
+                encoding: gpb
+          sensor_groups:
+            - id: 100
+              data_source: NX-API
+              path:
+                name: '"show bgp l2vpn evpn summary"'
+                depth: unbounded
+                query_condition: foo
+                filter_condition: foo
+          subscriptions:
+            - id: 99
+              destination_group: 2
+              sensor_group:
+                id: 100
+                sample_interval: 2000
+        state: overridden
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          # overridden shares the exact same code path as replaced for this
+          # module (single global config object, no list to "override" beyond
+          # "replace"), so the resulting command set is identical.
+          - result.changed == true
+          - result.before | length == 6
+          - "'telemetry' in result.commands"
+          - "'no subscription 55' in result.commands"
+          - "'subscription 99' in result.commands"
+          - "'destination-group 2' in result.commands"
+          - "'sensor-group 100' in result.commands"
+          - "'certificate /bootflash/new_server.crt newhost.example.com' in result.commands"
+          - "'use-vrf management' in result.commands"
+          - result.commands | length == 27
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_telemetry: *overridden
+    - name: Assert idempotent (overridden)
       ansible.builtin.assert:
         that:
           - idempotent_result.changed == false

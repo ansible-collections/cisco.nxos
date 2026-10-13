@@ -3,5 +3,9 @@ devices:
     count: 1
   - scenario: nxos-hostname-merged
     count: 1
+  - scenario: nxos-hostname-overridden
+    count: 1
+  - scenario: nxos-hostname-replaced
+    count: 1
   - scenario: nxos-hostname-deleted
     count: 1

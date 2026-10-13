@@ -7,3 +7,7 @@ devices:
     count: 1
   - scenario: nxos-bgp-global-deleted
     count: 1
+  - scenario: nxos-bgp-global-bfd_negation
+    count: 1
+  - scenario: nxos-bgp-global-deleted_af
+    count: 1

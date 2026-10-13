@@ -6,6 +6,7 @@ platforms:
   - name: cisshgo-snmp_server-replaced
   - name: cisshgo-snmp_server-overridden
   - name: cisshgo-snmp_server-deleted
+  - name: cisshgo-snmp_server-replaced_same_user
 prerun: false
 provisioner:
   env:

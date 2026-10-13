@@ -4,6 +4,7 @@ platforms:
   - name: cisshgo-telemetry-gathered
   - name: cisshgo-telemetry-merged
   - name: cisshgo-telemetry-replaced
+  - name: cisshgo-telemetry-overridden
   - name: cisshgo-telemetry-deleted
 provisioner:
   name: ansible

@@ -34,3 +34,7 @@ all:
           hosts:
             cisshgo-snmp_server-deleted:
               ansible_port: 10004
+        nxos_snmp_server_replaced_same_user:
+          hosts:
+            cisshgo-snmp_server-replaced_same_user:
+              ansible_port: 10005

@@ -1,4 +1,6 @@
 ---
 trivial:
-  - "Add CISSHGO-based Molecule scenarios for 30 resource modules (ACA-6750)."
-  - "Exclude Molecule vars.yml and CISSHGO transcript_map from ansible-lint."
+  - "Add CISSHGO-based Molecule scenarios for resource modules (ACA-6750), wire them into
+    GitHub Actions (libssh + paramiko), fix nxos_snmp_server Molecule asserts and CISSHGO
+    community CLI sequences (ACA-7097), and derive CISSHGO listener ports at runtime
+    instead of per-scenario Molecule vars.yml."

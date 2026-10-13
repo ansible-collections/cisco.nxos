@@ -96,6 +96,19 @@
           - result.changed == false
           - result.commands | length == 0
 
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_bgp_global:
+        config: {}
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
 - name: "Nxos_bgp_global -- state: replaced"
   hosts: nxos_bgp_global_replaced
   gather_facts: false
@@ -191,6 +204,96 @@
         that:
           - result.changed == false
           - result.commands | length == 0
+
+- name: "Nxos_bgp_global -- state: bfd_negation"
+  hosts: nxos_bgp_global_bfd_negation
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_global/vars/main.yml"
+  tasks:
+    - name: Remove BFD from BGP neighbors with bfd.set false
+      register: result
+      cisco.nxos.nxos_bgp_global: &bfd_negation_config
+        config:
+          as_number: "65536"
+          neighbors:
+            - neighbor_address: 198.51.100.30
+              remote_as: "65537"
+              bfd:
+                set: false
+            - neighbor_address: 198.51.100.31
+              remote_as: "65537"
+              bfd:
+                singlehop: false
+            - neighbor_address: 198.51.100.32
+              remote_as: "65537"
+              bfd:
+                multihop:
+                  set: false
+        state: merged
+
+    - name: Assert BFD negation commands were generated
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no bfd' in result.commands"
+          - "'no bfd singlehop' in result.commands"
+          - "'no bfd multihop' in result.commands"
+
+    - name: Idempotence - desired state without BFD keys
+      register: result
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: "65536"
+          neighbors:
+            - neighbor_address: 198.51.100.30
+              remote_as: "65537"
+            - neighbor_address: 198.51.100.31
+              remote_as: "65537"
+            - neighbor_address: 198.51.100.32
+              remote_as: "65537"
+        state: merged
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+- name: "Nxos_bgp_global -- state: deleted_af"
+  hosts: nxos_bgp_global_deleted_af
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_bgp_global/vars/main.yml"
+  tasks:
+    - name: "Setup - 1 (add neighbor with AF config)"
+      cisco.nxos.nxos_config:
+        lines:
+          - "router bgp 65536"
+          - "log-neighbor-changes"
+          - "maxas-limit 20"
+          - "router-id 198.51.100.2"
+          - "neighbor 203.0.113.2"
+          - "  address-family ipv4 unicast"
+          - "    next-hop-self"
+          - "  remote-as 65538"
+          - "  description NBR-1"
+          - "neighbor 192.0.2.1"
+          - "  remote-as 65537"
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Remove a neighbor having AF configurations (should fail)
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_bgp_global:
+        state: deleted
+
+    - name: Assert that the task failed
+      ansible.builtin.assert:
+        that:
+          - result.failed == True
+          - "'Neighbor 203.0.113.2 has address-family configurations. Please use the nxos_bgp_neighbor_af module to remove those first.' in result.msg"
 
 - name: "Nxos_bgp_global -- state: parsed"
   hosts: nxos_bgp_global_gathered

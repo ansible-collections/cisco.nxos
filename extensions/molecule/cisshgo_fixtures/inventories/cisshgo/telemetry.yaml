@@ -7,5 +7,7 @@ devices:
     count: 1
   - scenario: nxos-telemetry-replaced
     count: 1
+  - scenario: nxos-telemetry-overridden
+    count: 1
   - scenario: nxos-telemetry-deleted
     count: 1

@@ -42,6 +42,19 @@
           - "!all"
           - "!min"
         gather_network_resources: hsrp_interfaces
+
+    - name: "Nxos_hsrp_interfaces -- state: gathered"
+      register: result_gathered
+      cisco.nxos.nxos_hsrp_interfaces:
+        state: gathered
+
+    - name: Assert gathered matches applied config
+      ansible.builtin.assert:
+        that:
+          - result_gathered.changed == false
+          - result_gathered.gathered | selectattr('name', 'equalto', test_int1) | list | length == 1
+          - result_gathered.gathered | selectattr('name', 'equalto', test_int1) | map(attribute='standby') | first | default({}) | dict2items | length > 0
+
     - name: Idempotent re-run (merged)
       register: idempotent_result
       cisco.nxos.nxos_hsrp_interfaces: *merged_config
@@ -50,6 +63,19 @@
         that:
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
+
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_hsrp_interfaces:
+        config: []
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
 
 - name: "Nxos_hsrp_interfaces — state: replaced"
   hosts: nxos_hsrp_interfaces_replaced

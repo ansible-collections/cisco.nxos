@@ -54,6 +54,19 @@
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
 
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_lacp:
+        config: {}
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
 - name: "Nxos_lacp — state: replaced"
   hosts: nxos_lacp_replaced
   gather_facts: false

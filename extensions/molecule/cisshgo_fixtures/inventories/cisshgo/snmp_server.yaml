@@ -9,3 +9,5 @@ devices:
     count: 1
   - scenario: nxos-snmp-server-deleted
     count: 1
+  - scenario: nxos-snmp-server-replaced_same_user
+    count: 1

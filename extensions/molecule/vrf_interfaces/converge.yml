@@ -52,6 +52,56 @@
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
 
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_vrf_interfaces:
+        config: []
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
+    - name: RTT - Gather current facts
+      register: rtt_gathered_1
+      cisco.nxos.nxos_vrf_interfaces:
+        state: gathered
+
+    - name: RTT - Render gathered config offline
+      register: rtt_rendered
+      cisco.nxos.nxos_vrf_interfaces:
+        config: "{{ rtt_gathered_1.gathered }}"
+        state: rendered
+
+    - name: RTT - Assert rendered produced output
+      ansible.builtin.assert:
+        that:
+          - rtt_rendered.rendered is defined
+
+    - name: RTT - Re-apply gathered config via merged (should be idempotent)
+      register: rtt_merged
+      cisco.nxos.nxos_vrf_interfaces:
+        config: "{{ rtt_gathered_1.gathered }}"
+        state: merged
+
+    - name: RTT - Assert merged round trip is a no-op
+      ansible.builtin.assert:
+        that:
+          - rtt_merged.changed == false
+
+    - name: RTT - Gather facts again after round trip
+      register: rtt_gathered_2
+      cisco.nxos.nxos_vrf_interfaces:
+        state: gathered
+
+    - name: RTT - Assert gathered state unchanged after round trip
+      ansible.builtin.assert:
+        that:
+          - rtt_gathered_1.gathered == rtt_gathered_2.gathered
+
 - name: "Nxos_vrf_interfaces — state: replaced"
   hosts: nxos_vrf_interfaces_replaced
   gather_facts: false

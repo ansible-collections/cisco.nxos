@@ -31,6 +31,36 @@ platforms:
       "#": " "
       (config)#: " "
       (config-if)#: " "
+  nxos_l2_interfaces:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      interface: (config-if)#
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-if)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-if)#: " "
   nxos_hostname:
     vendor: cisco
     hostname: cisshgo-nxos
@@ -131,27 +161,34 @@ platforms:
       terminal width 511: transcripts/common/generic_empty_return.txt
       enable: transcripts/common/generic_empty_return.txt
       show running-config: transcripts/common/generic_empty_return.txt
-      show running-config | section '^router bgp': transcripts/nxos_bgp_global/gathered.txt
+      feature bfd: transcripts/common/generic_empty_return.txt
     context_search:
       configure terminal: (config)#
-      router bgp: (config-router)#
-      vrf: (config-router-vrf)#
       interface: (config-if)#
       enable: "#"
       base: "#"
+      router bgp: (config-router)#
+      neighbor: (config-router-neighbor)#
+      address-family: (config-router-af)#
+      address-family ipv4 unicast: (config-router-af)#
+      vrf: (config-router-vrf)#
     context_hierarchy:
-      (config-router-vrf)#: (config-router)#
-      (config-router)#: (config)#
       (config-if)#: (config)#
       (config)#: "#"
       "#": ">"
+      (config-router-neighbor)#: (config-router)#
+      (config-router)#: (config)#
+      (config-router-af)#: (config-router)#
+      (config-router-vrf)#: (config-router)#
     end_context: "#"
     context_prefix_lines:
       "#": " "
       (config)#: " "
-      (config-router)#: " "
-      (config-router-vrf)#: " "
       (config-if)#: " "
+      (config-router)#: " "
+      (config-router-neighbor)#: " "
+      (config-router-af)#: " "
+      (config-router-vrf)#: " "
   nxos_lldp_global:
     vendor: cisco
     hostname: cisshgo-nxos
@@ -1438,6 +1475,14 @@ scenarios:
         transcript: transcripts/nxos_acls/scenarios/merged/after.txt
       - command: show running-config | section '^ip(v6)* access-list'
         transcript: transcripts/nxos_acls/scenarios/merged/after.txt
+      - command: show running-config | section '^ip(v6)* access-list'
+        transcript: transcripts/nxos_acls/scenarios/merged/after.txt
+      - command: show running-config | section '^ip(v6)* access-list'
+        transcript: transcripts/nxos_acls/scenarios/merged/after.txt
+      - command: show running-config | section '^ip(v6)* access-list'
+        transcript: transcripts/nxos_acls/scenarios/merged/after.txt
+      - command: show running-config | section '^ip(v6)* access-list'
+        transcript: transcripts/nxos_acls/scenarios/merged/after.txt
   nxos-acls-replaced:
     platform: nxos_acls
     sequence:
@@ -1550,6 +1595,34 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_interfaces/scenarios/merged/after.txt
       - command: show running-config all | incl 'system default switchport'
@@ -1671,6 +1744,40 @@ scenarios:
         transcript: transcripts/nxos_hostname/scenarios/merged/after.txt
       - command: show running-config | section ^hostname
         transcript: transcripts/nxos_hostname/scenarios/merged/after.txt
+  nxos-hostname-overridden:
+    platform: nxos_hostname
+    sequence:
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: hostname NXOSv-9k
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/overridden/after.txt
+  nxos-hostname-replaced:
+    platform: nxos_hostname
+    sequence:
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: hostname NXOSv-9k
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
+      - command: show running-config | section ^hostname
+        transcript: transcripts/nxos_hostname/scenarios/replaced/after.txt
   nxos-hostname-deleted:
     platform: nxos_hostname
     sequence:
@@ -1951,6 +2058,10 @@ scenarios:
         transcript: transcripts/nxos_bgp_global/scenarios/deleted/after.txt
       - command: show running-config | section '^router bgp'
         transcript: transcripts/nxos_bgp_global/scenarios/deleted/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/deleted/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/deleted/after.txt
   nxos-lldp-global-gathered:
     platform: nxos_lldp_global
     sequence:
@@ -2115,6 +2226,35 @@ scenarios:
         transcript: transcripts/common/generic_empty_return.txt
       - command: show run telemetry all
         transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
+  nxos-telemetry-overridden:
+    platform: nxos_telemetry
+    sequence:
+      - command: show run telemetry all
+        transcript: transcripts/nxos_telemetry/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
       - command: show run telemetry all
         transcript: transcripts/nxos_telemetry/scenarios/replaced/after.txt
       - command: show run telemetry all
@@ -2454,13 +2594,7 @@ scenarios:
     platform: nxos_snmp_server
     sequence:
       - command: show running-config | section '^snmp-server'
-        transcript: transcripts/nxos_snmp_server/scenarios/gathered/after.txt
-      - command: show running-config | section '^snmp-server'
-        transcript: transcripts/nxos_snmp_server/scenarios/gathered/after.txt
-      - command: show running-config | section '^snmp-server'
-        transcript: transcripts/nxos_snmp_server/scenarios/gathered/after.txt
-      - command: show running-config | section '^snmp-server'
-        transcript: transcripts/nxos_snmp_server/scenarios/gathered/after.txt
+        transcript: transcripts/nxos_snmp_server/gathered.txt
   nxos-snmp-server-merged:
     platform: nxos_snmp_server
     sequence:
@@ -2468,8 +2602,6 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/merged/before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      # Non-community config commands handled by command_transcripts (order-independent).
-      # Community commands must stay in sequence (CISSHGO prefix-trimming ambiguity).
       - command: snmp-server community private group network-admin
         transcript: transcripts/common/generic_empty_return.txt
       - command: snmp-server community private use-ipv4acl PNB_SNMPv2c_ACL_UAW3n9YtXghpgOJ
@@ -2595,6 +2727,26 @@ scenarios:
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
+      - command: show vlan | json-pretty
+        transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
+      - command: show running-config | section ^vlan
+        transcript: transcripts/nxos_vlans/scenarios/merged/after_secondary.txt
+      - command: show vlan | json-pretty
+        transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
+      - command: show running-config | section ^vlan
+        transcript: transcripts/nxos_vlans/scenarios/merged/after_secondary.txt
+      - command: show vlan | json-pretty
+        transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
+      - command: show running-config | section ^vlan
+        transcript: transcripts/nxos_vlans/scenarios/merged/after_secondary.txt
+      - command: show vlan | json-pretty
+        transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
+      - command: show running-config | section ^vlan
+        transcript: transcripts/nxos_vlans/scenarios/merged/after_secondary.txt
+      - command: show vlan | json-pretty
+        transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
+      - command: show running-config | section ^vlan
+        transcript: transcripts/nxos_vlans/scenarios/merged/after_secondary.txt
       - command: show vlan | json-pretty
         transcript: transcripts/nxos_vlans/scenarios/merged/after.txt
       - command: show running-config | section ^vlan
@@ -2780,6 +2932,26 @@ scenarios:
         transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
       - command: show running-config | section '^vrf context'
         transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
+      - command: show running-config | include '^ip(v6)* route'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
+      - command: show running-config | section '^vrf context'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
+      - command: show running-config | include '^ip(v6)* route'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
+      - command: show running-config | section '^vrf context'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
+      - command: show running-config | include '^ip(v6)* route'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
+      - command: show running-config | section '^vrf context'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
+      - command: show running-config | include '^ip(v6)* route'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
+      - command: show running-config | section '^vrf context'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
+      - command: show running-config | include '^ip(v6)* route'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after.txt
+      - command: show running-config | section '^vrf context'
+        transcript: transcripts/nxos_static_routes/scenarios/merged/after_secondary.txt
   nxos-static-routes-replaced:
     platform: nxos_static_routes
     sequence:
@@ -2893,6 +3065,404 @@ scenarios:
         transcript: transcripts/nxos_static_routes/scenarios/deleted/after.txt
       - command: show running-config | section '^vrf context'
         transcript: transcripts/nxos_static_routes/scenarios/deleted/after_secondary.txt
+  nxos-l2-interfaces-action_states:
+    platform: nxos_l2_interfaces
+    sequence:
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/clean.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/7
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 200-270,350,398-999
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/8
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk native vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/populated.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/8
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no cdp enable
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk native vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 200,560-1000
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/after_replaced.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/after_replaced.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/after_replaced.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/after_replaced.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/7
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/8
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: cdp enable
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/after_deleted.txt
+  nxos-l2-interfaces-non_action_states:
+    platform: nxos_l2_interfaces
+    sequence:
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/clean.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/7
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 200-270,350,398-999
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/8
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk native vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/populated.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/populated.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/action_states/populated.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/7
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport access vlan 6
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/8
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk native vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/non_action_states/after_deleted.txt
+  nxos-l2-interfaces-port_channel_member:
+    platform: nxos_l2_interfaces
+    sequence:
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface port-channel10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: channel-group 10 force mode on
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface port-channel10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport mode trunk
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 100-200
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport access vlan 5
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_int1_setup.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_int1_setup.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_int1_setup.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 30
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_int3_setup.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface port-channel10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport mode trunk
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no cdp enable
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport access vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_overridden.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_overridden.txt
+      - command: show running-config
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/unfiltered_before_readd.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk native vlan 15
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_int1_native_vlan.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: cdp enable
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport access vlan 10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk native vlan 15
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_deleted_all.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface port-channel10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface port-channel20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: channel-group 20 force mode on
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: channel-group 20 force mode on
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface port-channel20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport mode trunk
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk native vlan 20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 100-102,300
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_pc20_setup.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_pc20_setup.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface port-channel20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no cdp enable
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/port_channel_member/after_overridden_idempotent.txt
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: default interface Ethernet1/3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface port-channel10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface port-channel20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+  nxos-l2-interfaces-merged_implicit_vlans:
+    platform: nxos_l2_interfaces
+    sequence:
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/9
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport mode trunk
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk native vlan 99
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no switchport trunk allowed vlan
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/setup_state.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/setup_state.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/9
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan 100,200
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_set.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_set.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_set.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface Ethernet1/9
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: switchport trunk allowed vlan add 300,400
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_add.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_add.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l2_interfaces/scenarios/merged_implicit_vlans/merged_add.txt
   nxos-l3-interfaces-gathered:
     platform: nxos_l3_interfaces
     sequence:
@@ -2921,6 +3491,16 @@ scenarios:
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_l3_interfaces/scenarios/merged/after.txt
       - command: show running-config | section ^interface
@@ -4585,133 +5165,143 @@ scenarios:
   nxos-vrf-interfaces-gathered:
     platform: nxos_vrf_interfaces
     sequence:
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/gathered/after.txt
   nxos-vrf-interfaces-merged:
     platform: nxos_vrf_interfaces
     sequence:
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/before.txt
-      - command: "configure terminal"
+      - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/2"
+      - command: interface Ethernet1/2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member test"
+      - command: vrf member test
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/6"
+      - command: interface Ethernet1/6
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member test2"
+      - command: vrf member test2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "end"
+      - command: end
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
+        transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section '^interface'
+        transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section '^interface'
+        transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section '^interface'
+        transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section '^interface'
+        transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/merged/after.txt
   nxos-vrf-interfaces-replaced:
     platform: nxos_vrf_interfaces
     sequence:
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/before.txt
-      - command: "configure terminal"
+      - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/2"
+      - command: interface Ethernet1/2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member TEST_VRF2"
+      - command: vrf member TEST_VRF2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/6"
+      - command: interface Ethernet1/6
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member TEST_VRF3"
+      - command: vrf member TEST_VRF3
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "end"
+      - command: end
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/replaced/after.txt
   nxos-vrf-interfaces-overridden:
     platform: nxos_vrf_interfaces
     sequence:
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/before.txt
-      - command: "configure terminal"
+      - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/2"
+      - command: interface Ethernet1/2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member VRF8"
+      - command: vrf member VRF8
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/6"
+      - command: interface Ethernet1/6
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "vrf member VRF9"
+      - command: vrf member VRF9
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "end"
+      - command: end
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/overridden/after.txt
   nxos-vrf-interfaces-deleted:
     platform: nxos_vrf_interfaces
     sequence:
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/before.txt
-      - command: "configure terminal"
+      - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/2"
+      - command: interface Ethernet1/2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "no vrf member test"
+      - command: no vrf member test
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "interface Ethernet1/6"
+      - command: interface Ethernet1/6
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "no vrf member test2"
+      - command: no vrf member test2
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "end"
+      - command: end
         transcript: transcripts/common/generic_empty_return.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
-      - command: "show running-config | section '^interface'"
+      - command: show running-config | section '^interface'
         transcript: transcripts/nxos_vrf_interfaces/scenarios/deleted/after.txt
   nxos-vrf-address-family-gathered:
     platform: nxos_vrf_address_family
@@ -5499,6 +6089,16 @@ scenarios:
         transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
       - command: show running-config | section ^vrf
         transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/merged/after.txt
   nxos-vrf-global-replaced:
     platform: nxos_vrf_global
     sequence:
@@ -5721,3 +6321,92 @@ scenarios:
         transcript: transcripts/nxos_route_maps/scenarios/match_metric_deviation/after.txt
       - command: show running-config | section '^route-map'
         transcript: transcripts/nxos_route_maps/scenarios/match_metric_deviation/after.txt
+  nxos-bgp-global-bfd_negation:
+    platform: nxos_bgp_global
+    sequence:
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: router bgp 65536
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: neighbor 198.51.100.30
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no bfd
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: neighbor 198.51.100.31
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no bfd singlehop
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: neighbor 198.51.100.32
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no bfd multihop
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/bfd_negation/after.txt
+  nxos-bgp-global-deleted_af:
+    platform: nxos_bgp_global
+    sequence:
+      - command: show running-config
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: router bgp 65536
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: log-neighbor-changes
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: maxas-limit 20
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: router-id 198.51.100.2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: neighbor 203.0.113.2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: address-family ipv4 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: next-hop-self
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: remote-as 65538
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: description NBR-1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: neighbor 192.0.2.1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: remote-as 65537
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/deleted_af/after.txt
+      - command: show running-config | section '^router bgp'
+        transcript: transcripts/nxos_bgp_global/scenarios/deleted_af/after.txt
+  nxos-snmp-server-replaced_same_user:
+    platform: nxos_snmp_server
+    sequence:
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command:
+          snmp-server user aap90154_user vdc-operator auth md5 0x7d425fbf09417c44bca69e1d9e9ce889
+          priv aes-128 0x7d425fbf09417c44bca69e1d9e9ce889 localizedkey
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt

@@ -5,6 +5,8 @@ platforms:
   - name: cisshgo-bgp_global-merged
   - name: cisshgo-bgp_global-replaced
   - name: cisshgo-bgp_global-deleted
+  - name: cisshgo-bgp_global-bfd_negation
+  - name: cisshgo-bgp_global-deleted_af
 provisioner:
   name: ansible
   playbooks:
