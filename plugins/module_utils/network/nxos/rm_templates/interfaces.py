@@ -115,6 +115,20 @@ class InterfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "negotiate_auto",
+            "getval": re.compile(
+                r"""
+                \s+no\snegotiate\sauto
+                $""", re.VERBOSE,
+            ),
+            "setval": "negotiate auto",
+            "result": {
+                '{{ name }}': {
+                    'negotiate_auto': "{{ False }}",
+                },
+            },
+        },
+        {
             "name": "ip_forward",
             "getval": re.compile(
                 r"""

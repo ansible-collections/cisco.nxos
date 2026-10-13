@@ -1,0 +1,64 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_vpc_interface merged integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_vpc_interface: &id001
+        config:
+          - name: port-channel10
+            vpc: 11
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] == result['commands']
+
+    - name: Assert that after dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
+      cisco.nxos.nxos_vpc_interface: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Turn off orphan-port suspend with state merged
+      cisco.nxos.nxos_vpc_interface: &id002
+        config:
+          - name: port-channel10
+            orphan_port_suspend: false
+      register: result
+
+    - name: Assert that the orphan-port suspend line was removed
+      ansible.builtin.assert:
+        that:
+          - merged['orphan_off_commands'] == result['commands']
+          - merged['after_orphan_off'] == result['after']
+
+    - name: Turn off orphan-port suspend with state merged (idempotent)
+      cisco.nxos.nxos_vpc_interface: *id002
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
