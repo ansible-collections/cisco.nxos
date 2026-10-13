@@ -128,6 +128,10 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "ccmCLIRunningConfigChanged": {"type": "bool"},
                             },
                         },
+                        "eigrp": {
+                            "type": "dict",
+                            "options": {"enable": {"type": "bool"}},
+                        },
                         "entity": {
                             "type": "dict",
                             "options": {
@@ -160,6 +164,13 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "warmStart": {"type": "bool"},
                             },
                         },
+                        "hsrp": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "state_change": {"type": "bool"},
+                            },
+                        },
                         "license": {
                             "type": "dict",
                             "options": {
@@ -184,6 +195,13 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "extended_linkUp": {"type": "bool"},
                                 "linkDown": {"type": "bool"},
                                 "linkUp": {"type": "bool"},
+                            },
+                        },
+                        "lldp": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "lldpRemTablesChange": {"type": "bool"},
                             },
                         },
                         "mmode": {

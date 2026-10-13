@@ -653,6 +653,24 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "traps.hsrp.state_change",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\shsrp
+                (?:\s(?P<state_change>state-change))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps hsrp state-change",
+            "result": {
+                "traps": {
+                    "hsrp": {
+                        "state_change": "{{ true }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "traps.license.notify_license_expiry",
             "getval": re.compile(
                 r"""
@@ -905,6 +923,24 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "traps.lldp.lldpRemTablesChange",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\slldp
+                (?:\s(?P<lldpRemTablesChange>lldpRemTablesChange))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps lldp lldpRemTablesChange",
+            "result": {
+                "traps": {
+                    "lldp": {
+                        "lldpRemTablesChange": "{{ true }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "traps.mmode.cseMaintModeChangeNotify",
             "getval": re.compile(
                 r"""
@@ -936,6 +972,23 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "traps": {
                     "mmode": {
                         "cseNormalModeChangeNotify": "{{ not not cseNormalModeChangeNotify }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.eigrp",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\s(?P<enable>eigrp)
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps eigrp",
+            "result": {
+                "traps": {
+                    "eigrp": {
+                        "enable": "{{ not not enable }}",
                     },
                 },
             },
