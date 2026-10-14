@@ -8,13 +8,21 @@ The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules al
 
 The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) and 9.4(3a) on MDS Switches. The modules should work for all releases above 8.4(1)
 
+## Requirements
+
+- Ansible Core 2.16.0 or later.
+- Python 3.10 or later.
+- The `ansible.netcommon` collection, version 8.6.0 or later.
+- The `ansible.utils` collection, required transitively by `ansible.netcommon` as declared in its [collection metadata](https://github.com/ansible-collections/ansible.netcommon/blob/main/galaxy.yml).
+- Python packages declared in this collection's [`requirements.txt`](https://github.com/ansible-collections/cisco.nxos/blob/main/requirements.txt) and [`ansible.netcommon`'s requirements.txt](https://github.com/ansible-collections/ansible.netcommon/blob/main/requirements.txt): `ansible-pylibssh` 1.4.0 or later, `jxmlease`, `ncclient`, `paramiko`, `scp`, `xmltodict`, `grpcio`, and `protobuf`.
+
+`ansible-pylibssh` provides the libssh backend for `ansible.netcommon.network_cli`. The Paramiko backend is deprecated; use the libssh backend for new deployments. See the [`network_cli` SSH type documentation](https://docs.ansible.com/projects/ansible/latest/collections/ansible/netcommon/network_cli_connection.html#parameter-ssh_type).
+
 ## Support
 
-As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
+As Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to support through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP). Open a support case using the **Create issue** button in the top-right corner of this collection's page in Red Hat Ansible Automation Hub.
 
-Additionally, you can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
-
-For more information you can check the communication section below.
+Community help is also available on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
 
 ## Communication
 
@@ -147,13 +155,48 @@ Name | Description
 
 Click the ``Content`` button to see the list of content included in this collection.
 
-## Installing this collection
+## Installation
 
-You can install the Cisco NX-OS collection with the Ansible Galaxy CLI:
+Install the certified Cisco NX-OS collection from Red Hat Ansible Automation Hub. Access to certified content requires a Red Hat account with an active Ansible Automation Platform subscription and an Automation Hub offline token. In the Red Hat Hybrid Cloud Console, go to **Automation Hub > Connect Hub**, load the offline token, and store it securely. See the [Red Hat token management instructions](https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.6/secure-token_management_hub).
 
-    ansible-galaxy collection install cisco.nxos
+Configure your `ansible.cfg` to use the hosted Automation Hub service:
 
-You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
+```ini
+[galaxy]
+server_list = automation_hub
+
+[galaxy_server.automation_hub]
+url = https://console.redhat.com/api/automation-hub/content/published/
+auth_url = https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+token = <your_automation_hub_token>
+```
+
+Keep the token secret and out of source control. Then install the collection:
+
+```bash
+ansible-galaxy collection install cisco.nxos --server automation_hub
+```
+
+For a `requirements.yml` file, identify Automation Hub as the source:
+
+```yaml
+---
+collections:
+  - name: cisco.nxos
+    source: automation_hub
+```
+
+Install the requirements with `ansible-galaxy collection install -r requirements.yml`.
+
+### Installing from Ansible Galaxy for community use
+
+For community use outside Red Hat supported environments, you can install the collection from Ansible Galaxy:
+
+```bash
+ansible-galaxy collection install cisco.nxos
+```
+
+You can also add it to a `requirements.yml` file:
 
 ```yaml
 ---

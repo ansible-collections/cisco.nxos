@@ -2,10 +2,10 @@
 profile: production
 
 exclude_paths:
-  # Generated changelog (not a playbook)
-  - changelogs/changelog.yaml
-  # Molecule data files are not playbooks.
   - extensions/molecule
+  - changelogs
+  - docs
+  - .github
 
 warn_list:
   - no-log-password
