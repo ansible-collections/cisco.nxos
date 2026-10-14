@@ -25,6 +25,8 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import call, patch
 
+from ansible.module_utils.connection import ConnectionError
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vpc
 
 from .nxos_module import TestNxosModule, set_module_args
