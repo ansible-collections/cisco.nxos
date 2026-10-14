@@ -46,6 +46,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "duplex": {"type": "str", "choices": ["full", "half", "auto"]},
                 "ip_forward": {"type": "bool"},
                 "fabric_forwarding_anycast_gateway": {"type": "bool"},
+                "negotiate_auto": {"type": "bool"},
                 "mac_address": {"type": "str"},
                 "logging": {
                     "type": "dict",
