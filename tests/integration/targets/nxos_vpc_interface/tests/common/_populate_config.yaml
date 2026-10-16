@@ -1,0 +1,13 @@
+---
+- name: Populate the VPC configuration of port-channel10
+  cisco.nxos.nxos_config:
+    lines:
+      - vpc 10
+      - vpc orphan-port suspend
+    parents: interface port-channel10
+
+- name: Populate the VPC configuration of port-channel30
+  cisco.nxos.nxos_config:
+    lines:
+      - vpc 30
+    parents: interface port-channel30

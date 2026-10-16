@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc_interface mutually_exclusive integration tests on connection={{ ansible_connection }}
+
+- name: Supplying both vpc and peer_link should give an appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel20
+        vpc: 11
+        peer_link: true
+    state: merged
+
+- ansible.builtin.assert:
+    that:
+      - result.failed == true
+      - "'mutually exclusive' in result.msg"
+
+- ansible.builtin.debug:
+    msg: END nxos_vpc_interface mutually_exclusive integration tests on connection={{ ansible_connection }}

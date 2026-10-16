@@ -760,6 +760,79 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
+    def test_vlan_default_shutdown_gathered(self):
+        # test gathering the implicit default shutdown state of SVIs
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan10
+            description implicit default shutdown
+          interface Vlan11
+            no shutdown
+          interface Vlan12
+            shutdown
+          interface Vlan13
+            description do not shutdown this svi
+        """,
+        )
+
+        playbook = dict()
+        playbook["state"] = "gathered"
+
+        gathered_facts = [
+            {
+                "name": "Vlan10",
+                "description": "implicit default shutdown",
+                "enabled": False,
+            },
+            {
+                "name": "Vlan11",
+                "enabled": True,
+            },
+            {
+                "name": "Vlan12",
+                "enabled": False,
+            },
+            {
+                "name": "Vlan13",
+                "description": "do not shutdown this svi",
+                "enabled": False,
+            },
+        ]
+
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_facts)
+
+    def test_vlan_default_shutdown_idempotent(self):
+        # test that the default state of an implicitly shutdown SVI is a no-op
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan10
+            description do not shutdown this svi
+          interface Vlan11
+            no shutdown
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(name="Vlan10", description="do not shutdown this svi", enabled=False),
+                dict(name="Vlan11", enabled=True),
+            ],
+        )
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
     def test_mode_mtu(self):
         # test mode change with MTU
         self.exec_get_defaults.return_value = {
@@ -800,3 +873,132 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_nxos_interfaces_negotiate_auto_disable(self):
+        """Setting negotiate_auto: false should emit 'no negotiate auto'."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/43
+            speed 1000
+            duplex full
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(
+                    name="Ethernet1/43",
+                    speed="1000",
+                    duplex="full",
+                    negotiate_auto=False,
+                ),
+            ],
+            state="merged",
+        )
+
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertIn("no negotiate auto", result["commands"])
+        self.assertIn("interface Ethernet1/43", result["commands"])
+
+    def test_nxos_interfaces_negotiate_auto_enable(self):
+        """Setting negotiate_auto: true on an interface that has 'no negotiate auto'
+        should emit 'negotiate auto' to restore the default."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/43
+            speed 1000
+            duplex full
+            no negotiate auto
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(
+                    name="Ethernet1/43",
+                    negotiate_auto=True,
+                ),
+            ],
+            state="merged",
+        )
+
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertIn("negotiate auto", result["commands"])
+        self.assertIn("interface Ethernet1/43", result["commands"])
+
+    def test_nxos_interfaces_negotiate_auto_idempotent_true_default_have(self):
+        """negotiate_auto: true when have has no key (device at default) → no change."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/43
+            speed 1000
+        """,
+        )
+
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/43", negotiate_auto=True)],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_interfaces_negotiate_auto_idempotent_false_already_disabled(self):
+        """negotiate_auto: false when have already has 'no negotiate auto' → no change."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/43
+            speed 1000
+            no negotiate auto
+        """,
+        )
+
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/43", negotiate_auto=False)],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_interfaces_negotiate_auto_replaced_omitted_restores_default(self):
+        """replaced with negotiate_auto omitted when have has 'no negotiate auto' → emit 'negotiate auto'."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/43
+            speed 1000
+            no negotiate auto
+        """,
+        )
+
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/43", speed="1000")],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("negotiate auto", result["commands"])
+        self.assertNotIn("no negotiate auto", result["commands"])

@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided VPC domain configuration
+  cisco.nxos.nxos_vpc:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+  register: result
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that: parsed == result['parsed']
+
+- name: Parse a running-config section with no VPC domain
+  cisco.nxos.nxos_vpc:
+    running_config: "!\n"
+    state: parsed
+  register: result
+
+- name: Assert that an absent VPC domain parses as an empty dict
+  ansible.builtin.assert:
+    that: result['parsed'] == {}
