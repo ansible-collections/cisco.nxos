@@ -1438,7 +1438,7 @@ priv des 482A1501F49C1EAC8FA75840E7ACAF820FCB localizedV2key
             dict(
                 running_config=dedent(
                     """\
-                    snmp-server enable traps lldp
+                    snmp-server enable traps lldp lldpRemTablesChange
                     snmp-server enable traps hsrp state-change
                     snmp-server enable traps eigrp
                     snmp-server enable traps eigrp 100
