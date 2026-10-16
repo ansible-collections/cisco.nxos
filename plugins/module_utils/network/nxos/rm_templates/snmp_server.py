@@ -665,7 +665,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "traps": {
                     "hsrp": {
-                        "state_change": "{{ true }}",
+                        "state_change": "{{ not not state_change }}",
                     },
                 },
             },
@@ -935,7 +935,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "traps": {
                     "lldp": {
-                        "lldpRemTablesChange": "{{ true }}",
+                        "lldpRemTablesChange": "{{ not not lldpRemTablesChange }}",
                     },
                 },
             },

@@ -151,8 +151,10 @@ class Snmp_server(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # this ensures that if user sets `enable: True` for a trap
-        # all suboptions for that trap are set to True
+        # If the user sets ``enable: true`` for a trap family, expand it so all
+        # suboptions for that family are set to true. Flat families (eigrp, ospf,
+        # ospfv3) are omitted here; they only expose ``enable`` and are handled by
+        # their single trap parsers, same as before this change.
         for x in [
             "traps.aaa",
             "traps.bridge",
