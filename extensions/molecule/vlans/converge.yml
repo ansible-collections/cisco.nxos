@@ -1,0 +1,241 @@
+---
+# AUTO-GENERATED — rename to converge.yml after review.
+# Manual review needed only for complex idempotent edge cases or custom assertions.
+
+- name: "Nxos_vlans — state: gathered"
+  hosts: nxos_vlans_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Gather nxos_vlans facts
+      register: result
+      cisco.nxos.nxos_vlans:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | symmetric_difference(gathered) | length == 0
+
+- name: "Nxos_vlans — state: merged"
+  hosts: nxos_vlans_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans merged
+      register: result
+      cisco.nxos.nxos_vlans: &merged
+        config:
+          - vlan_id: 5
+            name: vlan5
+          - vlan_id: 6
+            name: vlan6
+            state: suspend
+        state: merged
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before|length == 1
+          - "'vlan 5' in result.commands"
+          - "'name vlan5' in result.commands"
+          - "'vlan 6' in result.commands"
+          - "'name vlan6' in result.commands"
+          - "'state suspend' in result.commands"
+          - result.commands|length == 5
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_vlans:
+        config: []
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
+    - name: RTT - Gather current facts
+      register: rtt_gathered_1
+      cisco.nxos.nxos_vlans:
+        state: gathered
+
+    - name: RTT - Render gathered config offline
+      register: rtt_rendered
+      cisco.nxos.nxos_vlans:
+        config: "{{ rtt_gathered_1.gathered }}"
+        state: rendered
+
+    - name: RTT - Assert rendered produced output
+      ansible.builtin.assert:
+        that:
+          - rtt_rendered.rendered is defined
+
+    - name: RTT - Re-apply gathered config via merged (should be idempotent)
+      register: rtt_merged
+      cisco.nxos.nxos_vlans:
+        config: "{{ rtt_gathered_1.gathered }}"
+        state: merged
+
+    - name: RTT - Assert merged round trip is a no-op
+      ansible.builtin.assert:
+        that:
+          - rtt_merged.changed == false
+
+    - name: RTT - Gather facts again after round trip
+      register: rtt_gathered_2
+      cisco.nxos.nxos_vlans:
+        state: gathered
+
+    - name: RTT - Assert gathered state unchanged after round trip
+      ansible.builtin.assert:
+        that:
+          - rtt_gathered_1.gathered == rtt_gathered_2.gathered
+
+- name: "Nxos_vlans — state: replaced"
+  hosts: nxos_vlans_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans replaced
+      register: result
+      cisco.nxos.nxos_vlans: &replaced
+        config:
+          - vlan_id: 6
+            state: suspend
+        state: replaced
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'vlan 6' in result.commands"
+          - "'no name' in result.commands"
+          - "'state suspend' in result.commands"
+          - result.commands|length == 3
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — state: overridden"
+  hosts: nxos_vlans_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans overridden
+      register: result
+      cisco.nxos.nxos_vlans: &overridden
+        config:
+          - vlan_id: 1
+            enabled: true
+            mode: ce
+            name: default
+            state: active
+          - vlan_id: 9
+            name: test-vlan9
+            enabled: false
+        state: overridden
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no vlan 5' in result.commands"
+          - "'no vlan 6' in result.commands"
+          - "'vlan 9' in result.commands"
+          - "'name test-vlan9' in result.commands"
+          - "'shutdown' in result.commands"
+          - result.commands|length == 5
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — state: deleted"
+  hosts: nxos_vlans_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans deleted
+      register: result
+      cisco.nxos.nxos_vlans: &deleted
+        config:
+          - vlan_id: 5
+          - vlan_id: 6
+        state: deleted
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.after|length == 1
+          - "'no vlan 5' in result.commands"
+          - "'no vlan 6' in result.commands"
+          - result.commands|length == 2
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_vlans_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans parsed
+      register: result
+      cisco.nxos.nxos_vlans:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_vlans/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result.parsed) | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_vlans_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vlans/vars/main.yml
+  tasks:
+    - name: Run nxos_vlans rendered
+      register: result
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 5
+            name: vlan5
+            mapped_vni: 100
+          - vlan_id: 6
+            name: vlan6
+            state: suspend
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - rendered | symmetric_difference(result.rendered) | length == 0

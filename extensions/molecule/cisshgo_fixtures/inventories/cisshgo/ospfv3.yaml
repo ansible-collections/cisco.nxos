@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-ospfv3-gathered
+    count: 1
+  - scenario: nxos-ospfv3-gathered
+    count: 1
+  - scenario: nxos-ospfv3-merged
+    count: 1
+  - scenario: nxos-ospfv3-replaced
+    count: 1
+  - scenario: nxos-ospfv3-overridden
+    count: 1
+  - scenario: nxos-ospfv3-deleted
+    count: 1

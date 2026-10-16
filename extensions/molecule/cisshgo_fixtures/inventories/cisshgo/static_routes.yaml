@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-static-routes-gathered
+    count: 1
+  - scenario: nxos-static-routes-gathered
+    count: 1
+  - scenario: nxos-static-routes-merged
+    count: 1
+  - scenario: nxos-static-routes-replaced
+    count: 1
+  - scenario: nxos-static-routes-overridden
+    count: 1
+  - scenario: nxos-static-routes-deleted
+    count: 1

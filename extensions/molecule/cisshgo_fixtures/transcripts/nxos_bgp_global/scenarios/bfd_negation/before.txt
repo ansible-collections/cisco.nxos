@@ -1,0 +1,10 @@
+router bgp 65536
+  neighbor 198.51.100.30
+    bfd
+    remote-as 65537
+  neighbor 198.51.100.31
+    bfd singlehop
+    remote-as 65537
+  neighbor 198.51.100.32
+    bfd multihop
+    remote-as 65537
