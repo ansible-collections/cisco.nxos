@@ -200,6 +200,17 @@ options:
               ccmCLIRunningConfigChanged:
                 description: Running config change trap.
                 type: bool
+          eigrp:
+            description:
+              - SNMP EIGRP traps.
+              - The device must have C(feature eigrp) enabled. This module does not enable the feature.
+              - Process-specific EIGRP traps (C(snmp-server enable traps eigrp <as-number>)) are not supported.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description: Enable global SNMP EIGRP traps.
+                type: bool
           entity:
             description: Entity traps.
             type: dict
@@ -267,6 +278,21 @@ options:
               warmStart:
                 description: Generic warmStart trap.
                 type: bool
+          hsrp:
+            description:
+              - SNMP HSRP traps.
+              - The device must have C(feature hsrp) enabled. This module does not enable the feature.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description:
+                  - Enable HSRP traps.
+                  - This shorthand enables C(state_change). It is not returned by gathered or parsed.
+                type: bool
+              state_change:
+                description: HSRP state change notification. Maps to CLI C(state-change).
+                type: bool
           license:
             description: License traps.
             type: dict
@@ -330,6 +356,19 @@ options:
                 type: bool
               linkUp:
                 description: IETF Link state up notification.
+                type: bool
+          lldp:
+            description: SNMP LLDP traps.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description:
+                  - Enable LLDP traps.
+                  - This shorthand enables C(lldpRemTablesChange). It is not returned by gathered or parsed.
+                type: bool
+              lldpRemTablesChange:
+                description: LLDP remote tables change notification.
                 type: bool
           mmode:
             description:
