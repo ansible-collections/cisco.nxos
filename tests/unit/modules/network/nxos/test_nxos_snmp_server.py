@@ -1277,6 +1277,86 @@ priv des 482A1501F49C1EAC8FA75840E7ACAF820FCB localizedV2key
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def _lldp_hsrp_eigrp_trap_running_config(self):
+        return dedent(
+            """\
+            snmp-server enable traps lldp lldpRemTablesChange
+            snmp-server enable traps hsrp state-change
+            snmp-server enable traps eigrp
+            """,
+        )
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_merged_disable(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config()
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(lldpRemTablesChange=False),
+                        hsrp=dict(state_change=False),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_replaced_remove(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config() + dedent(
+            """\
+            snmp-server enable traps bgp
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        bgp=dict(enable=True),
+                    ),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+            "no snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_overridden_remove(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config() + dedent(
+            """\
+            snmp-server enable traps bgp
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        bgp=dict(enable=True),
+                    ),
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+            "no snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_snmp_server_lldp_hsrp_eigrp_merged_enable(self):
         self.get_config.return_value = dedent(
             """\

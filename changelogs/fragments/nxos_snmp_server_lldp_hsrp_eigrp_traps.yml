@@ -1,5 +1,4 @@
 ---
 minor_changes:
   - >-
-    nxos_snmp_server - Add LLDP, HSRP, and global EIGRP SNMP trap support
-    so gathered, merged, and rendered can manage those trap families.
+    nxos_snmp_server - Add LLDP, HSRP, and global EIGRP SNMP trap support.
