@@ -384,13 +384,13 @@ class TestNxosVpcModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(config=dict(domain="1337"), state="overridden"),
+            dict(config=dict(domain="20"), state="overridden"),
             ignore_provider_arg,
         )
         commands = [
             "terminal dont-ask",
             "no vpc domain 10",
-            "vpc domain 1337",
+            "vpc domain 20",
             "no terminal dont-ask",
         ]
         result = self.execute_module(changed=True)
@@ -918,3 +918,19 @@ class TestNxosVpcModule(TestNxosModule):
         self.assertEqual(parsed.get("virtual_peer_link_dest"), "192.0.2.1")
         self.assertEqual(parsed.get("virtual_peer_link_src"), "192.0.2.2")
         self.assertEqual(parsed.get("virtual_peer_link_dscp"), "56")
+
+    # -- domain range validation -------------------------------------------
+
+    def test_nxos_vpc_domain_out_of_range(self):
+        # NX-OS only accepts domain IDs 1-1000; values outside that range
+        # must be rejected before any CLI is sent to the device
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(config=dict(domain="1337"), state="merged"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("1-1000", result["msg"])

@@ -66,6 +66,7 @@ options:
       domain:
         description:
         - VPC domain ID.
+        - Valid range is 1–1000; NX-OS rejects values outside this range.
         type: str
         required: true
       role_priority:

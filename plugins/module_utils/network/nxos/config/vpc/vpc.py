@@ -113,6 +113,17 @@ class Vpc(ResourceModule):
         want = self.want or {}
         have = self.have or {}
 
+        domain = want.get("domain")
+        if domain is not None:
+            try:
+                d = int(domain)
+                if not (1 <= d <= 1000):
+                    raise ValueError
+            except (ValueError, TypeError):
+                self._module.fail_json(
+                    msg="vpc domain must be in the range 1-1000, got '{0}'".format(domain),
+                )
+
         # if state is deleted, remove the vpc domain entirely
         if self.state == "deleted":
             if have:
