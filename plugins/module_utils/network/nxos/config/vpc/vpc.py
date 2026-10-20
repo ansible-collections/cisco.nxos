@@ -142,9 +142,7 @@ class Vpc(ResourceModule):
         # inserts the new 'vpc domain X' line.  Ensure it is always present.
         new_domain = "vpc domain {0}".format(want.get("domain"))
         if domain_recreate and new_domain not in self.commands:
-            no_idx = next(
-                i for i, c in enumerate(self.commands) if c.startswith("no vpc domain")
-            )
+            no_idx = next(i for i, c in enumerate(self.commands) if c.startswith("no vpc domain"))
             self.commands.insert(no_idx + 1, new_domain)
 
         # NX-OS 10.4(x): every 'no peer-keepalive' form is rejected in
