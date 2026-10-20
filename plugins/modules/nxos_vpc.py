@@ -122,6 +122,35 @@ options:
         description:
         - Delay in seconds for orphan port delay restore.
         type: str
+      layer3_peer_router:
+        description:
+        - Enable or disable Layer 3 peer-router.
+        - Requires C(terminal dont-ask) on NX-OS because the platform prompts
+          for confirmation when this is changed.
+        type: bool
+      arp_synchronize:
+        description:
+        - Enable or disable IP ARP synchronization between VPC peers.
+        type: bool
+      nd_synchronize:
+        description:
+        - Enable or disable IPv6 ND synchronization between VPC peers.
+        type: bool
+      virtual_peer_link_dest:
+        description:
+        - Destination IP address for the virtual peer-link.
+        type: str
+      virtual_peer_link_src:
+        description:
+        - Source IP address for the virtual peer-link.
+        type: str
+      virtual_peer_link_dscp:
+        description:
+        - DSCP value for virtual peer-link packets (0–63).
+        - NX-OS silently appends C(dscp 56) to running-config when no value is
+          specified, so omitting this option is idempotent against a device that
+          has the platform default in its running-config.
+        type: str
   state:
     description:
     - The state the configuration should be left in.
