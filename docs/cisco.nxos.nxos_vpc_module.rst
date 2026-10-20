@@ -167,6 +167,7 @@ Parameters
                 </td>
                 <td>
                         <div>VPC domain ID.</div>
+                        <div>Valid range is 1–1000; NX-OS rejects values outside this range.</div>
                 </td>
             </tr>
             <tr>
