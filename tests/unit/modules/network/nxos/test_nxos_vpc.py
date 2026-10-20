@@ -374,6 +374,28 @@ class TestNxosVpcModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
+    def test_nxos_vpc_overridden_bare_domain_change(self):
+        # overridden with only a domain ID change and no sub-commands must still
+        # emit 'vpc domain X' to create the new domain after deleting the old one
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              role priority 150
+            """,
+        )
+        set_module_args(
+            dict(config=dict(domain="1337"), state="overridden"),
+            ignore_provider_arg,
+        )
+        commands = [
+            "terminal dont-ask",
+            "no vpc domain 10",
+            "vpc domain 1337",
+            "no terminal dont-ask",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     # -- overridden --------------------------------------------------------
 
     def test_nxos_vpc_overridden(self):

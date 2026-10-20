@@ -123,6 +123,7 @@ class Vpc(ResourceModule):
 
         # only one vpc domain can exist at a time, so changing the domain ID
         # means tearing down the existing one first
+        domain_recreate = False
         if (
             have
             and want.get("domain")
@@ -132,8 +133,19 @@ class Vpc(ResourceModule):
             self.commands.append(_TERMINAL_DONT_ASK)
             self.commands.append(_NO_VPC_DOMAIN_FMT.format(have["domain"]))
             have = {}
+            domain_recreate = True
 
         self._compare(want, have)
+
+        # When the domain ID changed and _compare emitted no sub-commands
+        # (want has only the bare domain with no attributes), _compare never
+        # inserts the new 'vpc domain X' line.  Ensure it is always present.
+        new_domain = "vpc domain {0}".format(want.get("domain"))
+        if domain_recreate and new_domain not in self.commands:
+            no_idx = next(
+                i for i, c in enumerate(self.commands) if c.startswith("no vpc domain")
+            )
+            self.commands.insert(no_idx + 1, new_domain)
 
         # NX-OS 10.4(x): every 'no peer-keepalive' form is rejected in
         # (config-vpc-domain)#.  The only reliable way to remove a keepalive
