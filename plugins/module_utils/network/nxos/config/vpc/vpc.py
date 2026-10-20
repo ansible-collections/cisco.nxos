@@ -281,8 +281,11 @@ class Vpc(ResourceModule):
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
 
-        if rest and rest[0].startswith("vpc domain"):
-            self._probe_domain_ready(rest[0])
+        # Probe the first 'vpc domain X' command in rest — it may not be
+        # rest[0] when terminal dont-ask was already set before the split.
+        probe_cmd = next((c for c in rest if c.startswith("vpc domain")), None)
+        if probe_cmd:
+            self._probe_domain_ready(probe_cmd)
 
         if rest:
             self._edit_config_until_ready(rest)
@@ -327,7 +330,11 @@ class Vpc(ResourceModule):
 
         if len(self.commands) != begin:
             self.commands.insert(begin, "vpc domain {0}".format(domain))
-            if needs_dont_ask:
+            # Only add terminal dont-ask when it isn't already present before
+            # the block we're about to insert (e.g. domain-change path already
+            # set it up — inserting a second copy pushes 'vpc domain X' out of
+            # rest[0], breaking the domain-ready probe in _run_with_domain_wait)
+            if needs_dont_ask and _TERMINAL_DONT_ASK not in self.commands[:begin]:
                 self.commands.insert(begin, _TERMINAL_DONT_ASK)
 
     def _compare_peer_keepalive(self, want, have):

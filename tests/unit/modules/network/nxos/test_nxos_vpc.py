@@ -396,6 +396,37 @@ class TestNxosVpcModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
+    def test_nxos_vpc_overridden_domain_change_no_duplicate_dont_ask(self):
+        # When switching domain IDs with sub-commands that need terminal dont-ask
+        # (peer_gw, peer_sw, layer3_peer_router), the domain-change path already
+        # emits terminal dont-ask.  _compare must not insert a second copy, which
+        # would push 'vpc domain X' out of rest[0] and break the domain-ready probe.
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 999
+              peer-gateway
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    peer_gw=True,
+                    peer_sw=True,
+                    layer3_peer_router=True,
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        # terminal dont-ask must appear exactly once
+        self.assertEqual(cmds.count("terminal dont-ask"), 1)
+        # vpc domain 10 must immediately follow no vpc domain 999
+        no_idx = cmds.index("no vpc domain 999")
+        self.assertEqual(cmds[no_idx + 1], "vpc domain 10")
+
     # -- overridden --------------------------------------------------------
 
     def test_nxos_vpc_overridden(self):
