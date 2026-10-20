@@ -64,12 +64,22 @@ class Vpc(ResourceModule):
         ("auto_recovery", "auto-recovery", "no auto-recovery"),
         ("peer_gw", "peer-gateway", "no peer-gateway"),
         ("peer_sw", "peer-switch", "no peer-switch"),
+        ("layer3_peer_router", "layer3 peer-router", "no layer3 peer-router"),
+        ("arp_synchronize", "ip arp synchronize", "no ip arp synchronize"),
+        ("nd_synchronize", "ipv6 nd synchronize", "no ipv6 nd synchronize"),
     )
 
     # Sub-commands that make NX-OS prompt for confirmation.
-    NEEDS_DONT_ASK = ("peer_gw", "peer_sw")
+    NEEDS_DONT_ASK = ("peer_gw", "peer_sw", "layer3_peer_router")
 
     PKL_KEYS = ("pkl_dest", "pkl_src", "pkl_vrf")
+
+    VPL_KEYS = ("virtual_peer_link_dest", "virtual_peer_link_src", "virtual_peer_link_dscp")
+
+    # NX-OS silently appends dscp 56 to running-config when virtual peer-link
+    # is configured without an explicit dscp value.  Treat an absent dscp as
+    # DEFAULT_VPL_DSCP so the comparison does not falsely report a change.
+    DEFAULT_VPL_DSCP = "56"
 
     # NX-OS does not nvgen the peer-keepalive VRF when it is the default one,
     # so an absent VRF has to be treated as ``management`` for comparison.
@@ -165,6 +175,9 @@ class Vpc(ResourceModule):
         w_pkl = self._pkl_effective(want)
         if w_pkl:
             cmds.append(self._pkl_cmd(w_pkl))
+        w_vpl = self._vpl_effective(want)
+        if w_vpl:
+            cmds.append(self._vpl_cmd(w_vpl))
         return cmds
 
     def _rewrite_as_domain_recreate(self, want):
@@ -289,6 +302,7 @@ class Vpc(ResourceModule):
         self._compare_scalars(want, have, prune)
         needs_dont_ask = self._compare_booleans(want, have, prune)
         self._compare_peer_keepalive(want, have)
+        self._compare_virtual_peer_link(want, have)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, "vpc domain {0}".format(domain))
@@ -335,4 +349,42 @@ class Vpc(ResourceModule):
             cmd += " source {0}".format(pkl["pkl_src"])
         if pkl.get("pkl_vrf"):
             cmd += " vrf {0}".format(pkl["pkl_vrf"])
+        return cmd
+
+    def _compare_virtual_peer_link(self, want, have):
+        """virtual peer-link is a single composite command compared as a unit.
+
+        NX-OS silently appends ``dscp 56`` to running-config when no dscp is
+        configured.  _vpl_effective() injects the default so that omitting dscp
+        in want does not cause a spurious change every run.
+        """
+        w_vpl = self._vpl_effective(want)
+        h_vpl = self._vpl_effective(have)
+
+        if w_vpl and self.state in ["merged", "rendered"]:
+            merged = dict(h_vpl)
+            merged.update(w_vpl)
+            w_vpl = merged
+
+        if w_vpl:
+            if w_vpl != h_vpl:
+                self.commands.append(self._vpl_cmd(w_vpl))
+        elif h_vpl and self.state not in ["merged", "rendered"]:
+            self.commands.append("no " + self._vpl_cmd(h_vpl))
+
+    def _vpl_effective(self, cfg):
+        """Collect virtual-peer-link keys, injecting the default dscp that
+        NX-OS appends silently to running-config.
+        """
+        vpl = {k: cfg.get(k) for k in self.VPL_KEYS if cfg.get(k)}
+        if vpl.get("virtual_peer_link_dest") and not vpl.get("virtual_peer_link_dscp"):
+            vpl["virtual_peer_link_dscp"] = self.DEFAULT_VPL_DSCP
+        return vpl
+
+    def _vpl_cmd(self, vpl):
+        cmd = "virtual peer-link destination {0}".format(vpl["virtual_peer_link_dest"])
+        if vpl.get("virtual_peer_link_src"):
+            cmd += " source {0}".format(vpl["virtual_peer_link_src"])
+        if vpl.get("virtual_peer_link_dscp"):
+            cmd += " dscp {0}".format(vpl["virtual_peer_link_dscp"])
         return cmd

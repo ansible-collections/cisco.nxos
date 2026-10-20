@@ -685,3 +685,214 @@ class TestNxosVpcModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(conn.edit_config.call_count, 4)
         self.assertIn("role priority 150", result["commands"])
+
+    # -- new boolean attributes --------------------------------------------
+
+    def test_nxos_vpc_merged_new_booleans_absent_noop(self):
+        # false on absent line means already off — must not emit 'no' forms
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              role priority 150
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    layer3_peer_router=False,
+                    arp_synchronize=False,
+                    nd_synchronize=False,
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vpc_merged_new_booleans(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    layer3_peer_router=True,
+                    arp_synchronize=True,
+                    nd_synchronize=True,
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("terminal dont-ask", result["commands"])
+        self.assertIn("layer3 peer-router", result["commands"])
+        self.assertIn("ip arp synchronize", result["commands"])
+        self.assertIn("ipv6 nd synchronize", result["commands"])
+
+    def test_nxos_vpc_merged_new_booleans_idempotent(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              layer3 peer-router
+              ip arp synchronize
+              ipv6 nd synchronize
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    layer3_peer_router=True,
+                    arp_synchronize=True,
+                    nd_synchronize=True,
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vpc_merged_new_booleans_false_in_have(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              layer3 peer-router
+              ip arp synchronize
+              ipv6 nd synchronize
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    layer3_peer_router=False,
+                    arp_synchronize=False,
+                    nd_synchronize=False,
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("terminal dont-ask", result["commands"])
+        self.assertIn("no layer3 peer-router", result["commands"])
+        self.assertIn("no ip arp synchronize", result["commands"])
+        self.assertIn("no ipv6 nd synchronize", result["commands"])
+
+    # -- virtual peer-link -------------------------------------------------
+
+    def test_nxos_vpc_merged_virtual_peer_link(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    virtual_peer_link_dest="192.0.2.1",
+                    virtual_peer_link_src="192.0.2.2",
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "vpc domain 10",
+            "virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_vpc_merged_virtual_peer_link_idempotent_default_dscp(self):
+        # NX-OS silently appends dscp 56 — omitting dscp in want must be idempotent
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    virtual_peer_link_dest="192.0.2.1",
+                    virtual_peer_link_src="192.0.2.2",
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vpc_merged_virtual_peer_link_explicit_dscp_idempotent(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    domain="10",
+                    virtual_peer_link_dest="192.0.2.1",
+                    virtual_peer_link_src="192.0.2.2",
+                    virtual_peer_link_dscp="56",
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vpc_replaced_removes_virtual_peer_link(self):
+        self.get_config.return_value = dedent(
+            """\
+            vpc domain 10
+              virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56
+              layer3 peer-router
+              ip arp synchronize
+              ipv6 nd synchronize
+            """,
+        )
+        set_module_args(
+            dict(config=dict(domain="10"), state="replaced"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        self.assertIn("no virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56", cmds)
+        self.assertIn("no layer3 peer-router", cmds)
+        self.assertIn("no ip arp synchronize", cmds)
+        self.assertIn("no ipv6 nd synchronize", cmds)
+
+    def test_nxos_vpc_parsed_new_attributes(self):
+        cfg = dedent(
+            """\
+            vpc domain 10
+              layer3 peer-router
+              ip arp synchronize
+              ipv6 nd synchronize
+              virtual peer-link destination 192.0.2.1 source 192.0.2.2 dscp 56
+            """,
+        )
+        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        self.assertEqual(parsed.get("layer3_peer_router"), True)
+        self.assertEqual(parsed.get("arp_synchronize"), True)
+        self.assertEqual(parsed.get("nd_synchronize"), True)
+        self.assertEqual(parsed.get("virtual_peer_link_dest"), "192.0.2.1")
+        self.assertEqual(parsed.get("virtual_peer_link_src"), "192.0.2.2")
+        self.assertEqual(parsed.get("virtual_peer_link_dscp"), "56")
