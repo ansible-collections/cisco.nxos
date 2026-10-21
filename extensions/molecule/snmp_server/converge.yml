@@ -479,3 +479,47 @@
       ansible.builtin.assert:
         that:
           - result.rendered | symmetric_difference(rendered.commands) | length == 0
+
+- name: "Nxos_snmp_server — state: lldp_hsrp_eigrp_traps"
+  hosts: nxos_snmp_server_lldp_hsrp_eigrp_traps
+  gather_facts: false
+  tasks:
+    - name: Merge LLDP, HSRP, and EIGRP SNMP traps
+      cisco.nxos.nxos_snmp_server:
+        config:
+          traps:
+            lldp:
+              enable: true
+            hsrp:
+              enable: true
+            eigrp:
+              enable: true
+        state: merged
+      register: result
+    - name: Assert LLDP, HSRP, and EIGRP trap commands
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'snmp-server enable traps lldp lldpRemTablesChange' in result.commands"
+          - "'snmp-server enable traps hsrp state-change' in result.commands"
+          - "'snmp-server enable traps eigrp' in result.commands"
+          - result.after.traps.lldp.lldpRemTablesChange | bool
+          - result.after.traps.hsrp.state_change | bool
+          - result.after.traps.eigrp.enable | bool
+    - name: Merge LLDP, HSRP, and EIGRP SNMP traps again
+      cisco.nxos.nxos_snmp_server:
+        config:
+          traps:
+            lldp:
+              lldpRemTablesChange: true
+            hsrp:
+              state_change: true
+            eigrp:
+              enable: true
+        state: merged
+      register: second
+    - name: Assert the trap merge is idempotent
+      ansible.builtin.assert:
+        that:
+          - not second.changed
+          - second.commands | length == 0

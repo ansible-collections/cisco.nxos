@@ -38,3 +38,7 @@ all:
           hosts:
             cisshgo-snmp_server-replaced_same_user:
               ansible_port: 10005
+        nxos_snmp_server_lldp_hsrp_eigrp_traps:
+          hosts:
+            cisshgo-snmp_server-lldp_hsrp_eigrp_traps:
+              ansible_port: 10006

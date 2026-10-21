@@ -6410,3 +6410,42 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt
       - command: show running-config | section '^snmp-server'
         transcript: transcripts/nxos_snmp_server/scenarios/replaced_same_user/after.txt
+  nxos-snmp-server-lldp_hsrp_eigrp_traps:
+    platform: nxos_snmp_server
+    sequence:
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: snmp-server enable traps eigrp
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: snmp-server enable traps hsrp state-change
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: snmp-server enable traps lldp lldpRemTablesChange
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+      - command: show running-config | section '^snmp-server'
+        transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
