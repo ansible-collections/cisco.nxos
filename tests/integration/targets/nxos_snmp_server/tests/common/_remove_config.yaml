@@ -7,6 +7,47 @@
 # IP: `no snmp-server host X traps ...` removes the whole host, then
 # `no snmp-server host X source-interface ...` returns "No such SNMP target".
 # Apply NX-API restore commands one at a time so that error is not fatal.
+#
+# NX-API gather can lag, so overridden restore from a stale have misses
+# leftover test objects. Wipe known test-owned lines first, one at a time.
+- name: Wipe test-owned snmp-server lines
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server contact nxosswitchadmin@localhost
+      - no snmp-server contact nxosswitchadmin2@localhost
+      - no snmp-server location serverroom-1
+      - no snmp-server location serverroom-2
+      - no snmp-server aaa-user cache-timeout 36000
+      - no snmp-server user snmp_user_1
+      - no snmp-server user snmp_user_2
+      - no snmp-server host 192.0.2.2 informs version 3 auth NMS
+      - no snmp-server host 192.0.3.2 informs version 3 auth NMS
+      - no snmp-server community private
+      - no snmp-server community public
+      - no snmp-server community secret
+      - no snmp-server enable traps system Clock-change-notification
+      - no snmp-server enable traps aaa server-state-change
+      - no snmp-server enable traps lldp lldpRemTablesChange
+      - no snmp-server enable traps hsrp state-change
+      - no snmp-server enable traps eigrp
+    match: none
+  failed_when: false
+
+# Same host IP cannot have two delete commands in one NX-API edit.
+- name: Wipe 192.0.2.1 trap host
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server host 192.0.2.1 traps version 1 public
+    match: none
+  failed_when: false
+
+- name: Wipe 192.0.2.1 source-interface host
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
+    match: none
+  failed_when: false
+
 - name: Restore baseline snmp-server configuration
   when: ansible_connection != "ansible.netcommon.httpapi"
   cisco.nxos.nxos_snmp_server:

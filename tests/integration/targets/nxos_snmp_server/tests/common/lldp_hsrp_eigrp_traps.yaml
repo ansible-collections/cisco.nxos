@@ -15,6 +15,21 @@
   delay: 15
   until: features_on is not failed
 
+# Features or leftover running-config can leave these trap lines present.
+# Clear them so merged always emits the three enable commands.
+- name: Clear LLDP, HSRP, and EIGRP SNMP traps before merge
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server enable traps lldp lldpRemTablesChange
+      - no snmp-server enable traps hsrp state-change
+      - no snmp-server enable traps eigrp
+    match: none
+  register: trap_reset
+  retries: 3
+  delay: 15
+  until: trap_reset is not failed
+  failed_when: false
+
 - block:
     - name: Merge LLDP, HSRP, and EIGRP SNMP traps
       cisco.nxos.nxos_snmp_server:
@@ -30,7 +45,12 @@
       register: result
       retries: 3
       delay: 15
-      until: result is not failed
+      until:
+        - result is not failed
+        - result.changed | default(false)
+        - "'snmp-server enable traps lldp lldpRemTablesChange' in (result.commands | default([]))"
+        - "'snmp-server enable traps hsrp state-change' in (result.commands | default([]))"
+        - "'snmp-server enable traps eigrp' in (result.commands | default([]))"
 
     - name: Assert LLDP, HSRP, and EIGRP trap commands
       ansible.builtin.assert:
@@ -51,7 +71,11 @@
       register: gathered
       retries: 3
       delay: 15
-      until: gathered is not failed
+      until:
+        - gathered is not failed
+        - gathered.gathered.traps.lldp.lldpRemTablesChange | default(false)
+        - gathered.gathered.traps.hsrp.state_change | default(false)
+        - gathered.gathered.traps.eigrp.enable | default(false)
 
     - name: Assert gathered trap families
       ansible.builtin.assert:
@@ -74,7 +98,10 @@
       register: second
       retries: 3
       delay: 15
-      until: second is not failed
+      until:
+        - second is not failed
+        - not (second.changed | default(true))
+        - (second.commands | default([]) | length) == 0
 
     - name: Assert the trap merge is idempotent
       ansible.builtin.assert:
@@ -83,15 +110,17 @@
           - second.commands | length == 0
 
   always:
-    - ansible.builtin.include_tasks: _remove_config.yaml
-
     - name: Disable features enabled for HSRP and EIGRP SNMP traps
       cisco.nxos.nxos_config:
         lines:
           - no feature hsrp
           - no feature eigrp
+          - no snmp-server enable traps lldp lldpRemTablesChange
         match: none
       register: features_off
       retries: 3
       delay: 15
       until: features_off is not failed
+      failed_when: false
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
