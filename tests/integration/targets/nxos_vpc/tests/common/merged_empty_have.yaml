@@ -1,0 +1,65 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc merged empty-have integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Merge onto a device with no VPC domain configured
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "100"
+          role_priority: "150"
+          pkl_dest: 192.168.100.4
+          pkl_src: 10.1.100.20
+        state: merged
+      register: result
+
+    - name: Assert that facts gathering coped with an absent VPC domain
+      ansible.builtin.assert:
+        that:
+          - result['before'] == {}
+          - result['changed'] == true
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ["vpc domain 100", "role priority 150",
+            "peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management"]
+
+    - name: Assert that after dict was correctly generated
+      ansible.builtin.assert:
+        that: result['after'] == before
+
+    - name: Ask for the default peer-keepalive VRF again (idempotent)
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "100"
+          role_priority: "150"
+          pkl_dest: 192.168.100.4
+          pkl_src: 10.1.100.20
+          pkl_vrf: management
+        state: merged
+      register: result
+
+    - name: Assert that the default VRF did not re-push the keepalive line
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Turn off a boolean that is already absent from running-config
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "100"
+          peer_gw: false
+          peer_sw: false
+        state: merged
+      register: result
+
+    - name: Assert that an absent boolean line is reported as already disabled
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

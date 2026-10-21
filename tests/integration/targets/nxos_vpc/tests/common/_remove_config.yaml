@@ -1,0 +1,4 @@
+---
+- name: Remove VPC domain configuration
+  cisco.nxos.nxos_vpc:
+    state: deleted

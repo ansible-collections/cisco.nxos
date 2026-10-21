@@ -1,0 +1,42 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_vpc: &id001
+        config:
+          domain: "100"
+          system_priority: "2000"
+          delay_restore: "150"
+          auto_recovery: true
+          peer_gw: true
+        state: merged
+      register: result
+
+    - name: Assert that before dict was correctly generated
+      ansible.builtin.assert:
+        that: result['before'] == before
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that: merged['commands'] == result['commands']
+
+    - name: Assert that after dict was correctly generated
+      ansible.builtin.assert:
+        that: merged['after'] == result['after']
+
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
+      cisco.nxos.nxos_vpc: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
