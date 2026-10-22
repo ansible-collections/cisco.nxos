@@ -251,6 +251,52 @@ class TestNxosEvpnVnisModule(TestNxosModule):
             ],
         )
 
+    def test_nxos_evpn_vnis_replaced_idempotent(self):
+        # want equals have, with the route targets in a different order
+        self.get_config.return_value = BASE
+        result = self._run(
+            False,
+            config=[
+                dict(
+                    vni=10100,
+                    route_distinguisher="auto",
+                    route_target_import=["auto"],
+                    route_target_export=["auto"],
+                ),
+                dict(
+                    vni=10200,
+                    route_distinguisher="65000:10200",
+                    route_target_import=["65000:10201", "65000:10200"],
+                    route_target_export=["65000:10200"],
+                ),
+            ],
+            state="replaced",
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_evpn_vnis_replaced_fewer_targets(self):
+        self.get_config.return_value = BASE
+        result = self._run(
+            True,
+            config=[
+                dict(
+                    vni=10200,
+                    route_distinguisher="65000:10200",
+                    route_target_import=["65000:10200"],
+                ),
+            ],
+            state="replaced",
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "evpn",
+                "vni 10200 l2",
+                "no route-target import 65000:10201",
+                "no route-target export 65000:10200",
+            ],
+        )
+
     def test_nxos_evpn_vnis_replaced_leaves_other_vnis(self):
         self.get_config.return_value = BASE
         result = self._run(
