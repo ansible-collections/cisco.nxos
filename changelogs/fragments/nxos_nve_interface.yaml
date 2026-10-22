@@ -1,0 +1,8 @@
+---
+minor_changes:
+  - >-
+    nxos_nve_interface - new resource module to manage the ``interface nve1``
+    VXLAN overlay interface, including per-VNI ``suppress-arp``,
+    ``multisite ingress-replication``, ``ingress-replication protocol bgp`` and
+    ``mcast-group`` (contributed by Jørn Ivar Holland, originally proposed in
+    PR 1003).

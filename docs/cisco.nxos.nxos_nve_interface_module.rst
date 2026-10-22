@@ -8,7 +8,7 @@ cisco.nxos.nxos_nve_interface
 **NVE interface resource module.**
 
 
-Version added: 11.0.0
+Version added: 13.1.0
 
 .. contents::
    :local:

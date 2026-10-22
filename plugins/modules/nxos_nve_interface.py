@@ -16,7 +16,7 @@ short_description: NVE interface resource module.
 description:
   - This module provides declarative management of Network Virtualization Endpoint (NVE)
     overlay interface that terminates VXLAN tunnels.
-version_added: 11.0.0
+version_added: 13.1.0
 author:
   - Jørn Ivar Holland (@jiholland)
 notes:
