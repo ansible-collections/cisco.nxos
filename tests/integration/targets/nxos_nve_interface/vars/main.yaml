@@ -1,0 +1,179 @@
+---
+merged:
+  before: {}
+  commands:
+    - interface nve1
+    - description vxlan vtep
+    - host-reachability protocol bgp
+    - advertise virtual-rmac
+    - source-interface loopback1
+    - source-interface hold-down-time 60
+    - member vni 11111 associate-vrf
+    - member vni 22222
+    - member vni 33333
+    - suppress-arp
+    - no shutdown
+    - global mcast-group 239.239.239.239 L2
+  after:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reacability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 239.239.239.239
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+
+gathered:
+  config:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reacability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 239.239.239.239
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+
+overridden:
+  before:
+    enabled: true
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    global_multicast_group:
+      address: 230.230.230.230
+      mode: L2
+    vnis:
+      - associate_vrf: false
+        ingress_replication_bgp: true
+        suppress_arp: true
+        vni_id: 11111
+      - associate_vrf: true
+        vni_id: 22222
+      - associate_vrf: true
+        vni_id: 33333
+  commands:
+    - interface nve1
+    - no description vxlan vtep
+    - no source-interface hold-down-time 60
+    - no member vni 11111
+    - member vni 11111
+    - suppress-arp
+    - ingress-replication protocol bgp
+    - no member vni 22222
+    - member vni 22222 associate-vrf
+    - no member vni 33333
+    - member vni 33333 associate-vrf
+    - global mcast-group 230.230.230.230 L2
+  after:
+    enabled: true
+    advertise_virtual_rmac: true
+    host_reacability_bgp: true
+    source_interface_name: loopback1
+    global_multicast_group:
+      address: 230.230.230.230
+      mode: L2
+    vnis:
+      - ingress_replication_bgp: true
+        suppress_arp: true
+        vni_id: 11111
+      - associate_vrf: true
+        vni_id: 22222
+      - associate_vrf: true
+        vni_id: 33333
+
+replaced:
+  before:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reacability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 239.239.239.239
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+  commands:
+    - interface nve1
+    - description vxlan vtep
+    - no source-interface hold-down-time 60
+    - no advertise virtual-rmac
+    - no member vni 11111
+    - no member vni 22222 associate-vrf
+    - no member vni 33333 associate-vrf
+    - shutdown
+    - no global mcast-group L2
+  after:
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+
+deleted:
+  before:
+    enabled: true
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    global_multicast_group:
+      address: 230.230.230.230
+      mode: L2
+    vnis:
+      - associate_vrf: false
+        ingress_replication_bgp: true
+        suppress_arp: true
+        vni_id: 11111
+      - associate_vrf: true
+        vni_id: 22222
+      - associate_vrf: true
+        vni_id: 33333
+  commands:
+    - no interface nve1
+  after: {}
+
+rendered:
+  commands:
+    - interface nve1
+    - description vxlan vtep
+    - host-reachability protocol bgp
+    - advertise virtual-rmac
+    - source-interface loopback1
+    - member vni 11111
+    - suppress-arp
+    - member vni 22222
+    - suppress-arp disable
+    - no shutdown
+    - global mcast-group 239.239.239.239 L2
+
+parsed:
+  config:
+    description: vxlan vtep
+    enabled: true
+    global_multicast_group:
+      address: 239.239.239.239
+      mode: L2
+    host_reacability_bgp: true
+    source_interface_name: loopback1
+    vnis:
+      - vni_id: 22222
+      - vni_id: 33333

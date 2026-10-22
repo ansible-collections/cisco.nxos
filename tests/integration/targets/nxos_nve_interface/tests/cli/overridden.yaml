@@ -1,0 +1,56 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden nxos_nve_interface state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override NVE interface configuration with provided configuration.
+      cisco.nxos.nxos_nve_interface: &id001
+        config:
+          enabled: true
+          advertise_virtual_rmac: true
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+          global_multicast_group:
+            address: 230.230.230.230
+            mode: L2
+          vnis:
+            - vni_id: 11111
+              associate_vrf: false
+              suppress_arp: true
+              ingress_replication_bgp: true
+            - vni_id: 22222
+              associate_vrf: true
+            - vni_id: 33333
+              associate_vrf: true
+        state: overridden
+      register: result
+
+    - name: Assert that correct set of commands were generated.
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated.
+      ansible.builtin.assert:
+        that:
+          - overridden['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated.
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: Override NVE interface configuration with provided configuration (idempotent).
+      cisco.nxos.nxos_nve_interface: *id001
+      register: result
+
+    - name: Assert that task was idempotent.
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
