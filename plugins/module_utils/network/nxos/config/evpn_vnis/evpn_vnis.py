@@ -62,6 +62,12 @@ class Evpn_vnis(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
+        for entry in self.want:
+            if not 1 <= entry["vni"] <= 16777214:
+                self._module.fail_json(
+                    msg="vni must be in the range 1-16777214, got '{0}'".format(entry["vni"]),
+                )
+
         wantd = {entry["vni"]: self._normalize(entry) for entry in self.want}
         haved = {entry["vni"]: self._normalize(entry) for entry in self.have}
 

@@ -460,3 +460,9 @@ class TestNxosEvpnVnisModule(TestNxosModule):
             ["65000:10200", "65000:10201"],
         )
         self.assertNotIn("route_target_both", result["gathered"][0])
+
+    def test_nxos_evpn_vnis_vni_out_of_range(self):
+        for vni in (0, 16777215):
+            set_module_args(dict(config=[dict(vni=vni)], state="merged"))
+            result = self.execute_module(failed=True)
+            self.assertIn("vni must be in the range 1-16777214", result["msg"])

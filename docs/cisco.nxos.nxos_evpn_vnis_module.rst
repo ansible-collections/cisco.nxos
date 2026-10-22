@@ -133,6 +133,7 @@ Parameters
                 </td>
                 <td>
                         <div>The Layer 2 VNI identifier.</div>
+                        <div>Valid range is 1-16777214.</div>
                 </td>
             </tr>
 

@@ -60,6 +60,7 @@ options:
       vni:
         description:
           - The Layer 2 VNI identifier.
+          - Valid range is 1-16777214.
         type: int
         required: true
       route_distinguisher:
