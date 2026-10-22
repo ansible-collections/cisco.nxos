@@ -10,6 +10,10 @@
         lines:
           - vrf context VRF1
 
+    - name: Wait for the VRF to be created
+      ansible.builtin.wait_for:
+        timeout: 5
+
     - name: Merge route-target both and both evpn
       register: result
       cisco.nxos.nxos_vrf_address_family: &id001
@@ -30,14 +34,14 @@
           - route_target_evpn['merged']['commands'] | symmetric_difference(result['commands']) | length == 0
 
     - name: Gather route-target facts from the device
-      register: gathered
+      register: rt_gathered
       cisco.nxos.nxos_vrf_address_family:
         state: gathered
 
     - name: Assert that the route-targets were gathered with evpn
       ansible.builtin.assert:
         that:
-          - gathered['gathered'] | selectattr('name', 'equalto', 'VRF1') | list | length == 1
+          - rt_gathered['gathered'] | selectattr('name', 'equalto', 'VRF1') | list | length == 1
 
     - name: Merge route-target both and both evpn (idempotent)
       register: result
