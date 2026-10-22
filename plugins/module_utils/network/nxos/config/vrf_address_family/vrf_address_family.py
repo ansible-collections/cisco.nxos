@@ -48,8 +48,6 @@ class Vrf_address_family(ResourceModule):
             "maximum",
         ]
         self.list_parsers = [
-            "route_target.import",
-            "route_target.export",
             "export.map",
             "export.vrf",
             "import.map",
@@ -80,7 +78,9 @@ class Vrf_address_family(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = self._filter_have_to_want(haved, wantd)
+            filtered = self._filter_have_to_want(haved, wantd)
+            self._restore_route_targets(filtered, haved, wantd)
+            haved = filtered
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -147,6 +147,7 @@ class Vrf_address_family(ResourceModule):
         :params have: the have address family dictionary
         """
         self.compare(parsers=self.parsers, want=wantaf, have=haveaf)
+        self._compare_route_targets(want=wantaf, have=haveaf)
         self._compare_af_lists(want=wantaf, have=haveaf)
 
     def _compare_af_lists(self, want, have):
@@ -166,6 +167,111 @@ class Vrf_address_family(ResourceModule):
             # remove remaining items in have for replaced
             for entry in hdict.values():
                 self.addcmd(entry, attrib, True)
+
+    @staticmethod
+    def _normalize_route_targets(route_targets):
+        """Expand route-target entries into comparable keys.
+
+        ``both X`` is equivalent to ``import X`` plus ``export X``, so that
+        the comparison is idempotent whether the device displays ``both``
+        as one line or as two.
+
+        :returns: tuple of (ordered list of (direction, value, evpn) keys,
+                  set of (value, evpn) that were given as ``both``)
+        """
+        keys = []
+        both = set()
+        for rt in route_targets or []:
+            evpn = bool(rt.get("evpn"))
+            if rt.get("both"):
+                both.add((rt["both"], evpn))
+                directions = [("import", rt["both"]), ("export", rt["both"])]
+            elif rt.get("import"):
+                directions = [("import", rt["import"])]
+            elif rt.get("export"):
+                directions = [("export", rt["export"])]
+            else:
+                directions = []
+            for direction, value in directions:
+                key = (direction, value, evpn)
+                if key not in keys:
+                    keys.append(key)
+        return keys, both
+
+    def _compare_route_targets(self, want, have):
+        """Compare route-targets, treating ``both`` as ``import`` + ``export``."""
+        wkeys, wboth = self._normalize_route_targets(want.get("route_target"))
+        hkeys, hboth = self._normalize_route_targets(have.get("route_target"))
+        for rt in want.get("route_target") or []:
+            if rt.get("evpn") and not (rt.get("import") or rt.get("export") or rt.get("both")):
+                self._module.fail_json(
+                    msg="route_target 'evpn' requires one of 'import', 'export' or 'both'",
+                )
+
+        def _entry(direction, value, evpn):
+            entry = {direction: value}
+            if evpn:
+                entry["evpn"] = True
+            return entry
+
+        done = set()
+        for direction in ("import", "export"):
+            for key in wkeys:
+                if key[0] != direction or key in hkeys or key in done:
+                    continue
+                value, evpn = key[1], key[2]
+                pair = (("import", value, evpn), ("export", value, evpn))
+                if (value, evpn) in wboth and not any(k in hkeys for k in pair):
+                    done.update(pair)
+                    self.addcmd(_entry("both", value, evpn), "route_target.both", False)
+                else:
+                    self.addcmd(_entry(direction, value, evpn), f"route_target.{direction}", False)
+            for key in hkeys:
+                if key[0] != direction or key in wkeys or key in done:
+                    continue
+                value, evpn = key[1], key[2]
+                pair = (("import", value, evpn), ("export", value, evpn))
+                if (value, evpn) in hboth and not any(k in wkeys for k in pair):
+                    done.update(pair)
+                    self.addcmd(_entry("both", value, evpn), "route_target.both", True)
+                else:
+                    self.addcmd(_entry(direction, value, evpn), f"route_target.{direction}", True)
+
+    def _restore_route_targets(self, filtered, haved, wantd):
+        """Rebuild the route-targets to delete for state deleted.
+
+        The generic filter compares dict items key by key, which would drop
+        ``evpn`` and cannot match ``both`` against ``import``/``export``.
+        """
+        for vrf, vrf_have in haved.items():
+            for afk, haf in vrf_have.get("address_families", {}).items():
+                waf = wantd.get(vrf, {}).get("address_families", {}).get(afk)
+                faf = filtered.get(vrf, {}).get("address_families", {}).get(afk)
+                if waf is None or faf is None:
+                    continue
+                wkeys, _wboth = self._normalize_route_targets(waf.get("route_target"))
+                hkeys, hboth = self._normalize_route_targets(haf.get("route_target"))
+                matched = [k for k in hkeys if k in wkeys]
+                items = []
+                for direction, value, evpn in matched:
+                    if (value, evpn) in hboth:
+                        item = {"both": value}
+                        if ("import", value, evpn) not in matched or (
+                            "export",
+                            value,
+                            evpn,
+                        ) not in matched:
+                            item = {direction: value}
+                    else:
+                        item = {direction: value}
+                    if evpn:
+                        item["evpn"] = True
+                    if item not in items:
+                        items.append(item)
+                if items:
+                    faf["route_target"] = items
+                else:
+                    faf.pop("route_target", None)
 
     def purge(self, vrf, item):
         """Purge the VRF configuration"""

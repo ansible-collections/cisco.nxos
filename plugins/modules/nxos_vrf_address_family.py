@@ -81,6 +81,18 @@ options:
               export:
                 description: Export Target-VPN community
                 type: str
+              both:
+                description:
+                  - Import and export Target-VPN community (C(route-target both)).
+                  - Treated as equivalent to an I(import) plus an I(export) entry with the same value
+                    when comparing with the device configuration, whether the device
+                    displays C(both) as one line or as two lines.
+                type: str
+              evpn:
+                description:
+                  - Apply the route-target to the EVPN address family (for example C(route-target both auto evpn)).
+                  - Only valid together with one of I(import), I(export) or I(both).
+                type: bool
           export:
             description: VRF export
             type: list

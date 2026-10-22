@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - >-
+    nxos_vrf_address_family - add ``both`` and ``evpn`` to ``route_target`` to manage
+    ``route-target both auto evpn`` and ``route-target import|export auto evpn`` lines.
