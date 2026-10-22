@@ -12,6 +12,10 @@ merged:
     - member vni 22222
     - member vni 33333
     - suppress-arp
+    - member vni 44444
+    - mcast-group 233.252.0.10
+    - member vni 55555
+    - mcast-group 233.252.0.11 233.252.0.12
     - no shutdown
     - global mcast-group 233.252.0.20 L2
   after:
@@ -30,6 +34,13 @@ merged:
       - vni_id: 22222
       - suppress_arp: true
         vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12
 
 gathered:
   config:
@@ -48,25 +59,38 @@ gathered:
       - vni_id: 22222
       - suppress_arp: true
         vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12
 
 overridden:
   before:
     enabled: true
+    description: vxlan vtep
     advertise_virtual_rmac: true
     host_reachability_bgp: true
     source_interface_name: loopback1
+    source_interface_hold_time: 60
     global_multicast_group:
-      address: 233.252.0.30
+      address: 233.252.0.20
       mode: L2
     vnis:
-      - associate_vrf: false
-        ingress_replication_bgp: true
-        suppress_arp: true
+      - associate_vrf: true
         vni_id: 11111
-      - associate_vrf: true
-        vni_id: 22222
-      - associate_vrf: true
+      - vni_id: 22222
+      - suppress_arp: true
         vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12
   commands:
     - interface nve1
     - no description vxlan vtep
@@ -79,6 +103,9 @@ overridden:
     - member vni 22222 associate-vrf
     - no member vni 33333
     - member vni 33333 associate-vrf
+    - member vni 44444
+    - mcast-group 233.252.0.13
+    - no member vni 55555
     - global mcast-group 233.252.0.30 L2
   after:
     enabled: true
@@ -96,6 +123,9 @@ overridden:
         vni_id: 22222
       - associate_vrf: true
         vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.13
 
 replaced:
   before:
@@ -114,18 +144,27 @@ replaced:
       - vni_id: 22222
       - suppress_arp: true
         vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12
   commands:
     - interface nve1
-    - description vxlan vtep
     - no source-interface hold-down-time 60
     - no advertise virtual-rmac
-    - no member vni 11111
-    - no member vni 22222 associate-vrf
-    - no member vni 33333 associate-vrf
+    - no member vni 11111 associate-vrf
+    - no member vni 22222
+    - no member vni 33333
+    - no member vni 44444
+    - no member vni 55555
     - shutdown
     - no global mcast-group 233.252.0.20 L2
   after:
-    advertise_virtual_rmac: true
+    enabled: false
+    description: vxlan vtep
     host_reachability_bgp: true
     source_interface_name: loopback1
 
@@ -177,3 +216,10 @@ parsed:
     vnis:
       - vni_id: 22222
       - vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12

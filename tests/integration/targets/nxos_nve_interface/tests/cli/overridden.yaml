@@ -25,6 +25,9 @@
               associate_vrf: true
             - vni_id: 33333
               associate_vrf: true
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.13
         state: overridden
       register: result
 

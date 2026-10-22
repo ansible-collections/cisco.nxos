@@ -825,6 +825,7 @@ Examples
     #   - no global mcast-group 233.252.0.40 L2
     #
     # after:
+    #   enabled: false
     #   description: vxlan vtep
     #   host_reachability_bgp: true
     #   source_interface_name: loopback1

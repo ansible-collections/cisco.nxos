@@ -17,4 +17,11 @@
         - vni_id: 22222
         - vni_id: 33333
           suppress_arp: true
+        - vni_id: 44444
+          mcast_group:
+            address: 233.252.0.10
+        - vni_id: 55555
+          mcast_group:
+            address: 233.252.0.11
+            secondary_address: 233.252.0.12
     state: merged

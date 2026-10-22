@@ -23,6 +23,13 @@
             - vni_id: 22222
             - vni_id: 33333
               suppress_arp: true
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.10
+            - vni_id: 55555
+              mcast_group:
+                address: 233.252.0.11
+                secondary_address: 233.252.0.12
         state: merged
       register: result
 
@@ -49,5 +56,23 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
+    - name: Merge mutually exclusive per-VNI options (expected to fail)
+      cisco.nxos.nxos_nve_interface:
+        config:
+          vnis:
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.10
+              ingress_replication_bgp: true
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the mutually exclusive options were rejected
+      ansible.builtin.assert:
+        that:
+          - result['failed'] == true
+          - "'mutually exclusive' in result['msg']"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
