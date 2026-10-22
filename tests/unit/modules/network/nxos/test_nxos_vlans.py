@@ -476,6 +476,16 @@ class TestNxosVlansModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
+    def test_nve_overlay_default_have_is_idempotent(self):
+        # No vlan has nve_overlay on the device, so false and omitted are both the default
+        self.prepare()
+        for state in ["merged", "replaced"]:
+            for overlay in [dict(), dict(nve_overlay=False)]:
+                config = [dict(vlan_id=4, enabled=True, **overlay)]
+                set_module_args(dict(config=config, state=state), ignore_provider_arg)
+                result = self.execute_module(changed=False)
+                self.assertEqual(result["commands"], [])
+
     def test_nve_overlay_replaced_overridden_omitted_vs_true(self):
         self.prepare(nve_overlay="_ranges")
         for state in ["replaced", "overridden"]:
