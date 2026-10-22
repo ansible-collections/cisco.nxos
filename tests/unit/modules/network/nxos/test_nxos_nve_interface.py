@@ -808,7 +808,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     "vnis": [
                         {"vni_id": 10100, "associate_vrf": True},
                         {"vni_id": 10400, "ingress_replication_bgp": True},
-                    ]
+                    ],
                 },
             ),
             ("interface nve1\n  shutdown\n", self.FULL_CONFIG),
