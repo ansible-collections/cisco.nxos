@@ -214,6 +214,17 @@ class Vrf_address_family(ResourceModule):
                 entry["evpn"] = True
             return entry
 
+        # NX-OS rejects 'no route-target import|export X' against a 'both X'
+        # line, so a partially wanted 'both' line is negated as a whole and
+        # the wanted half is added again below.
+        hkeys = list(hkeys)
+        for value, evpn in sorted(hboth):
+            pair = (("import", value, evpn), ("export", value, evpn))
+            wanted = [k in wkeys for k in pair]
+            if any(wanted) and not all(wanted):
+                self.addcmd(_entry("both", value, evpn), "route_target.both", True)
+                hkeys = [k for k in hkeys if k not in pair]
+
         done = set()
         for direction in ("import", "export"):
             for key in wkeys:
@@ -252,6 +263,14 @@ class Vrf_address_family(ResourceModule):
                 wkeys, _wboth = self._normalize_route_targets(waf.get("route_target"))
                 hkeys, hboth = self._normalize_route_targets(haf.get("route_target"))
                 matched = [k for k in hkeys if k in wkeys]
+                for value, evpn in sorted(hboth):
+                    pair = (("import", value, evpn), ("export", value, evpn))
+                    if sum(k in matched for k in pair) == 1:
+                        self._module.fail_json(
+                            msg="vrf {0}: cannot delete only one direction of the "
+                            "'route-target both {1}{2}' line; delete 'both' or use "
+                            "state replaced".format(vrf, value, " evpn" if evpn else ""),
+                        )
                 items = []
                 for direction, value, evpn in matched:
                     if (value, evpn) in hboth:

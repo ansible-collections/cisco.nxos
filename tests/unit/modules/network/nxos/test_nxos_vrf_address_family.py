@@ -1101,13 +1101,56 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
         )
 
     def test_vrf_af_rt_replaced_partial_both(self):
-        # only the import half is wanted; the export half of ``both`` is removed
+        # only the import half is wanted: NX-OS rejects 'no route-target export ...'
+        # against a 'both' line, so the whole line is negated and the half re-added
         self._run_rt(
             self._rt_device("route-target both auto evpn"),
             [{"import": "auto", "evpn": True}],
             "replaced",
             True,
-            ["vrf context VRF1", "address-family ipv4 unicast", "no route-target export auto evpn"],
+            [
+                "vrf context VRF1",
+                "address-family ipv4 unicast",
+                "no route-target both auto evpn",
+                "route-target import auto evpn",
+            ],
+        )
+
+    def test_vrf_af_rt_replaced_partial_both_export(self):
+        self._run_rt(
+            self._rt_device("route-target both auto evpn"),
+            [{"export": "auto", "evpn": True}],
+            "replaced",
+            True,
+            [
+                "vrf context VRF1",
+                "address-family ipv4 unicast",
+                "no route-target both auto evpn",
+                "route-target export auto evpn",
+            ],
+        )
+
+    def test_vrf_af_rt_replaced_partial_plain_both(self):
+        self._run_rt(
+            self._rt_device("route-target both auto"),
+            [{"export": "auto"}],
+            "replaced",
+            True,
+            [
+                "vrf context VRF1",
+                "address-family ipv4 unicast",
+                "no route-target both auto",
+                "route-target export auto",
+            ],
+        )
+
+    def test_vrf_af_rt_replaced_partial_both_idempotent_after_split(self):
+        # after the split the device shows two plain lines, which must be stable
+        self._run_rt(
+            self._rt_device("route-target import auto evpn"),
+            [{"import": "auto", "evpn": True}],
+            "replaced",
+            False,
         )
 
     def test_vrf_af_rt_overridden_removes_other_vrf(self):
@@ -1147,14 +1190,14 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             ["vrf context VRF1", "address-family ipv4 unicast", "no route-target import auto evpn"],
         )
 
-    def test_vrf_af_rt_deleted_import_matches_both(self):
-        self._run_rt(
-            self._rt_device("route-target both auto evpn"),
-            [{"import": "auto", "evpn": True}],
-            "deleted",
-            True,
-            ["vrf context VRF1", "address-family ipv4 unicast", "no route-target import auto evpn"],
+    def test_vrf_af_rt_deleted_one_direction_of_both_fails(self):
+        # NX-OS cannot negate one direction of a 'both' line
+        self.execute_show_command.return_value = self._rt_device("route-target both auto evpn")
+        set_module_args(
+            dict(config=self._rt_config([{"import": "auto", "evpn": True}]), state="deleted"),
         )
+        result = self.execute_module(failed=True)
+        self.assertIn("cannot delete only one direction", result["msg"])
 
     def test_vrf_af_rt_mixed_legacy_and_new(self):
         self._run_rt(

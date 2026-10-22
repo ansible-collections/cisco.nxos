@@ -494,6 +494,7 @@ Parameters
                 <td>
                         <div>Import and export Target-VPN community (<code>route-target both</code>).</div>
                         <div>Treated as equivalent to an <em>import</em> plus an <em>export</em> entry with the same value when comparing with the device configuration, whether the device displays <code>both</code> as one line or as two lines.</div>
+                        <div>NX-OS rejects negating only one direction of a <code>both</code> line. With <em>state</em> <code>replaced</code> or <code>overridden</code> a <code>both</code> line that is only partly wanted is removed as a whole and the wanted direction is configured again. With <em>state</em> <code>deleted</code> listing one direction of a <code>both</code> line fails.</div>
                 </td>
             </tr>
             <tr>

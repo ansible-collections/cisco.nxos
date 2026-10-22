@@ -87,6 +87,9 @@ options:
                   - Treated as equivalent to an I(import) plus an I(export) entry with the same value
                     when comparing with the device configuration, whether the device
                     displays C(both) as one line or as two lines.
+                  - NX-OS rejects negating only one direction of a C(both) line. With I(state) C(replaced) or
+                    C(overridden) a C(both) line that is only partly wanted is removed as a whole and the wanted
+                    direction is configured again. With I(state) C(deleted) listing one direction of a C(both) line fails.
                 type: str
               evpn:
                 description:
