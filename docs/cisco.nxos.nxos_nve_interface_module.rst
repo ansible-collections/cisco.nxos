@@ -510,6 +510,8 @@ Parameters
                 <td>
                         <div>The state of the configuration after module completion.</div>
                         <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
+                        <div>With state <code>deleted</code> and no <em>config</em>, the whole <code>interface nve1</code> is removed.</div>
+                        <div>With state <code>deleted</code> and an <em>config</em>, only the listed <em>vnis</em> and the listed top-level attributes that are configured on the device are removed. Other VNIs and attributes, and the interface itself, are left in place.</div>
                 </td>
             </tr>
     </table>
@@ -851,7 +853,7 @@ Examples
     #   host-reachability protocol bgp
     #   source-interface loopback1
 
-    - name: Delete NVE configurations handled by this module.
+    - name: Delete the whole NVE interface.
       cisco.nxos.nxos_nve_interface:
         state: deleted
 
@@ -872,6 +874,45 @@ Examples
     # ------------
     # switch# show running-config | section "^interface nve1"
     # switch#
+
+
+    # Using deleted with a config to remove only the listed VNIs
+
+    # Before state:
+    # -------------
+    # switch# show running-config | section "^interface nve1"
+    # interface nve1
+    #   no shutdown
+    #   host-reachability protocol bgp
+    #   source-interface loopback1
+    #   member vni 11111
+    #   member vni 22222 associate-vrf
+    #   member vni 33333
+
+    - name: Delete only the listed VNIs.
+      cisco.nxos.nxos_nve_interface:
+        config:
+          vnis:
+            - vni_id: 11111
+            - vni_id: 22222
+        state: deleted
+
+    # Task output:
+    # ------------
+
+    # commands:
+    #   - interface nve1
+    #   - no member vni 11111
+    #   - no member vni 22222 associate-vrf
+    #
+    # After state:
+    # ------------
+    # switch# show running-config | section "^interface nve1"
+    # interface nve1
+    #   no shutdown
+    #   host-reachability protocol bgp
+    #   source-interface loopback1
+    #   member vni 33333
 
 
     # Using rendered

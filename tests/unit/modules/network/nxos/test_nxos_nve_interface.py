@@ -388,12 +388,12 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
-    def _run(self, running, config, state, changed=True, failed=False):
+    def _run(self, running, config, state, changed=True, failed=False, commands=None):
         """Run the module against a running-config and return the result."""
 
         self.get_config.return_value = dedent(running)
         set_module_args({"config": config, "state": state})
-        return self.execute_module(changed=changed, failed=failed)
+        return self.execute_module(changed=changed, failed=failed, commands=commands)
 
     def test_nxos_nve_interface_mcast_group_merged(self):
         """Test per-VNI mcast-group, including the optional second address."""
@@ -889,6 +889,71 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         result = self._run(self.FULL_RUNNING, {}, "deleted")
         self.assertEqual(result["commands"], ["no interface nve1"])
         self._run("", {}, "deleted", changed=False)
+
+    def test_nxos_nve_interface_deleted_listed_vnis(self):
+        """Test deleted removes only the listed VNIs and leaves the rest alone."""
+
+        config = {"vnis": [{"vni_id": 10200}, {"vni_id": 50001}, {"vni_id": 99999}]}
+        result = self._run(self.FULL_RUNNING, config, "deleted")
+        self.assertEqual(
+            result["commands"],
+            ["interface nve1", "no member vni 10200", "no member vni 50001 associate-vrf"],
+        )
+        # the second run on the resulting configuration is a no-op
+        after = """\
+            interface nve1
+              no shutdown
+              description example vtep
+              member vni 10100
+                suppress-arp
+              member vni 10300
+            """
+        self._run(after, config, "deleted", changed=False, commands=[])
+
+    def test_nxos_nve_interface_deleted_absent_vni(self):
+        """Test deleted with a VNI that does not exist generates no commands."""
+
+        result = self._run(
+            self.FULL_RUNNING,
+            {"vnis": [{"vni_id": 99999}]},
+            "deleted",
+            changed=False,
+        )
+        self.assertEqual(result["commands"], [])
+        self._run("", {"vnis": [{"vni_id": 10100}]}, "deleted", changed=False)
+
+    def test_nxos_nve_interface_deleted_attributes(self):
+        """Test deleted removes only the listed top-level attributes."""
+
+        config = {
+            "description": "example vtep",
+            "enabled": True,
+            "global_multicast_group": {"address": "233.252.0.20", "mode": "L2"},
+            "source_interface_hold_time": 180,
+            "multisite_interface": "loopback100",
+            "host_reachability_bgp": True,
+        }
+        result = self._run(self.FULL_RUNNING, config, "deleted")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "no description example vtep",
+                "no host-reachability protocol bgp",
+                "no source-interface hold-down-time 180",
+                "no multisite border-gateway interface loopback100",
+                "shutdown",
+                "no global mcast-group 233.252.0.20 L2",
+            ],
+        )
+        # nothing is left to delete from an interface without those attributes
+        after = """\
+            interface nve1
+              shutdown
+              source-interface loopback1
+              member vni 10100
+            """
+        self._run(after, config, "deleted", changed=False)
 
     def test_nxos_nve_interface_gathered_matches_config(self):
         """Test gathered facts equal the config used to build the device state."""

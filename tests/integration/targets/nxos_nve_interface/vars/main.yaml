@@ -190,6 +190,36 @@ deleted:
     - no interface nve1
   after: {}
 
+deleted_vnis:
+  config:
+    vnis:
+      - vni_id: 11111
+      - vni_id: 33333
+      - vni_id: 99999
+  commands:
+    - interface nve1
+    - no member vni 11111 associate-vrf
+    - no member vni 33333
+  after:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - vni_id: 22222
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+          secondary_address: 233.252.0.12
+
 rendered:
   commands:
     - interface nve1

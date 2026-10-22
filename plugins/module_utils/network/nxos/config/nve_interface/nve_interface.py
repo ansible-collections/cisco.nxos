@@ -82,11 +82,16 @@ class Nve_interface(ResourceModule):
         if self.state == "merged":
             wantd = self._merge(haved, wantd)
 
-        # If state is 'deleted', remove the NVE interface.
+        # If state is 'deleted', remove only what is listed in config,
+        # or the whole NVE interface when no config is given.
         if self.state == "deleted":
-            if self.have:
-                self.commands.append("no interface nve1")
-            return
+            if not wantd:
+                if haved:
+                    self.commands.append("no interface nve1")
+                return
+            wantd = self._remaining(haved, wantd)
+            if not haved:
+                return
 
         self._compare(want=wantd, have=haved)
 
@@ -107,6 +112,25 @@ class Nve_interface(ResourceModule):
                             second,
                         ),
                     )
+
+    @staticmethod
+    def _remaining(have, want):
+        """
+        Build the configuration that is left after state deleted.
+
+        Everything in have stays except the attributes and VNIs listed in
+        want, so that comparing against it only negates the listed ones.
+        """
+        listed_vnis = {str(v["vni_id"]) for v in want.get("vnis", [])}
+        remaining = {k: v for k, v in have.items() if k not in want}
+        if "enabled" in want and have.get("enabled") is not None:
+            remaining["enabled"] = False
+        vnis = [v for v in have.get("vnis", []) if str(v["vni_id"]) not in listed_vnis]
+        if vnis:
+            remaining["vnis"] = vnis
+        else:
+            remaining.pop("vnis", None)
+        return remaining
 
     def _merge(self, have, want):
         """
@@ -166,7 +190,7 @@ class Nve_interface(ResourceModule):
                 ):
                     self.commands.append(self._gmg_negate(have_gmg))
                 self.addcmd(want, "global_multicast_group")
-        elif have_gmg is not None and self.state in ["overridden", "replaced"]:
+        elif have_gmg is not None and self.state in ["overridden", "replaced", "deleted"]:
             self.commands.append(self._gmg_negate(have_gmg))
 
         if len(self.commands) != begin:

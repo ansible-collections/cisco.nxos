@@ -28,3 +28,45 @@
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete only the listed VNIs.
+      cisco.nxos.nxos_nve_interface:
+        config: "{{ deleted_vnis['config'] }}"
+        state: deleted
+      register: result
+
+    - name: Assert that only the listed VNIs are removed.
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - result['commands'] == deleted_vnis['commands']
+          - result['after'] == deleted_vnis['after']
+
+    - name: Gather facts to check that the other VNIs and attributes remain.
+      cisco.nxos.nxos_nve_interface:
+        state: gathered
+      register: gathered_result
+
+    - name: Assert the other VNIs remain on the device.
+      ansible.builtin.assert:
+        that:
+          - gathered_result['gathered'] == deleted_vnis['after']
+
+    - name: Delete the listed VNIs again (idempotent).
+      cisco.nxos.nxos_nve_interface:
+        config: "{{ deleted_vnis['config'] }}"
+        state: deleted
+      register: result
+
+    - name: Assert that the second run changes nothing.
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] == []
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
