@@ -88,6 +88,9 @@
               | symmetric_difference(merged['commands'])
               | length == 0
             }}
+        fail_msg: >-
+          command diff={{ result['commands'] | symmetric_difference(merged['commands']) }}
+          result.commands={{ result['commands'] }}
 
     - name: Assert that 'after' contact/location/aaa_user/traps configurations were correctly generated
       ansible.builtin.assert:
