@@ -161,7 +161,7 @@ replaced:
     - no member vni 44444
     - no member vni 55555
     - shutdown
-    - no global mcast-group 233.252.0.20 L2
+    - no global mcast-group L2
   after:
     enabled: false
     description: vxlan vtep

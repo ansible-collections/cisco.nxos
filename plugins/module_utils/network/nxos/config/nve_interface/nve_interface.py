@@ -199,7 +199,7 @@ class Nve_interface(ResourceModule):
 
     @staticmethod
     def _gmg_negate(gmg):
-        return "no global mcast-group {address} {mode}".format(**gmg)
+        return "no global mcast-group {mode}".format(**gmg)
 
     def _compare_vnis(self, want, have):
         """

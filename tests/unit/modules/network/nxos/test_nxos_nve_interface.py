@@ -314,7 +314,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
             "member vni 22222 associate-vrf",
             "member vni 33333",
             "no shutdown",
-            "no global mcast-group 233.252.0.30 L2",
+            "no global mcast-group L2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -843,7 +843,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                 "no member vni 10200",
                 "no member vni 10300",
                 "no member vni 50001 associate-vrf",
-                "no global mcast-group 233.252.0.20 L2",
+                "no global mcast-group L2",
             ],
         )
         # replaced then repeated on the resulting configuration is a no-op
@@ -943,7 +943,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                 "no source-interface hold-down-time 180",
                 "no multisite border-gateway interface loopback100",
                 "shutdown",
-                "no global mcast-group 233.252.0.20 L2",
+                "no global mcast-group L2",
             ],
         )
         # nothing is left to delete from an interface without those attributes
