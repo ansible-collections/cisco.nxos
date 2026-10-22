@@ -550,7 +550,7 @@ Examples
           source_interface_name: loopback1
           source_interface_hold_time: 60
           global_multicast_group:
-            address: 239.239.239.239
+            address: 233.252.0.20
             mode: L2
           vnis:
             - associate_vrf: true
@@ -582,7 +582,7 @@ Examples
     #   - member vni 44444
     #   - mcast-group 233.252.0.10
     #   - no shutdown
-    #   - global mcast-group 239.239.239.239 L2
+    #   - global mcast-group 233.252.0.20 L2
     #
     # after:
     #   enabled: true
@@ -592,7 +592,7 @@ Examples
     #   source_interface_name: loopback1
     #   source_interface_hold_time: 60
     #   global_multicast_group:
-    #     address: 239.239.239.239
+    #     address: 233.252.0.20
     #     mode: L2
     #   vnis:
     #     - associate_vrf: true
@@ -614,7 +614,7 @@ Examples
     #   advertise virtual-rmac
     #   source-interface loopback1
     #   source-interface hold-down-time 60
-    #   global mcast-group 239.239.239.239 L2
+    #   global mcast-group 233.252.0.20 L2
     #   member vni 11111 associate-vrf
     #   member vni 22222
     #   member vni 33333
@@ -635,7 +635,7 @@ Examples
     #   advertise virtual-rmac
     #   source-interface loopback1
     #   source-interface hold-down-time 60
-    #   global mcast-group 239.239.239.239 L2
+    #   global mcast-group 233.252.0.20 L2
     #   member vni 11111 associate-vrf
     #   member vni 22222
     #   member vni 33333
@@ -655,7 +655,7 @@ Examples
     #   source_interface_name: loopback1
     #   source_interface_hold_time: 60
     #   global_multicast_group:
-    #     address: 239.239.239.239
+    #     address: 233.252.0.20
     #     mode: L2
     #   vnis:
     #     - associate_vrf: true
@@ -677,7 +677,7 @@ Examples
     #   advertise virtual-rmac
     #   source-interface loopback1
     #   source-interface hold-down-time 60
-    #   global mcast-group 239.239.239.239 L2
+    #   global mcast-group 233.252.0.20 L2
     #   member vni 11111 associate-vrf
     #   member vni 22222
     #   member vni 33333
@@ -691,7 +691,7 @@ Examples
           host_reachability_bgp: true
           source_interface_name: loopback1
           global_multicast_group:
-            address: 230.230.230.230
+            address: 233.252.0.30
             mode: L2
           vnis:
             - associate_vrf: false
@@ -714,7 +714,7 @@ Examples
     #   source_interface_name: loopback1
     #   source_interface_hold_time: 60
     #   global_multicast_group:
-    #     address: 239.239.239.239
+    #     address: 233.252.0.20
     #     mode: L2
     #   vnis:
     #     - associate_vrf: true
@@ -735,7 +735,7 @@ Examples
     #   - member vni 22222 associate-vrf
     #   - no member vni 33333
     #   - member vni 33333 associate-vrf
-    #   - global mcast-group 230.230.230.230 L2
+    #   - global mcast-group 233.252.0.30 L2
     #
     # after:
     #   enabled: true
@@ -743,7 +743,7 @@ Examples
     #   host_reachability_bgp: true
     #   source_interface_name: loopback1
     #   global_multicast_group:
-    #     address: 230.230.230.230
+    #     address: 233.252.0.30
     #     mode: L2
     #   vnis:
     #     - ingress_replication_bgp: true
@@ -762,7 +762,7 @@ Examples
     #   host-reachability protocol bgp
     #   advertise virtual-rmac
     #   source-interface loopback1
-    #   global mcast-group 239.230.230.230 L2
+    #   global mcast-group 233.252.0.40 L2
     #   member vni 11111
     #     suppress-arp
     #     ingress-replication protocol bgp
@@ -780,7 +780,7 @@ Examples
     #   host-reachability protocol bgp
     #   advertise virtual-rmac
     #   source-interface loopback1
-    #   global mcast-group 239.230.230.230 L2
+    #   global mcast-group 233.252.0.40 L2
     #   member vni 11111
     #     suppress-arp
     #     ingress-replication protocol bgp
@@ -803,7 +803,7 @@ Examples
     #   host_reachability_bgp: true
     #   source_interface_name: loopback1
     #   global_multicast_group:
-    #     address: 230.230.230.230
+    #     address: 233.252.0.30
     #     mode: L2
     #   vnis:
     #     - ingress_replication_bgp: true
@@ -884,7 +884,7 @@ Examples
           host_reachability_bgp: true
           source_interface_name: loopback1
           global_multicast_group:
-            address: 239.239.239.239
+            address: 233.252.0.20
             mode: L2
           vnis:
             - suppress_arp: true
@@ -906,7 +906,7 @@ Examples
     #   - member vni 22222
     #   - suppress-arp disable
     #   - no shutdown
-    #   - global mcast-group 239.239.239.239 L2
+    #   - global mcast-group 233.252.0.20 L2
 
 
     # Using parsed
@@ -918,7 +918,7 @@ Examples
     #   description vxlan vtep
     #   host-reachability protocol bgp
     #   source-interface loopback1
-    #   global mcast-group 239.239.239.239 L2
+    #   global mcast-group 233.252.0.20 L2
     #   member vni 22222
     #   member vni 33333
 
@@ -933,7 +933,7 @@ Examples
     #   description: vxlan vtep
     #   enabled: true
     #   global_multicast_group:
-    #     address: 239.239.239.239
+    #     address: 233.252.0.20
     #     mode: L2
     #  host_reachability_bgp: true
     #  source_interface_name: loopback1
@@ -1003,7 +1003,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface nve1&#x27;, &#x27;no shutdown&#x27;, &#x27;description vxlan vtep&#x27;, &#x27;host-reachability protocol bgp&#x27;, &#x27;advertise virtual-rmac&#x27;, &#x27;source-interface loopback1&#x27;, &#x27;global mcast-group 239.239.239.239 L2&#x27;, &#x27;member vni 11111 associate-vrf&#x27;, &#x27;member vni 22222&#x27;, &#x27;suppress-arp&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface nve1&#x27;, &#x27;no shutdown&#x27;, &#x27;description vxlan vtep&#x27;, &#x27;host-reachability protocol bgp&#x27;, &#x27;advertise virtual-rmac&#x27;, &#x27;source-interface loopback1&#x27;, &#x27;global mcast-group 233.252.0.20 L2&#x27;, &#x27;member vni 11111 associate-vrf&#x27;, &#x27;member vni 22222&#x27;, &#x27;suppress-arp&#x27;]</div>
                 </td>
             </tr>
     </table>

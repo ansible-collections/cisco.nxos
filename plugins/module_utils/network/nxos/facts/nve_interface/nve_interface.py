@@ -81,22 +81,22 @@ class Nve_interfaceFacts(object):
         :param obj: dict
         :returns: flattended running config
         """
-        data = data.split("\n")
-        in_vni_cxt = False
-        cur_vni = {}
+        lines = [line.rstrip() for line in data.splitlines()]
+        vni_line = None
+        vni_indent = 0
 
-        for x in data:
-            cur_indent = len(x) - len(x.lstrip())
-            if x.strip().startswith("member vni"):
-                in_vni_cxt = True
-                cur_vni["vni"] = x
-                cur_vni["indent"] = cur_indent
-            elif cur_vni and (cur_indent <= cur_vni["indent"]):
-                in_vni_cxt = False
-            elif in_vni_cxt:
-                data[data.index(x)] = cur_vni["vni"] + " " + x.strip()
+        for idx, line in enumerate(lines):
+            stripped = line.lstrip()
+            indent = len(line) - len(stripped)
+            if stripped.startswith("member vni"):
+                vni_line = line
+                vni_indent = indent
+            elif vni_line is not None and stripped and indent > vni_indent:
+                lines[idx] = vni_line + " " + stripped
+            else:
+                vni_line = None
 
-        return "\n".join(data)
+        return "\n".join(lines)
 
     def _post_parse(self, obj):
         """

@@ -75,7 +75,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     "description": "vxlan vtep",
                     "enabled": True,
                     "global_multicast_group": {
-                        "address": "239.239.239.239",
+                        "address": "233.252.0.20",
                         "mode": "L2",
                     },
                     "source_interface_hold_time": 60,
@@ -102,7 +102,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
             "suppress-arp",
             "member vni 33333",
             "suppress-arp",
-            "global mcast-group 239.239.239.239 L2",
+            "global mcast-group 233.252.0.20 L2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -119,7 +119,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
              host-reachability protocol bgp
              source-interface loopback1
              source-interface hold-down-time 60
-             global mcast-group 239.239.239.239 L2
+             global mcast-group 233.252.0.20 L2
              member vni 11111
               suppress-arp
              member vni 22222 associate-vrf
@@ -134,7 +134,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     "description": "vxlan vtep",
                     "enabled": True,
                     "global_multicast_group": {
-                        "address": "239.239.239.239",
+                        "address": "233.252.0.20",
                         "mode": "L2",
                     },
                     "source_interface_hold_time": 60,
@@ -173,7 +173,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     "advertise_virtual_rmac": True,
                     "enabled": True,
                     "global_multicast_group": {
-                        "address": "230.230.230.230",
+                        "address": "233.252.0.30",
                         "mode": "L2",
                     },
                     "host_reachability_bgp": True,
@@ -207,7 +207,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
             "member vni 22222 associate-vrf",
             "member vni 33333",
             "suppress-arp",
-            "global mcast-group 230.230.230.230 L2",
+            "global mcast-group 233.252.0.30 L2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -222,7 +222,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
              advertise virtual-rmac
              host-reachability protocol bgp
              source-interface loopback1
-             global mcast-group 230.230.230.230 L2
+             global mcast-group 233.252.0.30 L2
              member vni 11111
               ingress-replication protocol bgp
               suppress-arp
@@ -237,7 +237,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     "advertise_virtual_rmac": True,
                     "enabled": True,
                     "global_multicast_group": {
-                        "address": "230.230.230.230",
+                        "address": "233.252.0.30",
                         "mode": "L2",
                     },
                     "host_reachability_bgp": True,
@@ -269,7 +269,7 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             interface nve1
-             global mcast-group 230.230.230.230 L2
+             global mcast-group 233.252.0.30 L2
              host-reachability protocol bgp
              source-interface loopback2
              member vni 11111 associate-vrf
@@ -640,4 +640,68 @@ class TestNxosNveInterfaceModule(TestNxosModule):
                     {"vni_id": 50001, "associate_vrf": True},
                 ],
             },
+        )
+
+    def test_nxos_nve_interface_parsed_multisite_and_trailing_whitespace(self):
+        """Test multisite interface parsing and tolerance of trailing whitespace."""
+
+        running = (
+            "interface nve1  \n"
+            "  no shutdown \n"
+            "  host-reachability protocol bgp   \n"
+            "  multisite border-gateway interface loopback100\n"
+            "  member vni 10100 \n"
+            "    multisite ingress-replication  \n"
+            "    ingress-replication protocol bgp\n"
+            "  member vni 10200\n"
+            "    suppress-arp\n"
+        )
+        set_module_args({"running_config": running, "state": "parsed"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            {
+                "enabled": True,
+                "host_reachability_bgp": True,
+                "multisite_interface": "loopback100",
+                "vnis": [
+                    {
+                        "vni_id": 10100,
+                        "multisite_ingress_replication": True,
+                        "ingress_replication_bgp": True,
+                    },
+                    {"vni_id": 10200, "suppress_arp": True},
+                ],
+            },
+        )
+
+    def test_nxos_nve_interface_parsed_pathological_whitespace(self):
+        """Test very long whitespace runs are parsed without stalling."""
+
+        running = (
+            "interface nve1\n  description"
+            + " " * 100000
+            + "x\n  member vni 1"
+            + " " * 100000
+            + "x\n"
+        )
+        set_module_args({"running_config": running, "state": "parsed"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], {"description": "x"})
+
+    def test_nxos_nve_interface_multisite_interface_idempotent(self):
+        """Test multisite border-gateway interface compares without changes."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              multisite border-gateway interface loopback100
+            """
+        config = {"enabled": True, "multisite_interface": "loopback100"}
+        for state in ("merged", "replaced", "overridden"):
+            self._run(running, config, state, changed=False)
+        result = self._run(running, {"multisite_interface": "loopback101"}, "merged")
+        self.assertEqual(
+            result["commands"],
+            ["interface nve1", "multisite border-gateway interface loopback101"],
         )

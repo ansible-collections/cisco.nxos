@@ -14,7 +14,7 @@
           host_reachability_bgp: true
           source_interface_name: loopback1
           global_multicast_group:
-            address: 230.230.230.230
+            address: 233.252.0.30
             mode: L2
           vnis:
             - vni_id: 11111

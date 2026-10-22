@@ -59,8 +59,8 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "host_reachability_bgp",
             "getval": re.compile(
                 r"""
-                (?P<host_reachability_bgp>\s+host-reachability\s+protocol\s+bgp\s*)
-                $ """, re.VERBOSE,
+                (?P<host_reachability_bgp>\s+host-reachability\s+protocol\s+bgp)
+                $""", re.VERBOSE,
             ),
             "setval": "host-reachability protocol bgp",
             "result": {
@@ -71,7 +71,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "advertise_virtual_rmac",
             "getval": re.compile(
                 r"""
-                (?P<advertise_virtual_rmac>\s+advertise\svirtual-rmac\s*)
+                (?P<advertise_virtual_rmac>\s+advertise\svirtual-rmac)
                 $""", re.VERBOSE,
             ),
             "setval": "advertise virtual-rmac",
@@ -107,7 +107,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "global_ingress_replication_bgp",
             "getval": re.compile(
                 r"""
-                (?P<global_ingress_replication_bgp>\s+global\s+ingress-replication\sprotocol\s+bgp\s*)
+                (?P<global_ingress_replication_bgp>\s+global\s+ingress-replication\sprotocol\s+bgp)
                 $""", re.VERBOSE,
             ),
             "setval": "global ingress-replication protocol bgp",
@@ -119,7 +119,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "global_suppress_arp",
             "getval": re.compile(
                 r"""
-                (?P<global_suppress_arp>\s+global\s+suppress-arp\s*)
+                (?P<global_suppress_arp>\s+global\s+suppress-arp)
                 $""", re.VERBOSE,
             ),
             "setval": "global suppress-arp",
@@ -132,7 +132,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+global\s+mcast-group\s+(?P<address>\S+)\s+
-                (?P<mode>\S+)
+                (?P<mode>L2|L3)
                 $""", re.VERBOSE,
             ),
             "setval": (
@@ -151,7 +151,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "multisite_interface",
             "getval": re.compile(
                 r"""
-                \s+multisite\s+border-gateway\s+interface\s+(?P<multisite_interface>\s*)
+                \s+multisite\s+border-gateway\s+interface\s+(?P<multisite_interface>\S+)
                 $""", re.VERBOSE,
             ),
             "setval": "multisite border-gateway interface {{ multisite_interface }}",
@@ -165,7 +165,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+member\s+vni\s+(?P<vni_id>\d+)
-                (?P<associate_vrf>\s+associate-vrf\s*)?
+                (?P<associate_vrf>\s+associate-vrf)?
                 $""", re.VERBOSE,
             ),
             "setval": (
@@ -186,7 +186,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+member\s+vni\s+(?P<vni_id>\d+)
-                (?P<suppress_arp>\s+suppress-arp\s*)
+                (?P<suppress_arp>\s+suppress-arp)
                 $""", re.VERBOSE,
             ),
             "setval": "suppress-arp",
@@ -203,7 +203,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+member\s+vni\s+(?P<vni_id>\d+)
-                (?P<suppress_arp_disable>\s+suppress-arp\s+disable\s*)
+                (?P<suppress_arp_disable>\s+suppress-arp\s+disable)
                 $""", re.VERBOSE,
             ),
             "setval": "suppress-arp disable",
@@ -219,8 +219,8 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "multisite_ingress_replication",
             "getval": re.compile(
                 r"""
-                \s*member\s+vni\s+(?P<vni_id>\d+)
-                (?P<multisite_ingress_replication>\s+multisite\s+ingress-replication\s*)
+                \s+member\s+vni\s+(?P<vni_id>\d+)
+                (?P<multisite_ingress_replication>\s+multisite\s+ingress-replication)
                 $""", re.VERBOSE,
             ),
             "setval": "multisite ingress-replication",
@@ -236,8 +236,8 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "ingress_replication_bgp",
             "getval": re.compile(
                 r"""
-                \s*member\s+vni\s+(?P<vni_id>\d+)
-                (?P<ingress_replication_bgp>\s+ingress-replication\s+protocol\s+bgp\s*)
+                \s+member\s+vni\s+(?P<vni_id>\d+)
+                (?P<ingress_replication_bgp>\s+ingress-replication\s+protocol\s+bgp)
                 $""", re.VERBOSE,
             ),
             "setval": "ingress-replication protocol bgp",
@@ -253,10 +253,10 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "mcast_group",
             "getval": re.compile(
                 r"""
-                \s*member\s+vni\s+(?P<vni_id>\d+)
+                \s+member\s+vni\s+(?P<vni_id>\d+)
                 \s+mcast-group\s+(?P<address>\S+)
                 (?:\s+(?P<secondary_address>\S+))?
-                \s*$""", re.VERBOSE,
+                $""", re.VERBOSE,
             ),
             "setval": (
                 "mcast-group {{ mcast_group.address }}"
