@@ -78,7 +78,7 @@ options:
               - L3
       multisite_interface:
         description:
-          - Multiste border gateway source interface
+          - Multisite border gateway source interface
         type: str
       vnis:
         description:
@@ -129,7 +129,7 @@ options:
     description:
       - This option is used only with state I(parsed).
       - The value of this option should be the output received from the NX-OS device
-        by executing the command B(show running-config | section '^router bgp').
+        by executing the command B(show running-config | section "^interface nve1").
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
@@ -186,7 +186,7 @@ EXAMPLES = """
 #   enabled: true
 #   description: vxlan vtep
 #   advertise_virtual_rmac: true
-#   host_reacability_bgp: true
+#   host_reachability_bgp: true
 #   source_interface_name: loopback1
 #   source_interface_hold_time: 60
 #   global_multicast_group:
@@ -234,7 +234,7 @@ EXAMPLES = """
 #   member vni 33333
 #     suppress-arp
 
-- name: Gather NVE interace facts using gathered
+- name: Gather NVE interface facts using gathered
   cisco.nxos.nxos_nve_interface:
     state: gathered
 
@@ -244,7 +244,7 @@ EXAMPLES = """
 #   enabled: true
 #   description: vxlan vtep
 #   advertise_virtual_rmac: true
-#   host_reacability_bgp: true
+#   host_reachability_bgp: true
 #   source_interface_name: loopback1
 #   source_interface_hold_time: 60
 #   global_multicast_group:
@@ -303,7 +303,7 @@ EXAMPLES = """
 #   enabled: true
 #   description: vxlan vtep
 #   advertise_virtual_rmac: true
-#   host_reacability_bgp: true
+#   host_reachability_bgp: true
 #   source_interface_name: loopback1
 #   source_interface_hold_time: 60
 #   global_multicast_group:
@@ -452,7 +452,7 @@ EXAMPLES = """
 
 # before:
 #   description: vxlan vtep
-#   host_reacability_bgp: true
+#   host_reachability_bgp: true
 #   source_interface_name: loopback1
 #
 # commands:
@@ -474,7 +474,7 @@ EXAMPLES = """
       enabled: true
       description: vxlan vtep
       advertise_virtual_rmac: true
-      host_reacability_bgp: true
+      host_reachability_bgp: true
       source_interface_name: loopback1
       global_multicast_group:
         address: 239.239.239.239
@@ -528,7 +528,7 @@ EXAMPLES = """
 #   global_multicast_group:
 #     address: 239.239.239.239
 #     mode: L2
-#  host_reacability_bgp: true
+#  host_reachability_bgp: true
 #  source_interface_name: loopback1
 #  vnis:
 #    - vni_id: 22222
