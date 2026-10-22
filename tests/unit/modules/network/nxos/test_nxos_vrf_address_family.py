@@ -1039,11 +1039,15 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
 
     def test_vrf_af_rt_merged_import_evpn(self):
         self._run_rt(
-            self._rt_device("route-target import auto"),
-            [{"import": "auto", "evpn": True}],
+            self._rt_device("route-target import 65000:100"),
+            [{"import": "65000:100", "evpn": True}],
             "merged",
             True,
-            ["vrf context VRF1", "address-family ipv4 unicast", "route-target import auto evpn"],
+            [
+                "vrf context VRF1",
+                "address-family ipv4 unicast",
+                "route-target import 65000:100 evpn",
+            ],
         )
 
     def test_vrf_af_rt_idempotent_both_one_line(self):
@@ -1054,40 +1058,40 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
 
     def test_vrf_af_rt_idempotent_both_expanded(self):
         # device shows ``both`` as an import + export pair
-        rts = [{"both": "auto"}, {"both": "auto", "evpn": True}]
+        rts = [{"both": "65000:100"}, {"both": "65000:100", "evpn": True}]
         device = self._rt_device(
-            "route-target import auto",
-            "route-target import auto evpn",
-            "route-target export auto",
-            "route-target export auto evpn",
+            "route-target import 65000:100",
+            "route-target import 65000:100 evpn",
+            "route-target export 65000:100",
+            "route-target export 65000:100 evpn",
         )
         for state in ("merged", "replaced", "overridden"):
             self._run_rt(device, rts, state, False)
 
     def test_vrf_af_rt_idempotent_pair_wanted_as_both(self):
         # want import + export, device shows a single ``both`` line
-        rts = [{"import": "auto", "evpn": True}, {"export": "auto", "evpn": True}]
+        rts = [{"import": "65000:100", "evpn": True}, {"export": "65000:100", "evpn": True}]
         for state in ("merged", "replaced"):
-            self._run_rt(self._rt_device("route-target both auto evpn"), rts, state, False)
+            self._run_rt(self._rt_device("route-target both 65000:100 evpn"), rts, state, False)
 
     def test_vrf_af_rt_idempotent_import_evpn(self):
-        rts = [{"import": "auto", "evpn": True}]
-        device = self._rt_device("route-target import auto evpn")
+        rts = [{"import": "65000:100", "evpn": True}]
+        device = self._rt_device("route-target import 65000:100 evpn")
         for state in ("merged", "replaced", "overridden"):
             self._run_rt(device, rts, state, False)
 
     def test_vrf_af_rt_evpn_distinct_from_plain(self):
-        # ``import auto`` on the device does not satisfy ``import auto evpn``
+        # ``import 65000:100`` on the device does not satisfy ``import 65000:100 evpn``
         self._run_rt(
-            self._rt_device("route-target import auto"),
-            [{"import": "auto", "evpn": True}],
+            self._rt_device("route-target import 65000:100"),
+            [{"import": "65000:100", "evpn": True}],
             "replaced",
             True,
             [
                 "vrf context VRF1",
                 "address-family ipv4 unicast",
-                "route-target import auto evpn",
-                "no route-target import auto",
+                "route-target import 65000:100 evpn",
+                "no route-target import 65000:100",
             ],
         )
 
@@ -1104,51 +1108,51 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
         # only the import half is wanted: NX-OS rejects 'no route-target export ...'
         # against a 'both' line, so the whole line is negated and the half re-added
         self._run_rt(
-            self._rt_device("route-target both auto evpn"),
-            [{"import": "auto", "evpn": True}],
+            self._rt_device("route-target both 65000:100 evpn"),
+            [{"import": "65000:100", "evpn": True}],
             "replaced",
             True,
             [
                 "vrf context VRF1",
                 "address-family ipv4 unicast",
-                "no route-target both auto evpn",
-                "route-target import auto evpn",
+                "no route-target both 65000:100 evpn",
+                "route-target import 65000:100 evpn",
             ],
         )
 
     def test_vrf_af_rt_replaced_partial_both_export(self):
         self._run_rt(
-            self._rt_device("route-target both auto evpn"),
-            [{"export": "auto", "evpn": True}],
+            self._rt_device("route-target both 65000:100 evpn"),
+            [{"export": "65000:100", "evpn": True}],
             "replaced",
             True,
             [
                 "vrf context VRF1",
                 "address-family ipv4 unicast",
-                "no route-target both auto evpn",
-                "route-target export auto evpn",
+                "no route-target both 65000:100 evpn",
+                "route-target export 65000:100 evpn",
             ],
         )
 
     def test_vrf_af_rt_replaced_partial_plain_both(self):
         self._run_rt(
-            self._rt_device("route-target both auto"),
-            [{"export": "auto"}],
+            self._rt_device("route-target both 65000:100"),
+            [{"export": "65000:100"}],
             "replaced",
             True,
             [
                 "vrf context VRF1",
                 "address-family ipv4 unicast",
-                "no route-target both auto",
-                "route-target export auto",
+                "no route-target both 65000:100",
+                "route-target export 65000:100",
             ],
         )
 
     def test_vrf_af_rt_replaced_partial_both_idempotent_after_split(self):
         # after the split the device shows two plain lines, which must be stable
         self._run_rt(
-            self._rt_device("route-target import auto evpn"),
-            [{"import": "auto", "evpn": True}],
+            self._rt_device("route-target import 65000:100 evpn"),
+            [{"import": "65000:100", "evpn": True}],
             "replaced",
             False,
         )
@@ -1230,3 +1234,12 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             dict(config=self._rt_config([{"both": "auto", "import": "auto"}]), state="merged"),
         )
         self.execute_module(failed=True)
+
+    def test_vrf_af_rt_auto_only_valid_with_both(self):
+        for direction in ("import", "export"):
+            self.execute_show_command.return_value = self._rt_device()
+            set_module_args(
+                dict(config=self._rt_config([{direction: "auto", "evpn": True}]), state="merged"),
+            )
+            result = self.execute_module(failed=True)
+            self.assertIn("only accepts 'auto' with 'both'", result["msg"])

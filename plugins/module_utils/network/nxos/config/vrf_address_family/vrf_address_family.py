@@ -207,6 +207,12 @@ class Vrf_address_family(ResourceModule):
                 self._module.fail_json(
                     msg="route_target 'evpn' requires one of 'import', 'export' or 'both'",
                 )
+            for direction in ("import", "export"):
+                if rt.get(direction) == "auto":
+                    self._module.fail_json(
+                        msg="route_target '{0}: auto' is not valid, NX-OS only accepts "
+                        "'auto' with 'both'".format(direction),
+                    )
 
         def _entry(direction, value, evpn):
             entry = {direction: value}

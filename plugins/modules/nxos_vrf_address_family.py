@@ -76,10 +76,14 @@ options:
             elements: dict
             suboptions:
               import:
-                description: Import Target-VPN community
+                description:
+                  - Import Target-VPN community.
+                  - The value C(auto) is only accepted by NX-OS with I(both) and is rejected here.
                 type: str
               export:
-                description: Export Target-VPN community
+                description:
+                  - Export Target-VPN community.
+                  - The value C(auto) is only accepted by NX-OS with I(both) and is rejected here.
                 type: str
               both:
                 description:

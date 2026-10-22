@@ -535,7 +535,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Export Target-VPN community</div>
+                        <div>Export Target-VPN community.</div>
+                        <div>The value <code>auto</code> is only accepted by NX-OS with <em>both</em> and is rejected here.</div>
                 </td>
             </tr>
             <tr>
@@ -553,7 +554,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Import Target-VPN community</div>
+                        <div>Import Target-VPN community.</div>
+                        <div>The value <code>auto</code> is only accepted by NX-OS with <em>both</em> and is rejected here.</div>
                 </td>
             </tr>
 
