@@ -268,3 +268,31 @@ rendered:
     - route-target import 65512:200
     - export map 26
     - export vrf default map 46 allow-vpn
+route_target_evpn:
+  merged:
+    commands:
+      - vrf context VRF1
+      - address-family ipv4 unicast
+      - route-target both auto
+      - route-target both auto evpn
+    after:
+      - address_families:
+          - afi: ipv4
+            route_target:
+              - both: auto
+              - both: auto
+                evpn: true
+            safi: unicast
+        name: VRF1
+  replaced:
+    commands:
+      - vrf context VRF1
+      - address-family ipv4 unicast
+      - no route-target both auto evpn
+    after:
+      - address_families:
+          - afi: ipv4
+            route_target:
+              - both: auto
+            safi: unicast
+        name: VRF1
