@@ -23,5 +23,4 @@
         - vni_id: 55555
           mcast_group:
             address: 233.252.0.11
-            secondary_address: 233.252.0.12
     state: merged

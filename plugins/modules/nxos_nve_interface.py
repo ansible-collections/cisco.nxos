@@ -142,6 +142,8 @@ options:
               secondary_address:
                 description:
                   - Optional second multicast group address accepted by C(mcast-group).
+                  - Accepted by the CLI of NX-OS 10.6(4) on N9Kv without an error but not applied there, so it is not
+                    covered by the integration tests.
                 type: str
   state:
     description:

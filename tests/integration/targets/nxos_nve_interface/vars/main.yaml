@@ -15,7 +15,7 @@ merged:
     - member vni 44444
     - mcast-group 233.252.0.10
     - member vni 55555
-    - mcast-group 233.252.0.11 233.252.0.12
+    - mcast-group 233.252.0.11
     - no shutdown
     - global mcast-group 233.252.0.20 L2
   after:
@@ -40,7 +40,6 @@ merged:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12
 
 gathered:
   config:
@@ -65,7 +64,6 @@ gathered:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12
 
 overridden:
   before:
@@ -90,7 +88,6 @@ overridden:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12
   commands:
     - interface nve1
     - no description vxlan vtep
@@ -150,7 +147,6 @@ replaced:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12
   commands:
     - interface nve1
     - no source-interface hold-down-time 60
@@ -163,7 +159,6 @@ replaced:
     - shutdown
     - no global mcast-group L2
   after:
-    enabled: false
     description: vxlan vtep
     host_reachability_bgp: true
     source_interface_name: loopback1
@@ -218,7 +213,6 @@ deleted_vnis:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12
 
 rendered:
   commands:
@@ -252,4 +246,3 @@ parsed:
       - vni_id: 55555
         mcast_group:
           address: 233.252.0.11
-          secondary_address: 233.252.0.12

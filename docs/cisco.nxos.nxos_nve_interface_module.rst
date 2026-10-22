@@ -383,6 +383,7 @@ Parameters
                 </td>
                 <td>
                         <div>Optional second multicast group address accepted by <code>mcast-group</code>.</div>
+                        <div>Accepted by the CLI of NX-OS 10.6(4) on N9Kv without an error but not applied there, so it is not covered by the integration tests.</div>
                 </td>
             </tr>
 

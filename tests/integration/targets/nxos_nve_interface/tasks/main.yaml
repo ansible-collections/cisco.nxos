@@ -3,6 +3,15 @@
   ansible.builtin.set_fact:
     skip_test: false
 
+- name: Enable 'feature nv overlay'
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: enabled
+
+- name: Enable 'nv overlay evpn'
+  cisco.nxos.nxos_evpn_global:
+    nv_overlay_evpn: true
+
 - name: Main task for NVE interface module
   ansible.builtin.include_tasks:
     file: cli.yaml
