@@ -1,4 +1,5 @@
 ---
 minor_changes:
   - nxos_vlans - Add the ``nve_overlay`` option to manage ``system vlan nve-overlay id <vlan_id>`` per VLAN.
-    The facts also gather ``show running-config | include nve-overlay``, and ``running_config`` for state ``parsed`` accepts its output as an optional third block.
+    The facts also gather ``show running-config | include nve-overlay``, and ``running_config``
+    for state ``parsed`` accepts its output as an optional third block.
