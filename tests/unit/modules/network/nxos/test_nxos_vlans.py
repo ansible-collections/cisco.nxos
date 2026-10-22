@@ -513,3 +513,66 @@ class TestNxosVlansModule(TestNxosModule):
             dict(vlan_id=5, name="test-changeme", mapped_vni=942, state="suspend", enabled=False),
             dict(vlan_id=8, enabled=False, nve_overlay=True),
         ]
+
+    def prepare_vn_segment_only(self):
+        # VLAN 3801 has only a 'vn-segment' line (no name/state), VLAN 249 has a name too
+        vlans = [("3801", "VLAN3801"), ("249", "VLAN_249")]
+        show_vlan = json.dumps(
+            {
+                "TABLE_vlanbrief": {
+                    "ROW_vlanbrief": [
+                        {
+                            "vlanshowbr-vlanid": vid,
+                            "vlanshowbr-vlanid-utf": vid,
+                            "vlanshowbr-vlanname": name,
+                            "vlanshowbr-vlanstate": "active",
+                            "vlanshowbr-shutstate": "noshutdown",
+                        }
+                        for vid, name in vlans
+                    ],
+                },
+                "TABLE_mtuinfo": {
+                    "ROW_mtuinfo": [
+                        {
+                            "vlanshowinfo-vlanid": vid,
+                            "vlanshowinfo-media-type": "enet",
+                            "vlanshowinfo-vlanmode": "ce-vlan",
+                        }
+                        for vid, _name in vlans
+                    ],
+                },
+            },
+        )
+        run_cfg = "vlan 1,249,3801\nvlan 249\n  name VLAN_249\n  vn-segment 10249\nvlan 3801\n  vn-segment 50001\n"
+
+        def device_data(*args, **kwargs):
+            cmd = str(args[1])
+            if "json" in cmd:
+                return show_vlan
+            if "nve-overlay" in cmd:
+                return ""
+            return run_cfg
+
+        self.get_device_data.side_effect = device_data
+        self.get_platform.return_value = "N9K-NXOSv"
+
+    def test_vn_segment_only_vlan_is_gathered(self):
+        self.prepare_vn_segment_only()
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        mapped = {v["vlan_id"]: v.get("mapped_vni") for v in result["gathered"]}
+        self.assertEqual(mapped, {249: 10249, 3801: 50001})
+
+    def test_vn_segment_only_vlan_is_idempotent(self):
+        self.prepare_vn_segment_only()
+        for state in ["merged", "replaced"]:
+            playbook = dict(
+                config=[
+                    dict(vlan_id=3801, mapped_vni=50001),
+                    dict(vlan_id=249, name="VLAN_249", mapped_vni=10249),
+                ],
+                state=state,
+            )
+            set_module_args(playbook, ignore_provider_arg)
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], [])

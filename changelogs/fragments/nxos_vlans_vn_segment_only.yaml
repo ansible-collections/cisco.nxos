@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_vlans - Fix facts missing ``mapped_vni`` for a VLAN whose configuration contains only ``vn-segment``, which made merged and replaced report a change on every run.
