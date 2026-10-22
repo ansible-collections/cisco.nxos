@@ -467,6 +467,7 @@ Parameters
                 </td>
                 <td>
                         <div>Virtual Network Identifier ID</div>
+                        <div>Valid range is 1-16777214.</div>
                 </td>
             </tr>
 

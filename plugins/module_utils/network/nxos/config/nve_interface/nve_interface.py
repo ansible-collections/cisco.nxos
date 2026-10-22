@@ -103,6 +103,10 @@ class Nve_interface(ResourceModule):
         `mcast-group` and `ingress-replication protocol bgp`.
         """
         for vni in vnis:
+            if not 1 <= vni["vni_id"] <= 16777214:
+                self._module.fail_json(
+                    msg="vni_id must be in the range 1-16777214, got '{0}'".format(vni["vni_id"]),
+                )
             for first, second in VNI_EXCLUSIVE:
                 if vni.get(first) and vni.get(second):
                     self._module.fail_json(

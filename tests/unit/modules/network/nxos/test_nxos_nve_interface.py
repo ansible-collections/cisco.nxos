@@ -971,3 +971,9 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         self.assertEqual(result["rendered"][0], "interface nve1")
         self.assertIn("mcast-group 233.252.0.2 233.252.0.3", result["rendered"])
         self.assertIn("suppress-arp disable", result["rendered"])
+
+    def test_nxos_nve_interface_vni_id_out_of_range(self):
+        for vni_id in (0, 16777215):
+            set_module_args(dict(config=dict(vnis=[dict(vni_id=vni_id)]), state="merged"))
+            result = self.execute_module(failed=True)
+            self.assertIn("vni_id must be in the range 1-16777214", result["msg"])

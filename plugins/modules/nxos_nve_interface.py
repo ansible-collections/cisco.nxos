@@ -100,6 +100,7 @@ options:
           vni_id:
             description:
               - Virtual Network Identifier ID
+              - Valid range is 1-16777214.
             type: int
             required: true
           associate_vrf:
