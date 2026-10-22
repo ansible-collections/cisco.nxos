@@ -26,6 +26,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_evpn_global
     evpn_vni:
       redirect: cisco.nxos.nxos_evpn_vni
+    evpn_vnis:
+      redirect: cisco.nxos.nxos_evpn_vnis
     facts:
       redirect: cisco.nxos.nxos_facts
     feature:
@@ -186,6 +188,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_evpn_global
     evpn_vni:
       redirect: cisco.nxos.nxos_evpn_vni
+    evpn_vnis:
+      redirect: cisco.nxos.nxos_evpn_vnis
     facts:
       redirect: cisco.nxos.nxos_facts
     feature:

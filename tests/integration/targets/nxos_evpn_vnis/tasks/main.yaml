@@ -1,0 +1,37 @@
+---
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Enable 'feature nv overlay'
+      cisco.nxos.nxos_feature:
+        feature: nv overlay
+        state: enabled
+
+    - name: Enable 'nv overlay evpn'
+      cisco.nxos.nxos_evpn_global:
+        nv_overlay_evpn: true
+
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi
+  always:
+    - name: Remove all EVPN VNI configuration
+      cisco.nxos.nxos_evpn_vnis:
+        state: deleted
+      failed_when: false
+
+    - name: Disable 'nv overlay evpn'
+      cisco.nxos.nxos_evpn_global:
+        nv_overlay_evpn: false
+      failed_when: false
+
+    - name: Disable 'feature nv overlay'
+      cisco.nxos.nxos_feature:
+        feature: nv overlay
+        state: disabled
+      failed_when: false
