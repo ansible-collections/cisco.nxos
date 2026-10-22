@@ -22,6 +22,14 @@ author:
 notes:
   - Tested against NXOS 10.3(7)
   - Unsupported for Cisco MDS
+  - Only the C(interface nve1) interface is managed.
+  - Within a VNI, C(suppress-arp) and C(suppress-arp disable) are alternatives, as are
+    C(mcast-group) and C(ingress-replication protocol bgp). The module fails if both
+    options of such a pair are true (or, for I(mcast_group), set) in the task.
+  - M(cisco.nxos.nxos_vxlan_vtep) and M(cisco.nxos.nxos_vxlan_vtep_vni) manage an overlapping
+    part of the same C(interface nve1) configuration. Prefer this module for whole-interface,
+    declarative management (including C(replaced), C(overridden) and C(gathered)). Do not
+    manage the same NVE settings with both this module and the older modules in one play.
 options:
   config:
     description: A List of NVE interface options.
@@ -98,10 +106,12 @@ options:
           suppress_arp:
             description:
               - Enable/disable ARP suppression for L2VNI
+              - Mutually exclusive with I(suppress_arp_disable) when both are true.
             type: bool
           suppress_arp_disable:
             description:
               - Disable/enable the global setting for ARP suppression for L2VNI
+              - Mutually exclusive with I(suppress_arp) when both are true.
             type: bool
           multisite_ingress_replication:
             description:
@@ -110,7 +120,25 @@ options:
           ingress_replication_bgp:
             description:
               - Enable/disable bgp ingress replication for L2VNI
+              - Mutually exclusive with I(mcast_group).
             type: bool
+          mcast_group:
+            description:
+              - Multicast group used for BUM traffic of this VNI (C(mcast-group)).
+              - Mutually exclusive with I(ingress_replication_bgp).
+              - With state C(merged), setting this option removes a configured
+                I(ingress_replication_bgp) from the VNI (and vice versa).
+            type: dict
+            suboptions:
+              address:
+                description:
+                  - Multicast group address.
+                type: str
+                required: true
+              secondary_address:
+                description:
+                  - Optional second multicast group address accepted by C(mcast-group).
+                type: str
   state:
     description:
       - The state of the configuration after module completion.
@@ -162,6 +190,9 @@ EXAMPLES = """
           vni_id: 22222
         - suppress_arp: true
           vni_id: 33333
+        - vni_id: 44444
+          mcast_group:
+            address: 233.252.0.10
     state: merged
 
 # Task output:
@@ -179,6 +210,8 @@ EXAMPLES = """
 #   - member vni 22222
 #   - member vni 33333
 #   - suppress-arp
+#   - member vni 44444
+#   - mcast-group 233.252.0.10
 #   - no shutdown
 #   - global mcast-group 239.239.239.239 L2
 #
@@ -198,6 +231,9 @@ EXAMPLES = """
 #     - vni_id: 22222
 #     - suppress_arp: true
 #       vni_id: 33333
+#     - vni_id: 44444
+#       mcast_group:
+#         address: 233.252.0.10
 #
 # After state:
 # ------------
@@ -214,6 +250,8 @@ EXAMPLES = """
 #   member vni 22222
 #   member vni 33333
 #     suppress-arp
+#   member vni 44444
+#     mcast-group 233.252.0.10
 
 
 # Using gathered

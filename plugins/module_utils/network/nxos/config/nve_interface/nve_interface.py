@@ -31,6 +31,13 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
+# pairs of VNI options that NX-OS treats as alternatives
+VNI_EXCLUSIVE = (
+    ("suppress_arp", "suppress_arp_disable"),
+    ("mcast_group", "ingress_replication_bgp"),
+)
+
+
 class Nve_interface(ResourceModule):
     """The nxos_nve_interface config class."""
 
@@ -69,9 +76,11 @@ class Nve_interface(ResourceModule):
         wantd = self.want
         haved = self.have
 
+        self._validate_vnis(wantd.get("vnis", []))
+
         # If state is 'merged', merge want onto have before compare.
         if self.state == "merged":
-            wantd = dict_merge(haved, wantd)
+            wantd = self._merge(haved, wantd)
 
         # If state is 'deleted', remove the NVE interface.
         if self.state == "deleted":
@@ -80,6 +89,46 @@ class Nve_interface(ResourceModule):
             return
 
         self._compare(want=wantd, have=haved)
+
+    def _validate_vnis(self, vnis):
+        """
+        Reject VNI options that NX-OS treats as alternatives.
+
+        `suppress-arp` and `suppress-arp disable` replace each other, as do
+        `mcast-group` and `ingress-replication protocol bgp`.
+        """
+        for vni in vnis:
+            for first, second in VNI_EXCLUSIVE:
+                if vni.get(first) and vni.get(second):
+                    self._module.fail_json(
+                        msg="vni {0}: '{1}' and '{2}' are mutually exclusive".format(
+                            vni["vni_id"],
+                            first,
+                            second,
+                        ),
+                    )
+
+    def _merge(self, have, want):
+        """
+        Merge want onto have for state merged.
+
+        VNIs are merged by `vni_id`. Setting one option of a mutually
+        exclusive pair removes the other one if it is configured.
+        """
+        merged = dict_merge(have, {k: v for k, v in want.items() if k != "vnis"})
+        have_vnis = {v["vni_id"]: v for v in have.get("vnis", [])}
+        vnis = dict(have_vnis)
+        for wvni in want.get("vnis", []):
+            vni = dict(have_vnis.get(wvni["vni_id"], {}))
+            vni.update(wvni)
+            for first, second in VNI_EXCLUSIVE:
+                for set_key, drop_key in ((first, second), (second, first)):
+                    if wvni.get(set_key) and drop_key not in wvni:
+                        vni.pop(drop_key, None)
+            vnis[wvni["vni_id"]] = vni
+        if vnis:
+            merged["vnis"] = [vnis[k] for k in sorted(vnis)]
+        return merged
 
     def _compare(self, want, have):
         """
@@ -134,6 +183,7 @@ class Nve_interface(ResourceModule):
             "suppress_arp_disable",
             "multisite_ingress_replication",
             "ingress_replication_bgp",
+            "mcast_group",
         ]
 
         w_vnis_list = want.get("vnis", [])
@@ -158,6 +208,10 @@ class Nve_interface(ResourceModule):
             self.compare(parsers=vni_parsers, want=wentry, have=have_vni)
 
             if len(self.commands) != begin:
+                # remove first so an alternative option can take its place
+                new = self.commands[begin:]
+                new.sort(key=lambda c: not c.startswith("no "))
+                self.commands[begin:] = new
                 cmd = self._tmplt.render(wentry, "vni_id", False)
                 if cmd not in self.commands:
                     self.commands.insert(begin, cmd)

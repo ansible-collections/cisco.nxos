@@ -249,6 +249,30 @@ class Nve_interfaceTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+            "name": "mcast_group",
+            "getval": re.compile(
+                r"""
+                \s*member\s+vni\s+(?P<vni_id>\d+)
+                \s+mcast-group\s+(?P<address>\S+)
+                (?:\s+(?P<secondary_address>\S+))?
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": (
+                "mcast-group {{ mcast_group.address }}"
+                "{{ (' ' ~ mcast_group.secondary_address) if mcast_group.secondary_address is defined else '' }}"
+            ),
+            "result": {
+                "vnis": {
+                    "{{ vni_id }}": {
+                        "mcast_group": {
+                            "address": "{{ address }}",
+                            "secondary_address": "{{ secondary_address }}",
+                        },
+                    },
+                },
+            },
+        },
         # End vni parsers
     ]
     # fmt: on

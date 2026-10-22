@@ -55,6 +55,13 @@ class Nve_interfaceArgs(object):
                         "suppress_arp_disable": {"type": "bool"},
                         "multisite_ingress_replication": {"type": "bool"},
                         "ingress_replication_bgp": {"type": "bool"},
+                        "mcast_group": {
+                            "type": "dict",
+                            "options": {
+                                "address": {"type": "str", "required": True},
+                                "secondary_address": {"type": "str"},
+                            },
+                        },
                     },
                 },
             },

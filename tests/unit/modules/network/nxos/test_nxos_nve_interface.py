@@ -387,3 +387,257 @@ class TestNxosNveInterfaceModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def _run(self, running, config, state, changed=True, failed=False):
+        """Run the module against a running-config and return the result."""
+
+        self.get_config.return_value = dedent(running)
+        set_module_args({"config": config, "state": state})
+        return self.execute_module(changed=changed, failed=failed)
+
+    def test_nxos_nve_interface_mcast_group_merged(self):
+        """Test per-VNI mcast-group, including the optional second address."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              source-interface loopback1
+              member vni 10100
+                suppress-arp
+            """
+        config = {
+            "vnis": [
+                {"vni_id": 10100, "mcast_group": {"address": "233.252.0.1"}},
+                {
+                    "vni_id": 10200,
+                    "mcast_group": {"address": "233.252.0.2", "secondary_address": "233.252.0.3"},
+                },
+            ],
+        }
+        result = self._run(running, config, "merged")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "mcast-group 233.252.0.1",
+                "member vni 10200",
+                "mcast-group 233.252.0.2 233.252.0.3",
+            ],
+        )
+
+    def test_nxos_nve_interface_mcast_group_idempotent(self):
+        """Test mcast-group is parsed and compared without changes."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                mcast-group 233.252.0.1
+              member vni 10200
+                mcast-group 233.252.0.2 233.252.0.3
+            """
+        config = {
+            "vnis": [
+                {"vni_id": 10100, "mcast_group": {"address": "233.252.0.1"}},
+                {
+                    "vni_id": 10200,
+                    "mcast_group": {"address": "233.252.0.2", "secondary_address": "233.252.0.3"},
+                },
+            ],
+        }
+        for state in ("merged", "replaced", "overridden"):
+            self._run(running, dict(config, enabled=True), state, changed=False)
+
+    def test_nxos_nve_interface_mcast_group_change_and_remove(self):
+        """Test changing a group and removing it with replaced."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                mcast-group 233.252.0.1
+              member vni 10200
+                mcast-group 233.252.0.2 233.252.0.3
+            """
+        config = {
+            "enabled": True,
+            "vnis": [
+                {"vni_id": 10100, "mcast_group": {"address": "233.252.0.9"}},
+                {"vni_id": 10200},
+            ],
+        }
+        result = self._run(running, config, "replaced")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "mcast-group 233.252.0.9",
+                "member vni 10200",
+                "no mcast-group 233.252.0.2 233.252.0.3",
+            ],
+        )
+
+    def test_nxos_nve_interface_merged_mcast_group_replaces_ingress_replication(self):
+        """Test merged mcast-group removes the alternative ingress-replication."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                ingress-replication protocol bgp
+            """
+        config = {"vnis": [{"vni_id": 10100, "mcast_group": {"address": "233.252.0.1"}}]}
+        result = self._run(running, config, "merged")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "no ingress-replication protocol bgp",
+                "mcast-group 233.252.0.1",
+            ],
+        )
+
+    def test_nxos_nve_interface_merged_ingress_replication_replaces_mcast_group(self):
+        """Test merged ingress-replication removes the alternative mcast-group."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                mcast-group 233.252.0.1
+            """
+        config = {"vnis": [{"vni_id": 10100, "ingress_replication_bgp": True}]}
+        result = self._run(running, config, "merged")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "no mcast-group 233.252.0.1",
+                "ingress-replication protocol bgp",
+            ],
+        )
+
+    def test_nxos_nve_interface_merged_suppress_arp_swap(self):
+        """Test suppress-arp and suppress-arp disable replace each other."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                suppress-arp
+              member vni 10200
+                suppress-arp disable
+            """
+        config = {
+            "vnis": [
+                {"vni_id": 10100, "suppress_arp_disable": True},
+                {"vni_id": 10200, "suppress_arp": True},
+            ],
+        }
+        result = self._run(running, config, "merged")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "no suppress-arp",
+                "suppress-arp disable",
+                "member vni 10200",
+                "no suppress-arp disable",
+                "suppress-arp",
+            ],
+        )
+
+    def test_nxos_nve_interface_replaced_ingress_replication_to_mcast_group(self):
+        """Test removal is ordered before the alternative option."""
+
+        running = """\
+            interface nve1
+              no shutdown
+              member vni 10100
+                multisite ingress-replication
+                ingress-replication protocol bgp
+            """
+        config = {
+            "enabled": True,
+            "vnis": [
+                {
+                    "vni_id": 10100,
+                    "multisite_ingress_replication": True,
+                    "mcast_group": {"address": "233.252.0.1"},
+                },
+            ],
+        }
+        result = self._run(running, config, "replaced")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface nve1",
+                "member vni 10100",
+                "no ingress-replication protocol bgp",
+                "mcast-group 233.252.0.1",
+            ],
+        )
+
+    def test_nxos_nve_interface_mutually_exclusive_vni_options(self):
+        """Test alternatives cannot both be requested."""
+
+        running = "interface nve1\n  no shutdown\n"
+        for vni in (
+            {"suppress_arp": True, "suppress_arp_disable": True},
+            {"mcast_group": {"address": "233.252.0.1"}, "ingress_replication_bgp": True},
+        ):
+            config = {"vnis": [dict(vni, vni_id=10100)]}
+            result = self._run(running, config, "merged", failed=True)
+            self.assertIn("mutually exclusive", result["msg"])
+
+    def test_nxos_nve_interface_parsed_mcast_group(self):
+        """Test parsing of every per-VNI option."""
+
+        set_module_args(
+            {
+                "running_config": dedent(
+                    """\
+                    interface nve1
+                      no shutdown
+                      member vni 10100
+                        suppress-arp
+                        mcast-group 233.252.0.1 233.252.0.2
+                      member vni 10200
+                        suppress-arp disable
+                        multisite ingress-replication
+                        ingress-replication protocol bgp
+                      member vni 50001 associate-vrf
+                    """,
+                ),
+                "state": "parsed",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            {
+                "enabled": True,
+                "vnis": [
+                    {
+                        "vni_id": 10100,
+                        "suppress_arp": True,
+                        "mcast_group": {
+                            "address": "233.252.0.1",
+                            "secondary_address": "233.252.0.2",
+                        },
+                    },
+                    {
+                        "vni_id": 10200,
+                        "suppress_arp_disable": True,
+                        "multisite_ingress_replication": True,
+                        "ingress_replication_bgp": True,
+                    },
+                    {"vni_id": 50001, "associate_vrf": True},
+                ],
+            },
+        )
