@@ -69,7 +69,10 @@ options:
           - Enable/disable global bgp ingress replication
         type: bool
       global_multicast_group:
-        description: Global multicast group
+        description:
+          - Global multicast group.
+          - On NX-OS 10.6(4) a group with mode C(L3) is accepted but never shown in the running-config,
+            so it cannot be gathered and is configured again on every run. The C(L2) mode is not affected.
         type: dict
         suboptions:
           address:

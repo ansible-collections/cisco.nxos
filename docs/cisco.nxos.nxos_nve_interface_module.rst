@@ -137,7 +137,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Global multicast group</div>
+                        <div>Global multicast group.</div>
+                        <div>On NX-OS 10.6(4) a group with mode <code>L3</code> is accepted but never shown in the running-config, so it cannot be gathered and is configured again on every run. The <code>L2</code> mode is not affected.</div>
                 </td>
             </tr>
                                 <tr>
