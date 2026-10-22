@@ -81,14 +81,24 @@ class VlansFacts(object):
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
             run_cfg_output = self.get_device_data(connection, "show running-config | section ^vlan")
+
+            # nve_overlay is a global command (not under the vlan), so it is not in the
+            # section output above.
+            nve_overlay_output = self.get_device_data(
+                connection,
+                "show running-config | include nve-overlay",
+            )
         else:
             running_config = data.split("\n\n")
             structured, run_cfg_output = running_config[0], running_config[1]
+            nve_overlay_output = running_config[2] if len(running_config) > 2 else ""
 
         # Create a single dictionary from all data sources
         data = self.normalize_table_data(structured, run_cfg_output)
+        nve_overlay_vlans = self.parse_nve_overlay_vlans(nve_overlay_output)
 
         for vlan in data:
+            vlan["nve_overlay"] = int(vlan["vlan_id"]) in nve_overlay_vlans
             obj = self.render_config(self.generated_spec, vlan)
             if obj:
                 objs.append(obj)
@@ -135,7 +145,27 @@ class VlansFacts(object):
         # non-structured data
         obj["mapped_vni"] = parse_conf_arg(vlan["run_cfg"], "vn-segment")
 
+        # nve_overlay: only reported when set
+        obj["nve_overlay"] = True if vlan.get("nve_overlay") else None
+
         return utils.remove_empties(obj)
+
+    def parse_nve_overlay_vlans(self, run_cfg_output):
+        """Return the set of vlan ids found in 'system vlan nve-overlay id' lines.
+        The device may display the vlans as a compressed list of ids and ranges.
+        Sample: system vlan nve-overlay id 3801-3809,3820
+        """
+        vlans = set()
+        for line in str(run_cfg_output).splitlines():
+            match = re.match(r"^\s*system vlan nve-overlay id (\S+)\s*$", line)
+            if not match:
+                continue
+            for item in match.group(1).split(","):
+                first, _sep, last = item.partition("-")
+                if not first.isdigit() or (last and not last.isdigit()):
+                    continue
+                vlans.update(range(int(first), int(last or first) + 1))
+        return vlans
 
     def normalize_table_data(self, structured, run_cfg_output):
         """Normalize structured output and raw running-config output into

@@ -1,0 +1,8 @@
+---
+minor_changes:
+  - nxos_vlans - Add ``nve_overlay`` boolean attribute to manage the global command
+    ``system vlan nve-overlay id <vlan_id>`` per VLAN. Ranges displayed by the device,
+    for example ``system vlan nve-overlay id 3801-3809,3820``, are expanded when
+    gathering. The facts now also collect ``show running-config | include nve-overlay``,
+    and ``running_config`` for state ``parsed`` accepts the output of that command
+    as an optional third block.

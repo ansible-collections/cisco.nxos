@@ -125,6 +125,28 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nve_overlay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Mark the VLAN as an NVE overlay VLAN, for example the L3 VNI VLAN of a VRF in a VXLAN EVPN fabric. This manages the global command <code>system vlan nve-overlay id &lt;vlan_id&gt;</code>.</div>
+                        <div>Set to <code>true</code> to configure the command and <code>false</code> to remove it.</div>
+                        <div>When the device displays the command as a range, for example <code>system vlan nve-overlay id 3801-3809,3820</code>, the range is expanded and reported per VLAN.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -172,7 +194,8 @@ Parameters
                 </td>
                 <td>
                         <div>This option is used only with state <em>parsed</em>.</div>
-                        <div>The value of this option should be the output received from the NX-OS device by executing the commands <b>show vlans | json-pretty</b> and <b>show running-config | section ^vlan</b> in order and delimited by a line.</div>
+                        <div>The value of this option should be the output received from the NX-OS device by executing the commands <b>show vlans | json-pretty</b>, <b>show running-config | section ^vlan</b> and, optionally, <b>show running-config | include nve-overlay</b> in order and delimited by a line.</div>
+                        <div>The output of the last command is only needed to parse the <em>nve_overlay</em> option.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
                 </td>
             </tr>
@@ -243,6 +266,36 @@ Examples
     # vlan 10
     #   state active
     #   shutdown
+
+
+    # Using merged to mark an L3 VNI vlan as nve-overlay vlan
+
+    # Before state:
+    # -------------
+    # vlan 1
+
+    - name: Merge provided configuration with device configuration.
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 3801
+            name: L3VNI_TENANT1
+            mapped_vni: 50001
+            nve_overlay: true
+        state: merged
+
+    # Commands sent:
+    # --------------
+    # vlan 3801
+    # name L3VNI_TENANT1
+    # vn-segment 50001
+    # system vlan nve-overlay id 3801
+
+    # After state:
+    # ------------
+    # vlan 3801
+    #   name L3VNI_TENANT1
+    #   vn-segment 50001
+    # system vlan nve-overlay id 3801
 
 
     # Using replaced

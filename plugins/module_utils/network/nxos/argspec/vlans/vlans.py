@@ -43,6 +43,7 @@ class VlansArgs(object):
                 "mapped_vni": {"type": "int"},
                 "mode": {"choices": ["ce", "fabricpath"], "type": "str"},
                 "name": {"type": "str"},
+                "nve_overlay": {"type": "bool"},
                 "vlan_id": {"required": True, "type": "int"},
                 "state": {"choices": ["active", "suspend"], "type": "str"},
             },

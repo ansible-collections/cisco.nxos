@@ -46,8 +46,10 @@ options:
     description:
     - This option is used only with state I(parsed).
     - The value of this option should be the output received from the NX-OS device
-      by executing the commands B(show vlans | json-pretty) and B(show running-config
-      | section ^vlan) in order and delimited by a line.
+      by executing the commands B(show vlans | json-pretty), B(show running-config
+      | section ^vlan) and, optionally, B(show running-config | include nve-overlay)
+      in order and delimited by a line.
+    - The output of the last command is only needed to parse the I(nve_overlay) option.
     - The state I(parsed) reads the configuration from C(running_config) option and
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
@@ -89,6 +91,16 @@ options:
         description:
         - The Virtual Network Identifier (VNI) ID that is mapped to the VLAN.
         type: int
+      nve_overlay:
+        description:
+        - Mark the VLAN as an NVE overlay VLAN, for example the L3 VNI VLAN of a VRF
+          in a VXLAN EVPN fabric. This manages the global command
+          C(system vlan nve-overlay id <vlan_id>).
+        - Set to C(true) to configure the command and C(false) to remove it.
+        - When the device displays the command as a range, for example
+          C(system vlan nve-overlay id 3801-3809,3820), the range is expanded
+          and reported per VLAN.
+        type: bool
   state:
     description:
     - The state of the configuration after module completion.
@@ -132,6 +144,36 @@ EXAMPLES = """
 # vlan 10
 #   state active
 #   shutdown
+
+
+# Using merged to mark an L3 VNI vlan as nve-overlay vlan
+
+# Before state:
+# -------------
+# vlan 1
+
+- name: Merge provided configuration with device configuration.
+  cisco.nxos.nxos_vlans:
+    config:
+      - vlan_id: 3801
+        name: L3VNI_TENANT1
+        mapped_vni: 50001
+        nve_overlay: true
+    state: merged
+
+# Commands sent:
+# --------------
+# vlan 3801
+# name L3VNI_TENANT1
+# vn-segment 50001
+# system vlan nve-overlay id 3801
+
+# After state:
+# ------------
+# vlan 3801
+#   name L3VNI_TENANT1
+#   vn-segment 50001
+# system vlan nve-overlay id 3801
 
 
 # Using replaced

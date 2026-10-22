@@ -22,6 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vlans
@@ -76,7 +78,8 @@ class TestNxosVlansModule(TestNxosModule):
         self.mock_edit_config.stop()
         self.mock_get_platform.stop()
 
-    def prepare(self, test=""):
+    def prepare(self, test="", nve_overlay=""):
+        self.nve_overlay_fixture = "show_running-config_nve_overlay" + nve_overlay
         if test == "_no_facts":
             self.get_device_data.side_effect = self.load_from_file_no_facts
         else:
@@ -85,11 +88,15 @@ class TestNxosVlansModule(TestNxosModule):
 
     def load_from_file(self, *args, **kwargs):
         cmd = args[1]
+        if "nve-overlay" in str(cmd):
+            return load_fixture("nxos_vlans", self.nve_overlay_fixture)
         filename = str(cmd).split(" | ", 1)[0].replace(" ", "_")
         return load_fixture("nxos_vlans", filename)
 
     def load_from_file_no_facts(self, *args, **kwargs):
         cmd = args[1]
+        if "nve-overlay" in str(cmd):
+            return load_fixture("nxos_vlans", self.nve_overlay_fixture + "_no_facts")
         filename = str(cmd).split(" | ", 1)[0].replace(" ", "_")
         filename += "_no_facts"
         return load_fixture("nxos_vlans", filename)
@@ -282,3 +289,155 @@ class TestNxosVlansModule(TestNxosModule):
         playbook["state"] = "replaced"
         set_module_args(playbook, ignore_provider_arg)
         r = self.execute_module(changed=False)
+
+    def test_nve_overlay_merged(self):
+        # No vlan has nve_overlay set on the device.
+        self.prepare()
+        playbook = dict(
+            config=[
+                dict(vlan_id=4, nve_overlay=True),
+                dict(vlan_id=5, name="test-changeme", nve_overlay=False),
+                dict(vlan_id=7, name="test-vlan7", nve_overlay=True),
+            ],
+            state="merged",
+        )
+        merged = [
+            "vlan 7",
+            "name test-vlan7",
+            "system vlan nve-overlay id 7",
+            "system vlan nve-overlay id 4",
+        ]
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        # the global command must follow the sub-commands of its vlan
+        cmds = result["commands"]
+        self.assertLess(cmds.index("name test-vlan7"), cmds.index("system vlan nve-overlay id 7"))
+
+        # nve_overlay on a vlan that is not on the device creates the vlan first
+        playbook = dict(config=[dict(vlan_id=9, nve_overlay=True)], state="merged")
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=["vlan 9", "system vlan nve-overlay id 9"])
+
+    def test_nve_overlay_range_in_running_config(self):
+        # Device shows 'system vlan nve-overlay id 3-4,8'
+        self.prepare(nve_overlay="_ranges")
+        playbook = dict(
+            config=[
+                dict(vlan_id=3, nve_overlay=True),
+                dict(vlan_id=4, nve_overlay=True),
+                dict(vlan_id=5, nve_overlay=False),
+                dict(vlan_id=8, nve_overlay=True),
+            ],
+        )
+        # idempotent for all of the states
+        for state in ["merged", "replaced"]:
+            playbook["state"] = state
+            set_module_args(playbook, ignore_provider_arg)
+            result = self.execute_module(changed=state == "replaced")
+            if state == "merged":
+                self.assertEqual(result["commands"], [])
+            else:
+                # replaced also resets the other attributes that are not in the play
+                self.assertNotIn("no system vlan nve-overlay id 5", result["commands"])
+                self.assertNotIn("system vlan nve-overlay id 3", result["commands"])
+
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        overlay = sorted(v["vlan_id"] for v in result["gathered"] if v.get("nve_overlay"))
+        self.assertEqual(overlay, [3, 4, 8])
+        for vlan in result["gathered"]:
+            if vlan["vlan_id"] not in overlay:
+                self.assertNotIn("nve_overlay", vlan)
+
+    def test_nve_overlay_remove(self):
+        self.prepare(nve_overlay="_ranges")
+        # merged with false removes it, vlan 4 is left alone
+        playbook = dict(
+            config=[dict(vlan_id=3, nve_overlay=False), dict(vlan_id=4)],
+            state="merged",
+        )
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=["no system vlan nve-overlay id 3"])
+
+        # replaced resets it when it is not in the play
+        playbook = dict(config=[dict(vlan_id=3, name="test-vlan3", enabled=True)], state="replaced")
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=["no system vlan nve-overlay id 3"])
+
+        # overridden resets it and removes the marking of vlans that are deleted
+        playbook = dict(
+            config=[
+                dict(vlan_id=1, name="default", enabled=True),
+                dict(vlan_id=3, name="test-vlan3", enabled=True),
+                dict(vlan_id=4, enabled=True, nve_overlay=True),
+                dict(
+                    vlan_id=5,
+                    name="test-changeme",
+                    mapped_vni=942,
+                    state="suspend",
+                    enabled=False,
+                ),
+            ],
+            state="overridden",
+        )
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(
+            changed=True,
+            commands=[
+                "no system vlan nve-overlay id 8",
+                "no vlan 8",
+                "no system vlan nve-overlay id 3",
+            ],
+        )
+
+        # deleted
+        set_module_args(
+            dict(config=[dict(vlan_id=3), dict(vlan_id=5)], state="deleted"),
+            ignore_provider_arg,
+        )
+        self.execute_module(
+            changed=True,
+            commands=["no system vlan nve-overlay id 3", "no vlan 3", "no vlan 5"],
+        )
+
+    def test_nve_overlay_rendered_and_parsed(self):
+        self.prepare()
+        playbook = dict(
+            config=[dict(vlan_id=3801, name="L3VNI", mapped_vni=50001, nve_overlay=True)],
+            state="rendered",
+        )
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["rendered"],
+            [
+                "vlan 3801",
+                "name L3VNI",
+                "vn-segment 50001",
+                "system vlan nve-overlay id 3801",
+            ],
+        )
+
+        running_config = "\n\n".join(
+            [
+                json.dumps(load_fixture("nxos_vlans", "show_vlan")),
+                load_fixture("nxos_vlans", "show_running-config"),
+                "system vlan nve-overlay id 4-5\nsystem vlan nve-overlay id 8",
+            ],
+        )
+        set_module_args(dict(running_config=running_config, state="parsed"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        overlay = sorted(v["vlan_id"] for v in result["parsed"] if v.get("nve_overlay"))
+        self.assertEqual(overlay, [4, 5, 8])
+
+        # running_config without the nve-overlay part still parses
+        running_config = "\n\n".join(
+            [
+                json.dumps(load_fixture("nxos_vlans", "show_vlan")),
+                load_fixture("nxos_vlans", "show_running-config"),
+            ],
+        )
+        set_module_args(dict(running_config=running_config, state="parsed"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertFalse([v for v in result["parsed"] if v.get("nve_overlay")])

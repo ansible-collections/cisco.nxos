@@ -41,6 +41,7 @@ parsed:
     enabled: true
     mode: "ce"
     state: active
+    nve_overlay: true
 
   - vlan_id: 7
     enabled: true
