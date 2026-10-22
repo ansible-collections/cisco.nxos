@@ -97,6 +97,10 @@ options:
           in a VXLAN EVPN fabric. This manages the global command
           C(system vlan nve-overlay id <vlan_id>).
         - Set to C(true) to configure the command and C(false) to remove it.
+        - With I(state) C(merged) an omitted value leaves the current setting unchanged.
+        - With I(state) C(replaced) or C(overridden) an omitted value is treated as C(false),
+          so the command is removed from the VLANs being replaced and from every other VLAN
+          that I(state) C(overridden) deletes.
         - When the device displays the command as a range, for example
           C(system vlan nve-overlay id 3801-3809,3820), the range is expanded
           and reported per VLAN.

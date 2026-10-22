@@ -140,6 +140,8 @@ Parameters
                 <td>
                         <div>Mark the VLAN as an NVE overlay VLAN, for example the L3 VNI VLAN of a VRF in a VXLAN EVPN fabric. This manages the global command <code>system vlan nve-overlay id &lt;vlan_id&gt;</code>.</div>
                         <div>Set to <code>true</code> to configure the command and <code>false</code> to remove it.</div>
+                        <div>With <em>state</em> <code>merged</code> an omitted value leaves the current setting unchanged.</div>
+                        <div>With <em>state</em> <code>replaced</code> or <code>overridden</code> an omitted value is treated as <code>false</code>, so the command is removed from the VLANs being replaced and from every other VLAN that <em>state</em> <code>overridden</code> deletes.</div>
                         <div>When the device displays the command as a range, for example <code>system vlan nve-overlay id 3801-3809,3820</code>, the range is expanded and reported per VLAN.</div>
                 </td>
             </tr>

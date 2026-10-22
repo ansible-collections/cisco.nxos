@@ -441,3 +441,65 @@ class TestNxosVlansModule(TestNxosModule):
         set_module_args(dict(running_config=running_config, state="parsed"), ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertFalse([v for v in result["parsed"] if v.get("nve_overlay")])
+
+    def test_nve_overlay_empty_facts_output(self):
+        # nothing in 'show running-config | include nve-overlay'
+        self.prepare()
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertFalse([v for v in result["gathered"] if "nve_overlay" in v])
+
+    def test_nve_overlay_facts_command_error_is_not_hidden(self):
+        self.prepare()
+        base = self.get_device_data.side_effect
+
+        def fail_on_overlay(*args, **kwargs):
+            if "nve-overlay" in str(args[1]):
+                raise Exception("overlay command failed")
+            return base(*args, **kwargs)
+
+        self.get_device_data.side_effect = fail_on_overlay
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        with self.assertRaises(Exception) as ctx:
+            self.execute_module(changed=False)
+        self.assertIn("overlay command failed", str(ctx.exception))
+
+    def test_nve_overlay_merged_already_true_is_idempotent(self):
+        # Device shows 'system vlan nve-overlay id 3-4,8'
+        self.prepare(nve_overlay="_ranges")
+        # explicit true on a vlan that already has it, and omitted on another
+        playbook = dict(
+            config=[dict(vlan_id=8, nve_overlay=True), dict(vlan_id=3)],
+            state="merged",
+        )
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nve_overlay_replaced_overridden_omitted_vs_true(self):
+        self.prepare(nve_overlay="_ranges")
+        for state in ["replaced", "overridden"]:
+            # omitted is treated as false and the marking is removed
+            config = [dict(vlan_id=3, name="test-vlan3", enabled=True)]
+            if state == "overridden":
+                config = self._overridden_config(config)
+            set_module_args(dict(config=config, state=state), ignore_provider_arg)
+            result = self.execute_module(changed=True)
+            self.assertIn("no system vlan nve-overlay id 3", result["commands"])
+
+            # true keeps it, no overlay command is generated
+            config = [dict(vlan_id=3, name="test-vlan3", enabled=True, nve_overlay=True)]
+            if state == "overridden":
+                config = self._overridden_config(config)
+            set_module_args(dict(config=config, state=state), ignore_provider_arg)
+            result = self.execute_module(changed=state == "overridden")
+            self.assertFalse([c for c in result["commands"] if "nve-overlay id 3" in c])
+
+    def _overridden_config(self, config):
+        # overridden removes every vlan that is not listed
+        return config + [
+            dict(vlan_id=1, name="default", enabled=True),
+            dict(vlan_id=4, enabled=True, nve_overlay=True),
+            dict(vlan_id=5, name="test-changeme", mapped_vni=942, state="suspend", enabled=False),
+            dict(vlan_id=8, enabled=False, nve_overlay=True),
+        ]
