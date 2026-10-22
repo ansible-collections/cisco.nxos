@@ -4,9 +4,12 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: Enable features required for HSRP and EIGRP SNMP traps
+# Full-suite CI disables feature lldp in nxos_lldp_* teardown. Without it,
+# `snmp-server enable traps lldp ...` is `% Invalid command` on NX-OS 10.4(2).
+- name: Enable features required for LLDP, HSRP, and EIGRP SNMP traps
   cisco.nxos.nxos_config:
     lines:
+      - feature lldp
       - feature hsrp
       - feature eigrp
     match: none
