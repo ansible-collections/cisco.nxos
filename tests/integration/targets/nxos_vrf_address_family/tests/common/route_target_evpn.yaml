@@ -4,14 +4,11 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- ansible.builtin.include_tasks: _populate_config.yaml
-
 - block:
-    - name: Remove the populated route-targets so the VRF address-family starts clean
-      cisco.nxos.nxos_vrf_address_family:
-        config:
-          - name: VRF1
-        state: deleted
+    - name: Create an empty VRF1 so the address-family starts clean
+      cisco.nxos.nxos_config:
+        lines:
+          - vrf context VRF1
 
     - name: Merge route-target both and both evpn
       register: result
@@ -30,7 +27,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ route_target_evpn['merged']['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - route_target_evpn['merged']['commands'] | symmetric_difference(result['commands']) | length == 0
 
     - name: Gather route-target facts from the device
       register: gathered
@@ -67,7 +64,7 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == true
-          - "{{ route_target_evpn['replaced']['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - route_target_evpn['replaced']['commands'] | symmetric_difference(result['commands']) | length == 0
 
     - name: Replace with a single route-target entry (idempotent)
       register: result
