@@ -1,0 +1,5 @@
+feature lldp
+lldp reinit 5
+lldp timer 40
+lldp portid-subtype 1
+no lldp tlv-select power-management

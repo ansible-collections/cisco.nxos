@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-acls-gathered
+    count: 1
+  - scenario: nxos-acls-gathered
+    count: 1
+  - scenario: nxos-acls-merged
+    count: 1
+  - scenario: nxos-acls-replaced
+    count: 1
+  - scenario: nxos-acls-overridden
+    count: 1
+  - scenario: nxos-acls-deleted
+    count: 1

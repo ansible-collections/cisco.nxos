@@ -1,0 +1,19 @@
+template peer neighbor_tmplt_1
+    bmp-activate-server 2
+    remote-as 65001
+    local-as 65536
+    description Test_BGP_PEER_TEMPLATE_1
+    capability suppress 4-byte-as
+    address-family ipv4 unicast
+      disable-peer-as-check
+      advertisement-interval 60
+      advertise-map rmap1 non-exist-map nemap1
+  template peer neighbor_tmplt_2
+    inherit peer-session psession1
+    description Test_BGP_PEER_TEMPLATE_2
+    timers 45 100
+    address-family ipv4 multicast
+      as-override
+      filter-list flist1 in
+      filter-list flist2 out
+      advertise-map rmap1 exist-map emap1

@@ -1,0 +1,33 @@
+router bgp 65536
+  router-id 198.51.100.2
+  confederation identifier 42
+  confederation peers 65020 65030 65040
+  bestpath as-path multipath-relax
+  bestpath cost-community ignore
+  bestpath compare-neighborid
+  neighbor-down fib-accelerate
+  maxas-limit 20
+  log-neighbor-changes
+  neighbor 198.51.100.20
+    low-memory exempt
+    remote-as 65537
+    description NBR-1
+    affinity-group 160
+  neighbor 198.51.100.21
+    remote-as 65537
+  vrf site-1
+    local-as 200
+    log-neighbor-changes
+    neighbor 192.0.2.10
+      remote-as 65538
+      description site-1-nbr-1
+    neighbor 192.0.2.11
+      remote-as 65538
+      description site-1-nbr-2
+  vrf site-2
+    local-as 300
+    neighbor-down fib-accelerate
+    log-neighbor-changes
+    neighbor 203.0.113.2
+      remote-as 65539
+      description site-2-nbr-1

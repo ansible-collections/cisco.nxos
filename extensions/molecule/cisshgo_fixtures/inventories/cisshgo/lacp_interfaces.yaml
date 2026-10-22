@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_lacp_interfaces
+    count: 1
+  - scenario: nxos-lacp-interfaces-merged
+    count: 1
+  - scenario: nxos-lacp-interfaces-replaced
+    count: 1
+  - scenario: nxos-lacp-interfaces-overridden
+    count: 1
+  - scenario: nxos-lacp-interfaces-deleted
+    count: 1
+  - scenario: nxos-lacp-interfaces-gathered
+    count: 1

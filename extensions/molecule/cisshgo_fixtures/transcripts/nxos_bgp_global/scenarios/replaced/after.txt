@@ -1,0 +1,21 @@
+router bgp 65536
+  router-id 198.51.100.2
+  confederation identifier 42
+  confederation peers 65020 65030 65050
+  bestpath cost-community ignore
+  bestpath compare-neighborid
+  neighbor-down fib-accelerate
+  maxas-limit 40
+  template peer neighbor_tmplt_2
+    local-as 65536
+    description Test_BGP_PEER_TEMPLATE_2
+  neighbor 198.51.100.20
+    low-memory exempt
+    remote-as 65537
+    description NBR-1
+    affinity-group 160
+  vrf site-2
+    local-as 300
+    neighbor-down fib-accelerate
+    log-neighbor-changes
+    neighbor 203.0.113.2

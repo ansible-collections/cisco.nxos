@@ -1,0 +1,35 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_become: false
+      children:
+        nxos_prefix_lists_gathered:
+          hosts:
+            cisshgo-prefix_lists-gathered:
+              ansible_port: 10001
+        nxos_prefix_lists_merged:
+          hosts:
+            cisshgo-prefix_lists-merged:
+              ansible_port: 10002
+        nxos_prefix_lists_replaced:
+          hosts:
+            cisshgo-prefix_lists-replaced:
+              ansible_port: 10003
+        nxos_prefix_lists_overridden:
+          hosts:
+            cisshgo-prefix_lists-overridden:
+              ansible_port: 10004
+        nxos_prefix_lists_deleted:
+          hosts:
+            cisshgo-prefix_lists-deleted:
+              ansible_port: 10005

@@ -1,0 +1,15 @@
+devices:
+  - scenario: nxos-snmp-server-gathered
+    count: 1
+  - scenario: nxos-snmp-server-merged
+    count: 1
+  - scenario: nxos-snmp-server-replaced
+    count: 1
+  - scenario: nxos-snmp-server-overridden
+    count: 1
+  - scenario: nxos-snmp-server-deleted
+    count: 1
+  - scenario: nxos-snmp-server-replaced_same_user
+    count: 1
+  - scenario: nxos-snmp-server-lldp_hsrp_eigrp_traps
+    count: 1
