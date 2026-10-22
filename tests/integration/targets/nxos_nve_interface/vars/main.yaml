@@ -71,7 +71,7 @@ overridden:
     - interface nve1
     - no description vxlan vtep
     - no source-interface hold-down-time 60
-    - no member vni 11111
+    - no member vni 11111 associate-vrf
     - member vni 11111
     - suppress-arp
     - ingress-replication protocol bgp
@@ -123,7 +123,7 @@ replaced:
     - no member vni 22222 associate-vrf
     - no member vni 33333 associate-vrf
     - shutdown
-    - no global mcast-group L2
+    - no global mcast-group 233.252.0.20 L2
   after:
     advertise_virtual_rmac: true
     host_reachability_bgp: true

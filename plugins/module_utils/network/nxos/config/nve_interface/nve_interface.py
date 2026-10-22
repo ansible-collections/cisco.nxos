@@ -141,34 +141,41 @@ class Nve_interface(ResourceModule):
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_vnis(want, have)
 
-        # Handle the 'enabled' state separately
+        # 'enabled' is a bool where 'no shutdown' is the set form
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
+        if have_enabled is None and have:
+            # shutdown is the default of nve1 and may not be shown by the device
+            have_enabled = False
         if want_enabled is not None:
             if want_enabled != have_enabled:
-                if want_enabled is True:
-                    self.addcmd(want, "enabled", True)
-                else:
-                    self.addcmd(want, "enabled", False)
-        # elif not want and self.state in ["overridden", "replaced"]:
-        elif (want_enabled is None or not want) and self.state in ["overridden", "replaced"]:
-            if have_enabled is not None:
-                self.addcmd(have, "enabled", False)
+                self.addcmd(want, "enabled", want_enabled)
+        elif have_enabled and self.state in ["overridden", "replaced"]:
+            # an interface that is not requested to be enabled is shut
+            self.addcmd(have, "enabled", False)
 
-        # Handle the 'global_multicast_group' separately
+        # 'global_multicast_group' needs the mode, so it is handled here
         want_gmg = want.get("global_multicast_group")
         have_gmg = have.get("global_multicast_group")
         if want_gmg is not None:
             if want_gmg != have_gmg:
+                if (
+                    have_gmg
+                    and have_gmg["mode"] != want_gmg["mode"]
+                    and self.state in ["overridden", "replaced"]
+                ):
+                    self.commands.append(self._gmg_negate(have_gmg))
                 self.addcmd(want, "global_multicast_group")
-        # if not want and self.state in ["overridden", "replaced"]:
-        if (want_gmg is None or not want) and self.state in ["overridden", "replaced"]:
-            if have_gmg is not None:
-                self.commands.append(f"no global mcast-group {have_gmg['mode']}")
+        elif have_gmg is not None and self.state in ["overridden", "replaced"]:
+            self.commands.append(self._gmg_negate(have_gmg))
 
         if len(self.commands) != begin:
             if "interface nve1" not in self.commands:
                 self.commands.insert(begin, "interface nve1")
+
+    @staticmethod
+    def _gmg_negate(gmg):
+        return "no global mcast-group {address} {mode}".format(**gmg)
 
     def _compare_vnis(self, want, have):
         """
@@ -198,11 +205,9 @@ class Nve_interface(ResourceModule):
 
             # Delete vni before recreating if associate_vrf mismatch
             # for state 'overridden' and 'replaced'
-            if self.state in ["overridden", "replaced"]:
-                want_vrf = wentry.get("associate_vrf")
-                have_vrf = have_vni.get("associate_vrf")
-                if want_vrf != have_vrf:
-                    self.commands.append(f"no member vni {vni_id}")
+            if have_vni and self.state in ["overridden", "replaced"]:
+                if bool(wentry.get("associate_vrf")) != bool(have_vni.get("associate_vrf")):
+                    self.commands.append(self._tmplt.render(have_vni, "vni_id", True))
                     have_vni = {}
 
             self.compare(parsers=vni_parsers, want=wentry, have=have_vni)

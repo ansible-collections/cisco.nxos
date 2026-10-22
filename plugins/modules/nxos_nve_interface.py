@@ -358,7 +358,7 @@ EXAMPLES = """
 #   - interface nve1
 #   - no description vxlan vtep
 #   - no source-interface hold-down-time 60
-#   - no member vni 11111
+#   - no member vni 11111 associate-vrf
 #   - member vni 11111
 #   - suppress-arp
 #   - ingress-replication protocol bgp
@@ -434,7 +434,7 @@ EXAMPLES = """
 #   host_reachability_bgp: true
 #   source_interface_name: loopback1
 #   global_multicast_group:
-#     address: 233.252.0.30
+#     address: 233.252.0.40
 #     mode: L2
 #   vnis:
 #     - ingress_replication_bgp: true
@@ -453,7 +453,7 @@ EXAMPLES = """
 #   - no member vni 22222 associate-vrf
 #   - no member vni 33333 associate-vrf
 #   - shutdown
-#   - no global mcast-group L2
+#   - no global mcast-group 233.252.0.40 L2
 #
 # after:
 #   description: vxlan vtep
