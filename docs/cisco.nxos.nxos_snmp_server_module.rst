@@ -2382,6 +2382,7 @@ Parameters
                 </td>
                 <td>
                         <div>SNMP LLDP traps.</div>
+                        <div>The device must have <code>feature lldp</code> enabled. This module does not enable the feature.</div>
                 </td>
             </tr>
                                 <tr>
@@ -3821,7 +3822,7 @@ Notes
    - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
    - After trap configuration changes in *merged*, *replaced*, or *overridden* (including LLDP, HSRP, and global EIGRP traps), ``show running-config`` used for *after* and *state=gathered* may lag behind what was just applied. This is more common with ``httpapi`` than ``network_cli``.
    - For verification playbooks, use a follow-up *state=gathered* task or assert on *after* with task-level ``retries`` and ``delay`` (for example, 3 retries and 15 seconds between attempts). Rerun the task if a one-off gather still misses new trap lines.
-   - HSRP and EIGRP trap CLI require ``feature hsrp`` and ``feature eigrp`` on the device. Allow a short delay after enabling those features before trap configuration succeeds.
+   - LLDP, HSRP, and EIGRP trap CLI require ``feature lldp``, ``feature hsrp``, and ``feature eigrp`` on the device. Without those features, NX-OS returns ``% Invalid command`` for the matching ``snmp-server enable traps`` lines. Allow a short delay after enabling those features before trap configuration succeeds.
 
 
 

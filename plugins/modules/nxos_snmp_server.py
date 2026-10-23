@@ -30,7 +30,9 @@ notes:
 - For verification playbooks, use a follow-up I(state=gathered) task or assert on I(after)
   with task-level C(retries) and C(delay) (for example, 3 retries and 15 seconds between
   attempts). Rerun the task if a one-off gather still misses new trap lines.
-- HSRP and EIGRP trap CLI require C(feature hsrp) and C(feature eigrp) on the device.
+- LLDP, HSRP, and EIGRP trap CLI require C(feature lldp), C(feature hsrp), and
+  C(feature eigrp) on the device. Without those features, NX-OS returns
+  C(% Invalid command) for the matching C(snmp-server enable traps) lines.
   Allow a short delay after enabling those features before trap configuration succeeds.
 author: Nilashish Chakraborty (@NilashishC)
 options:
@@ -367,7 +369,9 @@ options:
                 description: IETF Link state up notification.
                 type: bool
           lldp:
-            description: SNMP LLDP traps.
+            description:
+              - SNMP LLDP traps.
+              - The device must have C(feature lldp) enabled. This module does not enable the feature.
             type: dict
             version_added: 12.1.0
             suboptions:
