@@ -22,6 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+_VNI_ID = "{{ vni_id }}"
+
+
 class Nve_interfaceTemplate(NetworkTemplate):
     """Parsing rules and setters for nve_interface module."""
 
@@ -47,7 +50,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "name": "description",
             "getval": re.compile(
                 r"""
-                \s+description\s+(?P<description>.+)
+                ^\s+description\s+(?P<description>\S.*)
                 $""", re.VERBOSE,
             ),
             "setval": "description {{ description }}",
@@ -174,8 +177,8 @@ class Nve_interfaceTemplate(NetworkTemplate):
             ),
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
-                        "vni_id": "{{ vni_id }}",
+                    _VNI_ID: {
+                        "vni_id": _VNI_ID,
                         "associate_vrf": "{{ True if associate_vrf }}",
                     },
                 },
@@ -192,7 +195,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "setval": "suppress-arp",
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
+                    _VNI_ID: {
                         "suppress_arp": "{{ True if suppress_arp }}",
                     },
                 },
@@ -209,7 +212,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "setval": "suppress-arp disable",
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
+                    _VNI_ID: {
                         "suppress_arp_disable": "{{ True if suppress_arp_disable }}",
                     },
                 },
@@ -226,7 +229,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "setval": "multisite ingress-replication",
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
+                    _VNI_ID: {
                         "multisite_ingress_replication": "{{ True if multisite_ingress_replication }}",
                     },
                 },
@@ -243,7 +246,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             "setval": "ingress-replication protocol bgp",
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
+                    _VNI_ID: {
                         "ingress_replication_bgp": "{{ True if ingress_replication_bgp }}",
                     },
                 },
@@ -264,7 +267,7 @@ class Nve_interfaceTemplate(NetworkTemplate):
             ),
             "result": {
                 "vnis": {
-                    "{{ vni_id }}": {
+                    _VNI_ID: {
                         "mcast_group": {
                             "address": "{{ address }}",
                             "secondary_address": "{{ secondary_address }}",

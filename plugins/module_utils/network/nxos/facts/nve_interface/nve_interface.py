@@ -113,6 +113,6 @@ class Nve_interfaceFacts(object):
         vnis = obj.get("vnis", [])
         if vnis:
             obj["vnis"] = sorted(
-                list(vnis.values()),
+                vnis.values(),
                 key=lambda k, sk="vni_id": k[sk],
             )

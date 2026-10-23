@@ -169,7 +169,14 @@ class Nve_interface(ResourceModule):
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_vnis(want, have)
 
-        # 'enabled' is a bool where 'no shutdown' is the set form
+        self._compare_enabled(want, have)
+        self._compare_global_multicast_group(want, have)
+
+        if len(self.commands) != begin and "interface nve1" not in self.commands:
+            self.commands.insert(begin, "interface nve1")
+
+    def _compare_enabled(self, want, have):
+        """'enabled' is a bool where 'no shutdown' is the set form."""
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
         if have_enabled is None and have:
@@ -182,24 +189,23 @@ class Nve_interface(ResourceModule):
             # an interface that is not requested to be enabled is shut
             self.addcmd(have, "enabled", False)
 
-        # 'global_multicast_group' needs the mode, so it is handled here
+    def _compare_global_multicast_group(self, want, have):
+        """'global_multicast_group' needs the mode, so it is handled here."""
         want_gmg = want.get("global_multicast_group")
         have_gmg = have.get("global_multicast_group")
-        if want_gmg is not None:
-            if want_gmg != have_gmg:
-                if (
-                    have_gmg
-                    and have_gmg["mode"] != want_gmg["mode"]
-                    and self.state in ["overridden", "replaced"]
-                ):
-                    self.commands.append(self._gmg_negate(have_gmg))
-                self.addcmd(want, "global_multicast_group")
-        elif have_gmg is not None and self.state in ["overridden", "replaced", "deleted"]:
+        if want_gmg is None:
+            if have_gmg is not None and self.state in ["overridden", "replaced", "deleted"]:
+                self.commands.append(self._gmg_negate(have_gmg))
+            return
+        if want_gmg == have_gmg:
+            return
+        if (
+            have_gmg
+            and have_gmg["mode"] != want_gmg["mode"]
+            and self.state in ["overridden", "replaced"]
+        ):
             self.commands.append(self._gmg_negate(have_gmg))
-
-        if len(self.commands) != begin:
-            if "interface nve1" not in self.commands:
-                self.commands.insert(begin, "interface nve1")
+        self.addcmd(want, "global_multicast_group")
 
     @staticmethod
     def _gmg_negate(gmg):
