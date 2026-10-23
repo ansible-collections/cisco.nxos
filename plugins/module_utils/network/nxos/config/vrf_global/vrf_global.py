@@ -115,7 +115,8 @@ class Vrf_global(ResourceModule):
         if self.state == "purged":
             purge_list = wantd or haved
             for k, item in purge_list.items():
-                self.purge(item)
+                if k in haved:
+                    self.purge(item)
         else:
             for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
