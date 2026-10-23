@@ -155,6 +155,14 @@ class Vlans(ConfigBase):
                 msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
+        seen = set()
+        for w in want:
+            if w["vlan_id"] in seen:
+                self._module.fail_json(
+                    msg="vlan_id {0} is listed more than once in config".format(w["vlan_id"]),
+                )
+            seen.add(w["vlan_id"])
+
         commands = list()
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))

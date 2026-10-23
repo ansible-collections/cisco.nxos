@@ -180,6 +180,7 @@ Parameters
                 </td>
                 <td>
                         <div>Vlan ID.</div>
+                        <div>Each Vlan ID may be listed only once in <em>config</em>.</div>
                 </td>
             </tr>
 

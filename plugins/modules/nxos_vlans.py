@@ -62,6 +62,7 @@ options:
       vlan_id:
         description:
         - Vlan ID.
+        - Each Vlan ID may be listed only once in I(config).
         type: int
         required: true
       name:

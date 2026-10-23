@@ -576,3 +576,14 @@ class TestNxosVlansModule(TestNxosModule):
             set_module_args(playbook, ignore_provider_arg)
             result = self.execute_module(changed=False)
             self.assertEqual(result["commands"], [])
+
+    def test_duplicate_vlan_id_is_rejected(self):
+        self.prepare()
+        for state in ["merged", "replaced", "overridden", "rendered"]:
+            playbook = dict(
+                config=[dict(vlan_id=3, name="a"), dict(vlan_id=3, nve_overlay=True)],
+                state=state,
+            )
+            set_module_args(playbook, ignore_provider_arg)
+            result = self.execute_module(failed=True)
+            self.assertIn("vlan_id 3 is listed more than once", result["msg"])
