@@ -23,6 +23,8 @@ notes:
   - Tested against NXOS 10.3(7)
   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX
   - Unsupported for Cisco MDS
+  - C(suppress_arp) needs the ARP-Ether ACL TCAM region (C(hardware access-list tcam region arp-ether)) to be
+    carved, which requires a reload. Devices without it reject the command.
   - Only the C(interface nve1) interface is managed.
   - Within a VNI, C(suppress-arp) and C(suppress-arp disable) are alternatives, as are
     C(mcast-group) and C(ingress-replication protocol bgp). The module fails if both
