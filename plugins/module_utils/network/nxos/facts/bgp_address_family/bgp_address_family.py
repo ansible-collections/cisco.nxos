@@ -105,37 +105,61 @@ class Bgp_address_familyFacts(object):
     def _flatten_config(self, data):
         """Flatten contexts in the BGP
             running-config for easier parsing.
-        :param obj: dict
+        :param data: str running config
         :returns: flattened running config
         """
-        data = data.split("\n")
-        in_vrf_cxt = False
-        in_nbr_cxt = False
-        cur_vrf = {}
+        lines = data.split("\n")
+        cur_vrf = None
+        cur_nbr = None
+        cur_template = None
 
-        for x in data:
-            cur_indent = len(x) - len(x.lstrip())
-            if x.strip().startswith("vrf"):
-                in_vrf_cxt = True
-                in_nbr_cxt = False
-                cur_vrf["vrf"] = x
-                cur_vrf["indent"] = cur_indent
-            elif cur_vrf and (cur_indent <= cur_vrf["indent"]):
-                in_vrf_cxt = False
-            elif x.strip().startswith("neighbor"):
-                # we entered a neighbor context which
-                # also has address-family lines
-                in_nbr_cxt = True
-                nbr = x
-            elif x.strip().startswith("address-family"):
-                if in_vrf_cxt or in_nbr_cxt:
-                    prepend = ""
-                    if in_vrf_cxt:
-                        prepend += cur_vrf["vrf"]
-                    if in_nbr_cxt:
-                        if in_vrf_cxt:
-                            nbr = " " + nbr.strip()
-                        prepend += nbr
-                    data[data.index(x)] = prepend + " " + x.strip()
+        for index, line in enumerate(lines):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            cur_indent = len(line) - len(line.lstrip())
 
-        return "\n".join(data)
+            if stripped.startswith("template peer"):
+                cur_template = {"line": line, "indent": cur_indent}
+                cur_nbr = None
+                continue
+            if (
+                cur_template is not None
+                and cur_indent <= cur_template["indent"]
+                and not stripped.startswith(("address-family", "neighbor"))
+            ):
+                cur_template = None
+            if cur_template is not None:
+                lines[index] = cur_template["line"] + " " + stripped
+                continue
+
+            if stripped.startswith("vrf "):
+                cur_vrf = {"line": line, "indent": cur_indent}
+                cur_nbr = None
+                continue
+            if (
+                cur_vrf is not None
+                and cur_indent <= cur_vrf["indent"]
+                and not stripped.startswith(("address-family", "neighbor"))
+            ):
+                cur_vrf = None
+                cur_nbr = None
+            if stripped.startswith("neighbor"):
+                cur_nbr = {"line": line, "indent": cur_indent}
+                continue
+            if (
+                cur_nbr is not None
+                and cur_indent <= cur_nbr["indent"]
+                and not stripped.startswith("address-family")
+            ):
+                cur_nbr = None
+            if stripped.startswith("address-family"):
+                prepend = ""
+                if cur_vrf is not None:
+                    prepend += cur_vrf["line"]
+                if cur_nbr is not None:
+                    prepend += (" " if prepend else "") + cur_nbr["line"].strip()
+                if prepend:
+                    lines[index] = prepend + " " + stripped
+
+        return "\n".join(lines)

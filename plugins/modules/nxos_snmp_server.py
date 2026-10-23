@@ -23,6 +23,17 @@ notes:
 - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - This module works with connection C(network_cli) and C(httpapi).
 - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
+- After trap configuration changes in I(merged), I(replaced), or I(overridden) (including
+  LLDP, HSRP, and global EIGRP traps), C(show running-config) used for I(after) and
+  I(state=gathered) may lag behind what was just applied. This is more common with
+  C(httpapi) than C(network_cli).
+- For verification playbooks, use a follow-up I(state=gathered) task or assert on I(after)
+  with task-level C(retries) and C(delay) (for example, 3 retries and 15 seconds between
+  attempts). Rerun the task if a one-off gather still misses new trap lines.
+- LLDP, HSRP, and EIGRP trap CLI require C(feature lldp), C(feature hsrp), and
+  C(feature eigrp) on the device. Without those features, NX-OS returns
+  C(% Invalid command) for the matching C(snmp-server enable traps) lines.
+  Allow a short delay after enabling those features before trap configuration succeeds.
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
@@ -200,6 +211,17 @@ options:
               ccmCLIRunningConfigChanged:
                 description: Running config change trap.
                 type: bool
+          eigrp:
+            description:
+              - SNMP EIGRP traps.
+              - The device must have C(feature eigrp) enabled. This module does not enable the feature.
+              - Process-specific EIGRP traps (C(snmp-server enable traps eigrp <as-number>)) are not supported.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description: Enable global SNMP EIGRP traps.
+                type: bool
           entity:
             description: Entity traps.
             type: dict
@@ -267,6 +289,21 @@ options:
               warmStart:
                 description: Generic warmStart trap.
                 type: bool
+          hsrp:
+            description:
+              - SNMP HSRP traps.
+              - The device must have C(feature hsrp) enabled. This module does not enable the feature.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description:
+                  - Enable HSRP traps.
+                  - This shorthand enables C(state_change). It is not returned by gathered or parsed.
+                type: bool
+              state_change:
+                description: HSRP state change notification. Maps to CLI C(state-change).
+                type: bool
           license:
             description: License traps.
             type: dict
@@ -330,6 +367,21 @@ options:
                 type: bool
               linkUp:
                 description: IETF Link state up notification.
+                type: bool
+          lldp:
+            description:
+              - SNMP LLDP traps.
+              - The device must have C(feature lldp) enabled. This module does not enable the feature.
+            type: dict
+            version_added: 12.1.0
+            suboptions:
+              enable:
+                description:
+                  - Enable LLDP traps.
+                  - This shorthand enables C(lldpRemTablesChange). It is not returned by gathered or parsed.
+                type: bool
+              lldpRemTablesChange:
+                description: LLDP remote tables change notification.
                 type: bool
           mmode:
             description:
@@ -1032,7 +1084,7 @@ EXAMPLES = """
 #   - no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
 #   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
 #   - snmp-server host 192.0.3.2 informs version 3 auth NMS
-#   - no snmp-server community private group network-admin
+#   - no snmp-server community private
 #   - snmp-server community secret group network-operator
 #
 # after:
@@ -1215,7 +1267,7 @@ EXAMPLES = """
 #   - no snmp-server host 192.0.2.1 traps version 1 public
 #   - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
 #   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
-#   - no snmp-server community private group network-admin
+#   - no snmp-server community private
 #   - no snmp-server community public group network-operator
 #   - no snmp-server enable traps aaa server-state-change
 #   - no snmp-server enable traps system Clock-change-notification

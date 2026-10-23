@@ -15,7 +15,7 @@
   ansible.builtin.set_fact:
     admin_snmp_priv_key:
       "{{ res['stdout'][0] | regex_search('snmp-server user admin network-admin auth
-      (?:md5|sha|sha-256) \\S+ priv aes-128 (\\S+) localizedV2key','\\1') }}"
+      (?:md5|sha|sha-256) \\S+ priv aes-128 (\\S+) localizedV2key', '\\1') }}"
 
 - name: Find admin user SNMP localized key
   ansible.builtin.set_fact:
@@ -36,7 +36,7 @@
 #   ansible.builtin.set_fact:
 #     ansible_snmp_priv_key:
 #       "{{ res['stdout'][0] | regex_search('snmp-server user ansible network-admin auth
-#       (?:md5|sha|sha-256) \\S+ priv aes-128 (\\S+) localizedV2key','\\1') }}"
+#       (?:md5|sha|sha-256) \\S+ priv aes-128 (\\S+) localizedV2key', '\\1') }}"
 
 # - name: Find ansible user SNMP localized key
 #   ansible.builtin.set_fact:
@@ -60,11 +60,67 @@
   ansible.builtin.set_fact:
     # noqa jinja[spacing]
     admin_snmp_engineid_2: "{{ res['stdout'][0] | regex_search('admin auth
-      (md5|sha|sha-256) (\\S+) priv (\\S+) (\\S+) localizedkey engineID (\\S+)','\\4') }}"
+      (md5|sha|sha-256) (\\S+) priv (\\S+) (\\S+) localizedkey engineID (\\S+)', '\\4') }}"
 
 - name: Find admin user SNMP engineid (second)
   ansible.builtin.set_fact:
     admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] | default('') }}"
+
+# Leftover objects from a previous run would be captured as baseline and then
+# leak into replaced/merged/overridden command lists.
+- name: Clear leftover test-owned snmp-server config
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server contact nxosswitchadmin@localhost
+      - no snmp-server contact nxosswitchadmin2@localhost
+      - no snmp-server location serverroom-1
+      - no snmp-server location serverroom-2
+      - no snmp-server aaa-user cache-timeout 36000
+      - no snmp-server user snmp_user_1
+      - no snmp-server user snmp_user_2
+      - no snmp-server host 192.0.2.2 informs version 3 auth NMS
+      - no snmp-server host 192.0.3.2 informs version 3 auth NMS
+      - no snmp-server community private
+      - no snmp-server community public
+      - no snmp-server community secret
+      - no snmp-server enable traps system Clock-change-notification
+      - no snmp-server enable traps aaa server-state-change
+      - no snmp-server enable traps lldp lldpRemTablesChange
+      - no snmp-server enable traps hsrp state-change
+      - no snmp-server enable traps eigrp
+      - no feature hsrp
+      - no feature eigrp
+    match: none
+  failed_when: false
+
+- name: Clear leftover 192.0.2.1 trap host
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server host 192.0.2.1 traps version 1 public
+    match: none
+  failed_when: false
+
+- name: Clear leftover 192.0.2.1 source-interface host
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
+    match: none
+  failed_when: false
+
+- name: Capture baseline snmp-server config for cleanup
+  cisco.nxos.nxos_snmp_server:
+    state: gathered
+  register: _snmp_baseline
+
+- name: Persist baseline snmp-server config
+  ansible.builtin.set_fact:
+    snmp_baseline_config: "{{ _snmp_baseline.gathered | default({}) }}"
+
+- name: Combine baseline SNMP users with test users
+  ansible.builtin.set_fact:
+    snmp_replaced_users:
+      auth: "{{ (snmp_baseline_config.users.auth | default([])) + snmp_test_user_auth }}"
+      use_acls: "{{ (snmp_baseline_config.users.use_acls | default([])) + snmp_test_user_acls }}"
 # - name: Grep zuul user SNMP localized key
 #   ansible.builtin.set_fact:
 #     zuul_snmp_passwd:
@@ -75,13 +131,12 @@
 #   ansible.builtin.set_fact:
 #     zuul_snmp_passwd: "{{ zuul_snmp_passwd[0] | default('') }}"
 
-# uncomment later
-# - name: Include the CLI tasks
-#   ansible.builtin.include_tasks: cli.yaml
-#   tags:
-#     - cli.yaml
+- name: Include the NX-API tasks
+  ansible.builtin.include_tasks: nxapi.yaml
+  tags:
+    - nxapi
 
-# - name: Include the NX-API tasks
-#   ansible.builtin.include_tasks: nxapi.yaml
-#   tags:
-#     - nxapi
+- name: Include the CLI tasks
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - network_cli

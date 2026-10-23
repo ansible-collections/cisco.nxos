@@ -1,0 +1,36 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_become: false
+        ansible_network_import_modules: false
+      children:
+        nxos_bgp_address_family_gathered:
+          hosts:
+            cisshgo-bgp_address_family-gathered:
+              ansible_port: 10001
+        nxos_bgp_address_family_merged:
+          hosts:
+            cisshgo-bgp_address_family-merged:
+              ansible_port: 10002
+        nxos_bgp_address_family_replaced:
+          hosts:
+            cisshgo-bgp_address_family-replaced:
+              ansible_port: 10003
+        nxos_bgp_address_family_overridden:
+          hosts:
+            cisshgo-bgp_address_family-overridden:
+              ansible_port: 10004
+        nxos_bgp_address_family_deleted:
+          hosts:
+            cisshgo-bgp_address_family-deleted:
+              ansible_port: 10005

@@ -1,0 +1,8 @@
+vrf context VRF1
+  address-family ipv4 unicast
+    route-target export 64512:200
+    export vrf default map 44 allow-vpn
+    export vrf allow-vpn
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1

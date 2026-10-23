@@ -155,7 +155,18 @@ class Interfaces(ResourceModule):
 
         # Handle the 'mode' state separately
         want_mode = want.get("mode")
-        have_mode = have.get("mode", self.defaults.get("default_mode"))
+        # Only treat the platform-wide default as the interface's current mode
+        # when the interface already exists in gathered facts. A brand-new
+        # interface (empty `have`) has never had `switchport` / `no switchport`
+        # entered, even if `system default switchport` would eventually apply.
+        # Substituting the default in that case makes merged/replaced skip the
+        # explicit command, which then breaks nxos_l2_interfaces
+        # (`switchport mode ...` is rejected until `switchport` is entered).
+        # `rendered` always has empty `have` and documents a layer3 default.
+        if have or self.state == "rendered":
+            have_mode = have.get("mode", self.defaults.get("default_mode"))
+        else:
+            have_mode = None
         if want_mode is not None:
             if want_mode != have_mode:
                 if want_mode == "layer3":
@@ -170,6 +181,22 @@ class Interfaces(ResourceModule):
             if have.get("mode") and have_mode != self.defaults.get("default_mode"):
                 no_cmd = True if self.defaults.get("default_mode") == "layer3" else False
                 self.addcmd(have, "mode", no_cmd)
+
+        # Handle 'negotiate_auto' separately because its default (enabled) does not
+        # appear in running-config; only 'no negotiate auto' appears when disabled.
+        # The base class compare() skips bool False vs None, so we own the full logic.
+        want_negotiate = want.get("negotiate_auto")
+        have_negotiate = have.get("negotiate_auto")
+        if want_negotiate is not None:
+            # Treat absent have as True (default is enabled, not shown in running-config)
+            effective_have = have_negotiate if have_negotiate is not None else True
+            if want_negotiate != effective_have:
+                # False → emit "no negotiate auto"; True → emit "negotiate auto"
+                self.addcmd(want, "negotiate_auto", not want_negotiate)
+        elif self.state in ["replaced", "overridden"] or (not want and self.state == "deleted"):
+            if have_negotiate is False:
+                # Restore default: remove "no negotiate auto"
+                self.addcmd(have, "negotiate_auto", False)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))

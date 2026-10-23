@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_vrf_interfaces
+    count: 1
+  - scenario: nxos-vrf-interfaces-gathered
+    count: 1
+  - scenario: nxos-vrf-interfaces-merged
+    count: 1
+  - scenario: nxos-vrf-interfaces-replaced
+    count: 1
+  - scenario: nxos-vrf-interfaces-overridden
+    count: 1
+  - scenario: nxos-vrf-interfaces-deleted
+    count: 1

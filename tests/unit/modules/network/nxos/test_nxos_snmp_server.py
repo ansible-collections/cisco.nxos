@@ -87,8 +87,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
-            "snmp-server community private  group network-admin \nsnmp-server community private  ro \nsnmp-server community private ",
-            "snmp-server community public  \nsnmp-server community public  rw \nsnmp-server community public use-ipv4acl myacl ",
+            "snmp-server community private group network-admin",
+            "snmp-server community private ro",
+            "snmp-server community public rw",
+            "snmp-server community public use-ipv4acl myacl",
             "snmp-server globalEnforcePriv",
             "snmp-server tcp-session auth",
             "snmp-server counter cache timeout 1800",
@@ -591,6 +593,133 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_snmp_server_communities_replaced(self):
+        # test replaced for communities - remove unwanted community without re-adding
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-operator
+            snmp-server community public group network-operator
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="public", group="network-operator"),
+                        dict(name="secret", group="network-operator"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server community secret group network-operator",
+            "no snmp-server community private",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+        for cmd in result["commands"]:
+            if cmd.startswith("no snmp-server community"):
+                self.assertNotIn("\nsnmp-server community", cmd)
+
+    def test_nxos_snmp_server_communities_replaced_same_name_update(self):
+        # same community name with a different group must delete then recreate
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-admin
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="private", group="network-operator"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("no snmp-server community private", commands)
+        self.assertIn("snmp-server community private group network-operator", commands)
+        self.assertNotIn("snmp-server community private use-ipv4acl myacl", commands)
+        self.assertLess(
+            commands.index("no snmp-server community private"),
+            commands.index("snmp-server community private group network-operator"),
+        )
+
+    def test_nxos_snmp_server_communities_merged_name_only(self):
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="public"),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["snmp-server community public"])
+
+    def test_nxos_snmp_server_communities_merged_idempotent(self):
+        # split community lines must round-trip as one object per name
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server community private group network-admin
+            snmp-server community public group network-operator
+            snmp-server community private use-ipv4acl myacl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    communities=[
+                        dict(name="private", group="network-admin", use_ipv4acl="myacl"),
+                        dict(name="public", group="network-operator"),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_communities_parsed_multiline(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server community private group network-admin
+                    snmp-server community private ro
+                    snmp-server community private use-ipv4acl myacl
+                    snmp-server community public group network-operator
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            communities=[
+                dict(name="private", group="network-admin", ro=True, use_ipv4acl="myacl"),
+                dict(name="public", group="network-operator"),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
     def test_nxos_snmp_server_users_merged_1(self):
         # test merged for users
         self.get_config.return_value = dedent(
@@ -929,6 +1058,78 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
+    def test_nxos_snmp_server_parsed_des_priv(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server user admin network-admin auth md5 533179654128A51B230DE5CC7F25331CC60D \
+priv des 482A1501F49C1EAC8FA75840E7ACAF820FCB localizedV2key
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            users=dict(
+                auth=[
+                    dict(
+                        user="admin",
+                        group="network-admin",
+                        authentication=dict(
+                            algorithm="md5",
+                            password="533179654128A51B230DE5CC7F25331CC60D",
+                            localizedv2_key=True,
+                            priv=dict(
+                                privacy_password="482A1501F49C1EAC8FA75840E7ACAF820FCB",
+                            ),
+                        ),
+                    ),
+                ],
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_snmp_server_users_replaced_same_user(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user snmpv3_user vdc-operator auth sha AuthPassword123 priv aes-128 PrivPassword123 localizedV2key
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="snmpv3_user",
+                                group="vdc-operator",
+                                authentication=dict(
+                                    algorithm="sha",
+                                    password="NewAuthPassword123",
+                                    localizedv2_key=True,
+                                    priv=dict(
+                                        privacy_password="NewPrivPassword123",
+                                        aes_128=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server user snmpv3_user vdc-operator auth sha NewAuthPassword123 priv aes-128"
+            " NewPrivPassword123 localizedV2key",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_nxos_snmp_server_rendered(self):
         # test rendered
         set_module_args(
@@ -974,8 +1175,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server location lab",
             "snmp-server mib community-map public context public1",
             "snmp-server source-interface traps Ethernet1/2",
-            "snmp-server community public  \nsnmp-server community public  rw \nsnmp-server community public use-ipv4acl myacl  use-ipv6acl myaclv6",
-            "snmp-server community private  group network-admin \nsnmp-server community private  ro \nsnmp-server community private ",
+            "snmp-server community public rw",
+            "snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6",
+            "snmp-server community private group network-admin",
+            "snmp-server community private ro",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["rendered"]), set(rendered))
@@ -1070,6 +1273,245 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server enable traps entity entity_power_status_change",
             "snmp-server enable traps entity entity_sensor",
             "snmp-server enable traps entity entity_unrecognised_module",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def _lldp_hsrp_eigrp_trap_running_config(self):
+        return dedent(
+            """\
+            snmp-server enable traps lldp lldpRemTablesChange
+            snmp-server enable traps hsrp state-change
+            snmp-server enable traps eigrp
+            """,
+        )
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_merged_disable(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config()
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(lldpRemTablesChange=False),
+                        hsrp=dict(state_change=False),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_replaced_remove(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config() + dedent(
+            """\
+            snmp-server enable traps bgp
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        bgp=dict(enable=True),
+                    ),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+            "no snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_overridden_remove(self):
+        self.get_config.return_value = self._lldp_hsrp_eigrp_trap_running_config() + dedent(
+            """\
+            snmp-server enable traps bgp
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        bgp=dict(enable=True),
+                    ),
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+            "no snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_merged_enable(self):
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(enable=True),
+                        hsrp=dict(enable=True),
+                        eigrp=dict(enable=True),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server enable traps lldp lldpRemTablesChange",
+            "snmp-server enable traps hsrp state-change",
+            "snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_merged_explicit(self):
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(lldpRemTablesChange=True),
+                        hsrp=dict(state_change=True),
+                        eigrp=dict(enable=True),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server enable traps lldp lldpRemTablesChange",
+            "snmp-server enable traps hsrp state-change",
+            "snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_idempotent(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps lldp lldpRemTablesChange
+            snmp-server enable traps hsrp state-change
+            snmp-server enable traps eigrp
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(enable=True),
+                        hsrp=dict(enable=True),
+                        eigrp=dict(enable=True),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server enable traps lldp lldpRemTablesChange
+                    snmp-server enable traps hsrp state-change
+                    snmp-server enable traps eigrp
+                    snmp-server enable traps eigrp 100
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            traps=dict(
+                lldp=dict(lldpRemTablesChange=True),
+                hsrp=dict(state_change=True),
+                eigrp=dict(enable=True),
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_rendered(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        lldp=dict(enable=True),
+                        hsrp=dict(state_change=True),
+                        eigrp=dict(enable=True),
+                    ),
+                ),
+                state="rendered",
+            ),
+            ignore_provider_arg,
+        )
+        rendered = [
+            "snmp-server enable traps lldp lldpRemTablesChange",
+            "snmp-server enable traps hsrp state-change",
+            "snmp-server enable traps eigrp",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["rendered"]), set(rendered))
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_gathered(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps lldp lldpRemTablesChange
+            snmp-server enable traps hsrp state-change
+            snmp-server enable traps eigrp
+            """,
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        gathered = dict(
+            traps=dict(
+                lldp=dict(lldpRemTablesChange=True),
+                hsrp=dict(state_change=True),
+                eigrp=dict(enable=True),
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_snmp_server_lldp_hsrp_eigrp_deleted(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps lldp lldpRemTablesChange
+            snmp-server enable traps hsrp state-change
+            snmp-server enable traps eigrp
+            """,
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        commands = [
+            "no snmp-server enable traps lldp lldpRemTablesChange",
+            "no snmp-server enable traps hsrp state-change",
+            "no snmp-server enable traps eigrp",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

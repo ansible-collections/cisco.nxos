@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_vpc_interface rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_vpc_interface:
+    config:
+      - name: port-channel10
+        vpc: 11
+      - name: port-channel20
+        peer_link: true
+      - name: port-channel30
+        orphan_port_suspend: true
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] == result['rendered']
+      - result.changed == false

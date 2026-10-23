@@ -1,0 +1,11 @@
+vrf context VRF1
+  address-family ipv4 unicast
+    route-target import 64512:200
+    route-target export 64512:200
+    export map 22
+    export vrf default map 44 allow-vpn
+    export vrf allow-vpn
+    maximum routes 900 22 reinstall 44
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1

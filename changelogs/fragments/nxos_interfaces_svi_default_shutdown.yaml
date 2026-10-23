@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_interfaces - fix SVIs in their default shutdown state being reported
+    as ``enabled: true``, since NX-OS omits the admin state from the running
+    configuration unless the SVI has been explicitly brought up.

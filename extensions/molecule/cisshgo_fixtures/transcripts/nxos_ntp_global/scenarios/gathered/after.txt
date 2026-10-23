@@ -1,0 +1,14 @@
+!Command: show running-config ntp
+!Running configuration last done at: Wed Aug 12 12:07:23 2026
+!Time: Wed Aug 12 12:07:24 2026
+
+version 10.4(2) Bios:version
+ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15
+ntp peer 192.0.2.2 prefer use-vrf siteA key 2
+ntp server 198.51.100.1 use-vrf default key 2
+ntp server 203.0.113.1 use-vrf siteB key 1
+ntp authenticate
+ntp logging
+ntp access-group peer PeerAcl1
+ntp access-group serve ServeAcl1
+ntp master 2

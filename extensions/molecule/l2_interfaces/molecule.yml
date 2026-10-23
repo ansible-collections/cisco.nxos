@@ -1,0 +1,30 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-l2_interfaces-merged_implicit_vlans
+  - name: cisshgo-l2_interfaces-action_states
+  - name: cisshgo-l2_interfaces-non_action_states
+  - name: cisshgo-l2_interfaces-port_channel_member
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/l2_interfaces.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible

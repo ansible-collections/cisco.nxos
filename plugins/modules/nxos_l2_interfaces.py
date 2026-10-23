@@ -67,6 +67,17 @@ options:
             - negation of this command would consider 1-4093 as the default.
             - This attribute does not ensure idempotency.
             type: bool
+          allowed_vlans_implicit:
+            description:
+            - Read-only flag set by the module in gathered/parsed facts when a trunk
+              interface has no explicit C(switchport trunk allowed vlan) line and the
+              module synthesizes the default C(1-4094) range.
+            - When this flag is present in the current device state and C(state=merged)
+              is used, the module generates a SET command instead of ADD, allowing users
+              to restrict default trunks to specific VLANs without switching to
+              C(state=replaced).
+            - This option should not be set in playbook config; it is informational only.
+            type: bool
       mode:
         description:
         - Mode in which interface needs to be configured.
@@ -193,6 +204,61 @@ EXAMPLES = """
 # interface mgmt0
 #   ip address dhcp
 #   ipv6 address auto-config
+
+# Using merged to restrict default trunk VLANs
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/4
+#   switchport mode trunk
+#   switchport trunk native vlan 99
+#
+# Note: No explicit "switchport trunk allowed vlan" line means the
+# interface allows all VLANs (1-4094) by default. The module detects
+# this as implicit and sets allowed_vlans_implicit: true in facts.
+
+- name: Restrict default trunk to specific VLANs using merged state
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/4
+        trunk:
+          allowed_vlans: "100,200"
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/4
+#   mode: trunk
+#   trunk:
+#     allowed_vlans: "1-4094"
+#     allowed_vlans_implicit: true
+#     native_vlan: 99
+# commands:
+# - interface Ethernet1/4
+# - switchport trunk allowed vlan 100,200
+# after:
+# - name: Ethernet1/4
+#   mode: trunk
+#   trunk:
+#     allowed_vlans: "100,200"
+#     native_vlan: 99
+
+# After state:
+# ------------
+#
+# switch# show running-config | section interface
+# interface Ethernet1/4
+#   switchport mode trunk
+#   switchport trunk native vlan 99
+#   switchport trunk allowed vlan 100,200
+#
+# Note: Because the have VLANs were implicit (default), merged used a
+# SET command to restrict the trunk. If the trunk already had explicit
+# VLANs, merged would use ADD to append only new VLANs.
 
 # Using replaced
 

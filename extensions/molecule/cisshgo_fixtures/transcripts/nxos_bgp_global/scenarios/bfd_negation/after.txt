@@ -1,0 +1,7 @@
+router bgp 65536
+  neighbor 198.51.100.30
+    remote-as 65537
+  neighbor 198.51.100.31
+    remote-as 65537
+  neighbor 198.51.100.32
+    remote-as 65537

@@ -1,12 +1,68 @@
 ---
 - name: Run the CLI and NX-API tests
   block:
+    - name: Enable 'feature vpc'
+      cisco.nxos.nxos_feature:
+        feature: vpc
+        state: enabled
+
+    - name: Create the VPC domain the interface tests need
+      cisco.nxos.nxos_config:
+        lines:
+          - vpc domain 100
+        match: none
+
+    - name: Configure peer-keepalive so vpc <id> assignments persist on 10.4(x)
+      cisco.nxos.nxos_config:
+        lines:
+          - peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management
+        parents: vpc domain 100
+        match: none
+
+    - name: Create the test port-channels
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+        parents: "interface {{ item }}"
+        match: none
+      loop:
+        - port-channel10
+        - port-channel20
+        - port-channel30
+
+    - name: Make the peer-link port-channel a trunk
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport mode trunk
+        parents: interface port-channel20
+        match: none
+
     - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
-  always:
+
     - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
+  always:
+    - name: Remove all VPC interface configuration
+      cisco.nxos.nxos_vpc_interface:
+        state: deleted
+      failed_when: false
+
+    - name: Remove the test port-channels
+      cisco.nxos.nxos_config:
+        lines:
+          - no interface port-channel10
+          - no interface port-channel20
+          - no interface port-channel30
+        match: none
+      failed_when: false
+
+    - name: Disable 'feature vpc'
+      cisco.nxos.nxos_feature:
+        feature: vpc
+        state: disabled
+      failed_when: false

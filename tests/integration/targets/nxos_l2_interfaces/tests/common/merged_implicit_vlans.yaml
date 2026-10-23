@@ -1,0 +1,98 @@
+---
+- name: Debug - Start merged implicit VLANs tests
+  ansible.builtin.debug:
+    msg: Start nxos_l2_interfaces merged implicit VLANs integration tests connection={{ ansible_connection }}
+
+- block:
+    - name: Setup - configure trunk with native vlan only (no explicit allowed vlans)
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport mode trunk
+          - switchport trunk native vlan 99
+          - no switchport trunk allowed vlan
+        parents: interface Ethernet1/9
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Gather facts - verify implicit flag is present
+      register: result_gathered
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert - Ethernet1/9 has allowed_vlans_implicit flag
+      ansible.builtin.assert:
+        that:
+          - eth9_facts.trunk.allowed_vlans == "1-4094"
+          - eth9_facts.trunk.allowed_vlans_implicit == true
+          - eth9_facts.trunk.native_vlan == 99
+      vars:
+        eth9_facts: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'Ethernet1/9') | first }}"
+
+    - name: Merged - restrict default trunk to specific VLANs
+      register: result_merged
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "100,200"
+        state: merged
+
+    - name: Assert Merged - SET command generated (not ADD)
+      ansible.builtin.assert:
+        that:
+          - result_merged.changed == true
+          - "'interface Ethernet1/9' in result_merged.commands"
+          - "'switchport trunk allowed vlan 100,200' in result_merged.commands"
+          - "'switchport trunk allowed vlan add' not in (result_merged.commands | join(' '))"
+
+    - name: Merged - idempotent (VLANs now explicit)
+      register: result_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "100,200"
+        state: merged
+
+    - name: Assert Merged idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_idempotent.changed == false
+          - result_idempotent.commands | length == 0
+
+    - name: Merged - ADD new VLANs to explicit trunk
+      register: result_add
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "300,400"
+        state: merged
+
+    - name: Assert Merged - ADD command generated for explicit trunk
+      ansible.builtin.assert:
+        that:
+          - result_add.changed == true
+          - "'switchport trunk allowed vlan add 300,400' in result_add.commands"
+
+    - name: Verify - native_vlan was preserved throughout
+      register: result_verify
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert - native_vlan and mode still intact
+      ansible.builtin.assert:
+        that:
+          - eth9_verify.trunk.native_vlan == 99
+          - eth9_verify.mode == "trunk"
+          - "'allowed_vlans_implicit' not in eth9_verify.trunk"
+      vars:
+        eth9_verify: "{{ result_verify.gathered | selectattr('name', 'equalto', 'Ethernet1/9') | first }}"
+
+  always:
+    - name: Teardown - reset interface
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface Ethernet1/9"

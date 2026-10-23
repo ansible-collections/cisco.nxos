@@ -60,5 +60,14 @@
 - name: Assert that correct set of commands were rendered
   ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
+      - >
+        {{
+          result['rendered']
+          | symmetric_difference(rendered['commands'])
+          | length == 0
+        }}
+
+- name: Assert that rendered state did not change the device
+  ansible.builtin.assert:
+    that:
       - result.changed == False

@@ -64,6 +64,7 @@ class Snmp_server(ResourceModule):
             "traps.cfs.merge_failure",
             "traps.cfs.state_change_notif",
             "traps.config.ccmCLIRunningConfigChanged",
+            "traps.eigrp",
             "traps.entity.cefcMIBEnableStatusNotification",
             "traps.entity.entity_fan_status_change",
             "traps.entity.entity_mib_change",
@@ -77,6 +78,7 @@ class Snmp_server(ResourceModule):
             "traps.feature_control.ciscoFeatOpStatusChange",
             "traps.generic.coldStart",
             "traps.generic.warmStart",
+            "traps.hsrp.state_change",
             "traps.license.notify_license_expiry",
             "traps.license.notify_license_expiry_warning",
             "traps.license.notify_licensefile_missing",
@@ -91,6 +93,7 @@ class Snmp_server(ResourceModule):
             "traps.link.extended_linkUp",
             "traps.link.linkDown",
             "traps.link.linkUp",
+            "traps.lldp.lldpRemTablesChange",
             "traps.mmode.cseMaintModeChangeNotify",
             "traps.mmode.cseNormalModeChangeNotify",
             "traps.ospf",
@@ -148,8 +151,10 @@ class Snmp_server(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # this ensures that if user sets `enable: True` for a trap
-        # all suboptions for that trap are set to True
+        # If the user sets ``enable: true`` for a trap family, expand it so all
+        # suboptions for that family are set to true. Flat families (eigrp, ospf,
+        # ospfv3) are omitted here; they only expose ``enable`` and are handled by
+        # their single trap parsers, same as before this change.
         for x in [
             "traps.aaa",
             "traps.bridge",
@@ -159,8 +164,10 @@ class Snmp_server(ResourceModule):
             "traps.entity",
             "traps.feature_control",
             "traps.generic",
+            "traps.hsrp",
             "traps.license",
             "traps.link",
+            "traps.lldp",
             "traps.mmode",
             "traps.rf",
             "traps.rmon",
@@ -207,6 +214,13 @@ class Snmp_server(ResourceModule):
             for wkey, wentry in wantx.items():
                 hentry = havex.pop(wkey, {})
                 if wentry != hentry:
+                    # Communities are keyed by name. remval is
+                    # `no snmp-server community NAME`, which removes every
+                    # attribute. If compare set want first then negated leftover
+                    # have, a same-name group/ACL/ro/rw change would delete the
+                    # community that was just configured. Recreate instead.
+                    if x == "communities" and hentry:
+                        self.addcmd(hentry, x, negate=True)
                     self.addcmd(wentry, x)
             # remove superfluous items
             for _k, hv in havex.items():
@@ -229,10 +243,10 @@ class Snmp_server(ResourceModule):
 
         tmp = deepcopy(data)
         if "communities" in tmp:
-            tmp["communities"] = {_build_key(entry): entry for entry in tmp["communities"]}
+            tmp["communities"] = {entry["name"]: entry for entry in tmp["communities"]}
         if "users" in tmp:
             if "auth" in tmp["users"]:
-                tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}
+                tmp["users"]["auth"] = {entry["user"]: entry for entry in tmp["users"]["auth"]}
             if "use_acls" in tmp["users"]:
                 tmp["users"]["use_acls"] = {
                     entry["user"]: entry for entry in tmp["users"]["use_acls"]

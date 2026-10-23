@@ -719,6 +719,71 @@ releases:
       - tox_skip_cleanup.yml
       - update_integration_ansible_2_21.yaml
     release_date: "2026-07-23"
+  13.0.0:
+    changes:
+      breaking_changes:
+        - "nxos_route_maps - ``match.metric`` elements changed from a list of integers
+          to a list of dictionaries with required ``value`` and optional ``deviation``
+          (for NX-OS ``match metric <value> +- <deviation>``). Update playbooks from
+          ``metric: [10, 200]`` to ``metric: [{value: 10}, {value: 200}]`` (or add ``deviation``
+          when needed). Fixes fact-gathering failures on that CLI."
+      bugfixes:
+        - nxos_bgp_address_family - fix ``_flatten_config`` to correctly track VRF/neighbor/template
+          context when flattening address-family lines (fixes ACA-6752, https://github.com/ansible-collections/cisco.nxos/issues/1082).
+        - nxos_interfaces - Send an explicit ``switchport`` (or ``no switchport``) command
+          when creating an interface that is absent from gathered facts, instead of
+          treating the platform ``system default switchport`` value as already applied.
+          This allows subsequent ``nxos_l2_interfaces`` tasks to succeed on newly created
+          Layer 2 interfaces.
+        - nxos_l2_interfaces - Fix ``state=merged`` to use SET instead of ADD when restricting
+          trunk VLANs on interfaces with implicit default allowed VLANs (1-4094). Previously,
+          merged was a no-op on default trunks because ADD against the synthesized full
+          range added nothing. Adds ``allowed_vlans_implicit`` marker in facts to distinguish
+          synthesized defaults from explicit configuration. ``replaced``/``overridden``
+          semantics are unchanged (https://github.com/ansible-collections/cisco.nxos/issues/AAP-85469).
+        - nxos_l3_interfaces - fix spacing in DHCP relay source-interface commands so
+          interface type and ID are concatenated without a space (fixes ACA-6753, https://github.com/ansible-collections/cisco.nxos/issues/1059).
+        - nxos_snmp_server - Emit each community attribute as its own CLI command so
+          NX-API does not reject multi-line community configuration.
+        - nxos_snmp_server - Emit only configured community attribute lines so empty
+          ``snmp-server community`` commands no longer reset access to read-only.
+        - nxos_snmp_server - Fix community removal on replaced, overridden, and deleted
+          states by adding a remval template so deletes emit a single ``no snmp-server
+          community`` command instead of re-adding the community.
+        - nxos_snmp_server - Merge multi-line SNMP community configuration into one
+          object per community name so group and ACL attributes round-trip correctly.
+        - nxos_snmp_server - Parse ``ro`` and ``rw`` community access flags from device
+          configuration.
+        - nxos_snmp_server - Re-enable network_cli and NX-API integration tests, including
+          the deleted state.
+        - nxos_snmp_server - Recreate a community (delete then set) when replaced or
+          overridden changes attributes on an existing community name, so ``no snmp-server
+          community NAME`` cannot wipe the just-applied config.
+        - nxos_snmp_server - parse NX-OS 10.4(4)+ ``priv des`` SNMPv3 user lines (AAP-89723).
+          DES remains the implicit default privacy type (``aes_128`` false). The module
+          does not render ``priv des`` back to the device.
+        - "nxos_snmp_server - stop deleting an SNMPv3 user when ``state: replaced``
+          updates that user (AAP-90154)."
+      minor_changes:
+        - nxos_hsrp_interfaces - Adds an additional parameter called ``hold_msec`` to
+          separately support hold interval values in milliseconds
+      release_summary:
+        "This is a major release of the ``cisco.nxos`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release."
+    fragments:
+      - fix_bgp_address_family_vrf_flatten.yaml
+      - fix_l3_interfaces_dhcp_relay_spacing.yaml
+      - fix_snmp_server_community_removal.yaml
+      - hsrp_if_fixes.yml
+      - l2_interfaces_merged_implicit_vlans.yaml
+      - nxos_interfaces_explicit_switchport_new_intf.yml
+      - nxos_snmp_server_des_priv.yml
+      - nxos_snmp_server_replaced_user.yml
+      - route_maps_match_metric_deviation.yaml
+    release_date: "2026-09-15"
   2.0.0:
     changes:
       bugfixes:
