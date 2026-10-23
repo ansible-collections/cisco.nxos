@@ -22,6 +22,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+_VNI = "{{ vni }}"
+_RT = "{{ rt }}"
+
+
 class Evpn_vnisTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Evpn_vnisTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -50,8 +54,8 @@ class Evpn_vnisTemplate(NetworkTemplate):
             ),
             "setval": "vni {{ vni }} l2",
             "result": {
-                "{{ vni }}": {
-                    "vni": "{{ vni }}",
+                _VNI: {
+                    "vni": _VNI,
                 },
             },
             "shared": True,
@@ -66,7 +70,7 @@ class Evpn_vnisTemplate(NetworkTemplate):
             ),
             "setval": "rd {{ route_distinguisher }}",
             "result": {
-                "{{ vni }}": {
+                _VNI: {
                     "route_distinguisher": "{{ route_distinguisher }}",
                 },
             },
@@ -81,8 +85,8 @@ class Evpn_vnisTemplate(NetworkTemplate):
             ),
             "setval": "route-target import {{ rt }}",
             "result": {
-                "{{ vni }}": {
-                    "route_target_import": ["{{ rt }}"],
+                _VNI: {
+                    "route_target_import": [_RT],
                 },
             },
         },
@@ -96,8 +100,8 @@ class Evpn_vnisTemplate(NetworkTemplate):
             ),
             "setval": "route-target export {{ rt }}",
             "result": {
-                "{{ vni }}": {
-                    "route_target_export": ["{{ rt }}"],
+                _VNI: {
+                    "route_target_export": [_RT],
                 },
             },
         },
@@ -113,9 +117,9 @@ class Evpn_vnisTemplate(NetworkTemplate):
             ),
             "setval": "route-target both {{ rt }}",
             "result": {
-                "{{ vni }}": {
-                    "route_target_import": ["{{ rt }}"],
-                    "route_target_export": ["{{ rt }}"],
+                _VNI: {
+                    "route_target_import": [_RT],
+                    "route_target_export": [_RT],
                 },
             },
         },
