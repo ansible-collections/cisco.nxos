@@ -383,7 +383,7 @@ Parameters
                 </td>
                 <td>
                         <div>Optional second multicast group address accepted by <code>mcast-group</code>.</div>
-                        <div>Accepted by the CLI of NX-OS 10.6(4) on N9Kv without an error but not applied there, so it is not covered by the integration tests.</div>
+                        <div>Accepted by the CLI of NX-OS 10.6(4) on N9K-C93180YC-FX without an error but not applied there, so it is not covered by the integration tests.</div>
                 </td>
             </tr>
 
@@ -526,7 +526,7 @@ Notes
 
 .. note::
    - Tested against NXOS 10.3(7)
-   - Tested against NX-OS 10.6(4) on Nexus 9300v
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX
    - Unsupported for Cisco MDS
    - Only the ``interface nve1`` interface is managed.
    - Within a VNI, ``suppress-arp`` and ``suppress-arp disable`` are alternatives, as are ``mcast-group`` and ``ingress-replication protocol bgp``. The module fails if both options of such a pair are true (or, for *mcast_group*, set) in the task.

@@ -21,7 +21,7 @@ author:
   - Jørn Ivar Holland (@jiholland)
 notes:
   - Tested against NXOS 10.3(7)
-  - Tested against NX-OS 10.6(4) on Nexus 9300v
+  - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX
   - Unsupported for Cisco MDS
   - Only the C(interface nve1) interface is managed.
   - Within a VNI, C(suppress-arp) and C(suppress-arp disable) are alternatives, as are
@@ -143,7 +143,7 @@ options:
               secondary_address:
                 description:
                   - Optional second multicast group address accepted by C(mcast-group).
-                  - Accepted by the CLI of NX-OS 10.6(4) on N9Kv without an error but not applied there, so it is not
+                  - Accepted by the CLI of NX-OS 10.6(4) on N9K-C93180YC-FX without an error but not applied there, so it is not
                     covered by the integration tests.
                 type: str
   state:
