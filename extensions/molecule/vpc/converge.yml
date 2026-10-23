@@ -1,0 +1,294 @@
+---
+# Mirrors tests/integration/targets/nxos_vpc/tests/common. The integration targets populate the
+# device with nxos_config first, which cisshgo cannot do, so every host starts from a "before"
+# running-config transcript instead. Addresses are documentation addresses (RFC 5737).
+
+- name: "Nxos_vpc — state: gathered"
+  hosts: nxos_vpc_gathered
+  gather_facts: false
+  tasks:
+    - name: Gather nxos_vpc facts
+      register: result
+      cisco.nxos.nxos_vpc:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.domain == "10"
+          - result.gathered.role_priority == "20"
+          - result.gathered.system_priority == "2000"
+          - result.gathered.pkl_dest == "192.0.2.2"
+          - result.gathered.pkl_src == "192.0.2.1"
+          - result.gathered.delay_restore == "150"
+          - result.gathered.peer_gw == true
+          - result.gathered.layer3_peer_router == true
+          - result.gathered.arp_synchronize == true
+          - result.gathered.nd_synchronize == true
+          - result.gathered.auto_recovery == true
+          - result.gathered.virtual_peer_link_dest == "192.0.2.4"
+          - result.gathered.virtual_peer_link_src == "192.0.2.3"
+          - result.gathered.virtual_peer_link_dscp == "56"
+
+- name: "Nxos_vpc — state: merged"
+  hosts: nxos_vpc_merged
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc merged
+      register: result
+      cisco.nxos.nxos_vpc: &merged
+        config:
+          domain: "100"
+          system_priority: "2000"
+          delay_restore: "150"
+          auto_recovery: true
+          peer_gw: true
+        state: merged
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before.domain == "100"
+          - result.before.role_priority == "150"
+          - result.before.system_priority is not defined
+          - result.after.system_priority == "2000"
+          - result.after.role_priority == "150"
+          - result.after.pkl_dest == "192.0.2.2"
+          - result.after.peer_gw == true
+          - result.commands == ["terminal dont-ask", "vpc domain 100", "system-priority 2000", "delay restore 150",
+            "auto-recovery", "peer-gateway", "no terminal dont-ask"]
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_vpc: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vpc — state: replaced"
+  hosts: nxos_vpc_replaced
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc replaced
+      register: result
+      cisco.nxos.nxos_vpc: &replaced
+        config:
+          domain: "100"
+          system_priority: "2000"
+          pkl_dest: 192.0.2.2
+          pkl_src: 192.0.2.1
+        state: replaced
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before.role_priority == "150"
+          - result.after.role_priority is not defined
+          - result.after.system_priority == "2000"
+          - result.commands == ["vpc domain 100", "role priority 32667", "system-priority 2000"]
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vpc: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+# The integration target overrides a domain that has a peer-keepalive, which makes the module delete and
+# recreate the domain (an 8 s wait plus a probe). This scenario keeps the keepalive so the single-batch
+# path is exercised; the delete path is covered by the deleted state.
+- name: "Nxos_vpc — state: overridden"
+  hosts: nxos_vpc_overridden
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc overridden
+      register: result
+      cisco.nxos.nxos_vpc: &overridden
+        config:
+          domain: "100"
+          pkl_dest: 192.0.2.2
+          pkl_src: 192.0.2.1
+          peer_sw: true
+        state: overridden
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before.peer_gw == true
+          - result.after.peer_sw == true
+          - result.after.peer_gw is not defined
+          - result.after.role_priority is not defined
+          - result.commands == ["terminal dont-ask", "vpc domain 100", "role priority 32667", "no peer-gateway",
+            "peer-switch", "no terminal dont-ask"]
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_vpc: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+# Sends 'no vpc domain', so the module splits the commands into two edit_config calls with an 8 s wait.
+- name: "Nxos_vpc — state: deleted"
+  hosts: nxos_vpc_deleted
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc deleted
+      register: result
+      cisco.nxos.nxos_vpc: &deleted
+        state: deleted
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before.domain == "100"
+          - result.after == {}
+          - result.commands == ["terminal dont-ask", "no vpc domain 100", "no terminal dont-ask"]
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_vpc: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vpc — new attributes (layer3 peer-router, arp/nd synchronize, virtual peer-link)"
+  hosts: nxos_vpc_new_attributes
+  gather_facts: false
+  tasks:
+    - name: Merge the new attributes, virtual peer-link without an explicit dscp
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          layer3_peer_router: true
+          arp_synchronize: true
+          nd_synchronize: true
+          virtual_peer_link_dest: 192.0.2.4
+          virtual_peer_link_src: 192.0.2.3
+        state: merged
+    - name: Assert new attribute commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.after.layer3_peer_router == true
+          - result.after.arp_synchronize == true
+          - result.after.nd_synchronize == true
+          - result.after.virtual_peer_link_dscp == "56"
+          - result.commands == ["terminal dont-ask", "vpc domain 200", "layer3 peer-router", "ip arp synchronize",
+            "ipv6 nd synchronize", "virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56",
+            "no terminal dont-ask"]
+    - name: Idempotent re-run, dscp left to the NX-OS default of 56
+      register: idempotent_result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          layer3_peer_router: true
+          arp_synchronize: true
+          nd_synchronize: true
+          virtual_peer_link_dest: 192.0.2.4
+          virtual_peer_link_src: 192.0.2.3
+        state: merged
+    - name: Assert idempotent without dscp
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+    - name: Idempotent re-run, explicit dscp 56
+      register: idempotent_result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          virtual_peer_link_dest: 192.0.2.4
+          virtual_peer_link_src: 192.0.2.3
+          virtual_peer_link_dscp: "56"
+        state: merged
+    - name: Assert idempotent with explicit dscp
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_vpc_gathered
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc parsed
+      register: result
+      cisco.nxos.nxos_vpc:
+        running_config: |
+          vpc domain 100
+            role priority 150
+            system-priority 2000
+            peer-keepalive destination 192.0.2.2 source 192.0.2.1 vrf management
+            delay restore 150
+            delay restore interface-vlan 20
+            peer-switch
+            peer-gateway
+            layer3 peer-router
+            ip arp synchronize
+            ipv6 nd synchronize
+            auto-recovery
+            virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed.domain == "100"
+          - result.parsed.role_priority == "150"
+          - result.parsed.system_priority == "2000"
+          - result.parsed.pkl_dest == "192.0.2.2"
+          - result.parsed.pkl_src == "192.0.2.1"
+          - result.parsed.pkl_vrf == "management"
+          - result.parsed.delay_restore == "150"
+          - result.parsed.delay_restore_interface_vlan == "20"
+          - result.parsed.peer_sw == true
+          - result.parsed.peer_gw == true
+          - result.parsed.layer3_peer_router == true
+          - result.parsed.arp_synchronize == true
+          - result.parsed.nd_synchronize == true
+          - result.parsed.auto_recovery == true
+          - result.parsed.virtual_peer_link_dest == "192.0.2.4"
+          - result.parsed.virtual_peer_link_src == "192.0.2.3"
+          - result.parsed.virtual_peer_link_dscp == "56"
+    - name: Parse a running-config section with no vpc domain
+      register: result
+      cisco.nxos.nxos_vpc:
+        running_config: "!\n"
+        state: parsed
+    - name: Assert an absent vpc domain parses as an empty dict
+      ansible.builtin.assert:
+        that:
+          - result.parsed == {}
+
+- name: Rendered state (offline)
+  hosts: nxos_vpc_gathered
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vpc rendered
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "100"
+          role_priority: "150"
+          pkl_dest: 192.0.2.2
+          pkl_src: 192.0.2.1
+          layer3_peer_router: true
+          arp_synchronize: true
+          nd_synchronize: true
+          virtual_peer_link_dest: 192.0.2.4
+          virtual_peer_link_src: 192.0.2.3
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered == ["terminal dont-ask", "vpc domain 100", "role priority 150", "layer3 peer-router",
+            "ip arp synchronize", "ipv6 nd synchronize",
+            "peer-keepalive destination 192.0.2.2 source 192.0.2.1 vrf management",
+            "virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56", "no terminal dont-ask"]
