@@ -4806,7 +4806,7 @@ Parameters
                         <div>State <em>deleted</em> only removes BGP attributes that this modules manages and does not negate the BGP process completely. Thereby, preserving address-family related configurations under BGP context.</div>
                         <div>Running states <em>deleted</em> and <em>replaced</em> will result in an error if there are address-family configuration lines present under a neighbor, or a vrf context that is to be removed. Please use the <span class='module'>cisco.nxos.nxos_bgp_af</span> or <span class='module'>cisco.nxos.nxos_bgp_neighbor_af</span> modules for prior cleanup.</div>
                         <div>States <code>merged</code> and <code>replaced</code> will result in a failure if BGP is already configured with a different ASN than what is provided in the task. In such cases, please use state <code>purged</code> to remove the existing BGP process and proceed further.</div>
-                        <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
+                        <div>State <code>overridden</code> does not run the address-family checks that <code>replaced</code> runs. It removes the VRFs and neighbors that are not listed, together with their address-family configuration. Use caution with this state if another module or role manages those address families.</div>
                         <div>Refer to examples for more details.</div>
                 </td>
             </tr>
