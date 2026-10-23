@@ -24,7 +24,7 @@ description:
   - It is the resource module counterpart of M(cisco.nxos.nxos_evpn_vni), which
     manages a single VNI per task.
 notes:
-  - Tested against NX-OS 10.6(4) on Nexus 9300v.
+  - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
   - Unsupported for Cisco MDS.
   - C(nv overlay evpn) must be enabled for the C(evpn) section to be available.
   - C(route_target_both) is an input convenience. It is expanded into

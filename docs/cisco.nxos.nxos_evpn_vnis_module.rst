@@ -188,7 +188,7 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 10.6(4) on Nexus 9300v.
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
    - Unsupported for Cisco MDS.
    - ``nv overlay evpn`` must be enabled for the ``evpn`` section to be available.
    - ``route_target_both`` is an input convenience. It is expanded into *route_target_import* and *route_target_export* before comparing with the device and is never returned by ``gathered`` or ``parsed``. If the device displays ``route-target both``, it is parsed as an import and an export.
