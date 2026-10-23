@@ -15,6 +15,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -63,6 +65,9 @@ class Nve_interfaceFacts(object):
 
         self._post_parse(obj)
         obj = utils.remove_empties(obj)
+        if not obj and re.search(r"^interface nve1\s*$", data, re.MULTILINE):
+            # a bare 'interface nve1' prints no child lines because shutdown is the default
+            obj = {"enabled": False}
 
         ansible_facts["ansible_network_resources"].pop("nve_interface", None)
         params = utils.remove_empties(

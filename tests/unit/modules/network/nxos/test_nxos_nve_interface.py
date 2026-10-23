@@ -977,3 +977,20 @@ class TestNxosNveInterfaceModule(TestNxosModule):
             set_module_args(dict(config=dict(vnis=[dict(vni_id=vni_id)]), state="merged"))
             result = self.execute_module(failed=True)
             self.assertIn("vni_id must be in the range 1-16777214", result["msg"])
+
+    def test_nxos_nve_interface_deleted_bare_interface(self):
+        """A bare `interface nve1` has no child lines but still has to be deleted."""
+
+        result = self._run("interface nve1\n", {}, "deleted")
+        self.assertEqual(result["commands"], ["no interface nve1"])
+        self._run("", {}, "deleted", changed=False)
+
+    def test_nxos_nve_interface_bare_interface_is_gathered(self):
+        self.get_config.return_value = "interface nve1\n"
+        set_module_args({"state": "gathered"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], {"enabled": False})
+
+    def test_nxos_nve_interface_bare_interface_idempotent(self):
+        self._run("interface nve1\n", {"enabled": False}, "merged", changed=False)
+        self._run("interface nve1\n", {"enabled": False}, "replaced", changed=False)
