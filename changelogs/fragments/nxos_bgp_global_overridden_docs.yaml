@@ -1,0 +1,3 @@
+---
+trivial:
+  - nxos_bgp_global - Document that state overridden removes unlisted VRFs and neighbors together with their address-family configuration.
