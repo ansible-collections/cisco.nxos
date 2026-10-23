@@ -35,6 +35,7 @@ _MAX_RETRY = 5
 _RETRY_INTERVAL = 4
 _TERMINAL_DONT_ASK = "terminal dont-ask"
 _NO_VPC_DOMAIN_FMT = "no vpc domain {0}"
+_VPC_DOMAIN_FMT = "vpc domain {0}"
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vpc import (
@@ -151,7 +152,7 @@ class Vpc(ResourceModule):
         # When the domain ID changed and _compare emitted no sub-commands
         # (want has only the bare domain with no attributes), _compare never
         # inserts the new 'vpc domain X' line.  Ensure it is always present.
-        new_domain = "vpc domain {0}".format(want.get("domain"))
+        new_domain = _VPC_DOMAIN_FMT.format(want.get("domain"))
         if domain_recreate and new_domain not in self.commands:
             no_idx = next(i for i, c in enumerate(self.commands) if c.startswith("no vpc domain"))
             self.commands.insert(no_idx + 1, new_domain)
@@ -215,7 +216,7 @@ class Vpc(ResourceModule):
         cmds = [
             _TERMINAL_DONT_ASK,
             _NO_VPC_DOMAIN_FMT.format(domain),
-            "vpc domain {0}".format(domain),
+            _VPC_DOMAIN_FMT.format(domain),
         ]
         cmds.extend(positive)
         cmds.append("no terminal dont-ask")
@@ -329,7 +330,7 @@ class Vpc(ResourceModule):
         self._compare_virtual_peer_link(want, have)
 
         if len(self.commands) != begin:
-            self.commands.insert(begin, "vpc domain {0}".format(domain))
+            self.commands.insert(begin, _VPC_DOMAIN_FMT.format(domain))
             # Only add terminal dont-ask when it isn't already present before
             # the block we're about to insert (e.g. domain-change path already
             # set it up — inserting a second copy pushes 'vpc domain X' out of
