@@ -587,3 +587,27 @@ class TestNxosVlansModule(TestNxosModule):
             set_module_args(playbook, ignore_provider_arg)
             result = self.execute_module(failed=True)
             self.assertIn("vlan_id 3 is listed more than once", result["msg"])
+
+    def test_default_vlan_name_is_never_reset(self):
+        # show_vlan has VLAN 1 named 'default'; NX-OS rejects 'no name' for it
+        self.prepare()
+        for state in ["replaced", "overridden"]:
+            playbook = dict(
+                config=[
+                    dict(vlan_id=1),
+                    dict(vlan_id=3, name="test-vlan3", enabled=True),
+                    dict(vlan_id=4, enabled=True),
+                    dict(
+                        vlan_id=5,
+                        name="test-changeme",
+                        mapped_vni=942,
+                        state="suspend",
+                        enabled=False,
+                    ),
+                    dict(vlan_id=8, name="test-changeme-not", state="suspend", enabled=False),
+                ],
+                state=state,
+            )
+            set_module_args(playbook, ignore_provider_arg)
+            result = self.execute_module(changed=False)
+            self.assertNotIn("no name", result["commands"])

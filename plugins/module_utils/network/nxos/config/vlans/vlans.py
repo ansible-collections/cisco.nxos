@@ -213,6 +213,9 @@ class Vlans(ConfigBase):
 
         # Remove default states from resulting diff
         diff = self.remove_default_states(diff)
+        if want["vlan_id"] == 1:
+            # NX-OS rejects a change of the name of the default VLAN
+            diff.pop("name", None)
 
         # merged_cmds: 'want' cmds to update 'have' states that don't match
         # replaced_cmds: remaining 'have' cmds that need to be reset to default
