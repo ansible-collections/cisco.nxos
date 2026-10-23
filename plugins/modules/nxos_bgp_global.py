@@ -537,7 +537,9 @@ options:
     - States C(merged) and C(replaced) will result in a failure if BGP is already configured
       with a different ASN than what is provided in the task. In such cases, please use
       state C(purged) to remove the existing BGP process and proceed further.
-    - States C(replaced) and C(overridden) have the same behaviour for this module.
+    - State C(overridden) does not run the address-family checks that C(replaced) runs. It removes the
+      VRFs and neighbors that are not listed, together with their address-family configuration.
+      Use caution with this state if another module or role manages those address families.
     - Refer to examples for more details.
     type: str
     choices:
