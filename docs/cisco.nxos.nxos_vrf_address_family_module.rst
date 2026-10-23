@@ -640,6 +640,8 @@ Parameters
                 <td>
                         <div>The state the configuration should be left in</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
+                        <div>The state <em>deleted</em> removes only the configuration that is listed in <em>config</em>, so a VRF given with only its name is left unchanged.</div>
+                        <div>The state <em>purged</em> removes the address family configuration of the listed VRFs (only the listed address families if any are given), or of all VRFs when <em>config</em> is not set.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section ^vrf</em>. connection to remote host is not required.</div>

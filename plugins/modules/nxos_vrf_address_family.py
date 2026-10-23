@@ -158,6 +158,10 @@ options:
       - The state the configuration should be left in
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
+      - The state I(deleted) removes only the configuration that is listed in I(config), so a VRF
+        given with only its name is left unchanged.
+      - The state I(purged) removes the address family configuration of the listed VRFs
+        (only the listed address families if any are given), or of all VRFs when I(config) is not set.
       - The state I(rendered) will transform the configuration in C(config) option to
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is

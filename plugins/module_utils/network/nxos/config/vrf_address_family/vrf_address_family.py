@@ -92,7 +92,7 @@ class Vrf_address_family(ResourceModule):
         if self.state == "purged":
             purge_list = wantd or haved
             for k, item in purge_list.items():
-                self.purge(k, item)
+                self.purge(k, item, haved.get(k, {}))
         else:
             for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}), vrf=k)
@@ -298,10 +298,20 @@ class Vrf_address_family(ResourceModule):
                 else:
                     faf.pop("route_target", None)
 
-    def purge(self, vrf, item):
-        """Purge the VRF configuration"""
+    def purge(self, vrf, item, have):
+        """Purge the address-family configuration of a VRF.
+
+        Without address families in the wanted item every address family that
+        the device has for the VRF is removed, otherwise only the listed ones.
+        Nothing is sent when the device has nothing to remove.
+        """
+        have_afs = have.get("address_families", {})
+        want_afs = item.get("address_families", {})
+        afs = [value for key, value in have_afs.items() if not want_afs or key in want_afs]
+        if not afs:
+            return
         self.commands.append(f"vrf context {vrf}")
-        for i, value in item.get("address_families", {}).items():
+        for value in afs:
             self.commands.append(
                 self._tmplt.render(
                     {"afi": value.get("afi"), "safi": value.get("safi")},

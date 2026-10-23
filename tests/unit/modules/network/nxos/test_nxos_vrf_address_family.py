@@ -1243,3 +1243,64 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
             )
             result = self.execute_module(failed=True)
             self.assertIn("only accepts 'auto' with 'both'", result["msg"])
+
+    PURGE_DEVICE = dedent(
+        """\
+        vrf context VRF1
+            address-family ipv4 unicast
+                route-target import 64512:200
+            address-family ipv6 unicast
+                route-target import 554832:500
+        vrf context VRF2
+            address-family ipv4 unicast
+                route-target export 65000:1
+        """,
+    )
+
+    def test_nxos_vrf_address_fam_purged_name_only(self):
+        self.execute_show_command.return_value = self.PURGE_DEVICE
+        set_module_args(dict(config=[dict(name="VRF1")], state="purged"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf context VRF1",
+                "no address-family ipv4 unicast",
+                "no address-family ipv6 unicast",
+            ],
+        )
+
+    def test_nxos_vrf_address_fam_purged_listed_address_family(self):
+        self.execute_show_command.return_value = self.PURGE_DEVICE
+        set_module_args(
+            dict(
+                config=[dict(name="VRF1", address_families=[dict(afi="ipv6", safi="unicast")])],
+                state="purged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["vrf context VRF1", "no address-family ipv6 unicast"],
+        )
+
+    def test_nxos_vrf_address_fam_purged_all_vrfs(self):
+        self.execute_show_command.return_value = self.PURGE_DEVICE
+        set_module_args(dict(state="purged"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf context VRF1",
+                "no address-family ipv4 unicast",
+                "no address-family ipv6 unicast",
+                "vrf context VRF2",
+                "no address-family ipv4 unicast",
+            ],
+        )
+
+    def test_nxos_vrf_address_fam_purged_nothing_to_remove(self):
+        self.execute_show_command.return_value = self.PURGE_DEVICE
+        set_module_args(dict(config=[dict(name="VRF9")], state="purged"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
