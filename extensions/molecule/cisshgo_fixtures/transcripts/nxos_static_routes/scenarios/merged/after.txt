@@ -1,0 +1,2 @@
+ip route 192.0.2.16/28 192.0.2.24 name new_route
+ip route 192.0.2.80/28 192.0.2.26 tag 12

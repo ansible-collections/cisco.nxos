@@ -1,0 +1,15 @@
+# Gitleaks configuration for cisco.nxos collection.
+# See https://github.com/gitleaks/gitleaks#configuration
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = """
+Molecule snmp_server extra-vars: SNMP localized key hashes from cisshgo
+fixture transcripts (show running-config output), not live device credentials.
+Same values appear in extensions/molecule/cisshgo_fixtures/transcripts/nxos_snmp_server/.
+"""
+paths = [
+  '''extensions/molecule/snmp_server/snmp_molecule_vars\.yml$''',
+]

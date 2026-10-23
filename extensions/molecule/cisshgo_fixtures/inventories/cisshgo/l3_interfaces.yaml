@@ -1,0 +1,13 @@
+devices:
+  - platform: nxos_l3_interfaces
+    count: 1
+  - scenario: nxos-l3-interfaces-merged
+    count: 1
+  - scenario: nxos-l3-interfaces-replaced
+    count: 1
+  - scenario: nxos-l3-interfaces-overridden
+    count: 1
+  - scenario: nxos-l3-interfaces-deleted
+    count: 1
+  - scenario: nxos-l3-interfaces-gathered
+    count: 1

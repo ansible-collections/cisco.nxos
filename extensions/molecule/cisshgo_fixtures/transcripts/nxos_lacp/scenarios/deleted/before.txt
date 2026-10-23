@@ -1,0 +1,3 @@
+feature lacp
+lacp system-priority 11
+lacp system-mac 00c1.4c00.bd15 role primary

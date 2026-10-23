@@ -1,0 +1,5 @@
+router ospf 102
+  router-id 198.51.100.1
+  shutdown
+router ospf 104
+  router-id 203.0.113.20

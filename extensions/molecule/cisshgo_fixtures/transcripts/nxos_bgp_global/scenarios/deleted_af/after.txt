@@ -1,0 +1,11 @@
+router bgp 65536
+  router-id 198.51.100.2
+  maxas-limit 20
+  log-neighbor-changes
+  neighbor 192.0.2.1
+    remote-as 65537
+  neighbor 203.0.113.2
+    remote-as 65538
+    description NBR-1
+    address-family ipv4 unicast
+      next-hop-self

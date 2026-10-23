@@ -1,0 +1,15 @@
+devices:
+  - scenario: nxos-route-maps-gathered
+    count: 1
+  - scenario: nxos-route-maps-gathered
+    count: 1
+  - scenario: nxos-route-maps-merged
+    count: 1
+  - scenario: nxos-route-maps-replaced
+    count: 1
+  - scenario: nxos-route-maps-overridden
+    count: 1
+  - scenario: nxos-route-maps-deleted
+    count: 1
+  - scenario: nxos-route-maps-match_metric_deviation
+    count: 1

@@ -51,6 +51,14 @@
               | symmetric_difference(replaced['commands'])
               | length == 0
             }}
+        fail_msg: >-
+          command diff={{
+            result['commands']
+            | reject('search', 'snmp-server user')
+            | list
+            | symmetric_difference(replaced['commands'])
+          }}
+          result.commands={{ result['commands'] }}
 
     - name: Replace snmp-server configurations of listed snmp-server with provided configurations (idempotent)
       register: result

@@ -1,0 +1,4 @@
+ipv6 access-list ACL1v6
+  30 permit pim any any
+  40 remark Replaced ACE
+ipv6 access-list ACL2v6

@@ -1,0 +1,7 @@
+feature lldp
+lldp holdtime 125
+lldp timer 32
+lldp portid-subtype 1
+no lldp tlv-select system-description
+no lldp tlv-select dcbxp
+no lldp tlv-select power-management

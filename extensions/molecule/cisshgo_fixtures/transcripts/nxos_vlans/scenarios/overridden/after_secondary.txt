@@ -1,0 +1,4 @@
+vlan 1,9
+vlan 9
+  shutdown
+  name test-vlan9
