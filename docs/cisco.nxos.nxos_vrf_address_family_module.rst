@@ -656,7 +656,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6.
-   - Tested against NX-OS 10.6(4) on Nexus 9300v.
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
    - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
