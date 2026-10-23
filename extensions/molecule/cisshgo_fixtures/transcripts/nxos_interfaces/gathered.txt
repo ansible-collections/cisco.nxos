@@ -1,0 +1,8 @@
+interface Ethernet1/1
+  description outbound-intf
+  switchport
+  no shutdown
+interface Ethernet1/2
+  description intf-l3
+  no switchport
+  speed 1000

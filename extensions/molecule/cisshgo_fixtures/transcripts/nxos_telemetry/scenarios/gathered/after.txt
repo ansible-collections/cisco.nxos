@@ -1,0 +1,20 @@
+!Command: show running-config telemetry all
+!Running configuration last done at: Wed Aug 12 11:25:32 2026
+!Time: Wed Aug 12 11:25:35 2026
+
+version 10.4(2) Bios:version
+feature telemetry
+
+logging level telemetry 3
+telemetry
+  batch-dme-events
+  destination-group 2
+    ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
+      no use-nodeid
+    ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
+      no use-nodeid
+  destination-group 10
+  sensor-group 2
+  sensor-group 8
+  subscription 100
+    snsr-grp 8 sample-interval 15000

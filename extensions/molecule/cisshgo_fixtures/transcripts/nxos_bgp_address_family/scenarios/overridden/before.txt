@@ -1,0 +1,13 @@
+router bgp 65536
+  address-family ipv4 multicast
+    network 192.0.2.32/27
+    network 192.0.2.64/27 route-map rmap1
+    nexthop trigger-delay critical 120 non-critical 180
+    nexthop route-map rmap2
+  vrf site-1
+    address-family ipv4 unicast
+      aggregate-address 203.0.113.0/24 as-set summary-only
+      default-information originate
+    address-family ipv6 multicast
+      redistribute ospfv3 100 route-map rmap-ospf-1
+      redistribute eigrp 101 route-map rmap-eigrp-1

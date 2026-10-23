@@ -1,0 +1,6 @@
+ip prefix-list AllowPrefix description allows engineering IPv4 networks
+ip prefix-list AllowPrefix seq 10 permit 203.0.113.64/27
+ip prefix-list AllowPrefix seq 30 permit 203.0.113.96/27
+ip prefix-list AllowPrefix2Stub description allow other engineering IPv4 network
+  match ip address prefix-list AllowPrefix1 AllowPrefix2
+  match ipv6 address prefix-list AllowIPv6Prefix

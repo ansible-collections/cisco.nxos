@@ -1,0 +1,6 @@
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1
+vrf context trial_vrf
+  ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
+  ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2

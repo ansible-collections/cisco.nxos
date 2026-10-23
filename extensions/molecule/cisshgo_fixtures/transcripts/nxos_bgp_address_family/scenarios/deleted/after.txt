@@ -1,0 +1,5 @@
+router bgp 65536
+  vrf site-1
+    address-family ipv4 multicast
+  vrf site-2
+    address-family ipv6 unicast

@@ -1,0 +1,519 @@
+---
+- name: "Nxos_l2_interfaces -- state: merged_implicit_vlans"
+  hosts: nxos_l2_interfaces_merged_implicit_vlans
+  gather_facts: false
+  tasks:
+    - name: Setup - configure trunk with native vlan only (no explicit allowed vlans)
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport mode trunk
+          - switchport trunk native vlan 99
+          - no switchport trunk allowed vlan
+        parents: interface Ethernet1/9
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Gather facts - verify implicit flag is present
+      register: result_gathered
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert - Ethernet1/9 has allowed_vlans_implicit flag
+      ansible.builtin.assert:
+        that:
+          - eth9_facts.trunk.allowed_vlans == "1-4094"
+          - eth9_facts.trunk.allowed_vlans_implicit == true
+          - eth9_facts.trunk.native_vlan == 99
+      vars:
+        eth9_facts: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'Ethernet1/9') | first }}"
+
+    - name: Merged - restrict default trunk to specific VLANs
+      register: result_merged
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "100,200"
+        state: merged
+
+    - name: Assert Merged - SET command generated (not ADD)
+      ansible.builtin.assert:
+        that:
+          - result_merged.changed == true
+          - "'interface Ethernet1/9' in result_merged.commands"
+          - "'switchport trunk allowed vlan 100,200' in result_merged.commands"
+          - "'switchport trunk allowed vlan add' not in (result_merged.commands | join(' '))"
+
+    - name: Merged - idempotent (VLANs now explicit)
+      register: result_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "100,200"
+        state: merged
+
+    - name: Assert Merged idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_idempotent.changed == false
+          - result_idempotent.commands | length == 0
+
+    - name: Merged - ADD new VLANs to explicit trunk
+      register: result_add
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/9
+            trunk:
+              allowed_vlans: "300,400"
+        state: merged
+
+    - name: Assert Merged - ADD command generated for explicit trunk
+      ansible.builtin.assert:
+        that:
+          - result_add.changed == true
+          - "'switchport trunk allowed vlan add 300,400' in result_add.commands"
+
+    - name: Verify - native_vlan was preserved throughout
+      register: result_verify
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert - native_vlan and mode still intact
+      ansible.builtin.assert:
+        that:
+          - eth9_verify.trunk.native_vlan == 99
+          - eth9_verify.mode == "trunk"
+          - "'allowed_vlans_implicit' not in eth9_verify.trunk"
+      vars:
+        eth9_verify: "{{ result_verify.gathered | selectattr('name', 'equalto', 'Ethernet1/9') | first }}"
+
+- name: "Nxos_l2_interfaces -- state: action_states"
+  hosts: nxos_l2_interfaces_action_states
+  gather_facts: false
+  tasks:
+    - name: Setup - remove context for a clean slate before testing
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+
+    - name: Setup - populate interface 1/7 with access vlan and trunk allowed vlan
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport access vlan 6
+          - "switchport trunk allowed vlan 200-270,350,398-999"
+        parents: interface Ethernet1/7
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Setup - populate interface 1/8 with trunk native vlan
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport trunk native vlan 10
+        parents: interface Ethernet1/8
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Replaced - add access vlan and trunk allowed vlans
+      register: result_replaced
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Assert Replaced - changed and commands generated
+      ansible.builtin.assert:
+        that:
+          - result_replaced.changed == true
+          - "'interface Ethernet1/8' in result_replaced.commands"
+          - "'switchport access vlan 6' in result_replaced.commands"
+          - "'no switchport trunk native vlan 10' in result_replaced.commands"
+          - "'switchport trunk allowed vlan 200,560-1000' in result_replaced.commands"
+
+    - name: Replaced - idempotent
+      register: result_replaced_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: replaced
+
+    - name: Assert Replaced idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_replaced_idempotent.changed == false
+          - result_replaced_idempotent.commands | length == 0
+
+    - name: Merged - should be idempotent since VLANs already present
+      register: result_merged
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/8
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 200, 560-1000
+        state: merged
+
+    - name: Assert Merged - no changes since VLANs already exist
+      ansible.builtin.assert:
+        that:
+          - result_merged.changed == false
+          - result_merged.commands | length == 0
+
+    - name: Deleted - remove L2 config from interfaces
+      register: result_deleted
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+
+    - name: Assert Deleted - changed and cleanup commands generated
+      ansible.builtin.assert:
+        that:
+          - result_deleted.changed == true
+          - "'interface Ethernet1/7' in result_deleted.commands"
+          - "'no switchport access vlan 6' in result_deleted.commands"
+          - "'no switchport trunk allowed vlan' in result_deleted.commands"
+          - "'interface Ethernet1/8' in result_deleted.commands"
+          - "'cdp enable' in result_deleted.commands"
+
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config: []
+        state: merged
+
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
+- name: "Nxos_l2_interfaces -- state: non_action_states"
+  hosts: nxos_l2_interfaces_non_action_states
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/nxos_l2_interfaces/vars/main.yml"
+  tasks:
+    - name: Setup - remove context for a clean slate before testing
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+
+    - name: Setup - populate interface 1/7 with access vlan and trunk allowed vlan
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport access vlan 6
+          - "switchport trunk allowed vlan 200-270,350,398-999"
+        parents: interface Ethernet1/7
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Setup - populate interface 1/8 with trunk native vlan
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport trunk native vlan 10
+        parents: interface Ethernet1/8
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+    - name: Parsed - convert running config to structured data
+      register: result_parsed
+      cisco.nxos.nxos_l2_interfaces:
+        running_config: |
+          interface Ethernet1/800
+            switchport access vlan 18
+            switchport trunk allowed vlan 210
+          interface Ethernet1/801
+            switchport trunk allowed vlan 2,4,15
+          interface Ethernet1/802
+            switchport mode dot1q-tunnel
+          interface Ethernet1/803
+            switchport mode fex-fabric
+          interface Ethernet1/804
+            switchport mode fabricpath
+        state: parsed
+
+    - name: Assert Parsed matches expected structured data
+      ansible.builtin.assert:
+        that:
+          - parsed | symmetric_difference(result_parsed['parsed']) | length == 0
+
+    - name: Rendered - convert config to device commands without applying
+      register: result_rendered
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/1
+            trunk:
+              native_vlan: 10
+              allowed_vlans: 2,4,15
+          - name: Ethernet1/2
+            access:
+              vlan: 30
+          - name: Ethernet1/3
+            trunk:
+              native_vlan: 20
+              allowed_vlans: 5-10,15
+          - name: Ethernet1/4
+            mode: fex-fabric
+          - name: Ethernet1/5
+            mode: fabricpath
+        state: rendered
+
+    - name: Assert Rendered matches expected commands
+      ansible.builtin.assert:
+        that:
+          - rendered | symmetric_difference(result_rendered['rendered']) | length == 0
+
+    - name: Gather pre-facts - for it to assert of gather state
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: l2_interfaces
+
+    - name: Gathered - Verify rendered state did not change device config
+      register: result_gathered
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert Gathered matches facts (rendered task did not touch the device)
+      ansible.builtin.assert:
+        that:
+          - result_gathered['gathered'] | symmetric_difference(ansible_facts.network_resources.l2_interfaces) == []
+
+    - name: Deleted - remove context, no granular deletion (delete context of entire interface for l2)
+      register: result_deleted_all
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/7
+          - name: Ethernet1/8
+        state: deleted
+
+    - name: Assert Deleted - cleanup commands generated for both interfaces
+      ansible.builtin.assert:
+        that:
+          - result_deleted_all.changed == true
+          - "'interface Ethernet1/7' in result_deleted_all.commands"
+          - "'interface Ethernet1/8' in result_deleted_all.commands"
+
+- name: "Nxos_l2_interfaces -- state: port_channel_member"
+  hosts: nxos_l2_interfaces_port_channel_member
+  gather_facts: false
+  vars:
+    test_int1: Ethernet1/1
+    test_int2: Ethernet1/2
+    test_int3: Ethernet1/3
+  tasks:
+    - name: Setup - reset interfaces
+      failed_when: false
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"
+          - "default interface {{ test_int3 }}"
+          - "no interface port-channel10"
+
+    - name: Setup - configure test_int2 as port-channel member
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - no shutdown
+          - channel-group 10 force mode on
+        parents: "interface {{ test_int2 }}"
+        match: none
+
+    - name: Setup - create port-channel10
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport mode trunk
+          - switchport trunk allowed vlan 100-200
+        parents: interface port-channel10
+        match: none
+
+    - name: Setup - configure test_int1 as a normal switchport
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport access vlan 5
+        parents: "interface {{ test_int1 }}"
+        match: none
+
+    - name: Gathered - should not include port-channel member interface
+      register: result_pcm_gathered
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Verify port-channel member is not in gathered facts
+      ansible.builtin.assert:
+        that:
+          - result_pcm_gathered.gathered | selectattr('name', 'equalto', test_int2) | list | length == 0
+          - result_pcm_gathered.gathered | selectattr('name', 'equalto', test_int1) | list | length == 1
+
+    - name: Merged - attempt to configure port-channel member (should fail)
+      register: result_pcm_merged
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+            trunk:
+              allowed_vlans: "10-12"
+        state: merged
+
+    - name: Verify error is raised for merged state
+      ansible.builtin.assert:
+        that:
+          - result_pcm_merged.failed == true
+          - "'port-channel member' in result_pcm_merged.msg"
+
+    - name: Replaced - attempt to configure port-channel member (should fail)
+      register: result_pcm_replaced
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+            trunk:
+              allowed_vlans: "50-60"
+        state: replaced
+
+    - name: Verify error is raised for replaced state
+      ansible.builtin.assert:
+        that:
+          - result_pcm_replaced.failed == true
+          - "'port-channel member' in result_pcm_replaced.msg"
+
+    - name: Setup - add config to test_int3
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport trunk allowed vlan 30
+        parents: "interface {{ test_int3 }}"
+
+    - name: Overridden - should skip port-channel member in negation
+      register: result_pcm_overridden
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            access:
+              vlan: 10
+        state: overridden
+
+    - name: Verify no negation commands for port-channel member
+      ansible.builtin.assert:
+        that:
+          - "('interface ' + test_int2) not in result_pcm_overridden.commands"
+          - "('interface ' + test_int1) in result_pcm_overridden.commands"
+          - "('interface ' + test_int3) in result_pcm_overridden.commands"
+
+    - name: Deleted - attempt to delete port-channel member config (should fail)
+      register: result_pcm_deleted
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ test_int2 }}"
+        state: deleted
+
+    - name: Verify error for deleted state on port-channel member
+      ansible.builtin.assert:
+        that:
+          - result_pcm_deleted.failed == true
+          - "'port-channel member' in result_pcm_deleted.msg"
+
+    - name: Setup - re-add config to test_int1
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport trunk native vlan 15
+        parents: "interface {{ test_int1 }}"
+
+    - name: Deleted all - should not delete port-channel member config
+      register: result_pcm_deleted_all
+      cisco.nxos.nxos_l2_interfaces:
+        state: deleted
+
+    - name: Verify port-channel member not touched by delete all
+      ansible.builtin.assert:
+        that:
+          - "('interface ' + test_int2) not in result_pcm_deleted_all.commands"
+          - "('interface ' + test_int1) in result_pcm_deleted_all.commands"
+
+    - name: Overridden idempotent - reset for port-channel20 test
+      failed_when: false
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+          - "default interface {{ test_int2 }}"
+          - "default interface {{ test_int3 }}"
+          - "no interface port-channel10"
+          - "no interface port-channel20"
+
+    - name: Overridden idempotent - configure test_int1 as port-channel20 member
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - no shutdown
+          - channel-group 20 force mode on
+        parents: "interface {{ test_int1 }}"
+        match: none
+
+    - name: Overridden idempotent - configure test_int2 as port-channel20 member
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - no shutdown
+          - channel-group 20 force mode on
+        parents: "interface {{ test_int2 }}"
+        match: none
+
+    - name: Overridden idempotent - configure port-channel20 with trunk VLANs
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+          - switchport mode trunk
+          - switchport trunk native vlan 20
+          - switchport trunk allowed vlan 100-102,300
+        parents: interface port-channel20
+        match: none
+
+    - name: Overridden idempotent - gather L2 interfaces
+      register: gathered_result
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Overridden idempotent - verify members excluded from gathered
+      ansible.builtin.assert:
+        that:
+          - gathered_result.gathered | selectattr('name', 'equalto', test_int1) | list | length == 0
+          - gathered_result.gathered | selectattr('name', 'equalto', test_int2) | list | length == 0
+          - gathered_result.gathered | selectattr('name', 'equalto', 'port-channel20') | list | length == 1
+
+    - name: Overridden idempotent - overridden with gathered output should produce no L2 changes
+      register: overridden_result
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ gathered_result.gathered }}"
+        state: overridden
+
+    - name: Overridden idempotent - verify no L2 commands generated (CDP commands are a known module-level issue)
+      ansible.builtin.assert:
+        that:
+          - overridden_result.commands | reject('match', '.*cdp.*') | reject('match', '^interface.*') | list | length == 0

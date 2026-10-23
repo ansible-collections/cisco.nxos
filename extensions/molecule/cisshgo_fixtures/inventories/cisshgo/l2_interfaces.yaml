@@ -1,0 +1,9 @@
+devices:
+  - scenario: nxos-l2-interfaces-merged_implicit_vlans
+    count: 1
+  - scenario: nxos-l2-interfaces-action_states
+    count: 1
+  - scenario: nxos-l2-interfaces-non_action_states
+    count: 1
+  - scenario: nxos-l2-interfaces-port_channel_member
+    count: 1
