@@ -51,6 +51,14 @@
               | symmetric_difference(overridden['commands'])
               | length == 0
             }}
+        fail_msg: >-
+          command diff={{
+            result['commands']
+            | reject('search', 'snmp-server user')
+            | list
+            | symmetric_difference(overridden['commands'])
+          }}
+          result.commands={{ result['commands'] }}
 
     - name: Override snmp-server configurations of listed snmp-server with provided configurations (idempotent)
       register: result
