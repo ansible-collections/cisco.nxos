@@ -21,6 +21,7 @@ version_added: 9.3.0
 author: Vinay Mulugund (@roverflow)
 notes:
   - Tested against NX-OS 9.3.6.
+  - Tested against NX-OS 10.6(4) on Nexus 9300v.
   - This module works with connection C(network_cli) and C(httpapi).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
