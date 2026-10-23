@@ -5,17 +5,14 @@
 # Tests for layer3_peer_router, arp_synchronize, nd_synchronize, and
 # virtual peer-link attributes added to nxos_vpc.
 
-- block:
-    - name: Setup - ensure vpc domain is absent
-      cisco.nxos.nxos_config:
-        lines:
-          - "no vpc domain 200"
-      failed_when: false
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: Setup - create vpc domain 200
+- block:
+    - name: Setup - create vpc domain 200 with peer-gateway (layer3 peer-router requires it)
       cisco.nxos.nxos_vpc:
         config:
           domain: "200"
+          peer_gw: true
         state: merged
 
     # ----- layer3 peer-router -----
@@ -173,8 +170,4 @@
           but generated: {{ result.commands }}
 
   always:
-    - name: Teardown - remove vpc domain 200
-      cisco.nxos.nxos_config:
-        lines:
-          - "no vpc domain 200"
-      failed_when: false
+    - ansible.builtin.include_tasks: _remove_config.yaml
