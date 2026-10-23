@@ -21,6 +21,7 @@ author:
   - Jørn Ivar Holland (@jiholland)
 notes:
   - Tested against NXOS 10.3(7)
+  - Tested against NX-OS 10.6(4) on Nexus 9300v
   - Unsupported for Cisco MDS
   - Only the C(interface nve1) interface is managed.
   - Within a VNI, C(suppress-arp) and C(suppress-arp disable) are alternatives, as are

@@ -526,6 +526,7 @@ Notes
 
 .. note::
    - Tested against NXOS 10.3(7)
+   - Tested against NX-OS 10.6(4) on Nexus 9300v
    - Unsupported for Cisco MDS
    - Only the ``interface nve1`` interface is managed.
    - Within a VNI, ``suppress-arp`` and ``suppress-arp disable`` are alternatives, as are ``mcast-group`` and ``ingress-replication protocol bgp``. The module fails if both options of such a pair are true (or, for *mcast_group*, set) in the task.
