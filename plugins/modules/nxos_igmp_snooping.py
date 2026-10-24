@@ -79,9 +79,11 @@ options:
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
     type: str
+    version_added: 13.1.0
   config:
     description: IGMP snooping configuration.
     type: dict
+    version_added: 13.1.0
     suboptions:
       snooping:
         description:
@@ -116,14 +118,12 @@ options:
         - Enables IGMP snooping for VXLAN VLANs (C(ip igmp snooping vxlan)).
         - Defaults to C(false).
         type: bool
-        version_added: 13.1.0
       disable_nve_static_router_port:
         description:
         - Do not include the NVE interface as a static router port in the VXLAN VLANs
           (C(ip igmp snooping disable-nve-static-router-port)).
         - Defaults to C(false).
         type: bool
-        version_added: 13.1.0
       vlans:
         description:
         - The VLANs with a C(vlan configuration) block.
@@ -132,7 +132,6 @@ options:
         - With I(state) C(overridden) the VLANs that are not listed are removed.
         type: list
         elements: dict
-        version_added: 13.1.0
         suboptions:
           vlan_id:
             description:
@@ -166,6 +165,8 @@ options:
   state:
     description:
     - The state the configuration should be left in.
+    - The states and the call shape changed in 13.1.0. Only the resource module states exist, the former
+      C(present) and C(default) states are replaced by C(merged) and C(deleted).
     - With I(merged) what is given is added to the device, nothing is removed. A setting that
       is not given is not touched.
     - With I(replaced) the global settings that are not given are reset to their default, the

@@ -3,11 +3,14 @@ breaking_changes:
   - >-
     nxos_igmp_snooping - rewrite as a resource module with the states ``merged``, ``replaced``,
     ``overridden``, ``deleted``, ``gathered``, ``rendered`` and ``parsed``. The flat parameters
-    and the ``present`` and ``default`` states are removed. Settings are now given in ``config``
-    and use the CLI names (``link_local_groups_suppression``, ``report_suppression``,
-    ``v3_report_suppression``), ``state=default`` becomes ``state=deleted``.
-    ``group_timeout`` no longer accepts ``default``, remove it with ``deleted``, ``replaced`` or
-    ``overridden``. Update playbooks from ``snooping: false`` to ``config: {snooping: false}``.
+    and the ``present`` and ``default`` states are removed, settings are now given in ``config``.
+    Migration - ``snooping`` becomes ``config.snooping``, ``group_timeout`` becomes ``config.group_timeout``,
+    ``link_local_grp_supp`` becomes ``config.link_local_groups_suppression``,
+    ``report_supp`` becomes ``config.report_suppression``,
+    ``v3_report_supp`` becomes ``config.v3_report_suppression``,
+    ``state=present`` becomes ``state=merged`` and ``state=default`` becomes ``state=deleted``.
+    ``group_timeout`` no longer accepts ``default``, remove it with ``deleted``, ``replaced`` or ``overridden``.
+    Update playbooks from ``snooping: false`` to ``config: {snooping: false}``.
 minor_changes:
   - >-
     nxos_igmp_snooping - add the global ``vxlan`` and ``disable_nve_static_router_port`` settings and

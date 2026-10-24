@@ -41,6 +41,7 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
                     </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
                 </td>
                 <td>
                 </td>
@@ -57,7 +58,6 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
                     </div>
-                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
@@ -183,7 +183,6 @@ Parameters
                         <span style="color: purple">list</span>
                          / <span style="color: purple">elements=dictionary</span>
                     </div>
-                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
                 </td>
                 <td>
                 </td>
@@ -299,7 +298,6 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
                     </div>
-                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
@@ -321,6 +319,7 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
                     </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
                 </td>
                 <td>
                 </td>
@@ -352,6 +351,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in.</div>
+                        <div>The states and the call shape changed in 13.1.0. Only the resource module states exist, the former <code>present</code> and <code>default</code> states are replaced by <code>merged</code> and <code>deleted</code>.</div>
                         <div>With <em>merged</em> what is given is added to the device, nothing is removed. A setting that is not given is not touched.</div>
                         <div>With <em>replaced</em> the global settings that are not given are reset to their default, the listed VLANs are made identical to the given ones and the other VLANs are not touched.</div>
                         <div>With <em>overridden</em> the same applies and the VLANs that are not listed are removed.</div>
