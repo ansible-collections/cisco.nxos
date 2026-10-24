@@ -2,6 +2,8 @@
 - ansible.builtin.debug:
     msg: START nxos_vpc overridden integration tests on connection={{ ansible_connection }}
 
+- ansible.builtin.include_tasks: _remove_config.yaml
+
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
