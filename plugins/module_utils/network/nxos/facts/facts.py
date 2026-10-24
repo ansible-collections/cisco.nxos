@@ -46,6 +46,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.host
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.igmp_snooping.igmp_snooping import (
+    Igmp_snoopingFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
@@ -170,6 +173,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     vrf_interfaces=Vrf_interfacesFacts,
     vpc_interfaces=Vpc_interfacesFacts,
     vpc=VpcFacts,
+    igmp_snooping=Igmp_snoopingFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
     fc_interfaces=Fc_interfacesFacts,

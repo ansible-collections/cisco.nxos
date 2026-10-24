@@ -1,322 +1,556 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2026 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+"""
+The module file for nxos_igmp_snooping
+"""
+
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
-
 DOCUMENTATION = """
 module: nxos_igmp_snooping
-extends_documentation_fragment:
-- cisco.nxos.nxos
-short_description: Manages IGMP snooping global configuration.
-description:
-- Manages IGMP snooping global configuration.
 version_added: 1.0.0
+short_description: IGMP snooping resource module.
+description:
+- This module manages the global IGMP snooping configuration and the static groups
+  of the per-VLAN snooping context (C(vlan configuration <id>)) on devices running
+  Cisco NX-OS.
+notes:
+- Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
+- Unsupported for Cisco MDS.
+- This module was rewritten as a resource module. The former flat parameters
+  and the C(present) and C(default) states are gone, use I(config) with the
+  I(state) C(merged) or C(deleted) instead.
+- The IGMP snooping configuration must be identical on both vPC peers.
+- IGMP snooping over VXLAN is supported with BGP EVPN only, not with flood-and-learn,
+  and not on VLANs with FEX member ports. The global I(vxlan) setting
+  (C(ip igmp snooping vxlan)) must be enabled for snooping to be active on VXLAN VLANs.
+- A VLAN without PIM needs an IGMP querier. The querier is not managed by this module.
+- The settings of a VLAN do not apply until the VLAN exists. NX-OS keeps a
+  C(vlan configuration) block when the VLAN itself is removed, use I(state) C(deleted),
+  C(replaced) or C(overridden) to remove such blocks.
+- NX-OS does not show a setting that has its default value in the running configuration.
+  The facts therefore report every boolean setting with its effective value, which means
+  that C(gathered) and C(parsed) return C(snooping), C(link_local_groups_suppression),
+  C(report_suppression), C(v3_report_suppression), C(vxlan) and
+  C(disable_nve_static_router_port) even when they are not configured. The group timeout is
+  only returned when it is configured.
+- The default values are C(snooping=true), C(link_local_groups_suppression=true),
+  C(report_suppression=true), C(v3_report_suppression=false), C(vxlan=false),
+  C(disable_nve_static_router_port=false) and no group timeout. Setting an option to its default
+  value is a no-op when the device already has it.
+- NX-OS rejects C(group-timeout) while snooping is disabled. The module fails before changing anything
+  when I(group_timeout) is given and I(snooping) is, or is becoming, C(false). The group timeout
+  is sent after the other global settings, except when it is removed because snooping is being disabled.
+- Only the static groups of a VLAN are managed. A C(vlan configuration) block with any other
+  content is parsed as a VLAN without static groups. It is removed completely, together with that content,
+  by C(deleted) and C(overridden), and by C(replaced) when the listed VLAN has no I(static_groups).
+- A C(vlan configuration) block that is not for a single VLAN (for example a range) is ignored.
+- A VLAN that is listed without I(static_groups) is not created by C(merged),
+  because an empty C(vlan configuration) block has no effect. It is reported
+  by C(gathered) when the device has one.
+- Interface names are normalised before they are compared, so C(Eth1/10),
+  C(ethernet1/10) and C(Ethernet1/10) are the same, as are C(Po20) and C(port-channel20).
+- This module works with connection C(network_cli) and C(httpapi).
+- The I(parsed) state reads configuration from I(running_config) and does
+  not connect to the device.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
-notes:
-- Tested against NXOSv 7.3.(0)D1(1) on VIRL
-- Unsupported for Cisco MDS
-- When C(state=default), params will be reset to a default state.
-- C(group_timeout) also accepts I(never) as an input.
+- Jorgen Spange (@jorgenspange)
 options:
-  snooping:
+  running_config:
     description:
-    - Enables/disables IGMP snooping on the switch.
-    type: bool
-  group_timeout:
-    description:
-    - Group membership timeout value for all VLANs on the device. Accepted values
-      are integer in range 1-10080, I(never) and I(default).
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the commands B(show running-config | section "^vlan configuration")
+      and B(show running-config | include "ip igmp snooping"), or the full running configuration.
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-  link_local_grp_supp:
-    description:
-    - Global link-local groups suppression.
-    type: bool
-  report_supp:
-    description:
-    - Global IGMPv1/IGMPv2 Report Suppression.
-    type: bool
-  v3_report_supp:
-    description:
-    - Global IGMPv3 Report Suppression and Proxy Reporting.
-    type: bool
+  config:
+    description: IGMP snooping configuration.
+    type: dict
+    suboptions:
+      snooping:
+        description:
+        - Enables or disables IGMP snooping on the switch (C(ip igmp snooping)).
+        - Defaults to C(true).
+        type: bool
+      group_timeout:
+        description:
+        - Group membership timeout for all VLANs on the device (C(ip igmp snooping group-timeout)).
+        - Accepted values are an integer in the range 1-10080 (minutes) and C(never).
+        - It is removed by I(state) C(deleted), and by I(state) C(replaced) and C(overridden)
+          when it is not given.
+        - It cannot be set while I(snooping) is, or is being set to, C(false).
+        type: str
+      link_local_groups_suppression:
+        description:
+        - Global link-local groups suppression (C(ip igmp snooping link-local-groups-suppression)).
+        - Defaults to C(true).
+        type: bool
+      report_suppression:
+        description:
+        - Global IGMPv1/IGMPv2 report suppression (C(ip igmp snooping report-suppression)).
+        - Defaults to C(true).
+        type: bool
+      v3_report_suppression:
+        description:
+        - Global IGMPv3 report suppression and proxy reporting (C(ip igmp snooping v3-report-suppression)).
+        - Defaults to C(false).
+        type: bool
+      vxlan:
+        description:
+        - Enables IGMP snooping for VXLAN VLANs (C(ip igmp snooping vxlan)).
+        - Defaults to C(false).
+        type: bool
+        version_added: 13.1.0
+      disable_nve_static_router_port:
+        description:
+        - Do not include the NVE interface as a static router port in the VXLAN VLANs
+          (C(ip igmp snooping disable-nve-static-router-port)).
+        - Defaults to C(false).
+        type: bool
+        version_added: 13.1.0
+      vlans:
+        description:
+        - The VLANs with a C(vlan configuration) block.
+        - With I(state) C(replaced) the static groups of a listed VLAN are made identical to the
+          ones given, VLANs that are not listed are left alone.
+        - With I(state) C(overridden) the VLANs that are not listed are removed.
+        type: list
+        elements: dict
+        version_added: 13.1.0
+        suboptions:
+          vlan_id:
+            description:
+            - The VLAN ID, in the range 1-4094.
+            type: int
+            required: true
+          static_groups:
+            description:
+            - Static multicast groups of the VLAN (C(ip igmp snooping static-group)).
+            - A VLAN without static groups has no C(vlan configuration) block under I(state)
+              C(replaced) and C(overridden).
+            type: list
+            elements: dict
+            suboptions:
+              group:
+                description:
+                - The IPv4 multicast group address.
+                type: str
+                required: true
+              source:
+                description:
+                - The IPv4 source address of the group, for IGMPv3.
+                type: str
+              interfaces:
+                description:
+                - The interfaces on which the group is statically joined.
+                - One C(ip igmp snooping static-group) line is configured for each interface.
+                type: list
+                elements: str
+                required: true
   state:
     description:
-    - Manage the state of the resource.
-    default: present
-    choices:
-    - present
-    - default
+    - The state the configuration should be left in.
+    - With I(merged) what is given is added to the device, nothing is removed. A setting that
+      is not given is not touched.
+    - With I(replaced) the global settings that are not given are reset to their default, the
+      listed VLANs are made identical to the given ones and the other VLANs are not touched.
+    - With I(overridden) the same applies and the VLANs that are not listed are removed.
+    - With I(deleted) and without I(config) all global settings are reset to their default and
+      all C(vlan configuration) blocks are removed. With I(config) the listed global settings
+      are reset, a listed VLAN without I(static_groups) is removed, and for a listed VLAN
+      with I(static_groups) only these are removed.
+    - With I(gathered) the configuration is read from the device.
+    - With I(rendered) the commands for I(config) are returned without connecting to the device.
+    - With I(parsed) I(running_config) is returned as structured data.
     type: str
+    choices:
+    - merged
+    - replaced
+    - overridden
+    - deleted
+    - gathered
+    - rendered
+    - parsed
+    default: merged
+extends_documentation_fragment:
+- cisco.nxos.nxos
 """
 
 EXAMPLES = """
-# ensure igmp snooping params supported in this module are in there default state
-- cisco.nxos.nxos_igmp_snooping:
-    state: default
+# Using merged
 
-# ensure following igmp snooping params are in the desired state
-- cisco.nxos.nxos_igmp_snooping:
-    group_timeout: never
-    snooping: true
-    link_local_grp_supp: false
-    optimize_mcast_flood: false
-    report_supp: true
-    v3_report_supp: true
+# Before state:
+# -------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# (nothing is shown, the device has the default configuration)
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      vxlan: true
+      v3_report_suppression: true
+      group_timeout: "300"
+      vlans:
+        - vlan_id: 100
+          static_groups:
+            - group: 233.252.0.10
+              interfaces:
+                - Eth1/10
+                - Po20
+            - group: 233.252.0.11
+              source: 192.0.2.10
+              interfaces:
+                - Ethernet1/10
+    state: merged
+
+# Task output:
+# ------------
+# before:
+#   snooping: true
+#   link_local_groups_suppression: true
+#   report_suppression: true
+#   v3_report_suppression: false
+#   vxlan: false
+#   disable_nve_static_router_port: false
+# commands:
+#   - ip igmp snooping v3-report-suppression
+#   - ip igmp snooping vxlan
+#   - ip igmp snooping group-timeout 300
+#   - vlan configuration 100
+#   - ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+#   - ip igmp snooping static-group 233.252.0.10 interface port-channel20
+#   - ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface Ethernet1/10
+# after:
+#   snooping: true
+#   link_local_groups_suppression: true
+#   report_suppression: true
+#   v3_report_suppression: true
+#   vxlan: true
+#   disable_nve_static_router_port: false
+#   group_timeout: "300"
+#   vlans:
+#     - vlan_id: 100
+#       static_groups:
+#         - group: 233.252.0.10
+#           interfaces:
+#             - Ethernet1/10
+#             - port-channel20
+#         - group: 233.252.0.11
+#           source: 192.0.2.10
+#           interfaces:
+#             - Ethernet1/10
+
+# After state:
+# ------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# ip igmp snooping v3-report-suppression
+# ip igmp snooping group-timeout 300
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+#   ip igmp snooping static-group 233.252.0.10 interface port-channel20
+#   ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface Ethernet1/10
+
+# Using replaced
+
+# Before state:
+# -------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# ip igmp snooping v3-report-suppression
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+#   ip igmp snooping static-group 233.252.0.10 interface port-channel20
+# vlan configuration 200
+#   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
+
+- name: Replace the global settings and the listed VLANs
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      vxlan: true
+      vlans:
+        - vlan_id: 100
+          static_groups:
+            - group: 233.252.0.10
+              interfaces:
+                - Ethernet1/10
+    state: replaced
+
+# Task output:
+# ------------
+# commands:
+#   - no ip igmp snooping v3-report-suppression
+#   - vlan configuration 100
+#   - no ip igmp snooping static-group 233.252.0.10 interface port-channel20
+
+# After state:
+# ------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+# vlan configuration 200
+#   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
+
+# Using overridden
+
+# Before state:
+# -------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+# vlan configuration 200
+#   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
+
+- name: Override the IGMP snooping configuration
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      vxlan: true
+      vlans:
+        - vlan_id: 100
+          static_groups:
+            - group: 233.252.0.10
+              interfaces:
+                - Ethernet1/10
+    state: overridden
+
+# Task output:
+# ------------
+# commands:
+#   - no vlan configuration 200
+
+# After state:
+# ------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+
+# Using deleted
+
+# Before state:
+# -------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# ip igmp snooping group-timeout 300
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+# vlan configuration 200
+#   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
+
+- name: Delete the VLAN 200 configuration only
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      vlans:
+        - vlan_id: 200
+    state: deleted
+
+# Task output:
+# ------------
+# commands:
+#   - no vlan configuration 200
+
+# Using deleted without config
+
+# Before state:
+# -------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# ip igmp snooping vxlan
+# ip igmp snooping group-timeout 300
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+
+- name: Reset all global settings and remove all vlan configuration blocks
+  cisco.nxos.nxos_igmp_snooping:
+    state: deleted
+
+# Task output:
+# ------------
+# commands:
+#   - no ip igmp snooping vxlan
+#   - no ip igmp snooping group-timeout 300
+#   - no vlan configuration 100
+
+# After state:
+# ------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# (nothing is shown, the device has the default configuration)
+
+# Using rendered
+
+- name: Render platform specific configuration lines (without connecting to the device)
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      snooping: true
+      report_suppression: false
+      vlans:
+        - vlan_id: 100
+          static_groups:
+            - group: 233.252.0.10
+              source: 192.0.2.10
+              interfaces:
+                - Po20
+    state: rendered
+
+# Task Output:
+# ------------
+# rendered:
+#   - ip igmp snooping
+#   - no ip igmp snooping report-suppression
+#   - vlan configuration 100
+#   - ip igmp snooping static-group 233.252.0.10 source 192.0.2.10 interface port-channel20
+
+# Using parsed
+
+# parsed.cfg
+# ----------
+# ip igmp snooping vxlan
+# ip igmp snooping group-timeout 300
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+#   ip igmp snooping static-group 233.252.0.10 interface port-channel20
+
+- name: Parse the provided configuration
+  cisco.nxos.nxos_igmp_snooping:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output:
+# ------------
+# parsed:
+#   snooping: true
+#   link_local_groups_suppression: true
+#   report_suppression: true
+#   v3_report_suppression: false
+#   vxlan: true
+#   disable_nve_static_router_port: false
+#   group_timeout: "300"
+#   vlans:
+#     - vlan_id: 100
+#       static_groups:
+#         - group: 233.252.0.10
+#           interfaces:
+#             - Ethernet1/10
+#             - port-channel20
+
+# Using gathered
+
+# Existing device config:
+# -----------------------
+# nxos# show running-config | section "^vlan configuration|^ip igmp snooping"
+# no ip igmp snooping link-local-groups-suppression
+# vlan configuration 100
+#   ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface Ethernet1/10
+
+- name: Gather the IGMP snooping configuration from the device
+  cisco.nxos.nxos_igmp_snooping:
+    state: gathered
+
+# Task output:
+# ------------
+# gathered:
+#   snooping: true
+#   link_local_groups_suppression: false
+#   report_suppression: true
+#   v3_report_suppression: false
+#   vxlan: false
+#   disable_nve_static_router_port: false
+#   vlans:
+#     - vlan_id: 100
+#       static_groups:
+#         - group: 233.252.0.11
+#           source: 192.0.2.10
+#           interfaces:
+#             - Ethernet1/10
 """
 
 RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden) or C(deleted)
+  type: dict
+  sample: >
+    This output will always be in the same format as the module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the module argspec.
 commands:
-    description: command sent to the device
-    returned: always
-    type: list
-    sample: ["ip igmp snooping link-local-groups-suppression",
-             "ip igmp snooping group-timeout 50",
-             "no ip igmp snooping report-suppression",
-             "no ip igmp snooping v3-report-suppression",
-             "no ip igmp snooping"]
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden) or C(deleted)
+  type: list
+  sample:
+    - ip igmp snooping vxlan
+    - vlan configuration 100
+    - ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+rendered:
+  description: The provided configuration in the device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - ip igmp snooping vxlan
+    - vlan configuration 100
+    - ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option, parsed into structured data.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the module argspec.
 """
 
-
-import re
-
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    emit_warnings,
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.igmp_snooping.igmp_snooping import (
+    Igmp_snoopingArgs,
 )
-
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.igmp_snooping.igmp_snooping import (
+    Igmp_snooping,
 )
-
-
-def execute_show_command(command, module, output="text"):
-    command = {"command": command, "output": output}
-
-    return run_commands(module, [command])
-
-
-def flatten_list(command_lists):
-    flat_command_list = []
-    for command in command_lists:
-        if isinstance(command, list):
-            flat_command_list.extend(command)
-        else:
-            flat_command_list.append(command)
-    return flat_command_list
-
-
-def get_group_timeout(config):
-    match = re.search(r"  Group timeout configured: (\S+)", config, re.M)
-    if match:
-        value = match.group(1)
-    else:
-        value = ""
-    return value
-
-
-def get_igmp_snooping(module):
-    command = "show ip igmp snooping"
-    existing = {}
-
-    try:
-        body = execute_show_command(command, module, output="json")[0]
-    except IndexError:
-        body = []
-
-    if body:
-        snooping = str(body.get("enabled")).lower()
-        if "none" in snooping:
-            snooping = str(body.get("GlobalSnoopEnabled")).lower()
-        if snooping == "true" or snooping == "enabled" or snooping == "yes":
-            existing["snooping"] = True
-        else:
-            existing["snooping"] = False
-
-        report_supp = str(body.get("grepsup")).lower()
-        if "none" in report_supp:
-            report_supp = str(body.get("GlobalReportSupression")).lower()
-        if report_supp == "true" or report_supp == "enabled":
-            existing["report_supp"] = True
-        else:
-            existing["report_supp"] = False
-
-        link_local_grp_supp = str(body.get("glinklocalgrpsup")).lower()
-        if "none" in link_local_grp_supp:
-            link_local_grp_supp = str(body.get("GlobalLinkLocalGroupSupression")).lower()
-        if link_local_grp_supp == "true" or link_local_grp_supp == "enabled":
-            existing["link_local_grp_supp"] = True
-        else:
-            existing["link_local_grp_supp"] = False
-
-        v3_report_supp = str(body.get("gv3repsup")).lower()
-        if "none" in v3_report_supp:
-            v3_report_supp = str(body.get("GlobalV3ReportSupression")).lower()
-        if v3_report_supp == "true" or v3_report_supp == "enabled":
-            existing["v3_report_supp"] = True
-        else:
-            existing["v3_report_supp"] = False
-
-    command = "show ip igmp snooping"
-    body = execute_show_command(command, module)[0]
-    if body:
-        existing["group_timeout"] = get_group_timeout(body)
-
-    return existing
-
-
-def config_igmp_snooping(delta, existing, default=False):
-    CMDS = {
-        "snooping": "ip igmp snooping",
-        "group_timeout": "ip igmp snooping group-timeout {}",
-        "link_local_grp_supp": "ip igmp snooping link-local-groups-suppression",
-        "v3_report_supp": "ip igmp snooping v3-report-suppression",
-        "report_supp": "ip igmp snooping report-suppression",
-    }
-
-    commands = []
-    command = None
-    gt_command = None
-    for key, value in delta.items():
-        if value:
-            if default and key == "group_timeout":
-                if existing.get(key):
-                    gt_command = "no " + CMDS.get(key).format(existing.get(key))
-            elif value == "default" and key == "group_timeout":
-                if existing.get(key):
-                    command = "no " + CMDS.get(key).format(existing.get(key))
-            else:
-                command = CMDS.get(key).format(value)
-        else:
-            command = "no " + CMDS.get(key).format(value)
-
-        if command:
-            commands.append(command)
-        command = None
-
-    if gt_command:
-        # ensure that group-timeout command is configured last
-        commands.append(gt_command)
-    return commands
-
-
-def get_igmp_snooping_defaults():
-    group_timeout = "dummy"
-    report_supp = True
-    link_local_grp_supp = True
-    v3_report_supp = False
-    snooping = True
-
-    args = dict(
-        snooping=snooping,
-        link_local_grp_supp=link_local_grp_supp,
-        report_supp=report_supp,
-        v3_report_supp=v3_report_supp,
-        group_timeout=group_timeout,
-    )
-
-    default = dict((param, value) for (param, value) in args.items() if value is not None)
-
-    return default
-
-
-def igmp_snooping_gt_dependency(command, existing, module):
-    # group-timeout will fail if igmp snooping is disabled
-    gt = [i for i in command if i.startswith("ip igmp snooping group-timeout")]
-    if gt:
-        if "no ip igmp snooping" in command or (
-            existing["snooping"] is False and "ip igmp snooping" not in command
-        ):
-            msg = "group-timeout cannot be enabled or changed when ip igmp snooping is disabled"
-            module.fail_json(msg=msg)
-        else:
-            # ensure that group-timeout command is configured last
-            command.remove(gt[0])
-            command.append(gt[0])
 
 
 def main():
-    argument_spec = dict(
-        snooping=dict(required=False, type="bool"),
-        group_timeout=dict(required=False, type="str"),
-        link_local_grp_supp=dict(required=False, type="bool"),
-        report_supp=dict(required=False, type="bool"),
-        v3_report_supp=dict(required=False, type="bool"),
-        state=dict(choices=["present", "default"], default="present"),
+    """
+    Main entry point for module execution.
+
+    :returns: the result from module invocation
+    """
+    module = AnsibleModule(
+        argument_spec=Igmp_snoopingArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
+        supports_check_mode=True,
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-
-    warnings = list()
-    results = {"changed": False, "commands": [], "warnings": warnings}
-
-    snooping = module.params["snooping"]
-    link_local_grp_supp = module.params["link_local_grp_supp"]
-    report_supp = module.params["report_supp"]
-    v3_report_supp = module.params["v3_report_supp"]
-    group_timeout = module.params["group_timeout"]
-    state = module.params["state"]
-
-    args = dict(
-        snooping=snooping,
-        link_local_grp_supp=link_local_grp_supp,
-        report_supp=report_supp,
-        v3_report_supp=v3_report_supp,
-        group_timeout=group_timeout,
-    )
-
-    proposed = dict((param, value) for (param, value) in args.items() if value is not None)
-
-    existing = get_igmp_snooping(module)
-
-    commands = []
-    if state == "present":
-        delta = dict(set(proposed.items()).difference(existing.items()))
-        if delta:
-            command = config_igmp_snooping(delta, existing)
-            if command:
-                if group_timeout:
-                    igmp_snooping_gt_dependency(command, existing, module)
-                commands.append(command)
-    elif state == "default":
-        proposed = get_igmp_snooping_defaults()
-        delta = dict(set(proposed.items()).difference(existing.items()))
-        if delta:
-            command = config_igmp_snooping(delta, existing, default=True)
-            if command:
-                commands.append(command)
-
-    cmds = flatten_list(commands)
-    if cmds:
-        results["changed"] = True
-        if not module.check_mode:
-            load_config(module, cmds)
-        if "configure" in cmds:
-            cmds.pop(0)
-        results["commands"] = cmds
-
-    emit_warnings(module, results)
-    module.exit_json(**results)
+    result = Igmp_snooping(module).execute_module()
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":
