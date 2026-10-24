@@ -32,8 +32,21 @@ notes:
 - Only explicit interface lines are managed. Global settings such as C(spanning-tree port type edge default),
   C(spanning-tree bpduguard default) and C(spanning-tree loopguard default) change the effective behaviour
   of a port but are not interface configuration and are neither read nor changed by this module.
-- C(spanning_tree) and C(storm_control) apply to switchports and port-channels. Layer-3 (C(no switchport))
-  interfaces are left alone, they are not reported in the facts and the options are ignored with a warning.
+- Values that the device accepts but never displays (C(spanning-tree link-type auto), C(spanning-tree port-priority 128),
+  C(storm-control <type> level 100.00)) are treated like unset values, listing them removes a different configured value.
+  Values that are displayed (C(port_type) C(normal), C(bpduguard) C(false), C(bpdufilter) C(false), C(guard) C(none))
+  are managed as explicit lines.
+- C(spanning_tree) and C(storm_control) apply to switchports and port-channels. The interface commands do not exist
+  on a routed port. When one of the options is used with I(state=merged), I(state=replaced) or I(state=overridden)
+  the module fails before sending any command unless the interface is a confirmed switchport, that is it has a
+  C(switchport) line or no C(no switchport) line while C(system default switchport) is configured. To know the default
+  the module runs C(show running-config all | incl 'system default switchport') once. Routed ports are not reported
+  in the facts.
+- Interface level C(storm-control <type> level pps <n>) is not supported by this module because N9K-C93180YC-FX
+  NX-OS 10.6(4) accepts it without storing it.
+- I(state=overridden) removes the C(spanning_tree) and C(storm_control) settings of every interface that is not listed.
+- I(state=replaced) and I(state=overridden) send C(no cdp enable) unless C(cdp_enable=true) is listed for the interface
+  (existing behaviour).
 - Configure C(spanning_tree) and C(storm_control) on the port-channel, not on its member ports.
 - On a vPC port-channel the C(spanning_tree) settings must be identical on both vPC peers. A mismatch makes the vPC
   type-1 inconsistent until the settings are aligned.
@@ -171,14 +184,18 @@ options:
           cost:
             description:
             - Spanning-tree path cost, C(spanning-tree cost <n>).
+            - The range is enforced by the device. C(spanning-tree cost auto) is the default and is not managed.
             type: int
           port_priority:
             description:
             - Spanning-tree port priority, C(spanning-tree port-priority <n>).
+            - Must be a multiple of 32 from 0 to 224, other values are rejected before any command is sent.
+            - C(128) is the default, the device does not display it. It is treated like an unset priority.
             type: int
           link_type:
             description:
             - Spanning-tree link type, C(spanning-tree link-type auto|point-to-point|shared).
+            - C(auto) is the default, the device does not display it. It is treated like an unset link type.
             type: str
             choices:
             - auto
@@ -196,10 +213,10 @@ options:
                 type: str
                 required: true
               cost:
-                description: Path cost for the instances.
+                description: Path cost for the instances, at least 1 (the device rejects 0).
                 type: int
               port_priority:
-                description: Port priority for the instances.
+                description: Port priority for the instances, a multiple of 32 from 0 to 224.
                 type: int
           vlans:
             description:
@@ -216,7 +233,7 @@ options:
                 description: Path cost for the VLANs.
                 type: int
               port_priority:
-                description: Port priority for the VLANs.
+                description: Port priority for the VLANs, a multiple of 32 from 0 to 224.
                 type: int
       storm_control:
         description:
@@ -227,50 +244,35 @@ options:
         version_added: 13.1.0
         suboptions:
           broadcast:
-            description: Broadcast storm-control, C(storm-control broadcast level <level>|pps <pps>).
+            description: Broadcast storm-control, C(storm-control broadcast level <level>).
             type: dict
             suboptions:
               level:
                 description:
                 - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
                 - Compared as a number, C(1.0) and C(1.00) are the same level.
-                - Mutually exclusive with I(pps).
+                - C(100.00) is the default, the device does not display it. It is treated like an unset level.
                 type: str
-              pps:
-                description:
-                - Suppression level in packets per second (0-200000000).
-                - Mutually exclusive with I(level).
-                type: int
           multicast:
-            description: Multicast storm-control, C(storm-control multicast level <level>|pps <pps>).
+            description: Multicast storm-control, C(storm-control multicast level <level>).
             type: dict
             suboptions:
               level:
                 description:
                 - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
                 - Compared as a number, C(1.0) and C(1.00) are the same level.
-                - Mutually exclusive with I(pps).
+                - C(100.00) is the default, the device does not display it. It is treated like an unset level.
                 type: str
-              pps:
-                description:
-                - Suppression level in packets per second (0-200000000).
-                - Mutually exclusive with I(level).
-                type: int
           unicast:
-            description: Unicast storm-control, C(storm-control unicast level <level>|pps <pps>).
+            description: Unicast storm-control, C(storm-control unicast level <level>).
             type: dict
             suboptions:
               level:
                 description:
                 - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
                 - Compared as a number, C(1.0) and C(1.00) are the same level.
-                - Mutually exclusive with I(pps).
+                - C(100.00) is the default, the device does not display it. It is treated like an unset level.
                 type: str
-              pps:
-                description:
-                - Suppression level in packets per second (0-200000000).
-                - Mutually exclusive with I(level).
-                type: int
           action:
             description: Action taken when a storm is detected, C(storm-control action shutdown|trap).
             type: str
@@ -790,7 +792,7 @@ EXAMPLES = """
           broadcast:
             level: "0.01"
           multicast:
-            pps: 5000
+            level: "10.50"
           action: trap
       - name: port-channel20
         spanning_tree:
@@ -809,7 +811,7 @@ EXAMPLES = """
 # - spanning-tree bpduguard enable
 # - spanning-tree cost 100
 # - storm-control broadcast level 0.01
-# - storm-control multicast level pps 5000
+# - storm-control multicast level 10.50
 # - storm-control action trap
 # - interface port-channel20
 # - spanning-tree port type network
@@ -827,7 +829,7 @@ EXAMPLES = """
 #   spanning-tree bpduguard enable
 #   spanning-tree guard root
 #   storm-control broadcast level 0.01
-#   storm-control multicast level pps 5000
+#   storm-control multicast level 10.50
 #   storm-control action trap
 # interface port-channel20
 #   switchport
@@ -1025,7 +1027,7 @@ EXAMPLES = """
 #   spanning-tree port type network
 #   spanning-tree bpduguard disable
 #   spanning-tree mst 0,2-4 cost 200
-#   storm-control broadcast level pps 1000
+#   storm-control broadcast level 50.50
 
 - name: Parse the provided configuration
   cisco.nxos.nxos_l2_interfaces:
@@ -1045,7 +1047,7 @@ EXAMPLES = """
 #     port_type: network
 #   storm_control:
 #     broadcast:
-#       pps: 1000
+#       level: "50.50"
 """
 
 RETURN = """

@@ -140,18 +140,28 @@ def get_port_channel_members(config_text):
     return members
 
 
-def get_routed_interfaces(config_text):
-    """Parse running config and return set of normalized names of interfaces configured `no switchport`."""
-    routed = set()
+def _interfaces_with_line(config_text, line_regex):
+    """Return the set of normalized interface names whose block holds a line matching line_regex."""
+    found = set()
     current_intf = None
     for line in config_text.splitlines():
         intf_match = re.match(r"^interface\s+(\S+)", line)
         if intf_match:
             current_intf = intf_match.group(1)
-        elif current_intf and re.match(r"^\s+no switchport$", line):
-            routed.add(normalize_interface(current_intf))
+        elif current_intf and re.match(line_regex, line):
+            found.add(normalize_interface(current_intf))
             current_intf = None
-    return routed
+    return found
+
+
+def get_routed_interfaces(config_text):
+    """Parse running config and return set of normalized names of interfaces configured `no switchport`."""
+    return _interfaces_with_line(config_text, r"^\s+no switchport$")
+
+
+def get_switchport_interfaces(config_text):
+    """Parse running config and return set of normalized names of interfaces with an explicit `switchport`."""
+    return _interfaces_with_line(config_text, r"^\s+switchport$")
 
 
 def vlan_range_to_dict(vlans):

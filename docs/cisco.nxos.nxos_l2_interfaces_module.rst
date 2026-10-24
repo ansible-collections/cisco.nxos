@@ -314,6 +314,7 @@ Parameters
                 </td>
                 <td>
                         <div>Spanning-tree path cost, <code>spanning-tree cost &lt;n&gt;</code>.</div>
+                        <div>The range is enforced by the device. <code>spanning-tree cost auto</code> is the default and is not managed.</div>
                 </td>
             </tr>
             <tr>
@@ -358,6 +359,7 @@ Parameters
                 </td>
                 <td>
                         <div>Spanning-tree link type, <code>spanning-tree link-type auto|point-to-point|shared</code>.</div>
+                        <div><code>auto</code> is the default, the device does not display it. It is treated like an unset link type.</div>
                 </td>
             </tr>
             <tr>
@@ -393,7 +395,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Path cost for the instances.</div>
+                        <div>Path cost for the instances, at least 1 (the device rejects 0).</div>
                 </td>
             </tr>
             <tr>
@@ -430,7 +432,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Port priority for the instances.</div>
+                        <div>Port priority for the instances, a multiple of 32 from 0 to 224.</div>
                 </td>
             </tr>
 
@@ -449,6 +451,8 @@ Parameters
                 </td>
                 <td>
                         <div>Spanning-tree port priority, <code>spanning-tree port-priority &lt;n&gt;</code>.</div>
+                        <div>Must be a multiple of 32 from 0 to 224, other values are rejected before any command is sent.</div>
+                        <div><code>128</code> is the default, the device does not display it. It is treated like an unset priority.</div>
                 </td>
             </tr>
             <tr>
@@ -525,7 +529,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Port priority for the VLANs.</div>
+                        <div>Port priority for the VLANs, a multiple of 32 from 0 to 224.</div>
                 </td>
             </tr>
             <tr>
@@ -602,7 +606,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Broadcast storm-control, <code>storm-control broadcast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                        <div>Broadcast storm-control, <code>storm-control broadcast level &lt;level&gt;</code>.</div>
                 </td>
             </tr>
                                 <tr>
@@ -622,26 +626,7 @@ Parameters
                 <td>
                         <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
                         <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
-                        <div>Mutually exclusive with <em>pps</em>.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>pps</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Suppression level in packets per second (0-200000000).</div>
-                        <div>Mutually exclusive with <em>level</em>.</div>
+                        <div><code>100.00</code> is the default, the device does not display it. It is treated like an unset level.</div>
                 </td>
             </tr>
 
@@ -659,7 +644,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Multicast storm-control, <code>storm-control multicast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                        <div>Multicast storm-control, <code>storm-control multicast level &lt;level&gt;</code>.</div>
                 </td>
             </tr>
                                 <tr>
@@ -679,26 +664,7 @@ Parameters
                 <td>
                         <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
                         <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
-                        <div>Mutually exclusive with <em>pps</em>.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>pps</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Suppression level in packets per second (0-200000000).</div>
-                        <div>Mutually exclusive with <em>level</em>.</div>
+                        <div><code>100.00</code> is the default, the device does not display it. It is treated like an unset level.</div>
                 </td>
             </tr>
 
@@ -716,7 +682,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Unicast storm-control, <code>storm-control unicast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                        <div>Unicast storm-control, <code>storm-control unicast level &lt;level&gt;</code>.</div>
                 </td>
             </tr>
                                 <tr>
@@ -736,26 +702,7 @@ Parameters
                 <td>
                         <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
                         <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
-                        <div>Mutually exclusive with <em>pps</em>.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>pps</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Suppression level in packets per second (0-200000000).</div>
-                        <div>Mutually exclusive with <em>level</em>.</div>
+                        <div><code>100.00</code> is the default, the device does not display it. It is treated like an unset level.</div>
                 </td>
             </tr>
 
@@ -913,7 +860,11 @@ Notes
    - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX for ``spanning_tree`` ``port_type`` (``edge`` and ``edge_trunk``), ``bpduguard`` (``true``), ``guard`` (``root``), ``cost``, ``port_priority``, ``link_type`` (``point_to_point``) and ``storm_control`` ``level`` of ``broadcast``, ``multicast`` and ``unicast``.
    - The other ``spanning_tree`` and ``storm_control`` values are generated from the documented NX-OS command syntax but were not verified on a device.
    - Only explicit interface lines are managed. Global settings such as ``spanning-tree port type edge default``, ``spanning-tree bpduguard default`` and ``spanning-tree loopguard default`` change the effective behaviour of a port but are not interface configuration and are neither read nor changed by this module.
-   - ``spanning_tree`` and ``storm_control`` apply to switchports and port-channels. Layer-3 (``no switchport``) interfaces are left alone, they are not reported in the facts and the options are ignored with a warning.
+   - Values that the device accepts but never displays (``spanning-tree link-type auto``, ``spanning-tree port-priority 128``, ``storm-control <type> level 100.00``) are treated like unset values, listing them removes a different configured value. Values that are displayed (``port_type`` ``normal``, ``bpduguard`` ``false``, ``bpdufilter`` ``false``, ``guard`` ``none``) are managed as explicit lines.
+   - ``spanning_tree`` and ``storm_control`` apply to switchports and port-channels. The interface commands do not exist on a routed port. When one of the options is used with *state=merged*, *state=replaced* or *state=overridden* the module fails before sending any command unless the interface is a confirmed switchport, that is it has a ``switchport`` line or no ``no switchport`` line while ``system default switchport`` is configured. To know the default the module runs ``show running-config all | incl 'system default switchport'`` once. Routed ports are not reported in the facts.
+   - Interface level ``storm-control <type> level pps <n>`` is not supported by this module because N9K-C93180YC-FX NX-OS 10.6(4) accepts it without storing it.
+   - *state=overridden* removes the ``spanning_tree`` and ``storm_control`` settings of every interface that is not listed.
+   - *state=replaced* and *state=overridden* send ``no cdp enable`` unless ``cdp_enable=true`` is listed for the interface (existing behaviour).
    - Configure ``spanning_tree`` and ``storm_control`` on the port-channel, not on its member ports.
    - On a vPC port-channel the ``spanning_tree`` settings must be identical on both vPC peers. A mismatch makes the vPC type-1 inconsistent until the settings are aligned.
    - ``storm-control multi`` commands are not supported.
@@ -1413,7 +1364,7 @@ Examples
               broadcast:
                 level: "0.01"
               multicast:
-                pps: 5000
+                level: "10.50"
               action: trap
           - name: port-channel20
             spanning_tree:
@@ -1432,7 +1383,7 @@ Examples
     # - spanning-tree bpduguard enable
     # - spanning-tree cost 100
     # - storm-control broadcast level 0.01
-    # - storm-control multicast level pps 5000
+    # - storm-control multicast level 10.50
     # - storm-control action trap
     # - interface port-channel20
     # - spanning-tree port type network
@@ -1450,7 +1401,7 @@ Examples
     #   spanning-tree bpduguard enable
     #   spanning-tree guard root
     #   storm-control broadcast level 0.01
-    #   storm-control multicast level pps 5000
+    #   storm-control multicast level 10.50
     #   storm-control action trap
     # interface port-channel20
     #   switchport
@@ -1648,7 +1599,7 @@ Examples
     #   spanning-tree port type network
     #   spanning-tree bpduguard disable
     #   spanning-tree mst 0,2-4 cost 200
-    #   storm-control broadcast level pps 1000
+    #   storm-control broadcast level 50.50
 
     - name: Parse the provided configuration
       cisco.nxos.nxos_l2_interfaces:
@@ -1668,7 +1619,7 @@ Examples
     #     port_type: network
     #   storm_control:
     #     broadcast:
-    #       pps: 1000
+    #       level: "50.50"
 
 
 

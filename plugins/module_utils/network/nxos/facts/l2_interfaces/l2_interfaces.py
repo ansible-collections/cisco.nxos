@@ -29,6 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_port_channel_members,
     get_routed_interfaces,
+    get_switchport_interfaces,
     normalize_interface,
 )
 
@@ -91,6 +92,7 @@ class L2_interfacesFacts(object):
         # spanning-tree and storm-control are only managed on layer-2 interfaces
         routed = get_routed_interfaces(data)
         self._module._l2_routed = routed
+        self._module._l2_switchports = get_switchport_interfaces(data)
         for obj in objs:
             if normalize_interface(obj.get("name", "")) in routed:
                 obj.pop("spanning_tree", None)

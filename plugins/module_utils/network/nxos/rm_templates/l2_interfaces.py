@@ -43,22 +43,13 @@ def _stp_parser(name, pattern, setval, result, remval=None):
 
 def _storm_parser(traffic):
     return {
-        "name": "storm_control." + traffic,
+        "name": "storm_control.%s.level" % traffic,
         "getval": re.compile(
-            r"^\s+storm-control\s"
-            + traffic
-            + r"\slevel\s(?:pps\s(?P<pps>\d+)|(?P<level>\d+(?:\.\d+)?))$",
+            r"^\s+storm-control\s" + traffic + r"\slevel\s(?P<level>\d+(?:\.\d+)?)$",
         ),
-        "setval": "storm-control " + traffic + " level"
-        "{{ ' pps ' + storm_control." + traffic + ".pps|string"
-        " if storm_control." + traffic + ".pps is defined"
-        " else ' ' + storm_control." + traffic + ".level }}",
+        "setval": "storm-control " + traffic + " level {{ storm_control." + traffic + ".level }}",
         "result": {
-            "{{ name }}": {
-                "storm_control": {
-                    traffic: {"level": "'{{ level }}'", "pps": "{{ pps }}"},
-                },
-            },
+            "{{ name }}": {"storm_control": {traffic: {"level": "'{{ level }}'"}}},
         },
     }
 

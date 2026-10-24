@@ -114,15 +114,15 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                     "options": {
                         "broadcast": {
                             "type": "dict",
-                            "options": {"level": {"type": "str"}, "pps": {"type": "int"}},
+                            "options": {"level": {"type": "str"}},
                         },
                         "multicast": {
                             "type": "dict",
-                            "options": {"level": {"type": "str"}, "pps": {"type": "int"}},
+                            "options": {"level": {"type": "str"}},
                         },
                         "unicast": {
                             "type": "dict",
-                            "options": {"level": {"type": "str"}, "pps": {"type": "int"}},
+                            "options": {"level": {"type": "str"}},
                         },
                         "action": {"type": "str", "choices": ["shutdown", "trap"]},
                     },

@@ -18,6 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import re
+
 from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 
@@ -43,7 +45,13 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
-MAX_PPS = 200000000
+MAX_PRIORITY = 224
+PRIORITY_STEP = 32
+DEFAULT_LEVEL = "100.00"
+DEFAULT_PRIORITY = 128
+DEFAULT_LINK_TYPE = "auto"
+SWITCHPORT_DEFAULT = "show running-config all | incl 'system default switchport'"
+SWITCHPORT_TYPES = ("ethernet", "port-channel")
 MAX_LEVEL = Decimal(100)
 LEVEL_STEP = Decimal("0.01")
 MAX_ID = 4094
@@ -91,25 +99,38 @@ def normalize_range(value, lowest):
 
 
 def normalize_storm(storm):
-    """Validate the storm_control options of an interface and canonicalise the levels in place."""
+    """Validate the storm_control levels of an interface and canonicalise them in place."""
     for traffic in STORM_TYPES:
-        entry = storm.get(traffic)
-        if not entry:
-            continue
-        if "level" in entry and "pps" in entry:
-            raise L2StpStormError(
-                "storm_control {0}: level and pps are mutually exclusive".format(traffic),
-            )
-        if "level" in entry:
-            entry["level"] = normalize_level(entry["level"])
-        elif not 0 <= entry.get("pps", 0) <= MAX_PPS:
-            raise L2StpStormError(
-                "storm_control {0}: pps must be between 0 and {1}".format(traffic, MAX_PPS),
-            )
+        if "level" in storm.get(traffic, {}):
+            storm[traffic]["level"] = normalize_level(storm[traffic]["level"])
+
+
+def check_priority(value, label):
+    """The device only accepts multiples of 32 from 0 to 224 as port priority."""
+    if not 0 <= value <= MAX_PRIORITY or value % PRIORITY_STEP:
+        raise L2StpStormError(
+            "{0}: port_priority {1} is invalid, it must be a multiple of {2} from 0 to {3}".format(
+                label,
+                value,
+                PRIORITY_STEP,
+                MAX_PRIORITY,
+            ),
+        )
+
+
+def check_entry(section, entry):
+    """Validate the cost and port_priority of one mst / vlans entry."""
+    label = "spanning_tree {0} {1}".format(section, entry[RANGE_KEYS[section][0]])
+    if "port_priority" in entry:
+        check_priority(entry["port_priority"], label)
+    if section == "mst" and entry.get("cost", 1) < 1:
+        raise L2StpStormError("{0}: cost must be at least 1".format(label))
 
 
 def normalize_spanning_tree(stp):
     """Turn bools into enable/disable and the mst / vlans lists into dicts keyed by their canonical range."""
+    if "port_priority" in stp:
+        check_priority(stp["port_priority"], "spanning_tree")
     for attr in ("bpduguard", "bpdufilter"):
         if attr in stp:
             stp[attr] = BOOL_TO_STATE[stp[attr]]
@@ -117,9 +138,29 @@ def normalize_spanning_tree(stp):
         entries = {}
         for entry in stp.get(section, []):
             entry[key] = normalize_range(entry[key], lowest)
+            check_entry(section, entry)
             entries[entry[key]] = entry
         if entries:
             stp[section] = entries
+
+
+def strip_defaults(entry):
+    """Remove the values the device does not display because they are the default.
+
+    Returns the removed (section, key) pairs so that merged can still reset them.
+    """
+    removed = []
+    stp = entry.get("spanning_tree", {})
+    for key, default in (("port_priority", DEFAULT_PRIORITY), ("link_type", DEFAULT_LINK_TYPE)):
+        if stp.get(key) == default:
+            del stp[key]
+            removed.append(("spanning_tree", key))
+    storm = entry.get("storm_control", {})
+    for traffic in STORM_TYPES:
+        if storm.get(traffic, {}).get("level") == DEFAULT_LEVEL:
+            del storm[traffic]
+            removed.append(("storm_control", traffic))
+    return removed
 
 
 class L2_interfaces(ResourceModule):
@@ -153,7 +194,7 @@ class L2_interfaces(ResourceModule):
                 "spanning_tree.port_priority",
                 "spanning_tree.link_type",
             ]
-            + ["storm_control." + traffic for traffic in STORM_TYPES]
+            + ["storm_control.%s.level" % traffic for traffic in STORM_TYPES]
             + ["storm_control.action"]
         )
 
@@ -188,7 +229,10 @@ class L2_interfaces(ResourceModule):
         # Get port-channel members detected during facts gathering
         pc_members = getattr(self._module, "_l2_pc_members", set())
 
-        self._skip_routed(wantd)
+        resets = {name: strip_defaults(want) for name, want in wantd.items()}
+        for have in haved.values():
+            strip_defaults(have)
+        self._check_switchports(wantd)
         user_provided_config = bool(wantd)
 
         for intf_name in list(wantd.keys()):
@@ -208,7 +252,7 @@ class L2_interfaces(ResourceModule):
                 if have.get("trunk", {}).get("allowed_vlans_implicit"):
                     if k in wantd and wantd[k].get("trunk", {}).get("allowed_vlans"):
                         have.get("trunk", {}).pop("allowed_vlans", None)
-            wantd = dict_merge(self._without_replaced_storm(haved, wantd), wantd)
+            wantd = dict_merge(self._without_reset(haved, resets), wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
@@ -243,26 +287,51 @@ class L2_interfaces(ResourceModule):
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
-    def _skip_routed(self, wantd):
-        """Spanning-tree and storm-control are not configurable on layer-3 ports, leave those alone."""
-        for name in getattr(self._module, "_l2_routed", set()):
-            want = wantd.get(name, {})
-            ignored = [want.pop("spanning_tree", None), want.pop("storm_control", None)]
-            if any(ignored):
-                self._module.warn(
-                    "Interface {0} is a layer-3 port, spanning_tree and storm_control are ignored.".format(
-                        name,
-                    ),
+    def get_switchport_defaults(self):
+        """Wrapper method for `_connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return self._connection.get(SWITCHPORT_DEFAULT)
+
+    def _default_is_layer2(self):
+        """Whether ports are switchports unless configured otherwise; unknown counts as layer 3."""
+        found = re.search(
+            r"^(no )?system default switchport$",
+            self.get_switchport_defaults(),
+            re.M,
+        )
+        return bool(found) and not found.group(1)
+
+    def _check_switchports(self, wantd):
+        """Fail before any command is sent when spanning_tree / storm_control target a port
+        that is not a confirmed switchport: the interface commands do not exist on a routed port.
+        """
+        if self.state not in ("merged", "replaced", "overridden"):
+            return
+        names = [
+            n for n, want in wantd.items() if want.get("spanning_tree") or want.get("storm_control")
+        ]
+        if not names:
+            return
+        routed = getattr(self._module, "_l2_routed", set())
+        switchports = getattr(self._module, "_l2_switchports", set())
+        default_layer2 = self._default_is_layer2()
+        for name in names:
+            confirmed = name in switchports or (default_layer2 and name not in routed)
+            if not confirmed or not name.lower().startswith(SWITCHPORT_TYPES):
+                self._module.fail_json(
+                    msg="Interface {0} is not a switchport or port-channel in switchport mode. "
+                    "spanning_tree and storm_control can only be configured on layer-2 interfaces, "
+                    "configure 'switchport' on the interface first.".format(name),
                 )
 
     @staticmethod
-    def _without_replaced_storm(haved, wantd):
-        """Copy of have without the traffic types that want sets, as level and pps replace each other."""
+    def _without_reset(haved, resets):
+        """Copy of have without the values that want sets to their default, so merged resets them."""
         base = deepcopy(haved)
-        for name, want in wantd.items():
-            storm = base.get(name, {}).get("storm_control", {})
-            for traffic in want.get("storm_control", {}):
-                storm.pop(traffic, None)
+        for name, paths in resets.items():
+            for section, key in paths:
+                base.get(name, {}).get(section, {}).pop(key, None)
         return base
 
     def _compare_keyed(self, want, have):
