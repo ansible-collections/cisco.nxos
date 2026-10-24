@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_evpn_vnis parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided EVPN VNI configuration
+  register: result
+  cisco.nxos.nxos_evpn_vnis:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that:
+      - merged['before'] == result['parsed']

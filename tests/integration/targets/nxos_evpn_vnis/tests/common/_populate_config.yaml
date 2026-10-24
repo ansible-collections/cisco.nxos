@@ -1,0 +1,28 @@
+---
+- name: Ensure feature nv overlay for EVPN fixture populate
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: enabled
+
+- name: Ensure nv overlay evpn for EVPN fixture populate
+  cisco.nxos.nxos_evpn_global:
+    nv_overlay_evpn: true
+
+- name: Populate the EVPN VNI 10100
+  cisco.nxos.nxos_config:
+    lines:
+      - rd auto
+      - route-target import auto
+      - route-target export auto
+    parents:
+      - evpn
+      - vni 10100 l2
+
+- name: Populate the EVPN VNI 10200
+  cisco.nxos.nxos_config:
+    lines:
+      - rd 65000:10200
+      - route-target import 65000:10200
+    parents:
+      - evpn
+      - vni 10200 l2

@@ -1,0 +1,12 @@
+evpn
+  vni 10100 l2
+    rd auto
+    route-target import 65000:10100
+    route-target import auto
+    route-target export 65000:10100
+    route-target export auto
+  vni 10200 l2
+    rd 65000:10200
+    route-target import 65000:10200
+  vni 10300 l2
+    rd auto
