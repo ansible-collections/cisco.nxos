@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This module manages the global IGMP snooping configuration and the static groups of the per-VLAN snooping context (``vlan configuration <id>``) on devices running Cisco NX-OS.
+- This module manages the global IGMP snooping configuration and the IGMP snooping settings of the per-VLAN context (``vlan configuration <id>``), including static groups, multicast router ports, the querier and report policies, on devices running Cisco NX-OS.
 
 
 
@@ -86,7 +86,23 @@ Parameters
                         <div>Group membership timeout for all VLANs on the device (<code>ip igmp snooping group-timeout</code>).</div>
                         <div>Accepted values are an integer in the range 1-10080 (minutes) and <code>never</code>.</div>
                         <div>It is removed by <em>state</em> <code>deleted</code>, and by <em>state</em> <code>replaced</code> and <code>overridden</code> when it is not given.</div>
-                        <div>It cannot be set while <em>snooping</em> is, or is being set to, <code>false</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>holddown_timer</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Hold-down timer in seconds (<code>ip igmp snooping holddown-timer</code>), in the range 1-300.</div>
+                        <div>Defaults to <code>210</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -110,6 +126,80 @@ Parameters
                         <div>Defaults to <code>true</code>.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>max_gq_miss</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Number of general queries without an answer after which the mrouter port is removed (<code>ip igmp snooping max-gq-miss</code>), in the range 3-5.</div>
+                        <div>Defaults to <code>3</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>proxy</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IGMP snooping proxy for general queries (<code>ip igmp snooping proxy general-queries</code>).</div>
+                        <div>Removed by <em>state</em> <code>replaced</code> and <code>overridden</code> when it is not given.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>general_queries</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables (<code>true</code>) or removes (<code>false</code>) the proxy.</div>
+                        <div>Required when <em>mrt</em> is given.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mrt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Maximum response time in seconds (<code>mrt</code>), in the range 1-25.</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
@@ -156,6 +246,23 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>syslog_threshold</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Percentage of the multicast table size at which a syslog message is raised (<code>ip igmp snooping syslog-threshold</code>), in the range 1-100.</div>
+                        <div>Defaults to <code>90</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>v3_report_suppression</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -188,11 +295,586 @@ Parameters
                 </td>
                 <td>
                         <div>The VLANs with a <code>vlan configuration</code> block.</div>
-                        <div>With <em>state</em> <code>replaced</code> the static groups of a listed VLAN are made identical to the ones given, VLANs that are not listed are left alone.</div>
+                        <div>With <em>state</em> <code>replaced</code> the settings of a listed VLAN are made identical to the ones given, VLANs that are not listed are left alone.</div>
                         <div>With <em>state</em> <code>overridden</code> the VLANs that are not listed are removed.</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>access_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Group access filters (<code>ip igmp snooping access-group</code>).</div>
+                        <div>Without <em>interface</em> the line is <code>ip igmp snooping access-group &lt;route-map&gt;</code>, which is only possible for a <code>route_map</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The interface the policy applies to. Required for a <code>prefix_list</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The name of the route-map or prefix-list. It does not have to exist.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>policy_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>route_map</li>
+                                    <li>prefix_list</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>The kind of policy.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>explicit_tracking</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Explicit host tracking for IGMPv3 (<code>ip igmp snooping explicit-tracking</code>). Defaults to <code>true</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>fast_leave</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Fast leave (<code>ip igmp snooping fast-leave</code>). Defaults to <code>false</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>group_timeout</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Group membership timeout of the VLAN (<code>ip igmp snooping group-timeout</code>), 1-10080 minutes or <code>never</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>last_member_query_interval</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Last member query interval in seconds (<code>ip igmp snooping last-member-query-interval</code>), in the range 1-25. Defaults to <code>1</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>link_local_groups_suppression</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Link-local groups suppression of the VLAN. Defaults to <code>true</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mrouter_interfaces</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Static multicast router ports (<code>ip igmp snooping mrouter interface</code>).</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>proxy</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IGMP snooping proxy for general queries of the VLAN (<code>ip igmp snooping proxy general-queries</code>).</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>general_queries</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables (<code>true</code>) or removes (<code>false</code>) the proxy. Required when <em>mrt</em> is given.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mrt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Maximum response time in seconds, in the range 1-25.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>proxy_leave_use_group_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Use the group address in proxy leaves (<code>ip igmp snooping proxy-leave use-group-address</code>). Defaults to <code>false</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>querier</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The IPv4 source address of the IGMP snooping querier (<code>ip igmp snooping querier</code>).</div>
+                        <div>The querier with the lowest address wins the election.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>querier_timeout</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Querier timeout in seconds (<code>ip igmp snooping querier-timeout</code>), in the range 1-65535. Defaults to <code>255</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>query_interval</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Query interval in seconds (<code>ip igmp snooping query-interval</code>), in the range 1-18000. Defaults to <code>125</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>query_max_response_time</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Maximum query response time in seconds (<code>ip igmp snooping query-max-response-time</code>), in the range 1-25. Defaults to <code>10</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>report_flood</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Floods the reports (<code>ip igmp snooping report-flood</code>) to all ports or to selected interfaces.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>all</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Flood the reports to all ports (<code>report-flood all</code>).</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interfaces</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Flood the reports to these interfaces (<code>report-flood interface</code>).</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>report_policy</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Report filters (<code>ip igmp snooping report-policy</code>) per interface.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The interface the policy applies to.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The name of the route-map or prefix-list. It does not have to exist.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>policy_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>route_map</li>
+                                    <li>prefix_list</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>The kind of policy.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>report_suppression</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>IGMPv1/IGMPv2 report suppression of the VLAN. Defaults to <code>true</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>robustness_variable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Robustness variable (<code>ip igmp snooping robustness-variable</code>), in the range 1-7. Defaults to <code>2</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>snooping</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables or disables IGMP snooping for the VLAN (<code>ip igmp snooping</code>). Defaults to <code>true</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>startup_query_count</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Number of queries sent at startup (<code>ip igmp snooping startup-query-count</code>), in the range 1-10.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>startup_query_interval</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interval of the startup queries in seconds (<code>ip igmp snooping startup-query-interval</code>), in the range 1-18000.</div>
+                </td>
+            </tr>
+            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
@@ -208,7 +890,6 @@ Parameters
                 </td>
                 <td>
                         <div>Static multicast groups of the VLAN (<code>ip igmp snooping static-group</code>).</div>
-                        <div>A VLAN without static groups has no <code>vlan configuration</code> block under <em>state</em> <code>replaced</code> and <code>overridden</code>.</div>
                 </td>
             </tr>
                                 <tr>
@@ -270,6 +951,44 @@ Parameters
                 </td>
             </tr>
 
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>v3_report_suppression</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>IGMPv3 report suppression of the VLAN. Defaults to <code>false</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>version</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IGMP version used by the snooping process (<code>ip igmp snooping version</code>), 2 or 3. Defaults to <code>3</code>.</div>
+                </td>
+            </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -355,7 +1074,7 @@ Parameters
                         <div>With <em>merged</em> what is given is added to the device, nothing is removed. A setting that is not given is not touched.</div>
                         <div>With <em>replaced</em> the global settings that are not given are reset to their default, the listed VLANs are made identical to the given ones and the other VLANs are not touched.</div>
                         <div>With <em>overridden</em> the same applies and the VLANs that are not listed are removed.</div>
-                        <div>With <em>deleted</em> and without <em>config</em> all global settings are reset to their default and all <code>vlan configuration</code> blocks are removed. With <em>config</em> the listed global settings are reset, a listed VLAN without <em>static_groups</em> is removed, and for a listed VLAN with <em>static_groups</em> only these are removed.</div>
+                        <div>With <em>deleted</em> and without <em>config</em> all global settings are reset to their default and all <code>vlan configuration</code> blocks are removed. With <em>config</em> the listed global settings are reset, a listed VLAN without any setting is removed, and for a listed VLAN with settings only these are removed.</div>
                         <div>With <em>gathered</em> the configuration is read from the device.</div>
                         <div>With <em>rendered</em> the commands for <em>config</em> are returned without connecting to the device.</div>
                         <div>With <em>parsed</em> <em>running_config</em> is returned as structured data.</div>
@@ -374,16 +1093,19 @@ Notes
    - This module was rewritten as a resource module. The former flat parameters and the ``present`` and ``default`` states are gone, use *config* with the *state* ``merged`` or ``deleted`` instead.
    - The IGMP snooping configuration must be identical on both vPC peers.
    - IGMP snooping over VXLAN is supported with BGP EVPN only, not with flood-and-learn, and not on VLANs with FEX member ports. The global *vxlan* setting (``ip igmp snooping vxlan``) must be enabled for snooping to be active on VXLAN VLANs.
-   - A VLAN without PIM needs an IGMP querier. The querier is not managed by this module.
+   - A VLAN without PIM needs an IGMP querier, configure it with *querier* of the VLAN.
    - The settings of a VLAN do not apply until the VLAN exists. NX-OS keeps a ``vlan configuration`` block when the VLAN itself is removed, use *state* ``deleted``, ``replaced`` or ``overridden`` to remove such blocks.
-   - NX-OS does not show a setting that has its default value in the running configuration. The facts therefore report every boolean setting with its effective value, which means that ``gathered`` and ``parsed`` return ``snooping``, ``link_local_groups_suppression``, ``report_suppression``, ``v3_report_suppression``, ``vxlan`` and ``disable_nve_static_router_port`` even when they are not configured. The group timeout is only returned when it is configured.
-   - The default values are ``snooping=true``, ``link_local_groups_suppression=true``, ``report_suppression=true``, ``v3_report_suppression=false``, ``vxlan=false``, ``disable_nve_static_router_port=false`` and no group timeout. Setting an option to its default value is a no-op when the device already has it.
-   - NX-OS rejects ``group-timeout`` while snooping is disabled. The module fails before changing anything when *group_timeout* is given and *snooping* is, or is becoming, ``false``. The group timeout is sent after the other global settings, except when it is removed because snooping is being disabled.
-   - Only the static groups of a VLAN are managed. A ``vlan configuration`` block with any other content is parsed as a VLAN without static groups. It is removed completely, together with that content, by ``deleted`` and ``overridden``, and by ``replaced`` when the listed VLAN has no *static_groups*.
+   - NX-OS does not show a setting that has its default value in the running configuration. The facts therefore report the global settings with their effective value, which means that ``gathered`` and ``parsed`` return ``snooping``, ``link_local_groups_suppression``, ``report_suppression``, ``v3_report_suppression``, ``vxlan``, ``disable_nve_static_router_port``, ``max_gq_miss``, ``syslog_threshold`` and ``holddown_timer`` even when they are not configured. The group timeout and the proxy are only returned when they are configured. The settings of a ``vlan configuration`` block are only returned when the block shows them; a value equal to the default is not shown by the device and counts as not set.
+   - The global defaults are ``snooping=true``, ``link_local_groups_suppression=true``, ``report_suppression=true``, ``v3_report_suppression=false``, ``vxlan=false``, ``disable_nve_static_router_port=false``, ``max_gq_miss=3``, ``syslog_threshold=90``, ``holddown_timer=210`` and no group timeout and no proxy. The defaults of a VLAN are ``snooping=true``, ``explicit_tracking=true``, ``link_local_groups_suppression=true``, ``report_suppression=true``, ``v3_report_suppression=false``, ``fast_leave=false``, ``querier_timeout=255``, ``query_interval=125``, ``query_max_response_time=10``, ``robustness_variable=2``, ``last_member_query_interval=1`` and ``version=3``. Setting an option to its default value removes its line from the configuration, and is a no-op when the device already has it.
+   - ``startup_query_count`` and ``startup_query_interval`` have no default, the device shows them as soon as they are configured.
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX, global and per VLAN, that every option is accepted, stored as written by the module, and removed again. The group timeout is accepted while snooping is disabled. The route-maps and prefix-lists of *report_policy* and *access_group* do not have to exist, and the interfaces of *mrouter_interfaces*, *report_flood*, *report_policy*, *access_group* and *static_groups* do not have to be members of the VLAN.
+   - The group timeout is sent after the other global settings, except when snooping ends up disabled.
+   - ``event-history`` (debug buffer sizes) and ``optimise-multicast-flood`` (not available on the tested platform) are not managed by this module.
+   - A ``vlan configuration`` block is managed completely. Under *state* ``replaced`` and ``overridden`` a listed VLAN gets exactly the given settings, the others return to the default, and a VLAN without any setting has no block. ``deleted`` and ``overridden`` remove the blocks, together with all content, of the VLANs they remove.
    - A static group is accepted and stored for any interface, but ``show ip igmp snooping groups vlan <id>`` only lists it (type S) when the interface is a member port of that VLAN.
    - ``state=deleted`` without *config* and ``state=overridden`` remove every ``vlan configuration`` block on the switch that is not listed, including blocks created by other tools or roles. Run the task in check mode first.
    - A ``vlan configuration`` block that is not for a single VLAN (for example a range) is ignored.
-   - A VLAN that is listed without *static_groups* is not created by ``merged``, because an empty ``vlan configuration`` block has no effect. It is reported by ``gathered`` when the device has one.
+   - A VLAN that is listed without any setting is not created by ``merged``, because an empty ``vlan configuration`` block has no effect. It is reported by ``gathered`` when the device has one.
    - Interface names are normalised before they are compared, so ``Eth1/10``, ``ethernet1/10`` and ``Ethernet1/10`` are the same, as are ``Po20`` and ``port-channel20``.
    - This module works with connection ``network_cli`` and ``httpapi``.
    - The *parsed* state reads configuration from *running_config* and does not connect to the device.
@@ -433,6 +1155,9 @@ Examples
     #   v3_report_suppression: false
     #   vxlan: false
     #   disable_nve_static_router_port: false
+    #   max_gq_miss: 3
+    #   syslog_threshold: 90
+    #   holddown_timer: 210
     # commands:
     #   - ip igmp snooping v3-report-suppression
     #   - ip igmp snooping vxlan
@@ -448,6 +1173,9 @@ Examples
     #   v3_report_suppression: true
     #   vxlan: true
     #   disable_nve_static_router_port: false
+    #   max_gq_miss: 3
+    #   syslog_threshold: 90
+    #   holddown_timer: 210
     #   group_timeout: "300"
     #   vlans:
     #     - vlan_id: 100
@@ -471,6 +1199,50 @@ Examples
     #   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
     #   ip igmp snooping static-group 233.252.0.10 interface port-channel20
     #   ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface Ethernet1/10
+
+    # Using merged with the per-VLAN settings
+
+    - name: Configure the querier, the router ports and the filters of a VLAN
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          max_gq_miss: 4
+          proxy:
+            general_queries: true
+            mrt: 8
+          vlans:
+            - vlan_id: 100
+              querier: 192.0.2.1
+              query_interval: 200
+              version: 2
+              fast_leave: true
+              mrouter_interfaces:
+                - Po20
+              report_flood:
+                interfaces:
+                  - Po20
+              report_policy:
+                - policy_type: route_map
+                  name: RM_REPORTS
+                  interface: Po20
+              access_group:
+                - policy_type: route_map
+                  name: RM_GROUPS
+        state: merged
+
+    # Task output:
+    # ------------
+    # commands:
+    #   - ip igmp snooping max-gq-miss 4
+    #   - ip igmp snooping proxy general-queries mrt 8
+    #   - vlan configuration 100
+    #   - ip igmp snooping mrouter interface port-channel20
+    #   - ip igmp snooping report-flood interface port-channel20
+    #   - ip igmp snooping report-policy route-map RM_REPORTS interface port-channel20
+    #   - ip igmp snooping access-group RM_GROUPS
+    #   - ip igmp snooping fast-leave
+    #   - ip igmp snooping query-interval 200
+    #   - ip igmp snooping version 2
+    #   - ip igmp snooping querier 192.0.2.1
 
     # Using replaced
 
@@ -650,6 +1422,9 @@ Examples
     #   v3_report_suppression: false
     #   vxlan: true
     #   disable_nve_static_router_port: false
+    #   max_gq_miss: 3
+    #   syslog_threshold: 90
+    #   holddown_timer: 210
     #   group_timeout: "300"
     #   vlans:
     #     - vlan_id: 100
@@ -681,6 +1456,9 @@ Examples
     #   v3_report_suppression: false
     #   vxlan: false
     #   disable_nve_static_router_port: false
+    #   max_gq_miss: 3
+    #   syslog_threshold: 90
+    #   holddown_timer: 210
     #   vlans:
     #     - vlan_id: 100
     #       static_groups:

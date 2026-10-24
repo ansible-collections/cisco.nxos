@@ -18,9 +18,9 @@ module: nxos_igmp_snooping
 version_added: 1.0.0
 short_description: IGMP snooping resource module.
 description:
-- This module manages the global IGMP snooping configuration and the static groups
-  of the per-VLAN snooping context (C(vlan configuration <id>)) on devices running
-  Cisco NX-OS.
+- This module manages the global IGMP snooping configuration and the IGMP snooping settings
+  of the per-VLAN context (C(vlan configuration <id>)), including static groups, multicast
+  router ports, the querier and report policies, on devices running Cisco NX-OS.
 notes:
 - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
 - Unsupported for Cisco MDS.
@@ -31,32 +31,45 @@ notes:
 - IGMP snooping over VXLAN is supported with BGP EVPN only, not with flood-and-learn,
   and not on VLANs with FEX member ports. The global I(vxlan) setting
   (C(ip igmp snooping vxlan)) must be enabled for snooping to be active on VXLAN VLANs.
-- A VLAN without PIM needs an IGMP querier. The querier is not managed by this module.
+- A VLAN without PIM needs an IGMP querier, configure it with I(querier) of the VLAN.
 - The settings of a VLAN do not apply until the VLAN exists. NX-OS keeps a
   C(vlan configuration) block when the VLAN itself is removed, use I(state) C(deleted),
   C(replaced) or C(overridden) to remove such blocks.
 - NX-OS does not show a setting that has its default value in the running configuration.
-  The facts therefore report every boolean setting with its effective value, which means
+  The facts therefore report the global settings with their effective value, which means
   that C(gathered) and C(parsed) return C(snooping), C(link_local_groups_suppression),
-  C(report_suppression), C(v3_report_suppression), C(vxlan) and
-  C(disable_nve_static_router_port) even when they are not configured. The group timeout is
-  only returned when it is configured.
-- The default values are C(snooping=true), C(link_local_groups_suppression=true),
+  C(report_suppression), C(v3_report_suppression), C(vxlan), C(disable_nve_static_router_port),
+  C(max_gq_miss), C(syslog_threshold) and C(holddown_timer) even when they are not configured.
+  The group timeout and the proxy are only returned when they are configured. The settings of a
+  C(vlan configuration) block are only returned when the block shows them; a value equal to the
+  default is not shown by the device and counts as not set.
+- The global defaults are C(snooping=true), C(link_local_groups_suppression=true),
   C(report_suppression=true), C(v3_report_suppression=false), C(vxlan=false),
-  C(disable_nve_static_router_port=false) and no group timeout. Setting an option to its default
-  value is a no-op when the device already has it.
-- NX-OS rejects C(group-timeout) while snooping is disabled. The module fails before changing anything
-  when I(group_timeout) is given and I(snooping) is, or is becoming, C(false). The group timeout
-  is sent after the other global settings, except when it is removed because snooping is being disabled.
-- Only the static groups of a VLAN are managed. A C(vlan configuration) block with any other
-  content is parsed as a VLAN without static groups. It is removed completely, together with that content,
-  by C(deleted) and C(overridden), and by C(replaced) when the listed VLAN has no I(static_groups).
+  C(disable_nve_static_router_port=false), C(max_gq_miss=3), C(syslog_threshold=90),
+  C(holddown_timer=210) and no group timeout and no proxy. The defaults of a VLAN are
+  C(snooping=true), C(explicit_tracking=true), C(link_local_groups_suppression=true),
+  C(report_suppression=true), C(v3_report_suppression=false), C(fast_leave=false),
+  C(querier_timeout=255), C(query_interval=125), C(query_max_response_time=10),
+  C(robustness_variable=2), C(last_member_query_interval=1) and C(version=3). Setting an option to
+  its default value removes its line from the configuration, and is a no-op when the device already has it.
+- C(startup_query_count) and C(startup_query_interval) have no default, the device shows them as soon as they are configured.
+- Tested against NX-OS 10.6(4) on N9K-C93180YC-FX, global and per VLAN, that every option is accepted, stored as
+  written by the module, and removed again. The group timeout is accepted while snooping is disabled.
+  The route-maps and prefix-lists of I(report_policy) and I(access_group) do not have to exist,
+  and the interfaces of I(mrouter_interfaces), I(report_flood), I(report_policy), I(access_group) and
+  I(static_groups) do not have to be members of the VLAN.
+- The group timeout is sent after the other global settings, except when snooping ends up disabled.
+- C(event-history) (debug buffer sizes) and C(optimise-multicast-flood) (not available on the tested platform)
+  are not managed by this module.
+- A C(vlan configuration) block is managed completely. Under I(state) C(replaced) and C(overridden) a listed
+  VLAN gets exactly the given settings, the others return to the default, and a VLAN without any setting has
+  no block. C(deleted) and C(overridden) remove the blocks, together with all content, of the VLANs they remove.
 - A static group is accepted and stored for any interface, but C(show ip igmp snooping groups vlan <id>)
   only lists it (type S) when the interface is a member port of that VLAN.
 - C(state=deleted) without I(config) and C(state=overridden) remove every C(vlan configuration) block on the
   switch that is not listed, including blocks created by other tools or roles. Run the task in check mode first.
 - A C(vlan configuration) block that is not for a single VLAN (for example a range) is ignored.
-- A VLAN that is listed without I(static_groups) is not created by C(merged),
+- A VLAN that is listed without any setting is not created by C(merged),
   because an empty C(vlan configuration) block has no effect. It is reported
   by C(gathered) when the device has one.
 - Interface names are normalised before they are compared, so C(Eth1/10),
@@ -96,7 +109,6 @@ options:
         - Accepted values are an integer in the range 1-10080 (minutes) and C(never).
         - It is removed by I(state) C(deleted), and by I(state) C(replaced) and C(overridden)
           when it is not given.
-        - It cannot be set while I(snooping) is, or is being set to, C(false).
         type: str
       link_local_groups_suppression:
         description:
@@ -124,10 +136,42 @@ options:
           (C(ip igmp snooping disable-nve-static-router-port)).
         - Defaults to C(false).
         type: bool
+      max_gq_miss:
+        description:
+        - Number of general queries without an answer after which the mrouter port is removed
+          (C(ip igmp snooping max-gq-miss)), in the range 3-5.
+        - Defaults to C(3).
+        type: int
+      syslog_threshold:
+        description:
+        - Percentage of the multicast table size at which a syslog message is raised
+          (C(ip igmp snooping syslog-threshold)), in the range 1-100.
+        - Defaults to C(90).
+        type: int
+      holddown_timer:
+        description:
+        - Hold-down timer in seconds (C(ip igmp snooping holddown-timer)), in the range 1-300.
+        - Defaults to C(210).
+        type: int
+      proxy:
+        description:
+        - IGMP snooping proxy for general queries (C(ip igmp snooping proxy general-queries)).
+        - Removed by I(state) C(replaced) and C(overridden) when it is not given.
+        type: dict
+        suboptions:
+          general_queries:
+            description:
+            - Enables (C(true)) or removes (C(false)) the proxy.
+            - Required when I(mrt) is given.
+            type: bool
+          mrt:
+            description:
+            - Maximum response time in seconds (C(mrt)), in the range 1-25.
+            type: int
       vlans:
         description:
         - The VLANs with a C(vlan configuration) block.
-        - With I(state) C(replaced) the static groups of a listed VLAN are made identical to the
+        - With I(state) C(replaced) the settings of a listed VLAN are made identical to the
           ones given, VLANs that are not listed are left alone.
         - With I(state) C(overridden) the VLANs that are not listed are removed.
         type: list
@@ -138,11 +182,158 @@ options:
             - The VLAN ID, in the range 1-4094.
             type: int
             required: true
+          snooping:
+            description:
+            - Enables or disables IGMP snooping for the VLAN (C(ip igmp snooping)). Defaults to C(true).
+            type: bool
+          group_timeout:
+            description:
+            - Group membership timeout of the VLAN (C(ip igmp snooping group-timeout)),
+              1-10080 minutes or C(never).
+            type: str
+          link_local_groups_suppression:
+            description:
+            - Link-local groups suppression of the VLAN. Defaults to C(true).
+            type: bool
+          report_suppression:
+            description:
+            - IGMPv1/IGMPv2 report suppression of the VLAN. Defaults to C(true).
+            type: bool
+          v3_report_suppression:
+            description:
+            - IGMPv3 report suppression of the VLAN. Defaults to C(false).
+            type: bool
+          explicit_tracking:
+            description:
+            - Explicit host tracking for IGMPv3 (C(ip igmp snooping explicit-tracking)). Defaults to C(true).
+            type: bool
+          fast_leave:
+            description:
+            - Fast leave (C(ip igmp snooping fast-leave)). Defaults to C(false).
+            type: bool
+          proxy:
+            description:
+            - IGMP snooping proxy for general queries of the VLAN (C(ip igmp snooping proxy general-queries)).
+            type: dict
+            suboptions:
+              general_queries:
+                description:
+                - Enables (C(true)) or removes (C(false)) the proxy. Required when I(mrt) is given.
+                type: bool
+              mrt:
+                description:
+                - Maximum response time in seconds, in the range 1-25.
+                type: int
+          proxy_leave_use_group_address:
+            description:
+            - Use the group address in proxy leaves (C(ip igmp snooping proxy-leave use-group-address)).
+              Defaults to C(false).
+            type: bool
+          querier:
+            description:
+            - The IPv4 source address of the IGMP snooping querier (C(ip igmp snooping querier)).
+            - The querier with the lowest address wins the election.
+            type: str
+          querier_timeout:
+            description:
+            - Querier timeout in seconds (C(ip igmp snooping querier-timeout)), in the range 1-65535. Defaults to C(255).
+            type: int
+          query_interval:
+            description:
+            - Query interval in seconds (C(ip igmp snooping query-interval)), in the range 1-18000. Defaults to C(125).
+            type: int
+          query_max_response_time:
+            description:
+            - Maximum query response time in seconds (C(ip igmp snooping query-max-response-time)),
+              in the range 1-25. Defaults to C(10).
+            type: int
+          startup_query_count:
+            description:
+            - Number of queries sent at startup (C(ip igmp snooping startup-query-count)), in the range 1-10.
+            type: int
+          startup_query_interval:
+            description:
+            - Interval of the startup queries in seconds (C(ip igmp snooping startup-query-interval)),
+              in the range 1-18000.
+            type: int
+          robustness_variable:
+            description:
+            - Robustness variable (C(ip igmp snooping robustness-variable)), in the range 1-7. Defaults to C(2).
+            type: int
+          last_member_query_interval:
+            description:
+            - Last member query interval in seconds (C(ip igmp snooping last-member-query-interval)),
+              in the range 1-25. Defaults to C(1).
+            type: int
+          version:
+            description:
+            - IGMP version used by the snooping process (C(ip igmp snooping version)), 2 or 3. Defaults to C(3).
+            type: int
+          mrouter_interfaces:
+            description:
+            - Static multicast router ports (C(ip igmp snooping mrouter interface)).
+            type: list
+            elements: str
+          report_flood:
+            description:
+            - Floods the reports (C(ip igmp snooping report-flood)) to all ports or to selected interfaces.
+            type: dict
+            suboptions:
+              all:
+                description:
+                - Flood the reports to all ports (C(report-flood all)).
+                type: bool
+              interfaces:
+                description:
+                - Flood the reports to these interfaces (C(report-flood interface)).
+                type: list
+                elements: str
+          report_policy:
+            description:
+            - Report filters (C(ip igmp snooping report-policy)) per interface.
+            type: list
+            elements: dict
+            suboptions:
+              policy_type:
+                description: The kind of policy.
+                type: str
+                required: true
+                choices:
+                - route_map
+                - prefix_list
+              name:
+                description: The name of the route-map or prefix-list. It does not have to exist.
+                type: str
+                required: true
+              interface:
+                description: The interface the policy applies to.
+                type: str
+                required: true
+          access_group:
+            description:
+            - Group access filters (C(ip igmp snooping access-group)).
+            - Without I(interface) the line is C(ip igmp snooping access-group <route-map>), which is
+              only possible for a C(route_map).
+            type: list
+            elements: dict
+            suboptions:
+              policy_type:
+                description: The kind of policy.
+                type: str
+                required: true
+                choices:
+                - route_map
+                - prefix_list
+              name:
+                description: The name of the route-map or prefix-list. It does not have to exist.
+                type: str
+                required: true
+              interface:
+                description: The interface the policy applies to. Required for a C(prefix_list).
+                type: str
           static_groups:
             description:
             - Static multicast groups of the VLAN (C(ip igmp snooping static-group)).
-            - A VLAN without static groups has no C(vlan configuration) block under I(state)
-              C(replaced) and C(overridden).
             type: list
             elements: dict
             suboptions:
@@ -174,8 +365,8 @@ options:
     - With I(overridden) the same applies and the VLANs that are not listed are removed.
     - With I(deleted) and without I(config) all global settings are reset to their default and
       all C(vlan configuration) blocks are removed. With I(config) the listed global settings
-      are reset, a listed VLAN without I(static_groups) is removed, and for a listed VLAN
-      with I(static_groups) only these are removed.
+      are reset, a listed VLAN without any setting is removed, and for a listed VLAN
+      with settings only these are removed.
     - With I(gathered) the configuration is read from the device.
     - With I(rendered) the commands for I(config) are returned without connecting to the device.
     - With I(parsed) I(running_config) is returned as structured data.
@@ -229,6 +420,9 @@ EXAMPLES = """
 #   v3_report_suppression: false
 #   vxlan: false
 #   disable_nve_static_router_port: false
+#   max_gq_miss: 3
+#   syslog_threshold: 90
+#   holddown_timer: 210
 # commands:
 #   - ip igmp snooping v3-report-suppression
 #   - ip igmp snooping vxlan
@@ -244,6 +438,9 @@ EXAMPLES = """
 #   v3_report_suppression: true
 #   vxlan: true
 #   disable_nve_static_router_port: false
+#   max_gq_miss: 3
+#   syslog_threshold: 90
+#   holddown_timer: 210
 #   group_timeout: "300"
 #   vlans:
 #     - vlan_id: 100
@@ -267,6 +464,50 @@ EXAMPLES = """
 #   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
 #   ip igmp snooping static-group 233.252.0.10 interface port-channel20
 #   ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface Ethernet1/10
+
+# Using merged with the per-VLAN settings
+
+- name: Configure the querier, the router ports and the filters of a VLAN
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      max_gq_miss: 4
+      proxy:
+        general_queries: true
+        mrt: 8
+      vlans:
+        - vlan_id: 100
+          querier: 192.0.2.1
+          query_interval: 200
+          version: 2
+          fast_leave: true
+          mrouter_interfaces:
+            - Po20
+          report_flood:
+            interfaces:
+              - Po20
+          report_policy:
+            - policy_type: route_map
+              name: RM_REPORTS
+              interface: Po20
+          access_group:
+            - policy_type: route_map
+              name: RM_GROUPS
+    state: merged
+
+# Task output:
+# ------------
+# commands:
+#   - ip igmp snooping max-gq-miss 4
+#   - ip igmp snooping proxy general-queries mrt 8
+#   - vlan configuration 100
+#   - ip igmp snooping mrouter interface port-channel20
+#   - ip igmp snooping report-flood interface port-channel20
+#   - ip igmp snooping report-policy route-map RM_REPORTS interface port-channel20
+#   - ip igmp snooping access-group RM_GROUPS
+#   - ip igmp snooping fast-leave
+#   - ip igmp snooping query-interval 200
+#   - ip igmp snooping version 2
+#   - ip igmp snooping querier 192.0.2.1
 
 # Using replaced
 
@@ -446,6 +687,9 @@ EXAMPLES = """
 #   v3_report_suppression: false
 #   vxlan: true
 #   disable_nve_static_router_port: false
+#   max_gq_miss: 3
+#   syslog_threshold: 90
+#   holddown_timer: 210
 #   group_timeout: "300"
 #   vlans:
 #     - vlan_id: 100
@@ -477,6 +721,9 @@ EXAMPLES = """
 #   v3_report_suppression: false
 #   vxlan: false
 #   disable_nve_static_router_port: false
+#   max_gq_miss: 3
+#   syslog_threshold: 90
+#   holddown_timer: 210
 #   vlans:
 #     - vlan_id: 100
 #       static_groups:

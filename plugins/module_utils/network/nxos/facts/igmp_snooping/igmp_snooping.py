@@ -36,6 +36,9 @@ GLOBAL_DEFAULTS = {
     "v3_report_suppression": False,
     "vxlan": False,
     "disable_nve_static_router_port": False,
+    "max_gq_miss": 3,
+    "syslog_threshold": 90,
+    "holddown_timer": 210,
 }
 
 _VLAN_HEADER = re.compile(r"^vlan\sconfiguration\s\d+$")
@@ -80,6 +83,15 @@ class Igmp_snoopingFacts(object):
         return "\n".join([global_cfg or "", vlans or ""])
 
     @staticmethod
+    def _policies(policies):
+        """The mapped route-map and prefix-list policies as a sorted list."""
+        result = sorted(
+            policies.values(),
+            key=lambda pol: (pol["policy_type"], pol["name"], pol.get("interface", "")),
+        )
+        return result
+
+    @staticmethod
     def _vlan_list(vlans):
         """Turn the parsed mappings into the argspec lists, in a stable order."""
         result = []
@@ -93,6 +105,13 @@ class Igmp_snoopingFacts(object):
                 group["interfaces"] = sorted(group["interfaces"])
             if groups:
                 vlan["static_groups"] = groups
+            if "mrouter_interfaces" in vlan:
+                vlan["mrouter_interfaces"] = sorted(vlan["mrouter_interfaces"])
+            if "report_flood" in vlan and "interfaces" in vlan["report_flood"]:
+                vlan["report_flood"]["interfaces"] = sorted(vlan["report_flood"]["interfaces"])
+            for key in ("report_policy", "access_group"):
+                if key in vlan:
+                    vlan[key] = Igmp_snoopingFacts._policies(vlan[key])
             result.append(vlan)
         return result
 

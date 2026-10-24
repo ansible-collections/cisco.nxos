@@ -40,6 +40,42 @@ GROUP_TIMEOUT_NEVER = "never"
 GROUP_TIMEOUT_MAX = 10080
 VLAN_ID_MAX = 4094
 NO_VLAN_CONFIGURATION = "no vlan configuration {0}"
+PROXY = "proxy"
+
+# range of the numeric global settings
+GLOBAL_RANGES = {
+    "max_gq_miss": (3, 5),
+    "syslog_threshold": (1, 100),
+    "holddown_timer": (1, 300),
+}
+
+# on/off settings of a `vlan configuration` block with the value NX-OS assumes
+# when the block does not show the line
+VLAN_BOOLEANS = {
+    "snooping": True,
+    "link_local_groups_suppression": True,
+    "report_suppression": True,
+    "v3_report_suppression": False,
+    "explicit_tracking": True,
+    "fast_leave": False,
+    "proxy_leave_use_group_address": False,
+}
+
+# numeric settings of a block: (minimum, maximum, default), no default means
+# that the device does not show the setting until it is configured
+VLAN_NUMBERS = {
+    "querier_timeout": (1, 65535, 255),
+    "query_interval": (1, 18000, 125),
+    "query_max_response_time": (1, 25, 10),
+    "startup_query_count": (1, 10, None),
+    "startup_query_interval": (1, 18000, None),
+    "robustness_variable": (1, 7, 2),
+    "last_member_query_interval": (1, 25, 1),
+    "version": (2, 3, 3),
+}
+
+MRT_RANGE = (1, 25)
+POLICY_KEYWORDS = {"route_map": "route-map", "prefix_list": "prefix-list"}
 
 
 class Igmp_snooping(ResourceModule):
@@ -83,7 +119,6 @@ class Igmp_snooping(ResourceModule):
         else:
             targets = self._targets(want_globals)
 
-        self._check_group_timeout(targets, have_globals)
         self._global_commands(targets, have_globals)
 
         if self.state == "deleted":
@@ -94,20 +129,49 @@ class Igmp_snooping(ResourceModule):
     # normalisation
 
     def _normalize(self, cfg):
-        """Return the global settings and the VLANs as {vlan_id: {(group, source): [interfaces]}}."""
+        """Return the global settings and the VLANs as {vlan_id: {"values": {...}, "items": {...}}}."""
         cfg = cfg or {}
-        settings = {k: v for k, v in cfg.items() if k != "vlans" and v is not None}
+        settings = {k: v for k, v in cfg.items() if k not in ("vlans", PROXY) and v is not None}
+        self._check_numbers(settings, GLOBAL_RANGES)
         if GROUP_TIMEOUT in settings:
             settings[GROUP_TIMEOUT] = self._group_timeout(settings[GROUP_TIMEOUT])
+        self._add_proxy(settings, cfg.get(PROXY))
 
         vlans = {}
         for vlan in cfg.get("vlans") or []:
             self._check_vlan_id(vlan["vlan_id"])
-            groups = vlans.setdefault(vlan["vlan_id"], {})
-            for key, interfaces in self._groups(vlan.get("static_groups")).items():
-                known = groups.setdefault(key, [])
-                known.extend(i for i in interfaces if i not in known)
+            known = vlans.setdefault(vlan["vlan_id"], {"values": {}, "items": {}})
+            values, items = self._vlan(vlan)
+            known["values"].update(values)
+            known["items"].update(items)
         return settings, vlans
+
+    def _add_proxy(self, settings, proxy):
+        """proxy becomes False when it is switched off, otherwise {"mrt": n or None}."""
+        proxy = {k: v for k, v in (proxy or {}).items() if v is not None}
+        if not proxy:
+            return
+        if proxy.get("general_queries") is False:
+            if "mrt" in proxy:
+                self._module.fail_json(msg="proxy mrt cannot be combined with general_queries false")
+            settings[PROXY] = False
+        elif proxy.get("general_queries") is None:
+            self._module.fail_json(msg="proxy mrt requires general_queries: true")
+        else:
+            if "mrt" in proxy:
+                self._check_range("proxy mrt", proxy["mrt"], MRT_RANGE)
+            settings[PROXY] = {"mrt": proxy.get("mrt")}
+
+    def _check_range(self, what, value, limits):
+        if not limits[0] <= value <= limits[1]:
+            self._module.fail_json(
+                msg="{0} must be in the range {1}-{2}, got '{3}'".format(what, limits[0], limits[1], value),
+            )
+
+    def _check_numbers(self, values, limits):
+        for key, limit in limits.items():
+            if key in values:
+                self._check_range(key, values[key], limit[:2])
 
     def _group_timeout(self, value):
         text = str(value).strip().lower()
@@ -134,9 +198,30 @@ class Igmp_snooping(ResourceModule):
         except ValueError:
             self._module.fail_json(msg="{0} must be an IPv4 address, got '{1}'".format(what, value))
 
-    def _groups(self, static_groups):
-        """Map the static groups of a VLAN to {(group, source): [interfaces]}."""
-        result = {}
+    def _vlan(self, vlan):
+        """Split the settings of a VLAN into plain values and the lines it can have several of."""
+        values = {}
+        for key in list(VLAN_BOOLEANS) + list(VLAN_NUMBERS) + ["querier", GROUP_TIMEOUT]:
+            if vlan.get(key) is not None:
+                values[key] = vlan[key]
+        self._check_numbers(values, VLAN_NUMBERS)
+        if GROUP_TIMEOUT in values:
+            values[GROUP_TIMEOUT] = self._group_timeout(values[GROUP_TIMEOUT])
+        if "querier" in values:
+            values["querier"] = str(self._address(values["querier"], "querier"))
+        self._add_proxy(values, vlan.get(PROXY))
+
+        items = {}
+        self._static_group_items(items, vlan.get("static_groups"))
+        for name in vlan.get("mrouter_interfaces") or []:
+            name = normalize_interface(name)
+            items[("mrouter", name)] = ("mrouter", {"interface": name})
+        self._report_flood_items(items, vlan.get("report_flood"))
+        self._policy_items(items, vlan.get("report_policy"), "report_policy")
+        self._policy_items(items, vlan.get("access_group"), "access_group")
+        return values, items
+
+    def _static_group_items(self, items, static_groups):
         for entry in static_groups or []:
             group = self._address(entry["group"], "group")
             if not group.is_multicast:
@@ -146,12 +231,41 @@ class Igmp_snooping(ResourceModule):
             source = entry.get("source")
             if source:
                 source = str(self._address(source, "source"))
-            interfaces = result.setdefault((str(group), source or ""), [])
             for name in entry["interfaces"]:
                 name = normalize_interface(name)
-                if name not in interfaces:
-                    interfaces.append(name)
-        return result
+                data = {"group": str(group), "interface": name}
+                parser = "static_group"
+                if source:
+                    data["source"] = source
+                    parser = "static_group_source"
+                items[(parser, str(group), source or "", name)] = (parser, data)
+
+    @staticmethod
+    def _report_flood_items(items, report_flood):
+        report_flood = report_flood or {}
+        if report_flood.get("all"):
+            items[("report_flood_all",)] = ("report_flood_all", {})
+        for name in report_flood.get("interfaces") or []:
+            name = normalize_interface(name)
+            items[("report_flood_interface", name)] = ("report_flood_interface", {"interface": name})
+
+    def _policy_items(self, items, policies, kind):
+        for entry in policies or []:
+            policy_type = POLICY_KEYWORDS[entry["policy_type"]]
+            name = entry["name"]
+            interface = entry.get("interface")
+            if interface:
+                interface = normalize_interface(interface)
+                data = {"policy_type": policy_type, "name": name, "interface": interface}
+                parser = kind if kind == "report_policy" else "access_group_interface"
+            elif kind == "access_group" and policy_type == "route-map":
+                data = {"name": name}
+                parser = "access_group"
+            else:
+                self._module.fail_json(
+                    msg="{0} {1} requires an interface".format(kind, entry["policy_type"]),
+                )
+            items[(parser, policy_type, name, interface or "")] = (parser, data)
 
     # globals
 
@@ -163,7 +277,7 @@ class Igmp_snooping(ResourceModule):
         """
         if self.state in ["replaced", "overridden"]:
             targets = dict(GLOBAL_DEFAULTS)
-            targets[GROUP_TIMEOUT] = None
+            targets.update({GROUP_TIMEOUT: None, PROXY: False})
             targets.update(want)
             return targets
         return dict(want)
@@ -171,44 +285,58 @@ class Igmp_snooping(ResourceModule):
     @staticmethod
     def _deleted_targets(want, has_config):
         """Without config every setting is reset, otherwise the listed ones."""
-        scope = want if has_config else dict(GLOBAL_DEFAULTS, **{GROUP_TIMEOUT: None})
-        return {key: GLOBAL_DEFAULTS.get(key) for key in scope}
-
-    def _check_group_timeout(self, targets, have):
-        """The device rejects group-timeout while snooping is disabled."""
-        if targets.get(GROUP_TIMEOUT) is None:
-            return
-        if not self._final_snooping(targets, have):
-            self._module.fail_json(
-                msg="group_timeout cannot be set while snooping is, or is being set to, false",
-            )
-
-    @staticmethod
-    def _final_snooping(targets, have):
-        return targets.get("snooping", have.get("snooping", GLOBAL_DEFAULTS["snooping"]))
+        scope = want if has_config else dict(GLOBAL_DEFAULTS, **{GROUP_TIMEOUT: None, PROXY: False})
+        defaults = dict(GLOBAL_DEFAULTS, **{GROUP_TIMEOUT: None, PROXY: False})
+        return {key: defaults.get(key) for key in scope}
 
     def _global_commands(self, targets, have):
-        """Booleans first, group-timeout last (it is rejected while snooping is
-        disabled), except when it is removed because snooping is being turned off.
+        """group-timeout is sent after the other settings, except when snooping ends up
+        disabled, then it goes first.
         """
-        for key in GLOBAL_DEFAULTS:
-            if key in targets and targets[key] != have.get(key):
-                self.addcmd({}, key, not targets[key])
+        for key, default in GLOBAL_DEFAULTS.items():
+            if key in targets:
+                self._value_command(key, key, targets[key], have.get(key), default)
+        if PROXY in targets:
+            self._proxy_command("", targets[PROXY], have.get(PROXY, False), self.commands)
+        if GROUP_TIMEOUT in targets:
+            timeout = []
+            self._value_command(
+                GROUP_TIMEOUT,
+                GROUP_TIMEOUT,
+                targets[GROUP_TIMEOUT],
+                have.get(GROUP_TIMEOUT),
+                None,
+                timeout,
+            )
+            snooping = targets.get("snooping", have.get("snooping", GLOBAL_DEFAULTS["snooping"]))
+            if snooping:
+                self.commands.extend(timeout)
+            else:
+                self.commands[:0] = timeout
 
-        if GROUP_TIMEOUT not in targets:
-            return
-        commands = self._group_timeout_commands(targets[GROUP_TIMEOUT], have.get(GROUP_TIMEOUT))
-        if self._final_snooping(targets, have):
-            self.commands.extend(commands)
-        else:
-            self.commands[:0] = commands
-
-    def _group_timeout_commands(self, target, current):
-        if target == current:
-            return []
+    def _value_command(self, key, parser, target, current, default, commands=None):
+        """Set key to target; target equal to the default removes the line the device shows."""
+        commands = self.commands if commands is None else commands
         if target is None:
-            return [self._tmplt.render({GROUP_TIMEOUT: current}, GROUP_TIMEOUT, True)]
-        return [self._tmplt.render({GROUP_TIMEOUT: target}, GROUP_TIMEOUT, False)]
+            target = default
+        if target == current:
+            return
+        if isinstance(target, bool):
+            commands.append(self._tmplt.render({key: target}, parser, not target))
+        elif target == default and current is not None:
+            commands.append(self._tmplt.render({key: current}, parser, True))
+        else:
+            commands.append(self._tmplt.render({key: target}, parser, False))
+
+    def _proxy_command(self, prefix, target, current, commands):
+        if target == current:
+            return
+        if target is False:
+            commands.append(self._tmplt.render({}, prefix + PROXY, True))
+        elif target.get("mrt") is None:
+            commands.append(self._tmplt.render({}, prefix + PROXY, False))
+        else:
+            commands.append(self._tmplt.render({PROXY: target}, prefix + "proxy_mrt", False))
 
     # VLANs
 
@@ -217,12 +345,12 @@ class Igmp_snooping(ResourceModule):
         VLANs identical to want, overridden also drops the unlisted ones.
         """
         prune = self.state in ["replaced", "overridden"]
-        for vlan_id, groups in want.items():
-            if prune and not groups:
+        for vlan_id, wanted in want.items():
+            if prune and not wanted["values"] and not wanted["items"]:
                 # an empty want means no block at all
                 self._remove_block(vlan_id, have)
             else:
-                self._vlan_block(vlan_id, groups, have.get(vlan_id, {}), prune)
+                self._vlan_block(vlan_id, wanted, have.get(vlan_id), prune)
 
         if self.state == "overridden":
             for vlan_id in [v for v in have if v not in want]:
@@ -234,51 +362,65 @@ class Igmp_snooping(ResourceModule):
 
     def _vlan_block(self, vlan_id, want, have, prune):
         """The block is only entered when it has something to change."""
+        have = have or {"values": {}, "items": {}}
         lines = []
         if prune:
-            lines.extend(self._group_lines(have, want, True))
-        lines.extend(self._group_lines(want, have, False))
+            lines.extend(self._item_lines(have["items"], want["items"], True))
+        lines.extend(self._item_lines(want["items"], have["items"], False))
+        self._value_lines(lines, want["values"], have["values"], prune)
+        self._enter(vlan_id, lines)
+
+    def _enter(self, vlan_id, lines):
         if lines:
             self.commands.append(self._tmplt.render({"vlan_id": vlan_id}, "vlan", False))
             self.commands.extend(lines)
 
-    def _group_lines(self, source, other, negate):
-        """Commands for the (group, source, interface) triplets of source missing in other."""
-        lines = []
-        for (group, src), interfaces in source.items():
-            for interface in interfaces:
-                if interface not in other.get((group, src), []):
-                    data = {"group": group, "interface": interface}
-                    parser = "static_group"
-                    if src:
-                        data["source"] = src
-                        parser = "static_group_source"
-                    lines.append(self._tmplt.render(data, parser, negate))
-        return lines
+    def _item_lines(self, source, other, negate):
+        """Commands for the lines of source that other does not have."""
+        return [
+            self._tmplt.render(data, parser, negate)
+            for key, (parser, data) in source.items()
+            if key not in other
+        ]
+
+    def _value_lines(self, lines, want, have, prune):
+        """Commands for the plain settings. Settings missing from want keep their
+        value, except for replaced and overridden where they return to the default.
+        """
+        defaults = {key: default for key, default in VLAN_BOOLEANS.items()}
+        defaults.update({key: limits[2] for key, limits in VLAN_NUMBERS.items()})
+        defaults.update({"querier": None, GROUP_TIMEOUT: None})
+        for key, default in defaults.items():
+            if key not in want and not prune:
+                continue
+            current = have.get(key) if self.state == "rendered" else have.get(key, default)
+            self._value_command(key, "vlan_" + key, want.get(key), current, default, lines)
+        if PROXY in want or prune:
+            self._proxy_command("vlan_", want.get(PROXY, False), have.get(PROXY, False), lines)
 
     def _deleted_vlans(self, want, have, has_config):
-        """A listed VLAN without static groups is removed as a whole, one with
-        static groups only loses those groups. Without config all of them go.
+        """A listed VLAN without settings is removed as a whole, one with
+        settings only loses those. Without config all of them go.
         """
         if not has_config:
-            want = {vlan_id: {} for vlan_id in have}
-        for vlan_id, groups in want.items():
+            want = {vlan_id: {"values": {}, "items": {}} for vlan_id in have}
+        for vlan_id, wanted in want.items():
             if vlan_id not in have:
                 continue
-            if not groups:
+            if not wanted["values"] and not wanted["items"]:
                 self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
                 continue
-            lines = self._group_lines(self._common(groups, have[vlan_id]), {}, True)
-            if lines:
-                self.commands.append(self._tmplt.render({"vlan_id": vlan_id}, "vlan", False))
-                self.commands.extend(lines)
+            present = {key: item for key, item in wanted["items"].items() if key in have[vlan_id]["items"]}
+            lines = self._item_lines(present, {}, True)
+            targets = {key: self._vlan_default(key) for key in wanted["values"]}
+            self._value_lines(lines, targets, have[vlan_id]["values"], False)
+            self._enter(vlan_id, lines)
 
     @staticmethod
-    def _common(want, have):
-        """The (group, source, interface) triplets of want that exist in have."""
-        common = {}
-        for key, interfaces in want.items():
-            present = [i for i in interfaces if i in have.get(key, [])]
-            if present:
-                common[key] = present
-        return common
+    def _vlan_default(key):
+        """The value of a plain setting after its line is removed."""
+        if key in VLAN_BOOLEANS:
+            return VLAN_BOOLEANS[key]
+        if key in VLAN_NUMBERS:
+            return VLAN_NUMBERS[key][2]
+        return False if key == PROXY else None
