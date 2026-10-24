@@ -37,3 +37,7 @@ all:
           hosts:
             cisshgo-igmp_snooping-deleted_all:
               ansible_port: 10005
+        nxos_igmp_snooping_options:
+          hosts:
+            cisshgo-igmp_snooping-options:
+              ansible_port: 10006

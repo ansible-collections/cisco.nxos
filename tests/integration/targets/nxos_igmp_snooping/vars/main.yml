@@ -7,6 +7,9 @@ before:
   v3_report_suppression: true
   vxlan: true
   disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
   group_timeout: "300"
   vlans:
     - vlan_id: 100
@@ -32,6 +35,9 @@ defaults:
   v3_report_suppression: false
   vxlan: false
   disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
 
 merged:
   commands:
@@ -46,6 +52,9 @@ merged:
     v3_report_suppression: true
     vxlan: true
     disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
     group_timeout: "500"
     vlans:
       - vlan_id: 100
@@ -81,6 +90,9 @@ replaced:
     v3_report_suppression: false
     vxlan: true
     disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
     vlans:
       - vlan_id: 100
         static_groups:
@@ -107,6 +119,9 @@ overridden:
     v3_report_suppression: false
     vxlan: true
     disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
     vlans:
       - vlan_id: 100
         static_groups:
@@ -134,6 +149,9 @@ deleted:
     v3_report_suppression: true
     vxlan: true
     disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
     vlans:
       - vlan_id: 100
         static_groups:
@@ -159,6 +177,9 @@ parsed:
   v3_report_suppression: false
   vxlan: true
   disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
   group_timeout: "300"
   vlans:
     - vlan_id: 100

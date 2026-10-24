@@ -43,6 +43,9 @@ DEFAULTS = dict(
     v3_report_suppression=False,
     vxlan=False,
     disable_nve_static_router_port=False,
+    max_gq_miss=3,
+    syslog_threshold=90,
+    holddown_timer=210,
 )
 
 # the settings at their defaults are not shown by the device
@@ -106,7 +109,80 @@ GROUP_11_PO = (
 )
 GROUP_TIMEOUT_300 = "ip igmp snooping group-timeout 300"
 NO_GROUP_TIMEOUT_300 = "no ip igmp snooping group-timeout 300"
-GT_FAIL = "group_timeout cannot be set while snooping is, or is being set to, false"
+
+
+FULL_VLAN_CLI = dedent(
+    """\
+    vlan configuration 100
+      no ip igmp snooping
+      no ip igmp snooping explicit-tracking
+      no ip igmp snooping link-local-groups-suppression
+      no ip igmp snooping report-suppression
+      ip igmp snooping v3-report-suppression
+      ip igmp snooping fast-leave
+      ip igmp snooping group-timeout 300
+      ip igmp snooping proxy general-queries mrt 8
+      ip igmp snooping proxy-leave use-group-address
+      ip igmp snooping querier 192.0.2.1
+      ip igmp snooping querier-timeout 300
+      ip igmp snooping query-interval 200
+      ip igmp snooping query-max-response-time 15
+      ip igmp snooping startup-query-count 4
+      ip igmp snooping startup-query-interval 100
+      ip igmp snooping robustness-variable 3
+      ip igmp snooping last-member-query-interval 2
+      ip igmp snooping version 2
+      ip igmp snooping mrouter interface port-channel20
+      ip igmp snooping mrouter interface Ethernet1/10
+      ip igmp snooping report-flood all
+      ip igmp snooping report-flood interface port-channel20
+      ip igmp snooping report-policy route-map RM_ONE interface port-channel20
+      ip igmp snooping report-policy prefix-list PL_ONE interface Ethernet1/10
+      ip igmp snooping access-group RM_TWO
+      ip igmp snooping access-group prefix-list PL_TWO interface port-channel20
+      ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
+    """,
+)
+FULL_VLAN_FACTS = dict(
+    vlan_id=100,
+    snooping=False,
+    explicit_tracking=False,
+    link_local_groups_suppression=False,
+    report_suppression=False,
+    v3_report_suppression=True,
+    fast_leave=True,
+    group_timeout="300",
+    proxy=dict(general_queries=True, mrt=8),
+    proxy_leave_use_group_address=True,
+    querier="192.0.2.1",
+    querier_timeout=300,
+    query_interval=200,
+    query_max_response_time=15,
+    startup_query_count=4,
+    startup_query_interval=100,
+    robustness_variable=3,
+    last_member_query_interval=2,
+    version=2,
+    mrouter_interfaces=["Ethernet1/10", "port-channel20"],
+    report_flood=dict(all=True, interfaces=["port-channel20"]),
+    report_policy=[
+        dict(policy_type="prefix_list", name="PL_ONE", interface="Ethernet1/10"),
+        dict(policy_type="route_map", name="RM_ONE", interface="port-channel20"),
+    ],
+    access_group=[
+        dict(policy_type="prefix_list", name="PL_TWO", interface="port-channel20"),
+        dict(policy_type="route_map", name="RM_TWO"),
+    ],
+    static_groups=[dict(group="233.252.0.10", interfaces=["Ethernet1/10"])],
+)
+FULL_GLOBAL_CLI = dedent(
+    """\
+    ip igmp snooping max-gq-miss 4
+    ip igmp snooping syslog-threshold 70
+    ip igmp snooping holddown-timer 100
+    ip igmp snooping proxy general-queries
+    """,
+)
 
 
 def _vlan(vlan_id, group, interfaces, source=None):
@@ -118,6 +194,7 @@ def _vlan(vlan_id, group, interfaces, source=None):
 
 class TestNxosIgmpSnoopingModule(TestNxosModule):
     module = nxos_igmp_snooping
+    maxDiff = None
 
     def setUp(self):
         super(TestNxosIgmpSnoopingModule, self).setUp()
@@ -254,8 +331,11 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         self.assertEqual(result["rendered"], [])
 
     def test_nxos_igmp_snooping_rendered_group_timeout_with_snooping_disabled(self):
-        result = self._fail(config=dict(snooping=False, group_timeout="10"), state="rendered")
-        self.assertEqual(result["msg"], GT_FAIL)
+        result = self._run(False, config=dict(snooping=False, group_timeout="10"), state="rendered")
+        self.assertEqual(
+            result["rendered"],
+            ["ip igmp snooping group-timeout 10", "no ip igmp snooping"],
+        )
 
     # merged
 
@@ -411,13 +491,16 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
 
     def test_nxos_igmp_snooping_group_timeout_with_snooping_false(self):
         self.get_config.return_value = ""
-        result = self._fail(config=dict(snooping=False, group_timeout="10"), state="merged")
-        self.assertEqual(result["msg"], GT_FAIL)
+        result = self._run(True, config=dict(snooping=False, group_timeout="10"), state="merged")
+        self.assertEqual(
+            result["commands"],
+            ["ip igmp snooping group-timeout 10", "no ip igmp snooping"],
+        )
 
     def test_nxos_igmp_snooping_group_timeout_with_snooping_disabled_on_device(self):
         self.get_config.return_value = "no ip igmp snooping\n"
-        result = self._fail(config=dict(group_timeout="never"), state="merged")
-        self.assertEqual(result["msg"], GT_FAIL)
+        result = self._run(True, config=dict(group_timeout="never"), state="merged")
+        self.assertEqual(result["commands"], ["ip igmp snooping group-timeout never"])
 
     def test_nxos_igmp_snooping_group_timeout_snooping_enabled_by_want(self):
         self.get_config.return_value = "no ip igmp snooping\n"
@@ -426,11 +509,6 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             result["commands"],
             ["ip igmp snooping", "ip igmp snooping group-timeout 10"],
         )
-
-    def test_nxos_igmp_snooping_group_timeout_with_snooping_false_replaced(self):
-        self.get_config.return_value = BASE
-        result = self._fail(config=dict(snooping=False, group_timeout="10"), state="replaced")
-        self.assertEqual(result["msg"], GT_FAIL)
 
     def test_nxos_igmp_snooping_group_timeout_invalid_values(self):
         self.get_config.return_value = ""
@@ -730,6 +808,324 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             state="deleted",
         )
         self.assertEqual(result["commands"], [VLAN_100, "no " + GROUP_11_PO])
+
+    # full option surface
+
+    def test_full_vlan_parsed(self):
+        result = self._run(False, running_config=FULL_VLAN_CLI, state="parsed")
+        self.assertEqual(result["parsed"], dict(DEFAULTS, vlans=[FULL_VLAN_FACTS]))
+
+    def test_full_vlan_gathered_round_trip_is_idempotent(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        for state in ["merged", "replaced", "overridden"]:
+            self._run(False, config=dict(vlans=[FULL_VLAN_FACTS]), state=state)
+
+    def test_full_global_parsed(self):
+        result = self._run(False, running_config=FULL_GLOBAL_CLI, state="parsed")
+        self.assertEqual(
+            result["parsed"],
+            dict(
+                DEFAULTS,
+                max_gq_miss=4,
+                syslog_threshold=70,
+                holddown_timer=100,
+                proxy=dict(general_queries=True),
+            ),
+        )
+
+    def test_full_global_idempotent(self):
+        self.get_config.return_value = FULL_GLOBAL_CLI
+        config = dict(max_gq_miss=4, syslog_threshold=70, holddown_timer=100, proxy=dict(general_queries=True))
+        self._run(False, config=config, state="merged")
+        self._run(False, config=config, state="replaced")
+
+    def test_global_merged_commands(self):
+        self.get_config.return_value = ""
+        result = self._run(
+            True,
+            config=dict(
+                max_gq_miss=5,
+                syslog_threshold=50,
+                holddown_timer=300,
+                proxy=dict(general_queries=True, mrt=8),
+            ),
+            state="merged",
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "ip igmp snooping max-gq-miss 5",
+                "ip igmp snooping syslog-threshold 50",
+                "ip igmp snooping holddown-timer 300",
+                "ip igmp snooping proxy general-queries mrt 8",
+            ],
+        )
+
+    def test_global_default_value_removes_the_line(self):
+        self.get_config.return_value = FULL_GLOBAL_CLI
+        result = self._run(
+            True,
+            config=dict(max_gq_miss=3, holddown_timer=210, proxy=dict(general_queries=False)),
+            state="merged",
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "no ip igmp snooping max-gq-miss 4",
+                "no ip igmp snooping holddown-timer 100",
+                "no ip igmp snooping proxy general-queries",
+            ],
+        )
+
+    def test_global_replaced_resets_unlisted(self):
+        self.get_config.return_value = FULL_GLOBAL_CLI
+        result = self._run(True, config=dict(syslog_threshold=70), state="replaced")
+        self.assertEqual(
+            result["commands"],
+            [
+                "no ip igmp snooping max-gq-miss 4",
+                "no ip igmp snooping holddown-timer 100",
+                "no ip igmp snooping proxy general-queries",
+            ],
+        )
+
+    def test_global_deleted_resets_everything(self):
+        self.get_config.return_value = FULL_GLOBAL_CLI
+        result = self._run(True, state="deleted")
+        self.assertEqual(
+            result["commands"],
+            [
+                "no ip igmp snooping max-gq-miss 4",
+                "no ip igmp snooping syslog-threshold 70",
+                "no ip igmp snooping holddown-timer 100",
+                "no ip igmp snooping proxy general-queries",
+            ],
+        )
+
+    def test_global_proxy_mrt_change(self):
+        self.get_config.return_value = "ip igmp snooping proxy general-queries mrt 8\n"
+        result = self._run(
+            True,
+            config=dict(proxy=dict(general_queries=True, mrt=10)),
+            state="merged",
+        )
+        self.assertEqual(result["commands"], ["ip igmp snooping proxy general-queries mrt 10"])
+
+    def test_vlan_merged_from_nothing(self):
+        self.get_config.return_value = ""
+        result = self._run(True, config=dict(vlans=[FULL_VLAN_FACTS]), state="merged")
+        self.assertEqual(
+            result["commands"],
+            [
+                VLAN_100,
+                GROUP_10_ETH,
+                "ip igmp snooping mrouter interface Ethernet1/10",
+                "ip igmp snooping mrouter interface port-channel20",
+                "ip igmp snooping report-flood all",
+                "ip igmp snooping report-flood interface port-channel20",
+                "ip igmp snooping report-policy prefix-list PL_ONE interface Ethernet1/10",
+                "ip igmp snooping report-policy route-map RM_ONE interface port-channel20",
+                "ip igmp snooping access-group prefix-list PL_TWO interface port-channel20",
+                "ip igmp snooping access-group RM_TWO",
+                "no ip igmp snooping",
+                "no ip igmp snooping link-local-groups-suppression",
+                "no ip igmp snooping report-suppression",
+                "ip igmp snooping v3-report-suppression",
+                "no ip igmp snooping explicit-tracking",
+                "ip igmp snooping fast-leave",
+                "ip igmp snooping proxy-leave use-group-address",
+                "ip igmp snooping querier-timeout 300",
+                "ip igmp snooping query-interval 200",
+                "ip igmp snooping query-max-response-time 15",
+                "ip igmp snooping startup-query-count 4",
+                "ip igmp snooping startup-query-interval 100",
+                "ip igmp snooping robustness-variable 3",
+                "ip igmp snooping last-member-query-interval 2",
+                "ip igmp snooping version 2",
+                "ip igmp snooping querier 192.0.2.1",
+                "ip igmp snooping group-timeout 300",
+                "ip igmp snooping proxy general-queries mrt 8",
+            ],
+        )
+
+    def test_vlan_values_at_defaults_create_no_block(self):
+        self.get_config.return_value = ""
+        result = self._run(
+            False,
+            config=dict(
+                vlans=[
+                    dict(
+                        vlan_id=100,
+                        snooping=True,
+                        explicit_tracking=True,
+                        fast_leave=False,
+                        version=3,
+                        querier_timeout=255,
+                        query_interval=125,
+                        robustness_variable=2,
+                    ),
+                ],
+            ),
+            state="merged",
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_vlan_default_value_removes_the_line(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(
+            True,
+            config=dict(
+                vlans=[
+                    dict(
+                        vlan_id=100,
+                        snooping=True,
+                        explicit_tracking=True,
+                        fast_leave=False,
+                        version=3,
+                        query_interval=125,
+                        querier="192.0.2.1",
+                    ),
+                ],
+            ),
+            state="merged",
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                VLAN_100,
+                "ip igmp snooping",
+                "ip igmp snooping explicit-tracking",
+                "no ip igmp snooping fast-leave",
+                "no ip igmp snooping query-interval 200",
+                "no ip igmp snooping version 2",
+            ],
+        )
+
+    def test_vlan_merged_changes_value(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(
+            True,
+            config=dict(vlans=[dict(vlan_id=100, query_interval=300, querier="192.0.2.2")]),
+            state="merged",
+        )
+        self.assertEqual(
+            result["commands"],
+            [VLAN_100, "ip igmp snooping query-interval 300", "ip igmp snooping querier 192.0.2.2"],
+        )
+
+    def test_vlan_replaced_resets_unlisted(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(
+            True,
+            config=dict(vlans=[dict(vlan_id=100, mrouter_interfaces=["Po20"], version=2)]),
+            state="replaced",
+        )
+        commands = result["commands"]
+        self.assertEqual(commands[0], VLAN_100)
+        self.assertIn("no ip igmp snooping mrouter interface Ethernet1/10", commands)
+        self.assertNotIn("no ip igmp snooping mrouter interface port-channel20", commands)
+        self.assertIn("no ip igmp snooping report-flood all", commands)
+        self.assertIn("no ip igmp snooping report-flood interface port-channel20", commands)
+        self.assertIn("no ip igmp snooping report-policy route-map RM_ONE interface port-channel20", commands)
+        self.assertIn("no ip igmp snooping access-group RM_TWO", commands)
+        self.assertIn(
+            "no ip igmp snooping access-group prefix-list PL_TWO interface port-channel20",
+            commands,
+        )
+        self.assertIn("no ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10", commands)
+        self.assertIn("ip igmp snooping", commands)
+        self.assertIn("no ip igmp snooping group-timeout 300", commands)
+        self.assertIn("no ip igmp snooping proxy general-queries", commands)
+        self.assertIn("no ip igmp snooping proxy-leave use-group-address", commands)
+        self.assertIn("no ip igmp snooping querier 192.0.2.1", commands)
+        self.assertIn("no ip igmp snooping startup-query-count 4", commands)
+        self.assertNotIn("ip igmp snooping version 2", commands)
+        self.assertNotIn("no ip igmp snooping version 2", commands)
+
+    def test_vlan_deleted_listed_values_and_items(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(
+            True,
+            config=dict(
+                vlans=[
+                    dict(
+                        vlan_id=100,
+                        fast_leave=True,
+                        querier="192.0.2.1",
+                        mrouter_interfaces=["Po20", "Eth1/99"],
+                        proxy=dict(general_queries=True),
+                    ),
+                ],
+            ),
+            state="deleted",
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                VLAN_100,
+                "no ip igmp snooping mrouter interface port-channel20",
+                "no ip igmp snooping fast-leave",
+                "no ip igmp snooping querier 192.0.2.1",
+                "no ip igmp snooping proxy general-queries",
+            ],
+        )
+
+    def test_vlan_only_vlan_id_with_content_in_have_is_kept_by_merged(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(False, config=dict(vlans=[dict(vlan_id=100)]), state="merged")
+        self.assertEqual(result["commands"], [])
+
+    def test_vlan_validation(self):
+        cases = [
+            (dict(query_interval=0), "query_interval must be in the range 1-18000"),
+            (dict(version=1), "version must be in the range 2-3"),
+            (dict(querier="not-an-address"), "querier must be an IPv4 address"),
+            (dict(querier_timeout=70000), "querier_timeout must be in the range"),
+            (dict(proxy=dict(general_queries=True, mrt=30)), "proxy mrt must be in the range 1-25"),
+            (dict(proxy=dict(mrt=5)), "proxy mrt requires general_queries: true"),
+            (dict(proxy=dict(general_queries=False, mrt=5)), "cannot be combined"),
+            (
+                dict(report_policy=[dict(policy_type="route_map", name="RM")]),
+                "",
+            ),
+            (
+                dict(access_group=[dict(policy_type="prefix_list", name="PL")]),
+                "access_group prefix_list requires an interface",
+            ),
+        ]
+        for extra, message in cases:
+            vlan = dict(vlan_id=100)
+            vlan.update(extra)
+            set_module_args(dict(config=dict(vlans=[vlan]), state="rendered"), ignore_provider_arg)
+            result = self.execute_module(failed=True)
+            self.assertIn(message, result["msg"])
+
+    def test_global_validation(self):
+        for key, value in [("max_gq_miss", 2), ("syslog_threshold", 101), ("holddown_timer", 301)]:
+            result = self._fail(config={key: value}, state="rendered")
+            self.assertIn("must be in the range", result["msg"])
+
+    def test_rendered_everything(self):
+        result = self._run(
+            False,
+            config=dict(
+                max_gq_miss=4,
+                proxy=dict(general_queries=True),
+                vlans=[dict(vlan_id=100, version=3, mrouter_interfaces=["Po20"], fast_leave=True)],
+            ),
+            state="rendered",
+        )
+        self.assertEqual(
+            result["rendered"],
+            [
+                "ip igmp snooping max-gq-miss 4",
+                "ip igmp snooping proxy general-queries",
+                VLAN_100,
+                "ip igmp snooping mrouter interface port-channel20",
+                "ip igmp snooping fast-leave",
+                "ip igmp snooping version 3",
+            ],
+        )
 
 
 class TestNxosIgmpSnoopingFacts(TestCase):

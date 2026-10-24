@@ -102,19 +102,18 @@
           - result_empty_config.failed == true
           - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
 
-    - name: The group timeout cannot be set while snooping is disabled
-      register: result_group_timeout
+    - name: An out of range value fails before any command is sent
+      register: result_range
       ignore_errors: true
       cisco.nxos.nxos_igmp_snooping:
         config:
-          snooping: false
-          group_timeout: "10"
+          max_gq_miss: 9
         state: merged
-    - name: Assert group timeout error
+    - name: Assert range error
       ansible.builtin.assert:
         that:
-          - result_group_timeout.failed == true
-          - result_group_timeout.msg == 'group_timeout cannot be set while snooping is, or is being set to, false'
+          - result_range.failed == true
+          - "'max_gq_miss must be in the range 3-5' in result_range.msg"
 
     - name: RTT - Gather current facts
       register: rtt_gathered
@@ -265,6 +264,60 @@
       register: idempotent_result
       cisco.nxos.nxos_igmp_snooping: *deleted_all
     - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_igmp_snooping — per-VLAN and global options"
+  hosts: nxos_igmp_snooping_options
+  gather_facts: false
+  tasks:
+    - name: Run nxos_igmp_snooping merged with the extra options
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &options
+        config:
+          max_gq_miss: 4
+          proxy:
+            general_queries: true
+            mrt: 8
+          vlans:
+            - vlan_id: 100
+              querier: 192.0.2.1
+              query_interval: 200
+              version: 2
+              fast_leave: true
+              mrouter_interfaces:
+                - Po20
+              report_policy:
+                - policy_type: route_map
+                  name: RM_REPORTS
+                  interface: Po20
+        state: merged
+    - name: Assert the commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == expected_commands
+          - result.after.max_gq_miss == 4
+          - "result.after.proxy == {'general_queries': true, 'mrt': 8}"
+          - result.after.vlans[0].querier == '192.0.2.1'
+          - result.after.vlans[0].mrouter_interfaces == ['port-channel20']
+      vars:
+        expected_commands:
+          - ip igmp snooping max-gq-miss 4
+          - ip igmp snooping proxy general-queries mrt 8
+          - vlan configuration 100
+          - ip igmp snooping mrouter interface port-channel20
+          - ip igmp snooping report-policy route-map RM_REPORTS interface port-channel20
+          - ip igmp snooping fast-leave
+          - ip igmp snooping query-interval 200
+          - ip igmp snooping version 2
+          - ip igmp snooping querier 192.0.2.1
+    - name: Idempotent re-run (options)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *options
+    - name: Assert idempotent (options)
       ansible.builtin.assert:
         that:
           - idempotent_result.changed == false

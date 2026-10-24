@@ -11,3 +11,5 @@ devices:
     count: 1
   - scenario: nxos-igmp-snooping-deleted_all
     count: 1
+  - scenario: nxos-igmp-snooping-options
+    count: 1

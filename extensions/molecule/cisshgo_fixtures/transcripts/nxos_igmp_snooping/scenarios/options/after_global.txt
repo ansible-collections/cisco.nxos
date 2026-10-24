@@ -1,0 +1,8 @@
+ip igmp snooping max-gq-miss 4
+ip igmp snooping proxy general-queries mrt 8
+  ip igmp snooping mrouter interface port-channel20
+  ip igmp snooping report-policy route-map RM_REPORTS interface port-channel20
+  ip igmp snooping fast-leave
+  ip igmp snooping query-interval 200
+  ip igmp snooping version 2
+  ip igmp snooping querier 192.0.2.1

@@ -59,11 +59,10 @@
           - result['changed'] == false
           - result.commands|length == 0
 
-    - name: The group timeout cannot be set while snooping is disabled
+    - name: An out of range value fails before any command is sent
       cisco.nxos.nxos_igmp_snooping:
         config:
-          snooping: false
-          group_timeout: "10"
+          max_gq_miss: 9
         state: merged
       register: result
       ignore_errors: true
@@ -72,7 +71,7 @@
       ansible.builtin.assert:
         that:
           - result['failed'] == true
-          - result['msg'] == 'group_timeout cannot be set while snooping is, or is being set to, false'
+          - "'max_gq_miss must be in the range 3-5' in result['msg']"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
