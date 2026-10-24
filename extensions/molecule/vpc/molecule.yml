@@ -1,0 +1,32 @@
+driver:
+  name: default
+platforms:
+  - name: cisshgo-vpc-gathered
+  - name: cisshgo-vpc-merged
+  - name: cisshgo-vpc-replaced
+  - name: cisshgo-vpc-overridden
+  - name: cisshgo-vpc-deleted
+  - name: cisshgo-vpc-new-attributes
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ../cisshgo_fixtures/inventories/ansible/vpc.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+prerun: false
+verifier:
+  name: ansible
