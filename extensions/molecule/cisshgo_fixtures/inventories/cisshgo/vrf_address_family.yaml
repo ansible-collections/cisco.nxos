@@ -11,3 +11,9 @@ devices:
     count: 1
   - scenario: nxos-vrf-address-family-deleted
     count: 1
+  - scenario: nxos-vrf-address-family-route-target-evpn
+    count: 1
+  - scenario: nxos-vrf-address-family-route-target-evpn-pair
+    count: 1
+  - scenario: nxos-vrf-address-family-purged
+    count: 1
