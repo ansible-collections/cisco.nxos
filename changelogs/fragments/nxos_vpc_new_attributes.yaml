@@ -1,0 +1,9 @@
+---
+minor_changes:
+  - >-
+    nxos_vpc - add ``layer3_peer_router``, ``arp_synchronize``, ``nd_synchronize``,
+    ``virtual_peer_link_dest``, ``virtual_peer_link_src``, and ``virtual_peer_link_dscp``
+    options to configure ``layer3 peer-router``, ``ip arp synchronize``,
+    ``ipv6 nd synchronize``, and ``virtual peer-link`` VPC domain sub-commands.
+    The ``virtual peer-link`` idempotency fix accounts for NX-OS silently
+    appending ``dscp 56`` to running-config when no DSCP value is specified.

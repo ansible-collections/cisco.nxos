@@ -184,6 +184,74 @@ class VpcTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "layer3_peer_router",
+            "getval": re.compile(
+                r'''
+                ^\s+(?P<negate>no\s+)?layer3\speer-router$
+                ''',
+                re.VERBOSE,
+            ),
+            "setval": "layer3 peer-router",
+            "result": {
+                _DOMAIN_KEY: {
+                    "layer3_peer_router": _NEGATE_BOOL_TMPL,
+                },
+            },
+        },
+        {
+            "name": "arp_synchronize",
+            "getval": re.compile(
+                r'''
+                ^\s+(?P<negate>no\s+)?ip\sarp\ssynchronize$
+                ''',
+                re.VERBOSE,
+            ),
+            "setval": "ip arp synchronize",
+            "result": {
+                _DOMAIN_KEY: {
+                    "arp_synchronize": _NEGATE_BOOL_TMPL,
+                },
+            },
+        },
+        {
+            "name": "nd_synchronize",
+            "getval": re.compile(
+                r'''
+                ^\s+(?P<negate>no\s+)?ipv6\snd\ssynchronize$
+                ''',
+                re.VERBOSE,
+            ),
+            "setval": "ipv6 nd synchronize",
+            "result": {
+                _DOMAIN_KEY: {
+                    "nd_synchronize": _NEGATE_BOOL_TMPL,
+                },
+            },
+        },
+        {
+            "name": "virtual_peer_link",
+            "getval": re.compile(
+                r'''
+                ^\s+virtual\speer-link\sdestination\s(?P<virtual_peer_link_dest>[\d.]+)
+                (?:\ssource\s(?P<virtual_peer_link_src>[\d.]+))?
+                (?:\sdscp\s(?P<virtual_peer_link_dscp>\d+))?$
+                ''',
+                re.VERBOSE,
+            ),
+            "setval": "virtual peer-link destination {{ virtual_peer_link_dest }}"
+                      "{% if virtual_peer_link_src is defined and virtual_peer_link_src %}"
+                      " source {{ virtual_peer_link_src }}{% endif %}"
+                      "{% if virtual_peer_link_dscp is defined and virtual_peer_link_dscp %}"
+                      " dscp {{ virtual_peer_link_dscp }}{% endif %}",
+            "result": {
+                _DOMAIN_KEY: {
+                    "virtual_peer_link_dest": "{{ virtual_peer_link_dest }}",
+                    "virtual_peer_link_src": "{{ virtual_peer_link_src }}",
+                    "virtual_peer_link_dscp": "{{ virtual_peer_link_dscp }}",
+                },
+            },
+        },
+        {
             "name": "peer_keepalive",
             "getval": re.compile(
                 r'''
