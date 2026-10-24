@@ -380,6 +380,8 @@ Notes
    - The default values are ``snooping=true``, ``link_local_groups_suppression=true``, ``report_suppression=true``, ``v3_report_suppression=false``, ``vxlan=false``, ``disable_nve_static_router_port=false`` and no group timeout. Setting an option to its default value is a no-op when the device already has it.
    - NX-OS rejects ``group-timeout`` while snooping is disabled. The module fails before changing anything when *group_timeout* is given and *snooping* is, or is becoming, ``false``. The group timeout is sent after the other global settings, except when it is removed because snooping is being disabled.
    - Only the static groups of a VLAN are managed. A ``vlan configuration`` block with any other content is parsed as a VLAN without static groups. It is removed completely, together with that content, by ``deleted`` and ``overridden``, and by ``replaced`` when the listed VLAN has no *static_groups*.
+   - A static group is accepted and stored for any interface, but ``show ip igmp snooping groups vlan <id>`` only lists it (type S) when the interface is a member port of that VLAN.
+   - ``state=deleted`` without *config* and ``state=overridden`` remove every ``vlan configuration`` block on the switch that is not listed, including blocks created by other tools or roles. Run the task in check mode first.
    - A ``vlan configuration`` block that is not for a single VLAN (for example a range) is ignored.
    - A VLAN that is listed without *static_groups* is not created by ``merged``, because an empty ``vlan configuration`` block has no effect. It is reported by ``gathered`` when the device has one.
    - Interface names are normalised before they are compared, so ``Eth1/10``, ``ethernet1/10`` and ``Ethernet1/10`` are the same, as are ``Po20`` and ``port-channel20``.
@@ -522,6 +524,8 @@ Examples
     # vlan configuration 200
     #   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
 
+    # WARNING: every vlan configuration block that is not listed is removed, also the ones
+    # created by other tools or roles. Run it with check_mode first.
     - name: Override the IGMP snooping configuration
       cisco.nxos.nxos_igmp_snooping:
         config:
@@ -580,6 +584,8 @@ Examples
     # vlan configuration 100
     #   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
 
+    # WARNING: this removes EVERY vlan configuration block on the switch, also the ones
+    # created by other tools or roles. Run it with check_mode first.
     - name: Reset all global settings and remove all vlan configuration blocks
       cisco.nxos.nxos_igmp_snooping:
         state: deleted

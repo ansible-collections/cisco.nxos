@@ -37,15 +37,17 @@
       ansible.builtin.assert:
         that: merged['after'] == result['after']
 
-    - name: Check that the static group is known to IGMP snooping
+    # show ip igmp snooping groups only lists a group on a member port of the VLAN,
+    # the port channels of these tests are not members, so check the running config
+    - name: Read the vlan configuration of VLAN 100
       cisco.nxos.nxos_command:
         commands:
-          - show ip igmp snooping groups vlan 100
+          - show running-config | section "^vlan configuration 100"
       register: groups
 
-    - name: Assert that the new static group is listed
+    - name: Assert that the new static group is configured
       ansible.builtin.assert:
-        that: "'233.252.0.12' in groups.stdout[0]"
+        that: "'233.252.0.12 interface port-channel21' in groups.stdout[0]"
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_igmp_snooping: *id001

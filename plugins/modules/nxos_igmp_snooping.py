@@ -51,6 +51,10 @@ notes:
 - Only the static groups of a VLAN are managed. A C(vlan configuration) block with any other
   content is parsed as a VLAN without static groups. It is removed completely, together with that content,
   by C(deleted) and C(overridden), and by C(replaced) when the listed VLAN has no I(static_groups).
+- A static group is accepted and stored for any interface, but C(show ip igmp snooping groups vlan <id>)
+  only lists it (type S) when the interface is a member port of that VLAN.
+- C(state=deleted) without I(config) and C(state=overridden) remove every C(vlan configuration) block on the
+  switch that is not listed, including blocks created by other tools or roles. Run the task in check mode first.
 - A C(vlan configuration) block that is not for a single VLAN (for example a range) is ignored.
 - A VLAN that is listed without I(static_groups) is not created by C(merged),
   because an empty C(vlan configuration) block has no effect. It is reported
@@ -315,6 +319,8 @@ EXAMPLES = """
 # vlan configuration 200
 #   ip igmp snooping static-group 233.252.0.20 interface Ethernet1/20
 
+# WARNING: every vlan configuration block that is not listed is removed, also the ones
+# created by other tools or roles. Run it with check_mode first.
 - name: Override the IGMP snooping configuration
   cisco.nxos.nxos_igmp_snooping:
     config:
@@ -373,6 +379,8 @@ EXAMPLES = """
 # vlan configuration 100
 #   ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
 
+# WARNING: this removes EVERY vlan configuration block on the switch, also the ones
+# created by other tools or roles. Run it with check_mode first.
 - name: Reset all global settings and remove all vlan configuration blocks
   cisco.nxos.nxos_igmp_snooping:
     state: deleted
