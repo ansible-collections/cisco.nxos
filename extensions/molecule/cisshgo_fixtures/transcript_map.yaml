@@ -565,6 +565,53 @@ platforms:
       (config)#: " "
       (config-if)#: " "
       (config-vlan)#: " "
+  nxos_vpc:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      auto-recovery: transcripts/common/generic_empty_return.txt
+      delay restore 150: transcripts/common/generic_empty_return.txt
+      ip arp synchronize: transcripts/common/generic_empty_return.txt
+      ipv6 nd synchronize: transcripts/common/generic_empty_return.txt
+      layer3 peer-router: transcripts/common/generic_empty_return.txt
+      no peer-gateway: transcripts/common/generic_empty_return.txt
+      no terminal dont-ask: transcripts/common/generic_empty_return.txt
+      no vpc domain 100: transcripts/common/generic_empty_return.txt
+      peer-gateway: transcripts/common/generic_empty_return.txt
+      peer-switch: transcripts/common/generic_empty_return.txt
+      role priority 32667: transcripts/common/generic_empty_return.txt
+      system-priority 2000: transcripts/common/generic_empty_return.txt
+      terminal dont-ask: transcripts/common/generic_empty_return.txt
+      virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56: transcripts/common/generic_empty_return.txt
+      vpc domain 100: transcripts/common/generic_empty_return.txt
+      vpc domain 200: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      vpc domain: (config-vpc-domain)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-vpc-domain)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-vpc-domain)#: " "
   nxos_static_routes:
     vendor: cisco
     hostname: cisshgo-nxos
@@ -6472,3 +6519,155 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
       - command: show running-config | section '^snmp-server'
         transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+  nxos-vpc-gathered:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/gathered/before.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/gathered/before.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/gathered/before.txt
+  nxos-vpc-merged:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vpc domain 100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: system-priority 2000
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: delay restore 150
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: auto-recovery
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: peer-gateway
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/merged/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/merged/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/merged/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/merged/after.txt
+  nxos-vpc-replaced:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vpc domain 100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: role priority 32667
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: system-priority 2000
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/replaced/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/replaced/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/replaced/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/replaced/after.txt
+  nxos-vpc-overridden:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vpc domain 100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: role priority 32667
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no peer-gateway
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: peer-switch
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/overridden/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/overridden/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/overridden/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/overridden/after.txt
+  nxos-vpc-deleted:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vpc domain 100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/deleted/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/deleted/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/deleted/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/deleted/after.txt
+  nxos-vpc-new-attributes:
+    platform: nxos_vpc
+    sequence:
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vpc domain 200
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: layer3 peer-router
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: ip arp synchronize
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: ipv6 nd synchronize
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no terminal dont-ask
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
+      - command: show running-config | section '^vpc domain'
+        transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
