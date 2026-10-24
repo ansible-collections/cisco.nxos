@@ -1,0 +1,173 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_vpc new_attributes integration tests connection={{ ansible_connection }}"
+
+# Tests for layer3_peer_router, arp_synchronize, nd_synchronize, and
+# virtual peer-link attributes added to nxos_vpc.
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Setup - create vpc domain 200 with peer-gateway (layer3 peer-router requires it)
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          peer_gw: true
+        state: merged
+
+    # ----- layer3 peer-router -----
+
+    - name: Merged - enable layer3_peer_router
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          layer3_peer_router: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'layer3 peer-router' in result.commands"
+
+    - name: Merged idempotent - layer3_peer_router already enabled
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          layer3_peer_router: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          layer3_peer_router: true should be idempotent when already present,
+          but generated: {{ result.commands }}
+
+    - name: Merged - disable layer3_peer_router
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          layer3_peer_router: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no layer3 peer-router' in result.commands"
+
+    # ----- ip arp synchronize -----
+
+    - name: Merged - enable arp_synchronize
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          arp_synchronize: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ip arp synchronize' in result.commands"
+
+    - name: Merged idempotent - arp_synchronize already enabled
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          arp_synchronize: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          arp_synchronize: true should be idempotent when already present,
+          but generated: {{ result.commands }}
+
+    # ----- ipv6 nd synchronize -----
+
+    - name: Merged - enable nd_synchronize
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          nd_synchronize: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ipv6 nd synchronize' in result.commands"
+
+    - name: Merged idempotent - nd_synchronize already enabled
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          nd_synchronize: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          nd_synchronize: true should be idempotent when already present,
+          but generated: {{ result.commands }}
+
+    # ----- virtual peer-link -----
+
+    - name: Merged - configure virtual peer-link without explicit dscp
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          virtual_peer_link_dest: "192.0.2.1"
+          virtual_peer_link_src: "192.0.2.2"
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'virtual peer-link destination' in (result.commands | join(' '))"
+
+    # NX-OS silently appends dscp 56 — asking again without explicit dscp must
+    # be idempotent because the module injects the default dscp for comparison.
+    - name: Merged idempotent - virtual peer-link with NX-OS auto-appended dscp 56
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          virtual_peer_link_dest: "192.0.2.1"
+          virtual_peer_link_src: "192.0.2.2"
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          virtual peer-link should be idempotent when NX-OS auto-appends
+          dscp 56 but generated: {{ result.commands }}
+
+    - name: Merged idempotent - virtual peer-link with explicit dscp 56
+      register: result
+      cisco.nxos.nxos_vpc:
+        config:
+          domain: "200"
+          virtual_peer_link_dest: "192.0.2.1"
+          virtual_peer_link_src: "192.0.2.2"
+          virtual_peer_link_dscp: "56"
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          virtual peer-link with explicit dscp 56 should be idempotent,
+          but generated: {{ result.commands }}
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
