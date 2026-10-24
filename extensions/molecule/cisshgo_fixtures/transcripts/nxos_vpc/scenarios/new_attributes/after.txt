@@ -1,0 +1,6 @@
+vpc domain 200
+  peer-gateway
+  layer3 peer-router
+  ip arp synchronize
+  ipv6 nd synchronize
+  virtual peer-link destination 192.0.2.4 source 192.0.2.3 dscp 56

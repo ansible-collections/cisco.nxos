@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-vpc-gathered
+    count: 1
+  - scenario: nxos-vpc-merged
+    count: 1
+  - scenario: nxos-vpc-replaced
+    count: 1
+  - scenario: nxos-vpc-overridden
+    count: 1
+  - scenario: nxos-vpc-deleted
+    count: 1
+  - scenario: nxos-vpc-new-attributes
+    count: 1
