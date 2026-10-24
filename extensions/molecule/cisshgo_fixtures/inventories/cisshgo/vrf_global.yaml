@@ -11,3 +11,5 @@ devices:
     count: 1
   - scenario: nxos-vrf-global-deleted
     count: 1
+  - scenario: nxos-vrf-global-purged
+    count: 1

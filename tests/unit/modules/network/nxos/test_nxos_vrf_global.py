@@ -838,6 +838,32 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_nxos_vrf_global_purged_unknown_vrf(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context test1
+              description this is descrition
+            """,
+        )
+
+        set_module_args(dict(config={"vrfs": [{"name": "nosuchvrf"}]}, state="purged"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_vrf_global_purged_only_existing_vrfs(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context test1
+              description this is descrition
+            """,
+        )
+
+        set_module_args(
+            dict(config={"vrfs": [{"name": "test1"}, {"name": "nosuchvrf"}]}, state="purged"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no vrf context test1"])
+
     def test_nxos_vrf_global_parsed(self):
         set_module_args(
             dict(

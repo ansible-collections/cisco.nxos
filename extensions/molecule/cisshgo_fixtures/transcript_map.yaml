@@ -6273,6 +6273,29 @@ scenarios:
         transcript: transcripts/nxos_vrf_global/scenarios/deleted/after.txt
       - command: show running-config | section ^vrf
         transcript: transcripts/nxos_vrf_global/scenarios/deleted/after.txt
+  nxos-vrf-global-purged:
+    platform: nxos_vrf_global
+    sequence:
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vrf context VRF1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_global/scenarios/purged/after.txt
   nxos-logging-global-replaced:
     platform: nxos_logging_global
     sequence:

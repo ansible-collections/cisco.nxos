@@ -33,3 +33,7 @@ all:
           hosts:
             cisshgo-vrf_global-deleted:
               ansible_port: 10005
+        nxos_vrf_global_purged:
+          hosts:
+            cisshgo-vrf_global-purged:
+              ansible_port: 10006

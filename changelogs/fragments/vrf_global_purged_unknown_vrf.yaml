@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_vrf_global - Fix state ``purged`` sending ``no vrf context <name>`` for a VRF that does not exist on the device,
+    which failed the task on the device instead of reporting no change.
