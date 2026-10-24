@@ -314,7 +314,8 @@ Parameters
                 </td>
                 <td>
                         <div>Spanning-tree path cost, <code>spanning-tree cost &lt;n&gt;</code>.</div>
-                        <div>The range is enforced by the device. <code>spanning-tree cost auto</code> is the default and is not managed.</div>
+                        <div>The range is enforced by the device.</div>
+                        <div>The value is an integer. The device default <code>spanning-tree cost auto</code> cannot be given as a value and a <code>cost auto</code> line on the device is ignored. Leave the option out with <em>state</em> <code>replaced</code>, <code>overridden</code> or <code>deleted</code> to return to the default.</div>
                 </td>
             </tr>
             <tr>

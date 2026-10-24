@@ -184,7 +184,10 @@ options:
           cost:
             description:
             - Spanning-tree path cost, C(spanning-tree cost <n>).
-            - The range is enforced by the device. C(spanning-tree cost auto) is the default and is not managed.
+            - The range is enforced by the device.
+            - The value is an integer. The device default C(spanning-tree cost auto) cannot be given as a value and a
+              C(cost auto) line on the device is ignored. Leave the option out with I(state) C(replaced), C(overridden) or
+              C(deleted) to return to the default.
             type: int
           port_priority:
             description:
