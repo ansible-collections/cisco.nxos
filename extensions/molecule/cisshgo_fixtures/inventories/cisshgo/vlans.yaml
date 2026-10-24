@@ -11,3 +11,7 @@ devices:
     count: 1
   - scenario: nxos-vlans-deleted
     count: 1
+  - scenario: nxos-vlans-nve-overlay-gathered
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-lifecycle
+    count: 1

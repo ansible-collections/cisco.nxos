@@ -239,3 +239,189 @@
       ansible.builtin.assert:
         that:
           - rendered | symmetric_difference(result.rendered) | length == 0
+
+- name: "Nxos_vlans — nve_overlay: gathered"
+  hosts: nxos_vlans_nve_overlay_gathered
+  gather_facts: false
+  tasks:
+    - name: Gather nxos_vlans facts with a compressed nve-overlay range
+      register: result
+      cisco.nxos.nxos_vlans:
+        state: gathered
+    - name: Assert nve_overlay is gathered per vlan and mapped_vni is kept for a vn-segment only block
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | length == 5
+          - result.gathered | symmetric_difference(expected) | length == 0
+      vars:
+        expected:
+          - vlan_id: 1
+            enabled: true
+            mode: ce
+            state: active
+            name: default
+          - vlan_id: 3801
+            enabled: true
+            mode: ce
+            state: active
+            mapped_vni: 50001
+            nve_overlay: true
+          - vlan_id: 3802
+            enabled: true
+            mode: ce
+            state: active
+            nve_overlay: true
+          - vlan_id: 3810
+            enabled: true
+            mode: ce
+            state: active
+          - vlan_id: 3820
+            enabled: true
+            mode: ce
+            state: active
+            name: ex-3820
+            nve_overlay: true
+
+- name: "Nxos_vlans — nve_overlay: merged"
+  hosts: nxos_vlans_nve_overlay_lifecycle
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vlans merged with nve_overlay
+      register: result
+      cisco.nxos.nxos_vlans: &nve_merged
+        config:
+          - vlan_id: 3801
+            nve_overlay: true
+          - vlan_id: 3802
+            nve_overlay: true
+          - vlan_id: 3803
+            nve_overlay: false
+        state: merged
+    - name: Assert nve_overlay is set after the vlan and reset with the no form
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == expected
+      vars:
+        expected:
+          - system vlan nve-overlay id 3801
+          - vlan 3802
+          - system vlan nve-overlay id 3802
+          - no system vlan nve-overlay id 3803
+    - name: Idempotent re-run (merged nve_overlay)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *nve_merged
+    - name: Assert idempotent (merged nve_overlay)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — nve_overlay: replaced"
+  hosts: nxos_vlans_nve_overlay_lifecycle
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vlans replaced with nve_overlay omitted
+      register: result
+      cisco.nxos.nxos_vlans: &nve_replaced
+        config:
+          - vlan_id: 1
+          - vlan_id: 3801
+        state: replaced
+    - name: Assert omitted nve_overlay is reset and the default vlan name is not touched
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no system vlan nve-overlay id 3801']
+    - name: Idempotent re-run (replaced nve_overlay)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *nve_replaced
+    - name: Assert idempotent (replaced nve_overlay)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — nve_overlay: overridden"
+  hosts: nxos_vlans_nve_overlay_lifecycle
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vlans overridden with vlans that carry nve_overlay
+      register: result
+      cisco.nxos.nxos_vlans: &nve_overridden
+        config:
+          - vlan_id: 1
+          - vlan_id: 3801
+          - vlan_id: 3804
+            nve_overlay: true
+        state: overridden
+    - name: Assert nve_overlay is removed before the vlan and vlan 1 is left alone
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == expected
+          - "'no name' not in result.commands"
+      vars:
+        expected:
+          - no system vlan nve-overlay id 3802
+          - no vlan 3802
+          - no vlan 3803
+          - vlan 3804
+          - system vlan nve-overlay id 3804
+    - name: Idempotent re-run (overridden nve_overlay)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *nve_overridden
+    - name: Assert idempotent (overridden nve_overlay)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — nve_overlay: deleted"
+  hosts: nxos_vlans_nve_overlay_lifecycle
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vlans deleted for a vlan that carries nve_overlay
+      register: result
+      cisco.nxos.nxos_vlans: &nve_deleted
+        config:
+          - vlan_id: 3804
+        state: deleted
+    - name: Assert nve_overlay is removed before the vlan
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == expected
+      vars:
+        expected:
+          - no system vlan nve-overlay id 3804
+          - no vlan 3804
+    - name: Idempotent re-run (deleted nve_overlay)
+      register: idempotent_result
+      cisco.nxos.nxos_vlans: *nve_deleted
+    - name: Assert idempotent (deleted nve_overlay)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vlans — nve_overlay: duplicate vlan_id"
+  hosts: nxos_vlans_nve_overlay_lifecycle
+  gather_facts: false
+  tasks:
+    - name: Repeat a vlan_id in config
+      register: result_duplicate
+      ignore_errors: true
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 3801
+            nve_overlay: true
+          - vlan_id: 3801
+            nve_overlay: false
+        state: merged
+    - name: Assert the duplicate is rejected before any command is sent
+      ansible.builtin.assert:
+        that:
+          - result_duplicate.failed == true
+          - "'vlan_id 3801 is listed more than once in config' in result_duplicate.msg"
