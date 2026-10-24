@@ -294,3 +294,64 @@
         that:
           - rendered | symmetric_difference(result['rendered']) | length == 0
           - result['changed'] == false
+
+# ====================================================================
+# 8. LOOPBACK ENABLED -- scenario listener (port 10005)
+# ====================================================================
+# NX-OS loopbacks are always up: an up loopback has no 'no shutdown' line in
+# running-config and only a shut loopback shows 'shutdown'.
+- name: "Nxos_interfaces -- loopback enabled idempotency"
+  hosts: nxos_interfaces_loopback_enabled
+  gather_facts: false
+  tasks:
+    - name: Merged enabled true on an up loopback
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: loopback0
+            enabled: true
+        state: merged
+
+    - name: Assert no commands for an up loopback
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0
+
+    - name: Merged enabled on shut, up and missing loopbacks
+      register: result
+      cisco.nxos.nxos_interfaces: &loopback_config
+        config:
+          - name: loopback0
+            enabled: true
+          - name: loopback1
+            enabled: true
+          - name: loopback2
+            enabled: false
+          - name: loopback3
+            enabled: true
+        state: merged
+
+    - name: Assert loopback enabled commands
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - result['commands'] == expected_commands
+      vars:
+        expected_commands:
+          - interface loopback1
+          - no shutdown
+          - interface loopback2
+          - shutdown
+          - interface loopback3
+          - no shutdown
+
+    - name: Idempotence - loopback enabled
+      register: result
+      cisco.nxos.nxos_interfaces: *loopback_config
+
+    - name: Assert idempotent (loopback enabled)
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] | length == 0

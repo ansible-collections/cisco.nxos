@@ -1720,6 +1720,39 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/deleted/after.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+  nxos-interfaces-loopback-enabled:
+    platform: nxos_interfaces
+    sequence:
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/before.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/before.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface loopback1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface loopback2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface loopback3
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/after.txt
+      - command: show running-config | section ^interface
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
   nxos-hostname-gathered:
     platform: nxos_hostname
     sequence:
