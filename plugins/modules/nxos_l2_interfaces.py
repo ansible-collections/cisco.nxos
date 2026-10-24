@@ -51,6 +51,8 @@ notes:
 - On a vPC port-channel the C(spanning_tree) settings must be identical on both vPC peers. A mismatch makes the vPC
   type-1 inconsistent until the settings are aligned.
 - C(storm-control multi) commands are not supported.
+- The C(mst) and C(vlans) options of C(spanning_tree) are accepted, stored and removable in any spanning-tree mode, but
+  they take effect only in MST and in the PVST modes respectively. Their effect was not tested in MST mode.
 options:
   config:
     description: A List of Layer-2 interface options
@@ -207,6 +209,7 @@ options:
           mst:
             description:
             - Per MST instance cost and port priority, C(spanning-tree mst <instances> cost|port-priority <n>).
+            - Only effective when the switch runs MST (C(spanning-tree mode mst)).
             type: list
             elements: dict
             suboptions:
@@ -224,6 +227,7 @@ options:
           vlans:
             description:
             - Per VLAN cost and port priority, C(spanning-tree vlan <vlans> cost|port-priority <n>).
+            - Only effective in the PVST modes (C(rapid-pvst) or C(pvst)).
             type: list
             elements: dict
             suboptions:

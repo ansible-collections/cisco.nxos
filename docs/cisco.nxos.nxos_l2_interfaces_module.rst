@@ -379,6 +379,7 @@ Parameters
                 </td>
                 <td>
                         <div>Per MST instance cost and port priority, <code>spanning-tree mst &lt;instances&gt; cost|port-priority &lt;n&gt;</code>.</div>
+                        <div>Only effective when the switch runs MST (<code>spanning-tree mode mst</code>).</div>
                 </td>
             </tr>
                                 <tr>
@@ -495,6 +496,7 @@ Parameters
                 </td>
                 <td>
                         <div>Per VLAN cost and port priority, <code>spanning-tree vlan &lt;vlans&gt; cost|port-priority &lt;n&gt;</code>.</div>
+                        <div>Only effective in the PVST modes (<code>rapid-pvst</code> or <code>pvst</code>).</div>
                 </td>
             </tr>
                                 <tr>
@@ -869,6 +871,7 @@ Notes
    - Configure ``spanning_tree`` and ``storm_control`` on the port-channel, not on its member ports.
    - On a vPC port-channel the ``spanning_tree`` settings must be identical on both vPC peers. A mismatch makes the vPC type-1 inconsistent until the settings are aligned.
    - ``storm-control multi`` commands are not supported.
+   - The ``mst`` and ``vlans`` options of ``spanning_tree`` are accepted, stored and removable in any spanning-tree mode, but they take effect only in MST and in the PVST modes respectively. Their effect was not tested in MST mode.
 
 
 
