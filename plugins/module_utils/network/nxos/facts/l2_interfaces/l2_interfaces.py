@@ -28,6 +28,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_port_channel_members,
+    get_routed_interfaces,
     normalize_interface,
 )
 
@@ -87,6 +88,15 @@ class L2_interfacesFacts(object):
         self._module._l2_pc_members = pc_members
         objs = [obj for obj in objs if normalize_interface(obj.get("name", "")) not in pc_members]
 
+        # spanning-tree and storm-control are only managed on layer-2 interfaces
+        routed = get_routed_interfaces(data)
+        self._module._l2_routed = routed
+        for obj in objs:
+            if normalize_interface(obj.get("name", "")) in routed:
+                obj.pop("spanning_tree", None)
+                obj.pop("storm_control", None)
+            self._keyed_to_lists(obj.get("spanning_tree", {}))
+
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
@@ -101,6 +111,13 @@ class L2_interfacesFacts(object):
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
+
+    @staticmethod
+    def _keyed_to_lists(spanning_tree):
+        """The parsers collect mst and vlans entries keyed by their range, the argspec wants lists."""
+        for section in ("mst", "vlans"):
+            if section in spanning_tree:
+                spanning_tree[section] = list(spanning_tree[section].values())
 
     def _flatten_vlans(self, data):
         """

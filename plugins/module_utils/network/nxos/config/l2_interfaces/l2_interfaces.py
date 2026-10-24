@@ -18,6 +18,9 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+from copy import deepcopy
+from decimal import Decimal, InvalidOperation
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -29,6 +32,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
     Facts,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l2_interfaces import (
+    STORM_TYPES,
     L2_interfacesTemplate,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
@@ -37,6 +41,85 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     vlan_list_to_range,
     vlan_range_to_dict,
 )
+
+
+MAX_PPS = 200000000
+MAX_LEVEL = Decimal(100)
+LEVEL_STEP = Decimal("0.01")
+MAX_ID = 4094
+BOOL_TO_STATE = {True: "enable", False: "disable"}
+# attribute of an `mst` / `vlans` entry that holds the (instance or vlan) range
+RANGE_KEYS = {"mst": ("instances", 0), "vlans": ("vlans", 1)}
+
+
+class L2StpStormError(ValueError):
+    """Raised for invalid spanning_tree / storm_control input."""
+
+
+def normalize_level(value):
+    """Return a storm-control level as a string with two decimals so that 1.0 equals 1.00."""
+    try:
+        level = Decimal(str(value).strip())
+        valid = (
+            level.is_finite() and 0 <= level <= MAX_LEVEL and level == level.quantize(LEVEL_STEP)
+        )
+    except InvalidOperation:
+        valid = False
+    if not valid:
+        raise L2StpStormError(
+            "storm_control level '{0}' must be a decimal between 0 and 100 with at most two decimals".format(
+                value,
+            ),
+        )
+    return "{0:.2f}".format(level)
+
+
+def normalize_range(value, lowest):
+    """Return an instance / vlan list such as '3, 1,2,5-6' in its canonical form '1-3,5-6'."""
+    numbers = set()
+    for part in str(value).replace(" ", "").split(","):
+        first, _sep, last = part.partition("-")
+        if not first.isdigit() or (last and not last.isdigit()):
+            raise L2StpStormError("'{0}' is not a valid list of ids such as 1,3-5".format(value))
+        low, high = int(first), int(last or first)
+        if not lowest <= low <= high <= MAX_ID:
+            raise L2StpStormError(
+                "'{0}' is outside the range {1}-{2}".format(value, lowest, MAX_ID),
+            )
+        numbers.update(range(low, high + 1))
+    return vlan_list_to_range(sorted(numbers))
+
+
+def normalize_storm(storm):
+    """Validate the storm_control options of an interface and canonicalise the levels in place."""
+    for traffic in STORM_TYPES:
+        entry = storm.get(traffic)
+        if not entry:
+            continue
+        if "level" in entry and "pps" in entry:
+            raise L2StpStormError(
+                "storm_control {0}: level and pps are mutually exclusive".format(traffic),
+            )
+        if "level" in entry:
+            entry["level"] = normalize_level(entry["level"])
+        elif not 0 <= entry.get("pps", 0) <= MAX_PPS:
+            raise L2StpStormError(
+                "storm_control {0}: pps must be between 0 and {1}".format(traffic, MAX_PPS),
+            )
+
+
+def normalize_spanning_tree(stp):
+    """Turn bools into enable/disable and the mst / vlans lists into dicts keyed by their canonical range."""
+    for attr in ("bpduguard", "bpdufilter"):
+        if attr in stp:
+            stp[attr] = BOOL_TO_STATE[stp[attr]]
+    for section, (key, lowest) in RANGE_KEYS.items():
+        entries = {}
+        for entry in stp.get(section, []):
+            entry[key] = normalize_range(entry[key], lowest)
+            entries[entry[key]] = entry
+        if entries:
+            stp[section] = entries
 
 
 class L2_interfaces(ResourceModule):
@@ -52,16 +135,27 @@ class L2_interfaces(ResourceModule):
             resource="l2_interfaces",
             tmplt=L2_interfacesTemplate(),
         )
-        self.parsers = [
-            "mode",
-            "access.vlan",
-            "trunk.native_vlan",
-            "trunk.allowed_vlans_none",
-            "beacon",
-            "link_flap.error_disable",
-            "cdp_enable",
-            "no_cdp_enable",
-        ]
+        self.parsers = (
+            [
+                "mode",
+                "access.vlan",
+                "trunk.native_vlan",
+                "trunk.allowed_vlans_none",
+                "beacon",
+                "link_flap.error_disable",
+                "cdp_enable",
+                "no_cdp_enable",
+                "spanning_tree.port_type",
+                "spanning_tree.bpduguard",
+                "spanning_tree.bpdufilter",
+                "spanning_tree.guard",
+                "spanning_tree.cost",
+                "spanning_tree.port_priority",
+                "spanning_tree.link_type",
+            ]
+            + ["storm_control." + traffic for traffic in STORM_TYPES]
+            + ["storm_control.action"]
+        )
 
     def execute_module(self):
         """Execute the module
@@ -81,8 +175,11 @@ class L2_interfaces(ResourceModule):
         wantd = {entry["name"].lower(): entry for entry in self.want}
         haved = {entry["name"].lower(): entry for entry in self.have}
 
-        for each in wantd, haved:
-            self.process_list_attrs(each)
+        try:
+            for each in wantd, haved:
+                self.process_list_attrs(each)
+        except L2StpStormError as err:
+            self._module.fail_json(msg=str(err))
 
         # Rebuild dicts with normalized interface name keys
         wantd = {val["name"]: val for val in wantd.values()}
@@ -91,6 +188,7 @@ class L2_interfaces(ResourceModule):
         # Get port-channel members detected during facts gathering
         pc_members = getattr(self._module, "_l2_pc_members", set())
 
+        self._skip_routed(wantd)
         user_provided_config = bool(wantd)
 
         for intf_name in list(wantd.keys()):
@@ -110,7 +208,7 @@ class L2_interfaces(ResourceModule):
                 if have.get("trunk", {}).get("allowed_vlans_implicit"):
                     if k in wantd and wantd[k].get("trunk", {}).get("allowed_vlans"):
                         have.get("trunk", {}).pop("allowed_vlans", None)
-            wantd = dict_merge(haved, wantd)
+            wantd = dict_merge(self._without_replaced_storm(haved, wantd), wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
@@ -141,8 +239,44 @@ class L2_interfaces(ResourceModule):
         self.handle_cdp(want_cdp, have_cdp, "cdp_enable", pre_pop_want)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists(want, have)
+        self._compare_keyed(want.get("spanning_tree", {}), have.get("spanning_tree", {}))
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def _skip_routed(self, wantd):
+        """Spanning-tree and storm-control are not configurable on layer-3 ports, leave those alone."""
+        for name in getattr(self._module, "_l2_routed", set()):
+            want = wantd.get(name, {})
+            ignored = [want.pop("spanning_tree", None), want.pop("storm_control", None)]
+            if any(ignored):
+                self._module.warn(
+                    "Interface {0} is a layer-3 port, spanning_tree and storm_control are ignored.".format(
+                        name,
+                    ),
+                )
+
+    @staticmethod
+    def _without_replaced_storm(haved, wantd):
+        """Copy of have without the traffic types that want sets, as level and pps replace each other."""
+        base = deepcopy(haved)
+        for name, want in wantd.items():
+            storm = base.get(name, {}).get("storm_control", {})
+            for traffic in want.get("storm_control", {}):
+                storm.pop(traffic, None)
+        return base
+
+    def _compare_keyed(self, want, have):
+        """Compare the cost / port_priority of the mst and vlans entries."""
+        for section in RANGE_KEYS:
+            wanted, current = want.get(section, {}), have.get(section, {})
+            for rng in sorted(set(wanted) | set(current)):
+                for attr in ("cost", "port_priority"):
+                    inw = wanted.get(rng, {}).get(attr)
+                    inh = current.get(rng, {}).get(attr)
+                    if inw is not None and inw != inh:
+                        self.addcmd({"key": rng, "value": inw}, section + "_" + attr)
+                    elif inw is None and inh is not None:
+                        self.addcmd({"key": rng, "value": inh}, section + "_" + attr, True)
 
     def _compare_lists(self, want, have):
         """Compare list attributes for trunk allowed vlans.
@@ -196,6 +330,8 @@ class L2_interfaces(ResourceModule):
         if param:
             for _k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
+                normalize_spanning_tree(val.get("spanning_tree", {}))
+                normalize_storm(val.get("storm_control", {}))
                 if val.get("trunk"):
                     for vlan in ["allowed_vlans"]:
                         vlanList = val.get("trunk").get(vlan, [])

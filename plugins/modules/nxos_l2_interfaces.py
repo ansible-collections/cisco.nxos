@@ -24,6 +24,20 @@ author:
 notes:
 - Tested against NXOS 10.3(2) on CML
 - Unsupported for Cisco MDS
+- Tested against NX-OS 10.6(4) on N9K-C93180YC-FX for C(spanning_tree) C(port_type) (C(edge) and C(edge_trunk)),
+  C(bpduguard) (C(true)), C(guard) (C(root)), C(cost), C(port_priority), C(link_type) (C(point_to_point))
+  and C(storm_control) C(level) of C(broadcast), C(multicast) and C(unicast).
+- The other C(spanning_tree) and C(storm_control) values are generated from the documented NX-OS
+  command syntax but were not verified on a device.
+- Only explicit interface lines are managed. Global settings such as C(spanning-tree port type edge default),
+  C(spanning-tree bpduguard default) and C(spanning-tree loopguard default) change the effective behaviour
+  of a port but are not interface configuration and are neither read nor changed by this module.
+- C(spanning_tree) and C(storm_control) apply to switchports and port-channels. Layer-3 (C(no switchport))
+  interfaces are left alone, they are not reported in the facts and the options are ignored with a warning.
+- Configure C(spanning_tree) and C(storm_control) on the port-channel, not on its member ports.
+- On a vPC port-channel the C(spanning_tree) settings must be identical on both vPC peers. A mismatch makes the vPC
+  type-1 inconsistent until the settings are aligned.
+- C(storm-control multi) commands are not supported.
 options:
   config:
     description: A List of Layer-2 interface options
@@ -117,6 +131,152 @@ options:
       beacon:
         type: bool
         description: Disable/enable the beacon for an interface
+      spanning_tree:
+        description:
+        - Spanning-tree settings of the interface.
+        - Only the explicit interface lines are managed, values left out are removed with
+          I(state=replaced), I(state=overridden) and I(state=deleted).
+        type: dict
+        version_added: 13.1.0
+        suboptions:
+          port_type:
+            description:
+            - Spanning-tree port type, C(spanning-tree port type edge|edge trunk|network|normal).
+            type: str
+            choices:
+            - edge
+            - edge_trunk
+            - network
+            - normal
+          bpduguard:
+            description:
+            - BPDU guard of the interface, C(spanning-tree bpduguard enable|disable).
+            - C(true) configures C(enable), C(false) configures C(disable). When not set no line is configured
+              and the global default applies.
+            type: bool
+          bpdufilter:
+            description:
+            - BPDU filter of the interface, C(spanning-tree bpdufilter enable|disable).
+            - C(true) configures C(enable), C(false) configures C(disable). When not set no line is configured
+              and the global default applies.
+            type: bool
+          guard:
+            description:
+            - Spanning-tree guard, C(spanning-tree guard loop|root|none).
+            type: str
+            choices:
+            - loop
+            - root
+            - none
+          cost:
+            description:
+            - Spanning-tree path cost, C(spanning-tree cost <n>).
+            type: int
+          port_priority:
+            description:
+            - Spanning-tree port priority, C(spanning-tree port-priority <n>).
+            type: int
+          link_type:
+            description:
+            - Spanning-tree link type, C(spanning-tree link-type auto|point-to-point|shared).
+            type: str
+            choices:
+            - auto
+            - point_to_point
+            - shared
+          mst:
+            description:
+            - Per MST instance cost and port priority, C(spanning-tree mst <instances> cost|port-priority <n>).
+            type: list
+            elements: dict
+            suboptions:
+              instances:
+                description:
+                - MST instance or list of instances, for example C(0,2-4).
+                type: str
+                required: true
+              cost:
+                description: Path cost for the instances.
+                type: int
+              port_priority:
+                description: Port priority for the instances.
+                type: int
+          vlans:
+            description:
+            - Per VLAN cost and port priority, C(spanning-tree vlan <vlans> cost|port-priority <n>).
+            type: list
+            elements: dict
+            suboptions:
+              vlans:
+                description:
+                - VLAN or list of VLANs, for example C(1,3-5).
+                type: str
+                required: true
+              cost:
+                description: Path cost for the VLANs.
+                type: int
+              port_priority:
+                description: Port priority for the VLANs.
+                type: int
+      storm_control:
+        description:
+        - Storm-control settings of the interface.
+        - Only the explicit interface lines are managed, values left out are removed with
+          I(state=replaced), I(state=overridden) and I(state=deleted).
+        type: dict
+        version_added: 13.1.0
+        suboptions:
+          broadcast:
+            description: Broadcast storm-control, C(storm-control broadcast level <level>|pps <pps>).
+            type: dict
+            suboptions:
+              level:
+                description:
+                - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
+                - Compared as a number, C(1.0) and C(1.00) are the same level.
+                - Mutually exclusive with I(pps).
+                type: str
+              pps:
+                description:
+                - Suppression level in packets per second (0-200000000).
+                - Mutually exclusive with I(level).
+                type: int
+          multicast:
+            description: Multicast storm-control, C(storm-control multicast level <level>|pps <pps>).
+            type: dict
+            suboptions:
+              level:
+                description:
+                - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
+                - Compared as a number, C(1.0) and C(1.00) are the same level.
+                - Mutually exclusive with I(pps).
+                type: str
+              pps:
+                description:
+                - Suppression level in packets per second (0-200000000).
+                - Mutually exclusive with I(level).
+                type: int
+          unicast:
+            description: Unicast storm-control, C(storm-control unicast level <level>|pps <pps>).
+            type: dict
+            suboptions:
+              level:
+                description:
+                - Suppression level in percent as a decimal string such as C(0.01) or C(1.00).
+                - Compared as a number, C(1.0) and C(1.00) are the same level.
+                - Mutually exclusive with I(pps).
+                type: str
+              pps:
+                description:
+                - Suppression level in packets per second (0-200000000).
+                - Mutually exclusive with I(level).
+                type: int
+          action:
+            description: Action taken when a storm is detected, C(storm-control action shutdown|trap).
+            type: str
+            choices:
+            - shutdown
+            - trap
   state:
     description:
     - The state of the configuration after module completion.
@@ -604,6 +764,288 @@ EXAMPLES = """
 # - switchport trunk allowed vlan 10,20,30
 # - interface Ethernet1/2
 # - switchport trunk allowed vlan none
+
+# Using merged with spanning_tree and storm_control
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section ^interface
+# interface Ethernet1/25
+#   switchport
+#   switchport mode trunk
+#   spanning-tree guard root
+# interface port-channel20
+#   switchport
+
+- name: Merge spanning-tree and storm-control settings
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/25
+        spanning_tree:
+          port_type: edge_trunk
+          bpduguard: true
+          cost: 100
+        storm_control:
+          broadcast:
+            level: "0.01"
+          multicast:
+            pps: 5000
+          action: trap
+      - name: port-channel20
+        spanning_tree:
+          port_type: network
+          mst:
+            - instances: "0,2-4"
+              cost: 200
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/25
+# - spanning-tree port type edge trunk
+# - spanning-tree bpduguard enable
+# - spanning-tree cost 100
+# - storm-control broadcast level 0.01
+# - storm-control multicast level pps 5000
+# - storm-control action trap
+# - interface port-channel20
+# - spanning-tree port type network
+# - spanning-tree mst 0,2-4 cost 200
+
+# After state:
+# ------------
+#
+# switch# show running-config | section ^interface
+# interface Ethernet1/25
+#   switchport
+#   switchport mode trunk
+#   spanning-tree cost 100
+#   spanning-tree port type edge trunk
+#   spanning-tree bpduguard enable
+#   spanning-tree guard root
+#   storm-control broadcast level 0.01
+#   storm-control multicast level pps 5000
+#   storm-control action trap
+# interface port-channel20
+#   switchport
+#   spanning-tree port type network
+#   spanning-tree mst 0,2-4 cost 200
+
+# Using replaced with spanning_tree and storm_control
+
+# Before state:
+# -------------
+#
+# interface Ethernet1/25
+#   switchport
+#   switchport mode trunk
+#   spanning-tree cost 100
+#   spanning-tree port type edge trunk
+#   spanning-tree bpduguard enable
+#   spanning-tree guard root
+#   storm-control broadcast level 0.01
+
+- name: Replace the settings of an interface, whatever is not listed is removed
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/25
+        mode: trunk
+        cdp_enable: true
+        spanning_tree:
+          port_type: edge_trunk
+          bpduguard: false
+        storm_control:
+          broadcast:
+            level: "1.0"
+    state: replaced
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/25
+# - spanning-tree bpduguard disable
+# - no spanning-tree guard
+# - no spanning-tree cost
+# - storm-control broadcast level 1.00
+
+# After state:
+# ------------
+#
+# interface Ethernet1/25
+#   switchport
+#   switchport mode trunk
+#   spanning-tree port type edge trunk
+#   spanning-tree bpduguard disable
+#   storm-control broadcast level 1.00
+
+# Using overridden with spanning_tree and storm_control
+
+# Before state:
+# -------------
+#
+# interface Ethernet1/25
+#   switchport
+#   spanning-tree port type edge
+# interface Ethernet1/26
+#   switchport
+#   spanning-tree bpduguard enable
+#   storm-control unicast level 5.00
+
+- name: Override the layer-2 configuration of all interfaces
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/25
+        cdp_enable: true
+        spanning_tree:
+          port_type: edge
+    state: overridden
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/26
+# - no spanning-tree bpduguard
+# - no storm-control unicast level 5.00
+
+# After state:
+# ------------
+#
+# interface Ethernet1/25
+#   switchport
+#   spanning-tree port type edge
+# interface Ethernet1/26
+#   switchport
+
+# Using deleted with spanning_tree and storm_control
+
+# Before state:
+# -------------
+#
+# interface Ethernet1/25
+#   switchport
+#   spanning-tree port type edge trunk
+#   spanning-tree vlan 1,3-5 cost 10
+#   storm-control broadcast level 0.01
+#   storm-control action shutdown
+
+- name: Remove the layer-2 configuration of an interface
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/25
+    state: deleted
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/25
+# - no spanning-tree port type edge trunk
+# - no storm-control broadcast level 0.01
+# - no storm-control action shutdown
+# - no spanning-tree vlan 1,3-5 cost
+
+# After state:
+# ------------
+#
+# interface Ethernet1/25
+#   switchport
+
+# Using rendered with spanning_tree and storm_control
+
+- name: Render the commands for spanning-tree and storm-control
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/25
+        spanning_tree:
+          port_type: edge
+          link_type: point_to_point
+          vlans:
+            - vlans: "1,3-5"
+              port_priority: 64
+        storm_control:
+          unicast:
+            level: "5"
+    state: rendered
+
+# Task Output
+# -----------
+#
+# rendered:
+# - interface Ethernet1/25
+# - spanning-tree port type edge
+# - spanning-tree link-type point-to-point
+# - storm-control unicast level 5.00
+# - spanning-tree vlan 1,3-5 port-priority 64
+
+# Using gathered with spanning_tree and storm_control
+
+# Before state:
+# -------------
+#
+# interface Ethernet1/25
+#   switchport
+#   switchport mode trunk
+#   spanning-tree port-priority 64
+#   spanning-tree port type edge trunk
+#   spanning-tree bpduguard enable
+#   storm-control broadcast level 0.01
+#   storm-control multicast level 1.00
+
+- name: Gather spanning-tree and storm-control settings
+  cisco.nxos.nxos_l2_interfaces:
+    state: gathered
+
+# Task Output
+# -----------
+#
+# gathered:
+# - name: Ethernet1/25
+#   mode: trunk
+#   spanning_tree:
+#     bpduguard: true
+#     port_priority: 64
+#     port_type: edge_trunk
+#   storm_control:
+#     broadcast:
+#       level: "0.01"
+#     multicast:
+#       level: "1.00"
+
+# Using parsed with spanning_tree and storm_control
+
+# File: parsed.cfg
+# ----------------
+#
+# interface port-channel20
+#   spanning-tree port type network
+#   spanning-tree bpduguard disable
+#   spanning-tree mst 0,2-4 cost 200
+#   storm-control broadcast level pps 1000
+
+- name: Parse the provided configuration
+  cisco.nxos.nxos_l2_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task Output
+# -----------
+#
+# parsed:
+# - name: port-channel20
+#   spanning_tree:
+#     bpduguard: false
+#     mst:
+#       - cost: 200
+#         instances: 0,2-4
+#     port_type: network
+#   storm_control:
+#     broadcast:
+#       pps: 1000
 """
 
 RETURN = """

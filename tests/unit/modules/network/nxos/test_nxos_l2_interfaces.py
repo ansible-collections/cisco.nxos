@@ -25,6 +25,9 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_routed_interfaces,
+)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_l2_interfaces
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
@@ -32,6 +35,54 @@ from .nxos_module import TestNxosModule
 
 
 ignore_provider_arg = True
+
+ETH25 = "Ethernet1/25"
+BPDUGUARD = "spanning-tree bpduguard"
+STP_STORM_BLOCK = dedent(
+    """
+    interface Ethernet1/25
+      switchport
+      switchport mode trunk
+      spanning-tree port-priority 64
+      spanning-tree cost 100
+      spanning-tree link-type point-to-point
+      spanning-tree port type edge trunk
+      spanning-tree bpduguard enable
+      spanning-tree guard root
+      storm-control broadcast level 0.01
+      storm-control multicast level 1.00
+      storm-control unicast level 5.00
+    """,
+)
+STP_STORM_FACTS = {
+    "name": ETH25,
+    "mode": "trunk",
+    "spanning_tree": {
+        "port_priority": 64,
+        "cost": 100,
+        "link_type": "point_to_point",
+        "port_type": "edge_trunk",
+        "bpduguard": True,
+        "guard": "root",
+    },
+    "storm_control": {
+        "broadcast": {"level": "0.01"},
+        "multicast": {"level": "1.00"},
+        "unicast": {"level": "5.00"},
+    },
+}
+STP_STORM_REMOVE = [
+    "interface Ethernet1/25",
+    "no spanning-tree port type edge trunk",
+    "no spanning-tree bpduguard",
+    "no spanning-tree guard",
+    "no spanning-tree cost",
+    "no spanning-tree port-priority",
+    "no spanning-tree link-type",
+    "no storm-control broadcast level 0.01",
+    "no storm-control multicast level 1.00",
+    "no storm-control unicast level 5.00",
+]
 
 
 class TestNxosL2InterfacesModule(TestNxosModule):
@@ -1257,6 +1308,345 @@ class TestNxosL2InterfacesModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected)
+
+    def _run(self, show, config=None, state="merged", changed=True, failed=False, **extra):
+        self.execute_show_command.return_value = show
+        args = dict(state=state, **extra)
+        if config is not None:
+            args["config"] = config
+        set_module_args(args)
+        return self.execute_module(changed=changed, failed=failed)
+
+    def _stp_cfg(self, name=ETH25, **sections):
+        return [dict(name=name, **sections)]
+
+    def test_l2_interfaces_stp_storm_gathered(self):
+        result = self._run(STP_STORM_BLOCK, state="gathered", changed=False)
+        self.assertEqual(result["gathered"], [STP_STORM_FACTS])
+
+    def test_l2_interfaces_stp_storm_parsed_all_options(self):
+        running = dedent(
+            """
+            interface port-channel20
+              spanning-tree port type network
+              spanning-tree bpduguard disable
+              spanning-tree bpdufilter enable
+              spanning-tree guard loop
+              spanning-tree link-type shared
+              spanning-tree mst 0,2-4 cost 200
+              spanning-tree mst 0,2-4 port-priority 32
+              spanning-tree mst 5 cost 10
+              spanning-tree vlan 1,3-5 port-priority 96
+              spanning-tree cost auto
+              storm-control broadcast level pps 1000
+              storm-control multicast level 10.5
+              storm-control action shutdown
+            """,
+        )
+        result = self._run(None, state="parsed", changed=False, running_config=running)
+        self.assertEqual(
+            result["parsed"],
+            [
+                {
+                    "name": "port-channel20",
+                    "spanning_tree": {
+                        "port_type": "network",
+                        "bpduguard": False,
+                        "bpdufilter": True,
+                        "guard": "loop",
+                        "link_type": "shared",
+                        "mst": [
+                            {"instances": "0,2-4", "cost": 200, "port_priority": 32},
+                            {"instances": "5", "cost": 10},
+                        ],
+                        "vlans": [{"vlans": "1,3-5", "port_priority": 96}],
+                    },
+                    "storm_control": {
+                        "broadcast": {"pps": 1000},
+                        "multicast": {"level": "10.5"},
+                        "action": "shutdown",
+                    },
+                },
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_rendered(self):
+        config = self._stp_cfg(
+            spanning_tree={
+                "port_type": "edge_trunk",
+                "bpduguard": True,
+                "bpdufilter": False,
+                "guard": "none",
+                "cost": 100,
+                "port_priority": 64,
+                "link_type": "point_to_point",
+                "mst": [{"instances": "4,3,2", "cost": 5, "port_priority": 32}],
+                "vlans": [{"vlans": "1,3-5", "cost": 7}],
+            },
+            storm_control={
+                "broadcast": {"level": "0.01"},
+                "multicast": {"pps": 0},
+                "unicast": {"level": "1"},
+                "action": "trap",
+            },
+        )
+        result = self._run(None, config, state="rendered", changed=False)
+        self.assertEqual(
+            result["rendered"],
+            [
+                "interface Ethernet1/25",
+                "spanning-tree port type edge trunk",
+                BPDUGUARD + " enable",
+                "spanning-tree bpdufilter disable",
+                "spanning-tree guard none",
+                "spanning-tree cost 100",
+                "spanning-tree port-priority 64",
+                "spanning-tree link-type point-to-point",
+                "storm-control broadcast level 0.01",
+                "storm-control multicast level pps 0",
+                "storm-control unicast level 1.00",
+                "storm-control action trap",
+                "spanning-tree mst 2-4 cost 5",
+                "spanning-tree mst 2-4 port-priority 32",
+                "spanning-tree vlan 1,3-5 cost 7",
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_merged_adds_and_keeps(self):
+        config = self._stp_cfg(
+            spanning_tree={"port_type": "edge", "link_type": "shared"},
+            storm_control={"broadcast": {"level": "0.50"}, "action": "shutdown"},
+        )
+        result = self._run(STP_STORM_BLOCK, config)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/25",
+                "spanning-tree port type edge",
+                "spanning-tree link-type shared",
+                "storm-control broadcast level 0.50",
+                "storm-control action shutdown",
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_merged_idempotent_decimal(self):
+        facts = dict(STP_STORM_FACTS, mode="trunk")
+        config = [
+            dict(
+                facts,
+                storm_control={"broadcast": {"level": "0.010"}, "unicast": {"level": "5.0"}},
+            ),
+        ]
+        result = self._run(STP_STORM_BLOCK, config, changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_l2_interfaces_stp_storm_merged_level_to_pps(self):
+        config = self._stp_cfg(storm_control={"broadcast": {"pps": 5000}})
+        result = self._run(STP_STORM_BLOCK, config)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/25", "storm-control broadcast level pps 5000"],
+        )
+
+    def test_l2_interfaces_stp_storm_merged_pps_to_level_and_idempotent(self):
+        show = "interface Ethernet1/25\n  storm-control broadcast level pps 5000\n"
+        result = self._run(show, self._stp_cfg(storm_control={"broadcast": {"level": "2"}}))
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/25", "storm-control broadcast level 2.00"],
+        )
+        result = self._run(
+            show,
+            self._stp_cfg(storm_control={"broadcast": {"pps": 5000}}),
+            changed=False,
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_l2_interfaces_stp_storm_merged_port_channel_from_default(self):
+        config = self._stp_cfg(
+            "Port-Channel20",
+            spanning_tree={"port_type": "network", "bpduguard": True},
+        )
+        result = self._run("interface port-channel20\n  switchport\n", config)
+        self.assertEqual(
+            result["commands"],
+            ["interface port-channel20", "spanning-tree port type network", BPDUGUARD + " enable"],
+        )
+
+    def test_l2_interfaces_stp_storm_replaced_removes_single_line(self):
+        facts = dict(STP_STORM_FACTS, cdp_enable=True)
+        facts["spanning_tree"] = {k: v for k, v in facts["spanning_tree"].items() if k != "guard"}
+        result = self._run(STP_STORM_BLOCK, [facts], state="replaced")
+        self.assertEqual(result["commands"], ["interface Ethernet1/25", "no spanning-tree guard"])
+
+    def test_l2_interfaces_stp_storm_replaced_idempotent(self):
+        result = self._run(
+            STP_STORM_BLOCK,
+            [dict(STP_STORM_FACTS, cdp_enable=True)],
+            state="replaced",
+            changed=False,
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_l2_interfaces_stp_storm_replaced_restore_to_default(self):
+        result = self._run(
+            STP_STORM_BLOCK,
+            [{"name": ETH25, "mode": "trunk", "cdp_enable": True}],
+            state="replaced",
+        )
+        self.assertEqual(result["commands"], STP_STORM_REMOVE)
+
+    def test_l2_interfaces_stp_storm_overridden_removes_unlisted(self):
+        show = (
+            STP_STORM_BLOCK
+            + "interface Ethernet1/26\n  spanning-tree port type edge\n  storm-control action trap\n"
+        )
+        config = [dict(STP_STORM_FACTS, cdp_enable=True)]
+        result = self._run(show, config, state="overridden")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/26",
+                "no spanning-tree port type edge",
+                "no storm-control action trap",
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_deleted(self):
+        show = STP_STORM_BLOCK + "interface Ethernet1/26\n  spanning-tree bpduguard enable\n"
+        result = self._run(show, [{"name": ETH25}], state="deleted")
+        self.assertEqual(
+            result["commands"],
+            STP_STORM_REMOVE[:1] + ["no switchport mode trunk"] + STP_STORM_REMOVE[1:],
+        )
+        result = self._run(show, state="deleted")
+        self.assertIn("no spanning-tree bpduguard", result["commands"])
+        self.assertEqual(result["commands"].count("interface Ethernet1/26"), 1)
+
+    def test_l2_interfaces_stp_storm_bpduguard_tri_state(self):
+        show = "interface Ethernet1/25\n"
+        cases = [
+            (show, True, ["interface Ethernet1/25", BPDUGUARD + " enable"]),
+            (show, False, ["interface Ethernet1/25", BPDUGUARD + " disable"]),
+            (
+                show + "  " + BPDUGUARD + " disable\n",
+                True,
+                ["interface Ethernet1/25", BPDUGUARD + " enable"],
+            ),
+            (
+                show + "  " + BPDUGUARD + " enable\n",
+                False,
+                ["interface Ethernet1/25", BPDUGUARD + " disable"],
+            ),
+            (show + "  " + BPDUGUARD + " disable\n", False, []),
+            (show + "  " + BPDUGUARD + " enable\n", None, []),
+        ]
+        for have, value, commands in cases:
+            spanning_tree = {} if value is None else {"bpduguard": value}
+            config = self._stp_cfg(spanning_tree=spanning_tree)
+            result = self._run(have, config, changed=bool(commands))
+            self.assertEqual(result["commands"], commands, (have, value))
+
+    def test_l2_interfaces_stp_storm_bpduguard_unset_removed_by_replaced(self):
+        for state in ("enable", "disable"):
+            show = "interface Ethernet1/25\n  " + BPDUGUARD + " " + state + "\n"
+            result = self._run(show, [{"name": ETH25, "cdp_enable": True}], state="replaced")
+            self.assertEqual(result["commands"], ["interface Ethernet1/25", "no " + BPDUGUARD])
+
+    def test_l2_interfaces_stp_storm_mst_vlans_lists(self):
+        show = dedent(
+            """
+            interface Ethernet1/25
+              spanning-tree mst 0,2-4 cost 200
+              spanning-tree mst 5 port-priority 32
+              spanning-tree vlan 1,3-5 cost 10
+            """,
+        )
+        config = self._stp_cfg(
+            spanning_tree={
+                "mst": [
+                    {"instances": "0, 4,2,3", "cost": 100, "port_priority": 64},
+                    {"instances": "5", "port_priority": 32},
+                ],
+                "vlans": [{"vlans": "3-5,1", "cost": 10}, {"vlans": "100", "port_priority": 128}],
+            },
+        )
+        result = self._run(show, config)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/25",
+                "spanning-tree mst 0,2-4 cost 100",
+                "spanning-tree mst 0,2-4 port-priority 64",
+                "spanning-tree vlan 100 port-priority 128",
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_mst_vlans_replaced_removes_entries(self):
+        show = dedent(
+            """
+            interface Ethernet1/25
+              spanning-tree mst 0,2-4 cost 200
+              spanning-tree mst 5 port-priority 32
+              spanning-tree vlan 1,3-5 cost 10
+            """,
+        )
+        config = self._stp_cfg(
+            spanning_tree={"mst": [{"instances": "0,2-4", "cost": 200}]},
+            cdp_enable=True,
+        )
+        result = self._run(show, config, state="replaced")
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/25",
+                "no spanning-tree mst 5 port-priority",
+                "no spanning-tree vlan 1,3-5 cost",
+            ],
+        )
+
+    def test_l2_interfaces_stp_storm_invalid_input_fails_before_commands(self):
+        cases = {
+            "mutually exclusive": {"storm_control": {"broadcast": {"level": "1", "pps": 10}}},
+            "pps must be": {"storm_control": {"unicast": {"pps": 200000001}}},
+            "must be a decimal": {"storm_control": {"unicast": {"level": "abc"}}},
+            "must be a decimal ": {"storm_control": {"unicast": {"level": "100.5"}}},
+            "at most two decimals": {"storm_control": {"unicast": {"level": "0.001"}}},
+            "not a valid list": {"spanning_tree": {"mst": [{"instances": "x"}]}},
+            "outside the range": {"spanning_tree": {"vlans": [{"vlans": "0-5"}]}},
+        }
+        for message, sections in cases.items():
+            result = self._run(STP_STORM_BLOCK, self._stp_cfg(**sections), failed=True)
+            self.assertIn(message.strip().split(" ")[0], result["msg"])
+            self.assertNotIn("commands", result)
+
+    def test_l2_interfaces_stp_storm_layer3_port_ignored(self):
+        show = dedent(
+            """
+            interface Ethernet1/30
+              no switchport
+              spanning-tree bpduguard enable
+              ip address 192.0.2.1/24
+            interface Ethernet1/25
+              switchport
+            """,
+        )
+        result = self._run(show, state="gathered", changed=False)
+        self.assertEqual(result["gathered"], [{"name": "Ethernet1/30"}, {"name": ETH25}])
+        config = self._stp_cfg(
+            "Ethernet1/30",
+            spanning_tree={"bpduguard": True},
+            storm_control={"action": "trap"},
+        )
+        with patch("ansible.module_utils.basic.AnsibleModule.warn") as warn:
+            result = self._run(show, config, changed=False)
+        self.assertEqual(result["commands"], [])
+        warn.assert_called_once()
+        self.assertIn("layer-3", warn.call_args[0][0])
+
+    def test_get_routed_interfaces(self):
+        config = "interface Ethernet1/1\n  no switchport\ninterface Ethernet1/2\n  switchport\n"
+        self.assertEqual(get_routed_interfaces(config), {"Ethernet1/1"})
 
 
 class TestGetPortChannelMembersUtil(TestNxosModule):

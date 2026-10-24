@@ -241,6 +241,529 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>spanning_tree</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Spanning-tree settings of the interface.</div>
+                        <div>Only the explicit interface lines are managed, values left out are removed with <em>state=replaced</em>, <em>state=overridden</em> and <em>state=deleted</em>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>bpdufilter</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>BPDU filter of the interface, <code>spanning-tree bpdufilter enable|disable</code>.</div>
+                        <div><code>true</code> configures <code>enable</code>, <code>false</code> configures <code>disable</code>. When not set no line is configured and the global default applies.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>bpduguard</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>BPDU guard of the interface, <code>spanning-tree bpduguard enable|disable</code>.</div>
+                        <div><code>true</code> configures <code>enable</code>, <code>false</code> configures <code>disable</code>. When not set no line is configured and the global default applies.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>cost</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Spanning-tree path cost, <code>spanning-tree cost &lt;n&gt;</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>guard</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>loop</li>
+                                    <li>root</li>
+                                    <li>none</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Spanning-tree guard, <code>spanning-tree guard loop|root|none</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>link_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>auto</li>
+                                    <li>point_to_point</li>
+                                    <li>shared</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Spanning-tree link type, <code>spanning-tree link-type auto|point-to-point|shared</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mst</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Per MST instance cost and port priority, <code>spanning-tree mst &lt;instances&gt; cost|port-priority &lt;n&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>cost</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Path cost for the instances.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>instances</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>MST instance or list of instances, for example <code>0,2-4</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_priority</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Port priority for the instances.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_priority</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Spanning-tree port priority, <code>spanning-tree port-priority &lt;n&gt;</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>edge</li>
+                                    <li>edge_trunk</li>
+                                    <li>network</li>
+                                    <li>normal</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Spanning-tree port type, <code>spanning-tree port type edge|edge trunk|network|normal</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Per VLAN cost and port priority, <code>spanning-tree vlan &lt;vlans&gt; cost|port-priority &lt;n&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>cost</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Path cost for the VLANs.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_priority</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Port priority for the VLANs.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VLAN or list of VLANs, for example <code>1,3-5</code>.</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>storm_control</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 13.1.0</div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Storm-control settings of the interface.</div>
+                        <div>Only the explicit interface lines are managed, values left out are removed with <em>state=replaced</em>, <em>state=overridden</em> and <em>state=deleted</em>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>action</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>shutdown</li>
+                                    <li>trap</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Action taken when a storm is detected, <code>storm-control action shutdown|trap</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>broadcast</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Broadcast storm-control, <code>storm-control broadcast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>level</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
+                        <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
+                        <div>Mutually exclusive with <em>pps</em>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>pps</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in packets per second (0-200000000).</div>
+                        <div>Mutually exclusive with <em>level</em>.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>multicast</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Multicast storm-control, <code>storm-control multicast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>level</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
+                        <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
+                        <div>Mutually exclusive with <em>pps</em>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>pps</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in packets per second (0-200000000).</div>
+                        <div>Mutually exclusive with <em>level</em>.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>unicast</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Unicast storm-control, <code>storm-control unicast level &lt;level&gt;|pps &lt;pps&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>level</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in percent as a decimal string such as <code>0.01</code> or <code>1.00</code>.</div>
+                        <div>Compared as a number, <code>1.0</code> and <code>1.00</code> are the same level.</div>
+                        <div>Mutually exclusive with <em>pps</em>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>pps</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppression level in packets per second (0-200000000).</div>
+                        <div>Mutually exclusive with <em>level</em>.</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>trunk</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -387,6 +910,13 @@ Notes
 .. note::
    - Tested against NXOS 10.3(2) on CML
    - Unsupported for Cisco MDS
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX for ``spanning_tree`` ``port_type`` (``edge`` and ``edge_trunk``), ``bpduguard`` (``true``), ``guard`` (``root``), ``cost``, ``port_priority``, ``link_type`` (``point_to_point``) and ``storm_control`` ``level`` of ``broadcast``, ``multicast`` and ``unicast``.
+   - The other ``spanning_tree`` and ``storm_control`` values are generated from the documented NX-OS command syntax but were not verified on a device.
+   - Only explicit interface lines are managed. Global settings such as ``spanning-tree port type edge default``, ``spanning-tree bpduguard default`` and ``spanning-tree loopguard default`` change the effective behaviour of a port but are not interface configuration and are neither read nor changed by this module.
+   - ``spanning_tree`` and ``storm_control`` apply to switchports and port-channels. Layer-3 (``no switchport``) interfaces are left alone, they are not reported in the facts and the options are ignored with a warning.
+   - Configure ``spanning_tree`` and ``storm_control`` on the port-channel, not on its member ports.
+   - On a vPC port-channel the ``spanning_tree`` settings must be identical on both vPC peers. A mismatch makes the vPC type-1 inconsistent until the settings are aligned.
+   - ``storm-control multi`` commands are not supported.
 
 
 
@@ -857,6 +1387,288 @@ Examples
     # - switchport trunk allowed vlan 10,20,30
     # - interface Ethernet1/2
     # - switchport trunk allowed vlan none
+
+    # Using merged with spanning_tree and storm_control
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section ^interface
+    # interface Ethernet1/25
+    #   switchport
+    #   switchport mode trunk
+    #   spanning-tree guard root
+    # interface port-channel20
+    #   switchport
+
+    - name: Merge spanning-tree and storm-control settings
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                pps: 5000
+              action: trap
+          - name: port-channel20
+            spanning_tree:
+              port_type: network
+              mst:
+                - instances: "0,2-4"
+                  cost: 200
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface Ethernet1/25
+    # - spanning-tree port type edge trunk
+    # - spanning-tree bpduguard enable
+    # - spanning-tree cost 100
+    # - storm-control broadcast level 0.01
+    # - storm-control multicast level pps 5000
+    # - storm-control action trap
+    # - interface port-channel20
+    # - spanning-tree port type network
+    # - spanning-tree mst 0,2-4 cost 200
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section ^interface
+    # interface Ethernet1/25
+    #   switchport
+    #   switchport mode trunk
+    #   spanning-tree cost 100
+    #   spanning-tree port type edge trunk
+    #   spanning-tree bpduguard enable
+    #   spanning-tree guard root
+    #   storm-control broadcast level 0.01
+    #   storm-control multicast level pps 5000
+    #   storm-control action trap
+    # interface port-channel20
+    #   switchport
+    #   spanning-tree port type network
+    #   spanning-tree mst 0,2-4 cost 200
+
+    # Using replaced with spanning_tree and storm_control
+
+    # Before state:
+    # -------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   switchport mode trunk
+    #   spanning-tree cost 100
+    #   spanning-tree port type edge trunk
+    #   spanning-tree bpduguard enable
+    #   spanning-tree guard root
+    #   storm-control broadcast level 0.01
+
+    - name: Replace the settings of an interface, whatever is not listed is removed
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            mode: trunk
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: false
+            storm_control:
+              broadcast:
+                level: "1.0"
+        state: replaced
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface Ethernet1/25
+    # - spanning-tree bpduguard disable
+    # - no spanning-tree guard
+    # - no spanning-tree cost
+    # - storm-control broadcast level 1.00
+
+    # After state:
+    # ------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   switchport mode trunk
+    #   spanning-tree port type edge trunk
+    #   spanning-tree bpduguard disable
+    #   storm-control broadcast level 1.00
+
+    # Using overridden with spanning_tree and storm_control
+
+    # Before state:
+    # -------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   spanning-tree port type edge
+    # interface Ethernet1/26
+    #   switchport
+    #   spanning-tree bpduguard enable
+    #   storm-control unicast level 5.00
+
+    - name: Override the layer-2 configuration of all interfaces
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge
+        state: overridden
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface Ethernet1/26
+    # - no spanning-tree bpduguard
+    # - no storm-control unicast level 5.00
+
+    # After state:
+    # ------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   spanning-tree port type edge
+    # interface Ethernet1/26
+    #   switchport
+
+    # Using deleted with spanning_tree and storm_control
+
+    # Before state:
+    # -------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   spanning-tree port type edge trunk
+    #   spanning-tree vlan 1,3-5 cost 10
+    #   storm-control broadcast level 0.01
+    #   storm-control action shutdown
+
+    - name: Remove the layer-2 configuration of an interface
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+        state: deleted
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface Ethernet1/25
+    # - no spanning-tree port type edge trunk
+    # - no storm-control broadcast level 0.01
+    # - no storm-control action shutdown
+    # - no spanning-tree vlan 1,3-5 cost
+
+    # After state:
+    # ------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+
+    # Using rendered with spanning_tree and storm_control
+
+    - name: Render the commands for spanning-tree and storm-control
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            spanning_tree:
+              port_type: edge
+              link_type: point_to_point
+              vlans:
+                - vlans: "1,3-5"
+                  port_priority: 64
+            storm_control:
+              unicast:
+                level: "5"
+        state: rendered
+
+    # Task Output
+    # -----------
+    #
+    # rendered:
+    # - interface Ethernet1/25
+    # - spanning-tree port type edge
+    # - spanning-tree link-type point-to-point
+    # - storm-control unicast level 5.00
+    # - spanning-tree vlan 1,3-5 port-priority 64
+
+    # Using gathered with spanning_tree and storm_control
+
+    # Before state:
+    # -------------
+    #
+    # interface Ethernet1/25
+    #   switchport
+    #   switchport mode trunk
+    #   spanning-tree port-priority 64
+    #   spanning-tree port type edge trunk
+    #   spanning-tree bpduguard enable
+    #   storm-control broadcast level 0.01
+    #   storm-control multicast level 1.00
+
+    - name: Gather spanning-tree and storm-control settings
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    # Task Output
+    # -----------
+    #
+    # gathered:
+    # - name: Ethernet1/25
+    #   mode: trunk
+    #   spanning_tree:
+    #     bpduguard: true
+    #     port_priority: 64
+    #     port_type: edge_trunk
+    #   storm_control:
+    #     broadcast:
+    #       level: "0.01"
+    #     multicast:
+    #       level: "1.00"
+
+    # Using parsed with spanning_tree and storm_control
+
+    # File: parsed.cfg
+    # ----------------
+    #
+    # interface port-channel20
+    #   spanning-tree port type network
+    #   spanning-tree bpduguard disable
+    #   spanning-tree mst 0,2-4 cost 200
+    #   storm-control broadcast level pps 1000
+
+    - name: Parse the provided configuration
+      cisco.nxos.nxos_l2_interfaces:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
+
+    # Task Output
+    # -----------
+    #
+    # parsed:
+    # - name: port-channel20
+    #   spanning_tree:
+    #     bpduguard: false
+    #     mst:
+    #       - cost: 200
+    #         instances: 0,2-4
+    #     port_type: network
+    #   storm_control:
+    #     broadcast:
+    #       pps: 1000
 
 
 
