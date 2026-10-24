@@ -825,7 +825,10 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         result = self._run(False, running_config=cfg, state="parsed")
         self.assertEqual(
             result["parsed"],
-            dict(DEFAULTS, vlans=[dict(vlan_id=100, group_timeout="300", proxy=dict(general_queries=True))]),
+            dict(
+                DEFAULTS,
+                vlans=[dict(vlan_id=100, group_timeout="300", proxy=dict(general_queries=True))],
+            ),
         )
 
     def test_full_global_parsed(self):
@@ -844,7 +847,10 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
     def test_full_global_idempotent(self):
         self.get_config.return_value = FULL_GLOBAL_CLI
         config = dict(
-            max_gq_miss=4, syslog_threshold=70, holddown_timer=100, proxy=dict(general_queries=True)
+            max_gq_miss=4,
+            syslog_threshold=70,
+            holddown_timer=100,
+            proxy=dict(general_queries=True),
         )
         self._run(False, config=config, state="merged")
         self._run(False, config=config, state="replaced")
@@ -1037,7 +1043,8 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         self.assertIn("no ip igmp snooping report-flood all", commands)
         self.assertIn("no ip igmp snooping report-flood interface port-channel20", commands)
         self.assertIn(
-            "no ip igmp snooping report-policy route-map RM_ONE interface port-channel20", commands
+            "no ip igmp snooping report-policy route-map RM_ONE interface port-channel20",
+            commands,
         )
         self.assertIn("no ip igmp snooping access-group RM_TWO", commands)
         self.assertIn(
@@ -1045,7 +1052,8 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             commands,
         )
         self.assertIn(
-            "no ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10", commands
+            "no ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10",
+            commands,
         )
         self.assertIn("ip igmp snooping", commands)
         self.assertIn("no ip igmp snooping group-timeout 300", commands)
@@ -1101,7 +1109,9 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             (
                 dict(
                     report_policy=[dict(policy_type="route_map", name="RM", interface="Po20")],
-                    access_group=[dict(policy_type="prefix_list", name="PL", interface="port-channel20")],
+                    access_group=[
+                        dict(policy_type="prefix_list", name="PL", interface="port-channel20")
+                    ],
                 ),
                 "only one entry per interface",
             ),

@@ -156,7 +156,7 @@ class Igmp_snooping(ResourceModule):
         if proxy.get("general_queries") is False:
             if "mrt" in proxy:
                 self._module.fail_json(
-                    msg="proxy mrt cannot be combined with general_queries false"
+                    msg="proxy mrt cannot be combined with general_queries false",
                 )
             settings[PROXY] = False
         elif proxy.get("general_queries") is None:
@@ -166,7 +166,9 @@ class Igmp_snooping(ResourceModule):
                 self._check_range("proxy mrt", proxy["mrt"], MRT_RANGE)
                 if proxy["mrt"] == MRT_DEFAULT:
                     self._module.fail_json(
-                        msg="proxy mrt {0} is the default and removes the proxy, omit mrt instead".format(MRT_DEFAULT),
+                        msg="proxy mrt {0} is the default and removes the proxy, omit mrt instead".format(
+                            MRT_DEFAULT
+                        ),
                     )
             settings[PROXY] = {"mrt": proxy.get("mrt")}
 
@@ -174,7 +176,10 @@ class Igmp_snooping(ResourceModule):
         if not limits[0] <= value <= limits[1]:
             self._module.fail_json(
                 msg="{0} must be in the range {1}-{2}, got '{3}'".format(
-                    what, limits[0], limits[1], value
+                    what,
+                    limits[0],
+                    limits[1],
+                    value,
                 ),
             )
 
