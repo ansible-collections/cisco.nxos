@@ -1481,6 +1481,73 @@ platforms:
       (config)#: " "
       (config-if)#: " "
       (config-vrf)#: " "
+  nxos_nve_interface:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      show running-config | section '^interface nve1': transcripts/nxos_nve_interface/scenarios/gathered/after.txt
+      configure terminal: transcripts/common/generic_empty_return.txt
+      end: transcripts/common/generic_empty_return.txt
+      interface nve1: transcripts/common/generic_empty_return.txt
+      description vxlan vtep: transcripts/common/generic_empty_return.txt
+      host-reachability protocol bgp: transcripts/common/generic_empty_return.txt
+      advertise virtual-rmac: transcripts/common/generic_empty_return.txt
+      source-interface loopback1: transcripts/common/generic_empty_return.txt
+      source-interface hold-down-time 60: transcripts/common/generic_empty_return.txt
+      member vni 11111 associate-vrf: transcripts/common/generic_empty_return.txt
+      member vni 22222: transcripts/common/generic_empty_return.txt
+      member vni 33333: transcripts/common/generic_empty_return.txt
+      suppress-arp: transcripts/common/generic_empty_return.txt
+      member vni 44444: transcripts/common/generic_empty_return.txt
+      mcast-group 233.252.0.10: transcripts/common/generic_empty_return.txt
+      member vni 55555: transcripts/common/generic_empty_return.txt
+      mcast-group 233.252.0.11: transcripts/common/generic_empty_return.txt
+      no shutdown: transcripts/common/generic_empty_return.txt
+      global mcast-group 233.252.0.20 L2: transcripts/common/generic_empty_return.txt
+      no advertise virtual-rmac: transcripts/common/generic_empty_return.txt
+      no source-interface hold-down-time 60: transcripts/common/generic_empty_return.txt
+      no member vni 11111 associate-vrf: transcripts/common/generic_empty_return.txt
+      no member vni 22222: transcripts/common/generic_empty_return.txt
+      no member vni 33333: transcripts/common/generic_empty_return.txt
+      no member vni 44444: transcripts/common/generic_empty_return.txt
+      no member vni 55555: transcripts/common/generic_empty_return.txt
+      shutdown: transcripts/common/generic_empty_return.txt
+      no global mcast-group L2: transcripts/common/generic_empty_return.txt
+      no description vxlan vtep: transcripts/common/generic_empty_return.txt
+      member vni 11111: transcripts/common/generic_empty_return.txt
+      ingress-replication protocol bgp: transcripts/common/generic_empty_return.txt
+      member vni 22222 associate-vrf: transcripts/common/generic_empty_return.txt
+      member vni 33333 associate-vrf: transcripts/common/generic_empty_return.txt
+      mcast-group 233.252.0.13: transcripts/common/generic_empty_return.txt
+      global mcast-group 233.252.0.30 L2: transcripts/common/generic_empty_return.txt
+      no interface nve1: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      interface: (config-if)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-if)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-if)#: " "
 scenarios:
   nxos-acls-gathered:
     platform: nxos_acls
@@ -6496,6 +6563,184 @@ scenarios:
         transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
       - command: show running-config | section '^snmp-server'
         transcript: transcripts/nxos_snmp_server/scenarios/lldp_hsrp_eigrp_traps/after.txt
+  nxos-nve-interface-gathered:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/gathered/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/gathered/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/gathered/after.txt
+  nxos-nve-interface-merged:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface nve1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: description vxlan vtep
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: host-reachability protocol bgp
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: advertise virtual-rmac
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: source-interface loopback1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: source-interface hold-down-time 60
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 11111 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 22222
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 33333
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: suppress-arp
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 44444
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: mcast-group 233.252.0.10
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 55555
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: mcast-group 233.252.0.11
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: global mcast-group 233.252.0.20 L2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/merged/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/merged/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/merged/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/merged/after.txt
+  nxos-nve-interface-replaced:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface nve1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no advertise virtual-rmac
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no source-interface hold-down-time 60
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 11111 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 22222
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 33333
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 44444
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 55555
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: shutdown
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no global mcast-group L2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/replaced/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/replaced/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/replaced/after.txt
+  nxos-nve-interface-overridden:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface nve1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no description vxlan vtep
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no source-interface hold-down-time 60
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 11111 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 11111
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: suppress-arp
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: ingress-replication protocol bgp
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 22222
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 22222 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 33333
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 33333 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: member vni 44444
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: mcast-group 233.252.0.13
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 55555
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: global mcast-group 233.252.0.30 L2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/overridden/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/overridden/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/overridden/after.txt
+  nxos-nve-interface-deleted:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no interface nve1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/common/generic_empty_return.txt
+  nxos-nve-interface-deleted-vnis:
+    platform: nxos_nve_interface
+    sequence:
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted_vnis/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: interface nve1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 11111 associate-vrf
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no member vni 33333
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted_vnis/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted_vnis/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted_vnis/after.txt
+      - command: show running-config | section '^interface nve1'
+        transcript: transcripts/nxos_nve_interface/scenarios/deleted_vnis/after.txt
   nxos-vpc-gathered:
     platform: nxos_vpc
     sequence:
