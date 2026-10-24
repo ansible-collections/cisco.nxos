@@ -33,3 +33,15 @@ all:
           hosts:
             cisshgo-vrf_address_family-deleted:
               ansible_port: 10005
+        nxos_vrf_address_family_route_target_evpn:
+          hosts:
+            cisshgo-vrf_address_family-route-target-evpn:
+              ansible_port: 10006
+        nxos_vrf_address_family_route_target_evpn_pair:
+          hosts:
+            cisshgo-vrf_address_family-route-target-evpn-pair:
+              ansible_port: 10007
+        nxos_vrf_address_family_purged:
+          hosts:
+            cisshgo-vrf_address_family-purged:
+              ansible_port: 10008
