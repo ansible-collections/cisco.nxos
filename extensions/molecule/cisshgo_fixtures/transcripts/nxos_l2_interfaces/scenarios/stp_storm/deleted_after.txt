@@ -1,0 +1,4 @@
+interface Ethernet1/25
+  switchport
+interface Ethernet1/26
+  switchport
