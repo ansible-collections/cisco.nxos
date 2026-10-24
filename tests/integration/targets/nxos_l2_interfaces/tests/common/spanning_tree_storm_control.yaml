@@ -1,0 +1,254 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_l2_interfaces spanning_tree and storm_control integration tests connection={{ ansible_connection }}
+
+- name: Set facts for the spanning_tree and storm_control tests
+  ansible.builtin.set_fact:
+    stp_switchport: "{{ nxos_int1 }}"
+    stp_portchannel: port-channel20
+
+- name: Setup - reset the interfaces
+  ignore_errors: true
+  cisco.nxos.nxos_config: &stp_cleanup
+    lines:
+      - "default interface {{ stp_switchport }}"
+      - "no interface {{ stp_portchannel }}"
+
+- block:
+    - name: Setup - create the switchport and the port-channel
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+        parents: "interface {{ item }}"
+        match: none
+      loop:
+        - "{{ stp_switchport }}"
+        - "{{ stp_portchannel }}"
+
+    - name: Merged - configure spanning_tree and storm_control
+      register: result
+      cisco.nxos.nxos_l2_interfaces: &stp_merged
+        config:
+          - name: "{{ stp_switchport }}"
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              guard: root
+              cost: 100
+              port_priority: 64
+              link_type: point_to_point
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                level: "1.00"
+              unicast:
+                level: "5.00"
+          - name: "{{ stp_portchannel }}"
+            spanning_tree:
+              port_type: network
+              bpduguard: true
+        state: merged
+
+    - name: Assert Merged - the commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface ' + stp_switchport in result.commands"
+          - "'spanning-tree port type edge trunk' in result.commands"
+          - "'spanning-tree bpduguard enable' in result.commands"
+          - "'spanning-tree guard root' in result.commands"
+          - "'spanning-tree cost 100' in result.commands"
+          - "'spanning-tree port-priority 64' in result.commands"
+          - "'spanning-tree link-type point-to-point' in result.commands"
+          - "'storm-control broadcast level 0.01' in result.commands"
+          - "'storm-control multicast level 1.00' in result.commands"
+          - "'storm-control unicast level 5.00' in result.commands"
+          - "'interface ' + stp_portchannel in result.commands"
+          - "'spanning-tree port type network' in result.commands"
+
+    - name: Merged - idempotent rerun
+      register: result
+      cisco.nxos.nxos_l2_interfaces: *stp_merged
+
+    - name: Assert Merged - idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - name: Merged - the same storm levels written with other decimals are idempotent
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+            storm_control:
+              broadcast:
+                level: "0.010"
+              multicast:
+                level: "1.0"
+        state: merged
+
+    - name: Assert Merged - decimal comparison
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Gather facts
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert the gathered facts
+      ansible.builtin.assert:
+        that:
+          - switchport_facts.spanning_tree.port_type == "edge_trunk"
+          - switchport_facts.spanning_tree.bpduguard == true
+          - switchport_facts.spanning_tree.guard == "root"
+          - switchport_facts.spanning_tree.cost == 100
+          - switchport_facts.spanning_tree.port_priority == 64
+          - switchport_facts.spanning_tree.link_type == "point_to_point"
+          - switchport_facts.storm_control.broadcast.level == "0.01"
+          - switchport_facts.storm_control.multicast.level == "1.00"
+          - switchport_facts.storm_control.unicast.level == "5.00"
+          - portchannel_facts.spanning_tree.port_type == "network"
+          - portchannel_facts.spanning_tree.bpduguard == true
+      vars:
+        switchport_facts: "{{ result.gathered | selectattr('name', 'equalto', stp_switchport) | first }}"
+        portchannel_facts: "{{ result.gathered | selectattr('name', 'equalto', stp_portchannel) | first }}"
+
+    - name: Verify on the device
+      register: running
+      cisco.nxos.nxos_command:
+        commands: "show running-config interface {{ stp_switchport }}"
+
+    - name: Assert the running-config
+      ansible.builtin.assert:
+        that:
+          - "'spanning-tree port type edge trunk' in running.stdout[0]"
+          - "'storm-control broadcast level 0.01' in running.stdout[0]"
+
+    - name: Replaced - remove a single line
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+              port_priority: 64
+              link_type: point_to_point
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                level: "1.00"
+              unicast:
+                level: "5.00"
+        state: replaced
+
+    - name: Assert Replaced - only the guard is removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no spanning-tree guard' in result.commands"
+          - result.commands | select('match', '^no ') | list | length == 1
+
+    - name: Replaced - change a storm level
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+              port_priority: 64
+              link_type: point_to_point
+            storm_control:
+              broadcast:
+                level: "1.00"
+              multicast:
+                level: "1.00"
+              unicast:
+                level: "5.00"
+        state: replaced
+
+    - name: Assert Replaced - the new level
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['interface ' + stp_switchport, 'storm-control broadcast level 1.00']
+
+    - name: Deleted - remove everything on both interfaces
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+          - name: "{{ stp_portchannel }}"
+        state: deleted
+
+    - name: Assert Deleted - the commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no spanning-tree port type edge trunk' in result.commands"
+          - "'no spanning-tree bpduguard' in result.commands"
+          - "'no spanning-tree port type network' in result.commands"
+          - "'no storm-control unicast level 5.00' in result.commands"
+
+    - name: Gather facts after deleted
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert nothing is left
+      ansible.builtin.assert:
+        that:
+          - "'spanning_tree' not in switchport_facts"
+          - "'storm_control' not in switchport_facts"
+          - "'spanning_tree' not in portchannel_facts"
+      vars:
+        switchport_facts: "{{ result.gathered | selectattr('name', 'equalto', stp_switchport) | first }}"
+        portchannel_facts: "{{ result.gathered | selectattr('name', 'equalto', stp_portchannel) | first }}"
+
+    - name: Deleted - idempotent rerun
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+          - name: "{{ stp_portchannel }}"
+        state: deleted
+
+    - name: Assert Deleted - idempotent
+      ansible.builtin.assert:
+        that:
+          - result.commands | select('match', '^(no )?(spanning-tree|storm-control)') | list | length == 0
+
+    - name: Merged - level and pps together are rejected before any command is sent
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ stp_switchport }}"
+            storm_control:
+              broadcast:
+                level: "1.00"
+                pps: 100
+        state: merged
+
+    - name: Assert the conflict is rejected
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'mutually exclusive' in result.msg"
+
+  always:
+    - name: Teardown
+      ignore_errors: true
+      cisco.nxos.nxos_config: *stp_cleanup
+
+    - ansible.builtin.debug:
+        msg: END nxos_l2_interfaces spanning_tree and storm_control integration tests on connection={{ ansible_connection }}
