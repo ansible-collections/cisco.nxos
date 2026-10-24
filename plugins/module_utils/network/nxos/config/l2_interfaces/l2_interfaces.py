@@ -229,10 +229,7 @@ class L2_interfaces(ResourceModule):
         # Get port-channel members detected during facts gathering
         pc_members = getattr(self._module, "_l2_pc_members", set())
 
-        resets = {name: strip_defaults(want) for name, want in wantd.items()}
-        for have in haved.values():
-            strip_defaults(have)
-        self._check_switchports(wantd)
+        resets = self._prepare_stp_storm(wantd, haved)
         user_provided_config = bool(wantd)
 
         for intf_name in list(wantd.keys()):
@@ -287,6 +284,14 @@ class L2_interfaces(ResourceModule):
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
+    def _prepare_stp_storm(self, wantd, haved):
+        """Drop the displayed-as-absent defaults, return what want resets and check the ports."""
+        resets = {name: strip_defaults(want) for name, want in wantd.items()}
+        for have in haved.values():
+            strip_defaults(have)
+        self._check_switchports(wantd)
+        return resets
+
     def get_switchport_defaults(self):
         """Wrapper method for `_connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
@@ -340,12 +345,18 @@ class L2_interfaces(ResourceModule):
             wanted, current = want.get(section, {}), have.get(section, {})
             for rng in sorted(set(wanted) | set(current)):
                 for attr in ("cost", "port_priority"):
-                    inw = wanted.get(rng, {}).get(attr)
-                    inh = current.get(rng, {}).get(attr)
-                    if inw is not None and inw != inh:
-                        self.addcmd({"key": rng, "value": inw}, section + "_" + attr)
-                    elif inw is None and inh is not None:
-                        self.addcmd({"key": rng, "value": inh}, section + "_" + attr, True)
+                    self._compare_keyed_attr(
+                        section + "_" + attr,
+                        rng,
+                        wanted.get(rng, {}).get(attr),
+                        current.get(rng, {}).get(attr),
+                    )
+
+    def _compare_keyed_attr(self, parser, rng, inw, inh):
+        if inw is not None and inw != inh:
+            self.addcmd({"key": rng, "value": inw}, parser)
+        elif inw is None and inh is not None:
+            self.addcmd({"key": rng, "value": inh}, parser, True)
 
     def _compare_lists(self, want, have):
         """Compare list attributes for trunk allowed vlans.

@@ -22,6 +22,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+_NAME = "{{ name }}"
+STP_CMD = "spanning-tree "
 STORM_TYPES = ("broadcast", "multicast", "unicast")
 STP_PREFIX = r"^\s+spanning-tree\s"
 STP_SECTIONS = {"mst": "instances", "vlans": "vlans"}
@@ -34,7 +36,7 @@ def _stp_parser(name, pattern, setval, result, remval=None):
         "name": name,
         "getval": re.compile(STP_PREFIX + pattern),
         "setval": setval,
-        "result": {"{{ name }}": {"spanning_tree": result}},
+        "result": {_NAME: {"spanning_tree": result}},
     }
     if remval:
         parser["remval"] = remval
@@ -49,7 +51,7 @@ def _storm_parser(traffic):
         ),
         "setval": "storm-control " + traffic + " level {{ storm_control." + traffic + ".level }}",
         "result": {
-            "{{ name }}": {"storm_control": {traffic: {"level": "'{{ level }}'"}}},
+            _NAME: {"storm_control": {traffic: {"level": "'{{ level }}'"}}},
         },
     }
 
@@ -60,9 +62,9 @@ def _keyed_parser(section, attr):
     return _stp_parser(
         section + "_" + attr,
         keyword + r"\s(?P<key>\S+)\s" + word + r"\s(?P<value>\d+)$",
-        "spanning-tree " + keyword + " {{ key }} " + word + " {{ value }}",
+        STP_CMD + "" + keyword + " {{ key }} " + word + " {{ value }}",
         {section: {"{{ key }}": {STP_SECTIONS[section]: "{{ key }}", attr: "{{ value }}"}}},
-        remval="spanning-tree " + keyword + " {{ key }} " + word,
+        remval=STP_CMD + "" + keyword + " {{ key }} " + word,
     )
 
 
@@ -71,22 +73,22 @@ def _stp_storm_parsers():
         _stp_parser(
             "spanning_tree.port_type",
             r"port\stype\s(?P<port_type>edge\strunk|edge|network|normal)$",
-            "spanning-tree port type {{ spanning_tree.port_type|replace('_', ' ') }}",
+            STP_CMD + "port type {{ spanning_tree.port_type|replace('_', ' ') }}",
             {"port_type": "{{ port_type|replace(' ', '_') }}"},
         ),
         _stp_parser(
             "spanning_tree.link_type",
             r"link-type\s(?P<link_type>auto|point-to-point|shared)$",
-            "spanning-tree link-type {{ spanning_tree.link_type|replace('_', '-') }}",
+            STP_CMD + "link-type {{ spanning_tree.link_type|replace('_', '-') }}",
             {"link_type": "{{ link_type|replace('-', '_') }}"},
-            remval="spanning-tree link-type",
+            remval=STP_CMD + "link-type",
         ),
         _stp_parser(
             "spanning_tree.guard",
             r"guard\s(?P<guard>loop|root|none)$",
-            "spanning-tree guard {{ spanning_tree.guard }}",
+            STP_CMD + "guard {{ spanning_tree.guard }}",
             {"guard": "{{ guard }}"},
-            remval="spanning-tree guard",
+            remval=STP_CMD + "guard",
         ),
     ]
     # bpduguard / bpdufilter are tri-state: the config class feeds "enable"/"disable" here
@@ -95,9 +97,9 @@ def _stp_storm_parsers():
             _stp_parser(
                 "spanning_tree." + word,
                 word + r"\s(?P<state>enable|disable)$",
-                "spanning-tree " + word + " {{ spanning_tree." + word + " }}",
+                STP_CMD + "" + word + " {{ spanning_tree." + word + " }}",
                 {word: "{{ state == 'enable' }}"},
-                remval="spanning-tree " + word,
+                remval=STP_CMD + "" + word,
             ),
         )
     for attr, word in STP_ATTRS.items():
@@ -105,9 +107,9 @@ def _stp_storm_parsers():
             _stp_parser(
                 "spanning_tree." + attr,
                 word + r"\s(?P<value>\d+)$",
-                "spanning-tree " + word + " {{ spanning_tree." + attr + " }}",
+                STP_CMD + "" + word + " {{ spanning_tree." + attr + " }}",
                 {attr: "{{ value }}"},
-                remval="spanning-tree " + word,
+                remval=STP_CMD + "" + word,
             ),
         )
     parsers.extend(_keyed_parser(section, attr) for section in STP_SECTIONS for attr in STP_ATTRS)
@@ -117,7 +119,7 @@ def _stp_storm_parsers():
             "name": "storm_control.action",
             "getval": re.compile(r"^\s+storm-control\saction\s(?P<action>shutdown|trap)$"),
             "setval": "storm-control action {{ storm_control.action }}",
-            "result": {"{{ name }}": {"storm_control": {"action": "{{ action }}"}}},
+            "result": {_NAME: {"storm_control": {"action": "{{ action }}"}}},
         },
     )
     return parsers
@@ -138,8 +140,8 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": 'interface {{ name }}',
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
+                _NAME: {
+                    'name': _NAME,
                 },
             },
             "shared": True,
@@ -154,7 +156,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "switchport mode {{ mode }}",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'mode': "{{ mode }}",
                 },
             },
@@ -169,7 +171,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "switchport access vlan {{ access.vlan }}",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'access': {
                         'vlan': "{{ vlan }}",
                     },
@@ -186,7 +188,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "switchport trunk native vlan {{ trunk.native_vlan|string }}",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'trunk': {
                         'native_vlan': "{{ vlan }}",
                     },
@@ -203,7 +205,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "switchport trunk allowed vlan",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'trunk': {
                         'allowed_vlans_none': "{{ not not isnone }}",
                     },
@@ -220,7 +222,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'trunk': {
                         'allowed_vlans': "'{{ allowed_vlans }}'",
                     },
@@ -236,7 +238,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "beacon",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'beacon': "{{ True if beacon }}",
                 },
             },
@@ -254,7 +256,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "{{ ' count ' + count|string if count is defined else '' }}"
             "{{ ' interval ' + interval|string if interval is defined else '' }}",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'link_flap': {
                         'error_disable': {
                             'count': "{{ count }}",
@@ -273,7 +275,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "cdp enable",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'cdp_enable': True,
                 },
             },
@@ -287,7 +289,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "no cdp enable",
             "result": {
-                '{{ name }}': {
+                _NAME: {
                     'cdp_enable': False,
                 },
             },
