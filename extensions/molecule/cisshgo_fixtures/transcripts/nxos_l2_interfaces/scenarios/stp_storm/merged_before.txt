@@ -1,0 +1,8 @@
+interface Ethernet1/25
+  switchport
+  switchport mode trunk
+  spanning-tree guard root
+interface Ethernet1/26
+  switchport
+interface port-channel20
+  switchport
