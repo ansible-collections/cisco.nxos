@@ -418,7 +418,7 @@ class Igmp_snooping(ResourceModule):
         """Commands for the plain settings. Settings missing from want keep their
         value, except for replaced and overridden where they return to the default.
         """
-        defaults = {key: default for key, default in VLAN_BOOLEANS.items()}
+        defaults = dict(VLAN_BOOLEANS)
         defaults.update({key: limits[2] for key, limits in VLAN_NUMBERS.items()})
         defaults.update({"querier": None, GROUP_TIMEOUT: None})
         for key, default in defaults.items():
