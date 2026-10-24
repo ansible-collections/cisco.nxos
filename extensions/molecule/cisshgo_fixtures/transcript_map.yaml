@@ -2975,125 +2975,137 @@ scenarios:
         transcript: transcripts/nxos_vlans/scenarios/nve_overlay_gathered/after_secondary.txt
       - command: show running-config | include nve-overlay
         transcript: transcripts/nxos_vlans/scenarios/nve_overlay_gathered/after_nve_overlay.txt
-  nxos-vlans-nve-overlay-lifecycle:
+  nxos-vlans-nve-overlay-merged:
     platform: nxos_vlans
     sequence:
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/before.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/before.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/before_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/before_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/before_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/before_nve_overlay.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_nve_overlay.txt
+  nxos-vlans-nve-overlay-replaced:
+    platform: nxos_vlans
+    sequence:
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/merged_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/merged_nve_overlay.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_nve_overlay.txt
+  nxos-vlans-nve-overlay-overridden:
+    platform: nxos_vlans
+    sequence:
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/replaced_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/replaced_nve_overlay.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_nve_overlay.txt
+  nxos-vlans-nve-overlay-deleted:
+    platform: nxos_vlans
+    sequence:
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_secondary.txt
       - command: show running-config | include nve-overlay
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/overridden_nve_overlay.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/overridden_nve_overlay.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
         transcript: transcripts/common/generic_empty_return.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted_secondary.txt
       - command: show running-config | include nve-overlay
         transcript: transcripts/nxos_vlans/empty_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted_secondary.txt
       - command: show running-config | include nve-overlay
         transcript: transcripts/nxos_vlans/empty_nve_overlay.txt
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted_secondary.txt
       - command: show running-config | include nve-overlay
         transcript: transcripts/nxos_vlans/empty_nve_overlay.txt
+  nxos-vlans-nve-overlay-duplicate:
+    platform: nxos_vlans
+    sequence:
       - command: show vlan | json-pretty
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted.txt
       - command: show running-config | section ^vlan
-        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_lifecycle/deleted_secondary.txt
+        transcript: transcripts/nxos_vlans/scenarios/nve_overlay_states/deleted_secondary.txt
       - command: show running-config | include nve-overlay
         transcript: transcripts/nxos_vlans/empty_nve_overlay.txt
   nxos-static-routes-gathered:

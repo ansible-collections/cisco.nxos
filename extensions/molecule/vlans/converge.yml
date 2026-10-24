@@ -284,7 +284,7 @@
             nve_overlay: true
 
 - name: "Nxos_vlans — nve_overlay: merged"
-  hosts: nxos_vlans_nve_overlay_lifecycle
+  hosts: nxos_vlans_nve_overlay_merged
   gather_facts: false
   tasks:
     - name: Run nxos_vlans merged with nve_overlay
@@ -319,7 +319,7 @@
           - idempotent_result.commands | length == 0
 
 - name: "Nxos_vlans — nve_overlay: replaced"
-  hosts: nxos_vlans_nve_overlay_lifecycle
+  hosts: nxos_vlans_nve_overlay_replaced
   gather_facts: false
   tasks:
     - name: Run nxos_vlans replaced with nve_overlay omitted
@@ -344,7 +344,7 @@
           - idempotent_result.commands | length == 0
 
 - name: "Nxos_vlans — nve_overlay: overridden"
-  hosts: nxos_vlans_nve_overlay_lifecycle
+  hosts: nxos_vlans_nve_overlay_overridden
   gather_facts: false
   tasks:
     - name: Run nxos_vlans overridden with vlans that carry nve_overlay
@@ -379,7 +379,7 @@
           - idempotent_result.commands | length == 0
 
 - name: "Nxos_vlans — nve_overlay: deleted"
-  hosts: nxos_vlans_nve_overlay_lifecycle
+  hosts: nxos_vlans_nve_overlay_deleted
   gather_facts: false
   tasks:
     - name: Run nxos_vlans deleted for a vlan that carries nve_overlay
@@ -407,7 +407,7 @@
           - idempotent_result.commands | length == 0
 
 - name: "Nxos_vlans — nve_overlay: duplicate vlan_id"
-  hosts: nxos_vlans_nve_overlay_lifecycle
+  hosts: nxos_vlans_nve_overlay_duplicate
   gather_facts: false
   tasks:
     - name: Repeat a vlan_id in config
