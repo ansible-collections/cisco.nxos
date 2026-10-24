@@ -547,6 +547,18 @@ platforms:
       no shutdown: transcripts/common/generic_empty_return.txt
       vn-segment 190: transcripts/common/generic_empty_return.txt
       vn-segment 100: transcripts/common/generic_empty_return.txt
+      vlan 3802: transcripts/common/generic_empty_return.txt
+      vlan 3804: transcripts/common/generic_empty_return.txt
+      no vlan 3802: transcripts/common/generic_empty_return.txt
+      no vlan 3803: transcripts/common/generic_empty_return.txt
+      no vlan 3804: transcripts/common/generic_empty_return.txt
+      system vlan nve-overlay id 3801: transcripts/common/generic_empty_return.txt
+      system vlan nve-overlay id 3802: transcripts/common/generic_empty_return.txt
+      system vlan nve-overlay id 3804: transcripts/common/generic_empty_return.txt
+      no system vlan nve-overlay id 3801: transcripts/common/generic_empty_return.txt
+      no system vlan nve-overlay id 3802: transcripts/common/generic_empty_return.txt
+      no system vlan nve-overlay id 3803: transcripts/common/generic_empty_return.txt
+      no system vlan nve-overlay id 3804: transcripts/common/generic_empty_return.txt
     context_search:
       configure terminal: (config)#
       vlan: (config-vlan)#
