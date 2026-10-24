@@ -52,7 +52,7 @@ platforms:
       spanning-tree bpduguard enable: transcripts/common/generic_empty_return.txt
       spanning-tree cost 100: transcripts/common/generic_empty_return.txt
       storm-control broadcast level 0.01: transcripts/common/generic_empty_return.txt
-      storm-control multicast level pps 5000: transcripts/common/generic_empty_return.txt
+      storm-control multicast level 10.50: transcripts/common/generic_empty_return.txt
       storm-control action trap: transcripts/common/generic_empty_return.txt
       interface Ethernet1/26: transcripts/common/generic_empty_return.txt
       spanning-tree port type edge: transcripts/common/generic_empty_return.txt
@@ -3443,6 +3443,8 @@ scenarios:
     sequence:
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/merged_before.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
@@ -3451,11 +3453,15 @@ scenarios:
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/merged_after.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/merged_after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
   nxos-l2-interfaces-stp_storm_replaced:
     platform: nxos_l2_interfaces
     sequence:
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/replaced_before.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: end
@@ -3464,6 +3470,8 @@ scenarios:
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/replaced_after.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_l2_interfaces/scenarios/stp_storm/replaced_after.txt
+      - command: show running-config all | incl 'system default switchport'
+        transcript: transcripts/nxos_interfaces/switchport_defaults.txt
   nxos-l2-interfaces-stp_storm_deleted:
     platform: nxos_l2_interfaces
     sequence:

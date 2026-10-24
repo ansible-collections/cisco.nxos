@@ -535,7 +535,7 @@
               broadcast:
                 level: "0.01"
               multicast:
-                pps: 5000
+                level: "10.50"
               action: trap
           - name: Ethernet1/26
             spanning_tree:
@@ -564,7 +564,7 @@
           - spanning-tree bpduguard enable
           - spanning-tree cost 100
           - storm-control broadcast level 0.01
-          - storm-control multicast level pps 5000
+          - storm-control multicast level 10.50
           - storm-control action trap
           - interface Ethernet1/26
           - spanning-tree port type edge
@@ -737,7 +737,7 @@
           - eth25.storm_control.unicast.level == "5.00"
           - eth26.spanning_tree.bpduguard == false
           - eth26.spanning_tree.bpdufilter == true
-          - eth26.storm_control.broadcast.pps == 1000
+          - eth26.storm_control.broadcast.level == "50.50"
           - "eth27 == {'name': 'Ethernet1/27'}"
           - pc20.spanning_tree.port_type == "network"
           - "pc20.spanning_tree.mst == [{'instances': '0,2-4', 'cost': 200, 'port_priority': 32}]"

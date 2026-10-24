@@ -14,7 +14,7 @@ interface Ethernet1/26
   switchport
   spanning-tree bpduguard disable
   spanning-tree bpdufilter enable
-  storm-control broadcast level pps 1000
+  storm-control broadcast level 50.50
 interface Ethernet1/27
   no switchport
   spanning-tree bpduguard enable

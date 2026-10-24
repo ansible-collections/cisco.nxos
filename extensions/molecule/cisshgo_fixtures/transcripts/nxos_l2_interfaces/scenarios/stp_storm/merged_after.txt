@@ -6,7 +6,7 @@ interface Ethernet1/25
   spanning-tree bpduguard enable
   spanning-tree guard root
   storm-control broadcast level 0.01
-  storm-control multicast level pps 5000
+  storm-control multicast level 10.50
   storm-control action trap
 interface Ethernet1/26
   switchport
