@@ -871,7 +871,8 @@ Notes
    - Configure ``spanning_tree`` and ``storm_control`` on the port-channel, not on its member ports.
    - On a vPC port-channel the ``spanning_tree`` settings must be identical on both vPC peers. A mismatch makes the vPC type-1 inconsistent until the settings are aligned.
    - ``storm-control multi`` commands are not supported.
-   - The ``mst`` and ``vlans`` options of ``spanning_tree`` are accepted, stored and removable in any spanning-tree mode, but they take effect only in MST and in the PVST modes respectively. Their effect was not tested in MST mode.
+   - The ``mst`` and ``vlans`` options of ``spanning_tree`` are accepted, stored and removable in any spanning-tree mode, but they take effect only in MST and in the PVST modes respectively. In MST mode the ``vlans`` values are stored and shown in the running configuration and ignored by spanning tree.
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX in MST mode for ``spanning_tree`` ``mst``; cost and port priority were applied to a port-channel and shown by ``show spanning-tree mst``.
 
 
 

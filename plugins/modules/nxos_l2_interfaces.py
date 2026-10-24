@@ -52,7 +52,10 @@ notes:
   type-1 inconsistent until the settings are aligned.
 - C(storm-control multi) commands are not supported.
 - The C(mst) and C(vlans) options of C(spanning_tree) are accepted, stored and removable in any spanning-tree mode, but
-  they take effect only in MST and in the PVST modes respectively. Their effect was not tested in MST mode.
+  they take effect only in MST and in the PVST modes respectively. In MST mode the C(vlans) values are stored and shown
+  in the running configuration and ignored by spanning tree.
+- Tested against NX-OS 10.6(4) on N9K-C93180YC-FX in MST mode for C(spanning_tree) C(mst); cost and port priority
+  were applied to a port-channel and shown by C(show spanning-tree mst).
 options:
   config:
     description: A List of Layer-2 interface options
