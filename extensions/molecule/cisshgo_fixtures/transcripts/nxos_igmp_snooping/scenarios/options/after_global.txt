@@ -1,0 +1,2 @@
+ip igmp snooping max-gq-miss 4
+ip igmp snooping proxy general-queries mrt 8

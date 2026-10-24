@@ -1,0 +1,21 @@
+---
+- name: Populate the global IGMP snooping configuration
+  cisco.nxos.nxos_config:
+    lines:
+      - ip igmp snooping vxlan
+      - ip igmp snooping v3-report-suppression
+      - ip igmp snooping group-timeout 300
+
+- name: Populate the static groups of VLAN 100
+  cisco.nxos.nxos_config:
+    lines:
+      - ip igmp snooping static-group 233.252.0.10 interface port-channel20
+      - ip igmp snooping static-group 233.252.0.10 interface port-channel21
+      - ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20
+    parents: vlan configuration 100
+
+- name: Populate the static groups of VLAN 200
+  cisco.nxos.nxos_config:
+    lines:
+      - ip igmp snooping static-group 233.252.0.20 interface port-channel21
+    parents: vlan configuration 200

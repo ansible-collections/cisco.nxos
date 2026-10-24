@@ -1,0 +1,26 @@
+---
+breaking_changes:
+  - >-
+    nxos_igmp_snooping - rewrite as a resource module with the states ``merged``, ``replaced``,
+    ``overridden``, ``deleted``, ``gathered``, ``rendered`` and ``parsed``. The flat parameters
+    and the ``present`` and ``default`` states are removed, settings are now given in ``config``.
+    Migration - ``snooping`` becomes ``config.snooping``, ``group_timeout`` becomes ``config.group_timeout``,
+    ``link_local_grp_supp`` becomes ``config.link_local_groups_suppression``,
+    ``report_supp`` becomes ``config.report_suppression``,
+    ``v3_report_supp`` becomes ``config.v3_report_suppression``,
+    ``state=present`` becomes ``state=merged`` and ``state=default`` becomes ``state=deleted``.
+    ``group_timeout`` no longer accepts ``default``, remove it with ``deleted``, ``replaced`` or ``overridden``.
+    The module no longer fails when ``group_timeout`` is given while snooping is disabled, the device accepts it.
+    Update playbooks from ``snooping: false`` to ``config: {snooping: false}``.
+minor_changes:
+  - >-
+    nxos_igmp_snooping - manage the whole IGMP snooping configuration. Globally ``vxlan``,
+    ``disable_nve_static_router_port``, ``max_gq_miss``, ``syslog_threshold``, ``holddown_timer`` and ``proxy``.
+    In the per-VLAN ``vlan configuration`` blocks (``vlans``) ``static_groups``, ``mrouter_interfaces``, ``querier``,
+    ``querier_timeout``, ``query_interval``, ``query_max_response_time``, ``startup_query_count``,
+    ``startup_query_interval``, ``robustness_variable``, ``last_member_query_interval``, ``version``, ``fast_leave``,
+    ``explicit_tracking``, ``snooping``, ``group_timeout``, ``link_local_groups_suppression``, ``report_suppression``,
+    ``v3_report_suppression``, ``proxy``, ``proxy_leave_use_group_address``, ``report_flood``, ``report_policy`` and
+    ``access_group``. The module never enters a ``vlan configuration`` block when there is nothing to change.
+  - >-
+    nxos_facts - add ``igmp_snooping`` to the resources of ``gather_network_resources``.

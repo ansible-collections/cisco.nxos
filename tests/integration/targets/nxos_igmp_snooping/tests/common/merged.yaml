@@ -1,0 +1,77 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_igmp_snooping merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_igmp_snooping: &id001
+        config:
+          link_local_groups_suppression: false
+          group_timeout: "500"
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.10
+                  interfaces:
+                    - Po20
+                    - port-channel21
+                - group: 233.252.0.12
+                  interfaces:
+                    - Po21
+        state: merged
+      register: result
+
+    - name: Assert that before dict was correctly generated
+      ansible.builtin.assert:
+        that: result['before'] == before
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that: merged['commands'] == result['commands']
+
+    - name: Assert that after dict was correctly generated
+      ansible.builtin.assert:
+        that: merged['after'] == result['after']
+
+    # show ip igmp snooping groups only lists a group on a member port of the VLAN,
+    # the port channels of these tests are not members, so check the running config
+    - name: Read the vlan configuration of VLAN 100
+      cisco.nxos.nxos_command:
+        commands:
+          - show running-config | section "^vlan configuration 100"
+      register: groups
+
+    - name: Assert that the new static group is configured
+      ansible.builtin.assert:
+        that: "'233.252.0.12 interface port-channel21' in groups.stdout[0]"
+
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
+      cisco.nxos.nxos_igmp_snooping: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: An out of range value fails before any command is sent
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          max_gq_miss: 9
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the task failed before touching the device
+      ansible.builtin.assert:
+        that:
+          - result['failed'] == true
+          - "'max_gq_miss must be in the range 3-5' in result['msg']"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -9,6 +9,7 @@ available_network_resources:
   - bgp_templates
   - hostname
   - hsrp_interfaces
+  - igmp_snooping
   - interfaces
   - l2_interfaces
   - l3_interfaces

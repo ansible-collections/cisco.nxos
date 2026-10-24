@@ -1,0 +1,29 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_igmp_snooping rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_igmp_snooping:
+    config:
+      snooping: true
+      report_suppression: false
+      vxlan: true
+      group_timeout: never
+      vlans:
+        - vlan_id: 100
+          static_groups:
+            - group: 233.252.0.10
+              interfaces:
+                - Po20
+            - group: 233.252.0.11
+              source: 192.0.2.10
+              interfaces:
+                - Po21
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] == result['rendered']
+      - result.changed == false
