@@ -155,6 +155,14 @@ class Vlans(ConfigBase):
                 msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
+        seen = set()
+        for w in want:
+            if w["vlan_id"] in seen:
+                self._module.fail_json(
+                    msg="vlan_id {0} is listed more than once in config".format(w["vlan_id"]),
+                )
+            seen.add(w["vlan_id"])
+
         commands = list()
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))
@@ -185,6 +193,14 @@ class Vlans(ConfigBase):
                   configuration to the desired configuration.
         """
         obj_in_have = search_obj_in_list(want["vlan_id"], have, "vlan_id")
+        # nve_overlay is a global command and is handled separately from the vlan attributes
+        overlay_cmds = self.nve_overlay_commands(
+            want["vlan_id"],
+            bool(want.get("nve_overlay")),
+            obj_in_have,
+        )
+        want = self._without_nve_overlay(want)
+        obj_in_have = self._without_nve_overlay(obj_in_have)
         if obj_in_have:
             # Diff the want and have
             diff = dict_diff(want, obj_in_have)
@@ -197,6 +213,9 @@ class Vlans(ConfigBase):
 
         # Remove default states from resulting diff
         diff = self.remove_default_states(diff)
+        if want["vlan_id"] == 1:
+            # NX-OS rejects a change of the name of the default VLAN
+            diff.pop("name", None)
 
         # merged_cmds: 'want' cmds to update 'have' states that don't match
         # replaced_cmds: remaining 'have' cmds that need to be reset to default
@@ -206,9 +225,11 @@ class Vlans(ConfigBase):
             # Remaining diff items are used to reset states to default
             replaced_cmds = self.del_attribs(diff)
         cmds = []
-        if replaced_cmds or merged_cmds:
+        if replaced_cmds or merged_cmds or (overlay_cmds and not obj_in_have):
             cmds += ["vlan %s" % str(want["vlan_id"])]
             cmds += merged_cmds + replaced_cmds
+        # global command, must follow the vlan sub-commands
+        cmds += overlay_cmds
         return cmds
 
     def _state_overridden(self, want, have):
@@ -230,13 +251,14 @@ class Vlans(ConfigBase):
                     if replaced_cmds:
                         cmds.extend(replaced_cmds)
             else:
-                cmds.append("no vlan %s" % h["vlan_id"])
+                cmds.extend(self._delete_vlan_commands(h))
 
         # Add wanted vlans that don't exist on the device yet
         for w in want:
             if w["vlan_id"] not in existing_vlans:
                 new_vlan = ["vlan %s" % w["vlan_id"]]
                 cmds.extend(new_vlan + self.add_commands(w))
+                cmds.extend(self.nve_overlay_commands(w["vlan_id"], w.get("nve_overlay"), None))
         return cmds
 
     def _state_merged(self, w, have):
@@ -246,9 +268,13 @@ class Vlans(ConfigBase):
         :returns: the commands necessary to merge the provided into
                   the current configuration
         """
-        cmds = self.set_commands(w, have)
-        if cmds:
+        obj_in_have = search_obj_in_list(w["vlan_id"], have, "vlan_id")
+        overlay_cmds = self.nve_overlay_commands(w["vlan_id"], w.get("nve_overlay"), obj_in_have)
+        cmds = self.set_commands(self._without_nve_overlay(w), have)
+        if cmds or (overlay_cmds and not obj_in_have):
             cmds.insert(0, "vlan %s" % str(w["vlan_id"]))
+        # global command, must follow the vlan sub-commands
+        cmds.extend(overlay_cmds)
         return cmds
 
     def _state_deleted(self, want, have):
@@ -263,13 +289,36 @@ class Vlans(ConfigBase):
             for w in want:
                 obj_in_have = search_obj_in_list(w["vlan_id"], have, "vlan_id")
                 if obj_in_have:
-                    commands.append("no vlan " + str(obj_in_have["vlan_id"]))
+                    commands.extend(self._delete_vlan_commands(obj_in_have))
         else:
             if not have:
                 return commands
             for h in have:
-                commands.append("no vlan " + str(h["vlan_id"]))
+                commands.extend(self._delete_vlan_commands(h))
         return commands
+
+    def _delete_vlan_commands(self, vlan):
+        """Returns the commands to remove a vlan, including its nve_overlay marking"""
+        commands = self.nve_overlay_commands(vlan["vlan_id"], False, vlan)
+        commands.append("no vlan %s" % vlan["vlan_id"])
+        return commands
+
+    def _without_nve_overlay(self, vlan):
+        if not vlan:
+            return vlan
+        return {k: v for k, v in vlan.items() if k != "nve_overlay"}
+
+    def nve_overlay_commands(self, vlan_id, want_overlay, obj_in_have):
+        """Returns the global command to set or reset nve_overlay, if a change is needed.
+        A want_overlay of None means that the option was not specified.
+        """
+        if want_overlay is None:
+            return []
+        have_overlay = bool(obj_in_have and obj_in_have.get("nve_overlay"))
+        if want_overlay == have_overlay:
+            return []
+        prefix = "" if want_overlay else "no "
+        return ["%ssystem vlan nve-overlay id %s" % (prefix, vlan_id)]
 
     def del_attribs(self, obj):
         """Returns a list of commands to reset states to default"""
