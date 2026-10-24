@@ -835,7 +835,9 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
 
     def test_full_global_idempotent(self):
         self.get_config.return_value = FULL_GLOBAL_CLI
-        config = dict(max_gq_miss=4, syslog_threshold=70, holddown_timer=100, proxy=dict(general_queries=True))
+        config = dict(
+            max_gq_miss=4, syslog_threshold=70, holddown_timer=100, proxy=dict(general_queries=True)
+        )
         self._run(False, config=config, state="merged")
         self._run(False, config=config, state="replaced")
 
@@ -1026,13 +1028,17 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         self.assertNotIn("no ip igmp snooping mrouter interface port-channel20", commands)
         self.assertIn("no ip igmp snooping report-flood all", commands)
         self.assertIn("no ip igmp snooping report-flood interface port-channel20", commands)
-        self.assertIn("no ip igmp snooping report-policy route-map RM_ONE interface port-channel20", commands)
+        self.assertIn(
+            "no ip igmp snooping report-policy route-map RM_ONE interface port-channel20", commands
+        )
         self.assertIn("no ip igmp snooping access-group RM_TWO", commands)
         self.assertIn(
             "no ip igmp snooping access-group prefix-list PL_TWO interface port-channel20",
             commands,
         )
-        self.assertIn("no ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10", commands)
+        self.assertIn(
+            "no ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10", commands
+        )
         self.assertIn("ip igmp snooping", commands)
         self.assertIn("no ip igmp snooping group-timeout 300", commands)
         self.assertIn("no ip igmp snooping proxy general-queries", commands)

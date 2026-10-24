@@ -170,15 +170,17 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                 "\\sreport-policy\\s(?P<policy_type>route-map|prefix-list)\\s(?P<name>\\S+)\\sinterface\\s(?P<interface>\\S+)",
             ),
             "setval": _PREFIX + " report-policy {{ policy_type }} {{ name }} interface {{ interface }}",
-            "result": _result("vlan", {
-                "report_policy": {
-                    "{{ policy_type }}|{{ name }}|{{ interface }}": {
-                        "policy_type": _POLICY_TYPE,
-                        "name": "{{ name }}",
-                        "interface": _IF,
+            "result": _result(
+                "vlan", {
+                    "report_policy": {
+                        "{{ policy_type }}|{{ name }}|{{ interface }}": {
+                            "policy_type": _POLICY_TYPE,
+                            "name": "{{ name }}",
+                            "interface": _IF,
+                        },
                     },
                 },
-            }),
+            ),
         },
         {
             "name": "access_group_interface",
@@ -187,28 +189,32 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                 "\\saccess-group\\s(?P<policy_type>route-map|prefix-list)\\s(?P<name>\\S+)\\sinterface\\s(?P<interface>\\S+)",
             ),
             "setval": _PREFIX + " access-group {{ policy_type }} {{ name }} interface {{ interface }}",
-            "result": _result("vlan", {
-                "access_group": {
-                    "{{ policy_type }}|{{ name }}|{{ interface }}": {
-                        "policy_type": _POLICY_TYPE,
-                        "name": "{{ name }}",
-                        "interface": _IF,
+            "result": _result(
+                "vlan", {
+                    "access_group": {
+                        "{{ policy_type }}|{{ name }}|{{ interface }}": {
+                            "policy_type": _POLICY_TYPE,
+                            "name": "{{ name }}",
+                            "interface": _IF,
+                        },
                     },
                 },
-            }),
+            ),
         },
         {
             "name": "access_group",
             "getval": _line("vlan", "\\saccess-group\\s(?P<name>[^\\s]+)"),
             "setval": _PREFIX + " access-group {{ name }}",
-            "result": _result("vlan", {
-                "access_group": {
-                    "route-map|{{ name }}|": {
-                        "policy_type": "route_map",
-                        "name": "{{ name }}",
+            "result": _result(
+                "vlan", {
+                    "access_group": {
+                        "route-map|{{ name }}|": {
+                            "policy_type": "route_map",
+                            "name": "{{ name }}",
+                        },
                     },
                 },
-            }),
+            ),
         },
         {
             "name": "static_group_source",
@@ -217,28 +223,32 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                 "\\sstatic-group\\s(?P<group>\\S+)\\ssource\\s(?P<source>\\S+)\\sinterface\\s(?P<interface>\\S+)",
             ),
             "setval": _PREFIX + " static-group {{ group }} source {{ source }} interface {{ interface }}",
-            "result": _result("vlan", {
-                "static_groups": {
-                    _GROUP + "|{{ source }}": {
-                        "group": _GROUP,
-                        "source": "{{ source }}",
-                        "interfaces": [_IF],
+            "result": _result(
+                "vlan", {
+                    "static_groups": {
+                        _GROUP + "|{{ source }}": {
+                            "group": _GROUP,
+                            "source": "{{ source }}",
+                            "interfaces": [_IF],
+                        },
                     },
                 },
-            }),
+            ),
         },
         {
             "name": "static_group",
             "getval": _line("vlan", "\\sstatic-group\\s(?P<group>\\S+)\\sinterface\\s(?P<interface>\\S+)"),
             "setval": _PREFIX + " static-group {{ group }} interface {{ interface }}",
-            "result": _result("vlan", {
-                "static_groups": {
-                    _GROUP: {
-                        "group": _GROUP,
-                        "interfaces": [_IF],
+            "result": _result(
+                "vlan", {
+                    "static_groups": {
+                        _GROUP: {
+                            "group": _GROUP,
+                            "interfaces": [_IF],
+                        },
                     },
                 },
-            }),
+            ),
         },
     ]
     # fmt: on

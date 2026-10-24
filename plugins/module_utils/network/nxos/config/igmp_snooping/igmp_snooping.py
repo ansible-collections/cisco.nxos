@@ -153,7 +153,9 @@ class Igmp_snooping(ResourceModule):
             return
         if proxy.get("general_queries") is False:
             if "mrt" in proxy:
-                self._module.fail_json(msg="proxy mrt cannot be combined with general_queries false")
+                self._module.fail_json(
+                    msg="proxy mrt cannot be combined with general_queries false"
+                )
             settings[PROXY] = False
         elif proxy.get("general_queries") is None:
             self._module.fail_json(msg="proxy mrt requires general_queries: true")
@@ -165,7 +167,9 @@ class Igmp_snooping(ResourceModule):
     def _check_range(self, what, value, limits):
         if not limits[0] <= value <= limits[1]:
             self._module.fail_json(
-                msg="{0} must be in the range {1}-{2}, got '{3}'".format(what, limits[0], limits[1], value),
+                msg="{0} must be in the range {1}-{2}, got '{3}'".format(
+                    what, limits[0], limits[1], value
+                ),
             )
 
     def _check_numbers(self, values, limits):
@@ -247,7 +251,10 @@ class Igmp_snooping(ResourceModule):
             items[("report_flood_all",)] = ("report_flood_all", {})
         for name in report_flood.get("interfaces") or []:
             name = normalize_interface(name)
-            items[("report_flood_interface", name)] = ("report_flood_interface", {"interface": name})
+            items[("report_flood_interface", name)] = (
+                "report_flood_interface",
+                {"interface": name},
+            )
 
     def _policy_items(self, items, policies, kind):
         for entry in policies or []:
@@ -410,7 +417,9 @@ class Igmp_snooping(ResourceModule):
             if not wanted["values"] and not wanted["items"]:
                 self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
                 continue
-            present = {key: item for key, item in wanted["items"].items() if key in have[vlan_id]["items"]}
+            present = {
+                key: item for key, item in wanted["items"].items() if key in have[vlan_id]["items"]
+            }
             lines = self._item_lines(present, {}, True)
             targets = {key: self._vlan_default(key) for key in wanted["values"]}
             self._value_lines(lines, targets, have[vlan_id]["values"], False)
