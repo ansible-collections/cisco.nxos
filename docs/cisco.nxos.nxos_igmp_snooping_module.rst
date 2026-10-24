@@ -1044,7 +1044,7 @@ Parameters
                 </td>
                 <td>
                         <div>This option is used only with state <em>parsed</em>.</div>
-                        <div>The value of this option should be the output received from the NX-OS device by executing the commands <b>show running-config | section &quot;^vlan configuration&quot;</b> and <b>show running-config | include &quot;ip igmp snooping&quot;</b>, or the full running configuration.</div>
+                        <div>The value of this option should be the output received from the NX-OS device by executing the commands <b>show running-config | section &quot;^vlan configuration&quot;</b> and <b>show running-config | include &quot;^ip igmp snooping|^no ip igmp snooping&quot;</b>, or the full running configuration.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
                 </td>
             </tr>
@@ -1100,6 +1100,8 @@ Notes
    - ``startup_query_count`` and ``startup_query_interval`` have no default, the device shows them as soon as they are configured.
    - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX, global and per VLAN, that every option is accepted, stored as written by the module, and removed again. The group timeout is accepted while snooping is disabled. The route-maps and prefix-lists of *report_policy* and *access_group* do not have to exist, and the interfaces of *mrouter_interfaces*, *report_flood*, *report_policy*, *access_group* and *static_groups* do not have to be members of the VLAN.
    - The group timeout is sent after the other global settings, except when snooping ends up disabled.
+   - The device keeps one policy per interface. A ``report_policy`` and an ``access_group`` entry for the same interface replace each other, so the module fails when an interface is used more than once. An ``access_group`` without an interface does not conflict with them.
+   - The proxy with ``mrt`` 5, the default, is removed by the device instead of being stored, so ``mrt`` 5 is rejected. Omit *mrt* for ``proxy general-queries`` without a value, which also resets a configured *mrt*.
    - ``event-history`` (debug buffer sizes) and ``optimise-multicast-flood`` (not available on the tested platform) are not managed by this module.
    - A ``vlan configuration`` block is managed completely. Under *state* ``replaced`` and ``overridden`` a listed VLAN gets exactly the given settings, the others return to the default, and a VLAN without any setting has no block. ``deleted`` and ``overridden`` remove the blocks, together with all content, of the VLANs they remove.
    - A static group is accepted and stored for any interface, but ``show ip igmp snooping groups vlan <id>`` only lists it (type S) when the interface is a member port of that VLAN.

@@ -75,6 +75,8 @@ VLAN_NUMBERS = {
 }
 
 MRT_RANGE = (1, 25)
+# the device removes the proxy line when mrt has its default value
+MRT_DEFAULT = 5
 POLICY_KEYWORDS = {"route_map": "route-map", "prefix_list": "prefix-list"}
 
 
@@ -162,6 +164,10 @@ class Igmp_snooping(ResourceModule):
         else:
             if "mrt" in proxy:
                 self._check_range("proxy mrt", proxy["mrt"], MRT_RANGE)
+                if proxy["mrt"] == MRT_DEFAULT:
+                    self._module.fail_json(
+                        msg="proxy mrt {0} is the default and removes the proxy, omit mrt instead".format(MRT_DEFAULT),
+                    )
             settings[PROXY] = {"mrt": proxy.get("mrt")}
 
     def _check_range(self, what, value, limits):
@@ -223,7 +229,20 @@ class Igmp_snooping(ResourceModule):
         self._report_flood_items(items, vlan.get("report_flood"))
         self._policy_items(items, vlan.get("report_policy"), "report_policy")
         self._policy_items(items, vlan.get("access_group"), "access_group")
+        self._check_policy_interfaces(items)
         return values, items
+
+    def _check_policy_interfaces(self, items):
+        """The device keeps one policy per interface, a second one replaces the first."""
+        seen = set()
+        for key in items:
+            if key[0] in ("report_policy", "access_group_interface"):
+                if key[3] in seen:
+                    self._module.fail_json(
+                        msg="report_policy and access_group can have only one entry per interface, "
+                        "'{0}' is used more than once".format(key[3]),
+                    )
+                seen.add(key[3])
 
     def _static_group_items(self, items, static_groups):
         for entry in static_groups or []:

@@ -53,10 +53,9 @@ def _relevant_lines(data):
     """Keep what the parser can attribute safely: top-level lines and the
     lines of a `vlan configuration <id>` block.
 
-    The global `include` output carries the indented lines of the VLAN blocks
-    without their header, and a block with a header that is not a single VLAN
-    id is not managed, so both are dropped instead of being credited to the
-    wrong VLAN.
+    The global `include` output only has top-level lines, because its pattern is
+    anchored. A block with a header that is not a single VLAN id is not managed,
+    so its lines are dropped instead of being credited to the wrong VLAN.
     """
     keep = []
     in_block = False
@@ -79,7 +78,7 @@ class Igmp_snoopingFacts(object):
 
     def get_config(self, connection):
         vlans = connection.get('show running-config | section "^vlan configuration"')
-        global_cfg = connection.get('show running-config | include "ip igmp snooping"')
+        global_cfg = connection.get('show running-config | include "^ip igmp snooping|^no ip igmp snooping"')
         return "\n".join([global_cfg or "", vlans or ""])
 
     @staticmethod

@@ -67,7 +67,7 @@ BASE = dedent(
 
 BASE_NO_ORPHAN = BASE.replace("vlan configuration 300\n", "")
 
-# what `include "ip igmp snooping"` prints on top of the globals: the indented
+# what `include "^ip igmp snooping|^no ip igmp snooping"` prints on top of the globals: the indented
 # lines of the blocks, without their headers
 INCLUDE_OUTPUT = dedent(
     """\
@@ -139,7 +139,7 @@ FULL_VLAN_CLI = dedent(
       ip igmp snooping report-policy route-map RM_ONE interface port-channel20
       ip igmp snooping report-policy prefix-list PL_ONE interface Ethernet1/10
       ip igmp snooping access-group RM_TWO
-      ip igmp snooping access-group prefix-list PL_TWO interface port-channel20
+      ip igmp snooping access-group prefix-list PL_TWO interface Ethernet1/11
       ip igmp snooping static-group 233.252.0.10 interface Ethernet1/10
     """,
 )
@@ -170,7 +170,7 @@ FULL_VLAN_FACTS = dict(
         dict(policy_type="route_map", name="RM_ONE", interface="port-channel20"),
     ],
     access_group=[
-        dict(policy_type="prefix_list", name="PL_TWO", interface="port-channel20"),
+        dict(policy_type="prefix_list", name="PL_TWO", interface="Ethernet1/11"),
         dict(policy_type="route_map", name="RM_TWO"),
     ],
     static_groups=[dict(group="233.252.0.10", interfaces=["Ethernet1/10"])],
@@ -820,6 +820,14 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         for state in ["merged", "replaced", "overridden"]:
             self._run(False, config=dict(vlans=[FULL_VLAN_FACTS]), state=state)
 
+    def test_vlan_group_timeout_is_not_global(self):
+        cfg = "vlan configuration 100\n  ip igmp snooping group-timeout 300\n  ip igmp snooping proxy general-queries\n"
+        result = self._run(False, running_config=cfg, state="parsed")
+        self.assertEqual(
+            result["parsed"],
+            dict(DEFAULTS, vlans=[dict(vlan_id=100, group_timeout="300", proxy=dict(general_queries=True))]),
+        )
+
     def test_full_global_parsed(self):
         result = self._run(False, running_config=FULL_GLOBAL_CLI, state="parsed")
         self.assertEqual(
@@ -927,7 +935,7 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
                 "ip igmp snooping report-flood interface port-channel20",
                 "ip igmp snooping report-policy prefix-list PL_ONE interface Ethernet1/10",
                 "ip igmp snooping report-policy route-map RM_ONE interface port-channel20",
-                "ip igmp snooping access-group prefix-list PL_TWO interface port-channel20",
+                "ip igmp snooping access-group prefix-list PL_TWO interface Ethernet1/11",
                 "ip igmp snooping access-group RM_TWO",
                 "no ip igmp snooping",
                 "no ip igmp snooping link-local-groups-suppression",
@@ -1033,7 +1041,7 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         )
         self.assertIn("no ip igmp snooping access-group RM_TWO", commands)
         self.assertIn(
-            "no ip igmp snooping access-group prefix-list PL_TWO interface port-channel20",
+            "no ip igmp snooping access-group prefix-list PL_TWO interface Ethernet1/11",
             commands,
         )
         self.assertIn(
@@ -1089,6 +1097,14 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             (dict(querier_timeout=70000), "querier_timeout must be in the range"),
             (dict(proxy=dict(general_queries=True, mrt=30)), "proxy mrt must be in the range 1-25"),
             (dict(proxy=dict(mrt=5)), "proxy mrt requires general_queries: true"),
+            (dict(proxy=dict(general_queries=True, mrt=5)), "is the default and removes the proxy"),
+            (
+                dict(
+                    report_policy=[dict(policy_type="route_map", name="RM", interface="Po20")],
+                    access_group=[dict(policy_type="prefix_list", name="PL", interface="port-channel20")],
+                ),
+                "only one entry per interface",
+            ),
             (dict(proxy=dict(general_queries=False, mrt=5)), "cannot be combined"),
             (
                 dict(report_policy=[dict(policy_type="route_map", name="RM")]),
@@ -1146,7 +1162,7 @@ class TestNxosIgmpSnoopingFacts(TestCase):
             [call.args[0] for call in connection.get.call_args_list],
             [
                 'show running-config | section "^vlan configuration"',
-                'show running-config | include "ip igmp snooping"',
+                'show running-config | include "^ip igmp snooping|^no ip igmp snooping"',
             ],
         )
         parsed = facts.populate_facts(connection, {"ansible_network_resources": {}}, data=text)

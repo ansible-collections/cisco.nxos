@@ -59,6 +59,11 @@ notes:
   and the interfaces of I(mrouter_interfaces), I(report_flood), I(report_policy), I(access_group) and
   I(static_groups) do not have to be members of the VLAN.
 - The group timeout is sent after the other global settings, except when snooping ends up disabled.
+- The device keeps one policy per interface. A C(report_policy) and an C(access_group) entry for the same
+  interface replace each other, so the module fails when an interface is used more than once. An
+  C(access_group) without an interface does not conflict with them.
+- The proxy with C(mrt) 5, the default, is removed by the device instead of being stored, so C(mrt) 5 is rejected.
+  Omit I(mrt) for C(proxy general-queries) without a value, which also resets a configured I(mrt).
 - C(event-history) (debug buffer sizes) and C(optimise-multicast-flood) (not available on the tested platform)
   are not managed by this module.
 - A C(vlan configuration) block is managed completely. Under I(state) C(replaced) and C(overridden) a listed
@@ -87,7 +92,7 @@ options:
     - This option is used only with state I(parsed).
     - The value of this option should be the output received from the NX-OS device
       by executing the commands B(show running-config | section "^vlan configuration")
-      and B(show running-config | include "ip igmp snooping"), or the full running configuration.
+      and B(show running-config | include "^ip igmp snooping|^no ip igmp snooping"), or the full running configuration.
     - The state I(parsed) reads the configuration from C(running_config) option and
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
