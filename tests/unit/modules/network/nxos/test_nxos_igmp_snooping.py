@@ -1110,7 +1110,7 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
                 dict(
                     report_policy=[dict(policy_type="route_map", name="RM", interface="Po20")],
                     access_group=[
-                        dict(policy_type="prefix_list", name="PL", interface="port-channel20")
+                        dict(policy_type="prefix_list", name="PL", interface="port-channel20"),
                     ],
                 ),
                 "only one entry per interface",
