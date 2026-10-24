@@ -6,6 +6,7 @@ platforms:
   - name: cisshgo-interfaces-replaced
   - name: cisshgo-interfaces-overridden
   - name: cisshgo-interfaces-deleted
+  - name: cisshgo-interfaces-loopback-enabled
 provisioner:
   name: ansible
   playbooks:
