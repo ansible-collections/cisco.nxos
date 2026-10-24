@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-igmp-snooping-gathered
+    count: 1
+  - scenario: nxos-igmp-snooping-merged
+    count: 1
+  - scenario: nxos-igmp-snooping-replaced
+    count: 1
+  - scenario: nxos-igmp-snooping-overridden
+    count: 1
+  - scenario: nxos-igmp-snooping-deleted
+    count: 1
+  - scenario: nxos-igmp-snooping-deleted_all
+    count: 1

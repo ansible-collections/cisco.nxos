@@ -1,0 +1,271 @@
+---
+# One play per host: cisshgo replays the transcript sequence of a host in order.
+- name: "Nxos_igmp_snooping — state: gathered, parsed and rendered"
+  hosts: nxos_igmp_snooping_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Gather nxos_igmp_snooping facts
+      register: result
+      cisco.nxos.nxos_igmp_snooping:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - before == result.gathered
+
+    - name: Run nxos_igmp_snooping parsed (offline)
+      register: result
+      cisco.nxos.nxos_igmp_snooping:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_igmp_snooping/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed == result.parsed
+
+    - name: Run nxos_igmp_snooping rendered (offline)
+      register: result
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          snooping: true
+          report_suppression: false
+          vxlan: true
+          group_timeout: never
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.10
+                  interfaces:
+                    - Po20
+                - group: 233.252.0.11
+                  source: 192.0.2.10
+                  interfaces:
+                    - Po21
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered.commands == result.rendered
+
+- name: "Nxos_igmp_snooping — state: merged"
+  hosts: nxos_igmp_snooping_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Run nxos_igmp_snooping merged
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &merged
+        config:
+          link_local_groups_suppression: false
+          group_timeout: "500"
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.10
+                  interfaces:
+                    - Po20
+                    - port-channel21
+                - group: 233.252.0.12
+                  interfaces:
+                    - Po21
+        state: merged
+    - name: Assert merged result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result.before
+          - merged.commands == result.commands
+          - merged.after == result.after
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+    - name: Empty config with state merged should fail
+      register: result_empty_config
+      ignore_errors: true
+      cisco.nxos.nxos_igmp_snooping:
+        config: {}
+        state: merged
+    - name: Assert empty config error for merged
+      ansible.builtin.assert:
+        that:
+          - result_empty_config.failed == true
+          - "'value of config parameter must not be empty for state merged' in result_empty_config.msg"
+
+    - name: The group timeout cannot be set while snooping is disabled
+      register: result_group_timeout
+      ignore_errors: true
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          snooping: false
+          group_timeout: "10"
+        state: merged
+    - name: Assert group timeout error
+      ansible.builtin.assert:
+        that:
+          - result_group_timeout.failed == true
+          - result_group_timeout.msg == 'group_timeout cannot be set while snooping is, or is being set to, false'
+
+    - name: RTT - Gather current facts
+      register: rtt_gathered
+      cisco.nxos.nxos_igmp_snooping:
+        state: gathered
+    - name: RTT - Render gathered config offline
+      register: rtt_rendered
+      cisco.nxos.nxos_igmp_snooping:
+        config: "{{ rtt_gathered.gathered }}"
+        state: rendered
+    - name: RTT - Assert rendered produced output
+      ansible.builtin.assert:
+        that:
+          - rtt_rendered.rendered is defined
+    - name: RTT - Re-apply gathered config via merged (should be idempotent)
+      register: rtt_merged
+      cisco.nxos.nxos_igmp_snooping:
+        config: "{{ rtt_gathered.gathered }}"
+        state: merged
+    - name: RTT - Assert merged round trip is a no-op
+      ansible.builtin.assert:
+        that:
+          - rtt_merged.changed == false
+
+- name: "Nxos_igmp_snooping — state: replaced"
+  hosts: nxos_igmp_snooping_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Run nxos_igmp_snooping replaced
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &replaced
+        config:
+          vxlan: true
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.10
+                  interfaces:
+                    - port-channel20
+        state: replaced
+    - name: Assert replaced result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result.before
+          - replaced.commands == result.commands
+          - replaced.after == result.after
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_igmp_snooping — state: overridden"
+  hosts: nxos_igmp_snooping_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Run nxos_igmp_snooping overridden
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &overridden
+        config:
+          vxlan: true
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.10
+                  interfaces:
+                    - port-channel20
+                    - port-channel21
+        state: overridden
+    - name: Assert overridden result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result.before
+          - overridden.commands == result.commands
+          - overridden.after == result.after
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_igmp_snooping — state: deleted (listed configuration)"
+  hosts: nxos_igmp_snooping_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Run nxos_igmp_snooping deleted
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &deleted
+        config:
+          group_timeout: "300"
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.11
+                  source: 192.0.2.10
+                  interfaces:
+                    - Po20
+            - vlan_id: 200
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result.before
+          - deleted.partial_commands == result.commands
+          - deleted.partial_after == result.after
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_igmp_snooping — state: deleted (everything)"
+  hosts: nxos_igmp_snooping_deleted_all
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_igmp_snooping/vars/main.yml
+  tasks:
+    - name: Run nxos_igmp_snooping deleted without config
+      register: result
+      cisco.nxos.nxos_igmp_snooping: &deleted_all
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result.before
+          - deleted.commands == result.commands
+          - defaults == result.after
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_igmp_snooping: *deleted_all
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0

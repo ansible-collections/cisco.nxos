@@ -1,0 +1,7 @@
+ip igmp snooping v3-report-suppression
+ip igmp snooping vxlan
+ip igmp snooping group-timeout 300
+  ip igmp snooping static-group 233.252.0.10 interface port-channel20
+  ip igmp snooping static-group 233.252.0.10 interface port-channel21
+  ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20
+  ip igmp snooping static-group 233.252.0.20 interface port-channel21

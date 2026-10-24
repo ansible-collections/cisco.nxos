@@ -1,0 +1,39 @@
+all:
+  children:
+    nxos_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_become: false
+      children:
+        nxos_igmp_snooping_gathered:
+          hosts:
+            cisshgo-igmp_snooping-gathered:
+              ansible_port: 10000
+        nxos_igmp_snooping_merged:
+          hosts:
+            cisshgo-igmp_snooping-merged:
+              ansible_port: 10001
+        nxos_igmp_snooping_replaced:
+          hosts:
+            cisshgo-igmp_snooping-replaced:
+              ansible_port: 10002
+        nxos_igmp_snooping_overridden:
+          hosts:
+            cisshgo-igmp_snooping-overridden:
+              ansible_port: 10003
+        nxos_igmp_snooping_deleted:
+          hosts:
+            cisshgo-igmp_snooping-deleted:
+              ansible_port: 10004
+        nxos_igmp_snooping_deleted_all:
+          hosts:
+            cisshgo-igmp_snooping-deleted_all:
+              ansible_port: 10005
