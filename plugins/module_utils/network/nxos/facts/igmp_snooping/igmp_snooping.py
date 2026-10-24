@@ -79,7 +79,7 @@ class Igmp_snoopingFacts(object):
     def get_config(self, connection):
         vlans = connection.get('show running-config | section "^vlan configuration"')
         global_cfg = connection.get(
-            'show running-config | include "^ip igmp snooping|^no ip igmp snooping"'
+            'show running-config | include "^ip igmp snooping|^no ip igmp snooping"',
         )
         return "\n".join([global_cfg or "", vlans or ""])
 

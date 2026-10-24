@@ -167,7 +167,7 @@ class Igmp_snooping(ResourceModule):
                 if proxy["mrt"] == MRT_DEFAULT:
                     self._module.fail_json(
                         msg="proxy mrt {0} is the default and removes the proxy, omit mrt instead".format(
-                            MRT_DEFAULT
+                            MRT_DEFAULT,
                         ),
                     )
             settings[PROXY] = {"mrt": proxy.get("mrt")}
