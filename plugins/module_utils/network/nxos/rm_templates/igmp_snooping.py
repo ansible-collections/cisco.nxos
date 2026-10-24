@@ -23,6 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 _VLAN_ID = "{{ vlan_id }}"
+_GROUP = "{{ group }}"
 _IF = "{{ interface }}"
 _ENABLED = "{{ False if negate is defined else True }}"
 _STATIC_GROUP = "ip igmp snooping static-group"
@@ -99,8 +100,8 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                 "vlans": {
                     _VLAN_ID: {
                         "static_groups": {
-                            "{{ group }}|{{ source }}": {
-                                "group": "{{ group }}",
+                            _GROUP + "|{{ source }}": {
+                                "group": _GROUP,
                                 "source": "{{ source }}",
                                 "interfaces": [_IF],
                             },
@@ -123,8 +124,8 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                 "vlans": {
                     _VLAN_ID: {
                         "static_groups": {
-                            "{{ group }}": {
-                                "group": "{{ group }}",
+                            _GROUP: {
+                                "group": _GROUP,
                                 "interfaces": [_IF],
                             },
                         },

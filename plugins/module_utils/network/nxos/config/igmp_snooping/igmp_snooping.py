@@ -220,15 +220,17 @@ class Igmp_snooping(ResourceModule):
         for vlan_id, groups in want.items():
             if prune and not groups:
                 # an empty want means no block at all
-                if vlan_id in have:
-                    self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
-                continue
-            self._vlan_block(vlan_id, groups, have.get(vlan_id, {}), prune)
+                self._remove_block(vlan_id, have)
+            else:
+                self._vlan_block(vlan_id, groups, have.get(vlan_id, {}), prune)
 
         if self.state == "overridden":
-            for vlan_id in have:
-                if vlan_id not in want:
-                    self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
+            for vlan_id in [v for v in have if v not in want]:
+                self._remove_block(vlan_id, have)
+
+    def _remove_block(self, vlan_id, have):
+        if vlan_id in have:
+            self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
 
     def _vlan_block(self, vlan_id, want, have, prune):
         """The block is only entered when it has something to change."""
