@@ -15,7 +15,7 @@
   register: nve_tcam_alloc
   failed_when: false
 
-- name: Re-check Ingress ARP-Ether ACL TCAM region size after allocation  # noqa: no-handler
+- name: Re-check Ingress ARP-Ether ACL TCAM region size after allocation # noqa: no-handler
   cisco.nxos.nxos_command:
     commands:
       - command: show hardware access-list tcam region | incl arp-ether | sed 's/.*size = *//'
