@@ -12,6 +12,10 @@
   cisco.nxos.nxos_evpn_global:
     nv_overlay_evpn: true
 
+- name: Prepare TCAM for per-VNI suppress-arp integration coverage
+  ansible.builtin.include_tasks: setup_suppress_arp_tcam.yaml
+  when: platform is defined and platform is search('N9K')
+
 - name: Main task for NVE interface module
   ansible.builtin.include_tasks:
     file: cli.yaml

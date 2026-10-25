@@ -1,0 +1,53 @@
+---
+- name: Check Ingress ARP-Ether ACL TCAM region size
+  cisco.nxos.nxos_command:
+    commands:
+      - command: show hardware access-list tcam region | incl arp-ether | sed 's/.*size = *//'
+        output: text
+  register: nve_arp_ether_tcam
+
+- name: Allocate Ingress ARP-Ether ACL TCAM region when unset
+  cisco.nxos.nxos_config:
+    lines:
+      - hardware access-list tcam region arp-ether 256
+    match: none
+  when: (nve_arp_ether_tcam.stdout[0] | default('0') | trim | int) == 0
+  register: nve_tcam_alloc
+  failed_when: false
+
+- name: Re-check Ingress ARP-Ether ACL TCAM region size after allocation
+  cisco.nxos.nxos_command:
+    commands:
+      - command: show hardware access-list tcam region | incl arp-ether | sed 's/.*size = *//'
+        output: text
+  when: nve_tcam_alloc is changed
+  register: nve_arp_ether_tcam_after
+
+- name: Set fact for per-VNI suppress-arp availability
+  ansible.builtin.set_fact:
+    nve_integ_per_vni_suppress_arp: >-
+      {{
+        (
+          (
+            nve_arp_ether_tcam_after.stdout[0]
+            if (nve_tcam_alloc is changed and (nve_arp_ether_tcam_after.stdout | default([]) | length) > 0)
+            else nve_arp_ether_tcam.stdout[0]
+          ) | default('0') | trim | int
+        ) > 0
+      }}
+
+- name: Skip NVE integration when per-VNI suppress-arp is unavailable on this platform
+  ansible.builtin.set_fact:
+    skip_test: true
+  when:
+    - platform is defined
+    - platform is search('N9K')
+    - not nve_integ_per_vni_suppress_arp | bool
+
+- name: Note skipped NVE integration (ARP-Ether TCAM not available)
+  ansible.builtin.debug:
+    msg: >-
+      Skipping nxos_nve_interface integration: Ingress ARP-Ether ACL TCAM region is not
+      allocated (suppress-arp on a VNI requires hardware access-list tcam region arp-ether
+      and may need a reload).
+  when: skip_test | bool
