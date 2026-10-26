@@ -1,0 +1,114 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_interfaces loopback enabled idempotency tests connection={{ ansible_connection }}"
+
+# NX-OS loopbacks are always-up by default. 'no shutdown' is never written to
+# running-config for an up loopback — only 'shutdown' appears when explicitly
+# disabled. This means setting enabled: true on an already-up loopback must be
+# a no-op (changed: false), not emit 'no shutdown' on every run.
+
+- block:
+    - name: Setup - create test loopbacks (they come up automatically)
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface loopback99"
+          - "interface loopback100"
+
+    # ----- idempotency: enabled: true on an already-up loopback -----
+
+    - name: Merged - set enabled true on already-up loopback
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: loopback99
+            enabled: true
+          - name: loopback100
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          enabled: true on an already-up loopback should be idempotent but
+          generated commands: {{ result.commands }}
+
+    # ----- shutdown a loopback explicitly -----
+
+    - name: Merged - shutdown loopback99
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: loopback99
+            enabled: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface loopback99' in result.commands"
+          - "'shutdown' in result.commands"
+
+    # ----- bring the shutdown loopback back up -----
+
+    - name: Merged - bring loopback99 back up
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: loopback99
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface loopback99' in result.commands"
+          - "'no shutdown' in result.commands"
+
+    - name: Gather facts after re-enabling loopback99
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: interfaces
+
+    - ansible.builtin.assert:
+        that:
+          - >-
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', 'loopback99')
+            | selectattr('enabled', 'defined')
+            | map(attribute='enabled')
+            | list
+            | length == 0
+            or
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', 'loopback99')
+            | map(attribute='enabled')
+            | first | default(true) == true
+        fail_msg: "loopback99 should be enabled after no shutdown"
+
+    # ----- idempotency after re-enabling (loopback is up, no admin state in config) -----
+
+    - name: Merged idempotent - enabled true after loopback restored to default
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: loopback99
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          enabled: true on loopback back at default should be idempotent but
+          generated commands: {{ result.commands }}
+
+  always:
+    - name: Teardown - remove test loopbacks
+      cisco.nxos.nxos_config:
+        lines:
+          - "no interface loopback99"
+          - "no interface loopback100"
+      failed_when: false
