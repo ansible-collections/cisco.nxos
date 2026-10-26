@@ -1,6 +1,11 @@
 ---
 - name: Run the CLI and NX-API tests
   block:
+    - name: Enable 'feature bgp'
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: enabled
+
     - name: Enable 'feature nv overlay'
       cisco.nxos.nxos_feature:
         feature: nv overlay
@@ -33,5 +38,11 @@
     - name: Disable 'feature nv overlay'
       cisco.nxos.nxos_feature:
         feature: nv overlay
+        state: disabled
+      failed_when: false
+
+    - name: Disable 'feature bgp'
+      cisco.nxos.nxos_feature:
+        feature: bgp
         state: disabled
       failed_when: false
