@@ -1,4 +1,9 @@
 ---
+- name: Ensure feature bgp for EVPN fixture populate
+  cisco.nxos.nxos_feature:
+    feature: bgp
+    state: enabled
+
 - name: Ensure feature nv overlay for EVPN fixture populate
   cisco.nxos.nxos_feature:
     feature: nv overlay
