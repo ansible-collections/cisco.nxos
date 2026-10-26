@@ -1,0 +1,85 @@
+---
+- name: Check Ingress ARP-Ether ACL TCAM region size
+  cisco.nxos.nxos_command:
+    commands:
+      - command: show hardware access-list tcam region | incl arp-ether | sed 's/.*size = *//'
+        output: text
+  register: nve_arp_ether_tcam
+
+- name: Allocate Ingress ARP-Ether ACL TCAM region when unset
+  cisco.nxos.nxos_config:
+    lines:
+      - hardware access-list tcam region arp-ether 256
+    match: none
+  when: (nve_arp_ether_tcam.stdout[0] | default('0') | trim | int) == 0
+  register: nve_tcam_alloc
+  failed_when: false
+
+- name: Re-check Ingress ARP-Ether ACL TCAM region size after allocation # noqa: no-handler
+  cisco.nxos.nxos_command:
+    commands:
+      - command: show hardware access-list tcam region | incl arp-ether | sed 's/.*size = *//'
+        output: text
+  when: nve_tcam_alloc is changed
+  register: nve_arp_ether_tcam_after
+
+- name: Probe per-VNI suppress-arp on the device
+  cisco.nxos.nxos_nve_interface:
+    config:
+      enabled: true
+      vnis:
+        - vni_id: 39998
+          suppress_arp: true
+    state: merged
+  register: nve_suppress_arp_probe
+  failed_when: false
+  ignore_errors: true
+
+- name: Set skip when suppress-arp probe was rejected by the device
+  ansible.builtin.set_fact:
+    nve_integ_per_vni_suppress_arp: false
+    skip_test: true
+  when: nve_suppress_arp_probe.failed | default(false)
+
+- name: Gather NVE facts to verify suppress-arp probe
+  cisco.nxos.nxos_nve_interface:
+    state: gathered
+  register: nve_suppress_arp_gather
+  when: not (nve_suppress_arp_probe.failed | default(false))
+
+- name: Set suppress-arp integration availability from gathered facts
+  ansible.builtin.set_fact:
+    nve_integ_per_vni_suppress_arp: "{{ nve_suppress_arp_probe_vni.suppress_arp | default(false) | bool }}"
+    skip_test: "{{ not (nve_suppress_arp_probe_vni.suppress_arp | default(false) | bool) }}"
+  when: not (nve_suppress_arp_probe.failed | default(false))
+  vars:
+    nve_suppress_arp_probe_vni: >-
+      {{
+        (nve_suppress_arp_gather.gathered.vnis | default([]))
+        | selectattr('vni_id', 'equalto', 39998)
+        | list
+        | first
+        | default({})
+      }}
+
+- name: Remove suppress-arp probe VNI configuration
+  cisco.nxos.nxos_nve_interface:
+    config:
+      vnis:
+        - vni_id: 39998
+    state: deleted
+  when: nve_integ_per_vni_suppress_arp | bool
+
+- name: Remove partial NVE configuration after failed suppress-arp probe
+  cisco.nxos.nxos_nve_interface:
+    state: deleted
+  when: skip_test | bool
+  failed_when: false
+
+- name: Note skipped NVE integration (suppress-arp not usable on this lab)
+  ansible.builtin.debug:
+    msg: >-
+      Skipping nxos_nve_interface integration: per-VNI suppress-arp did not appear on
+      the device after probe (Ingress ARP-Ether ACL TCAM may be unallocated or pending
+      reload). Molecule cisshgo still covers suppress-arp offline.
+  when: skip_test | bool
