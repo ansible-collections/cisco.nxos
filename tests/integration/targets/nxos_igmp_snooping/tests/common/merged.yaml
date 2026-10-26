@@ -43,11 +43,11 @@
       cisco.nxos.nxos_command:
         commands:
           - show running-config | section "^vlan configuration 100"
-      register: groups
+      register: vlan100_block
 
     - name: Assert that the new static group is configured
       ansible.builtin.assert:
-        that: "'233.252.0.12 interface port-channel21' in groups.stdout[0]"
+        that: "'233.252.0.12 interface port-channel21' in vlan100_block.stdout[0]"
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_igmp_snooping: *id001
