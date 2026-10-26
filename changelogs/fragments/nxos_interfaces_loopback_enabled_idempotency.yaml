@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_interfaces - fix loopback interfaces always reporting ``changed`` when
+    ``enabled: true`` is set, since NX-OS omits ``no shutdown`` from the running
+    configuration for loopbacks that are in their default always-up state.
