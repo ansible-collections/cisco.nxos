@@ -9,3 +9,5 @@ devices:
     count: 1
   - scenario: nxos-interfaces-deleted
     count: 1
+  - scenario: nxos-interfaces-loopback-enabled
+    count: 1
