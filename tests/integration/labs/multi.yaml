@@ -91,6 +91,7 @@ nodes:
         limit-resource m6route-mem minimum 8 maximum 8
 
       feature nxapi
+      hardware access-list tcam region arp-ether 256
 
       no password strength-check
       username admin password 5 $5$AADOBF$GVXUV2cvmlZH42xDu6wnqfBpV9gXF61WGVNrGF5Gk6C  role network-admin
