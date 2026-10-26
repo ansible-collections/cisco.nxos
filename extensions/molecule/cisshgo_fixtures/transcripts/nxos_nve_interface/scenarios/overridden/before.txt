@@ -1,0 +1,16 @@
+interface nve1
+  no shutdown
+  description vxlan vtep
+  host-reachability protocol bgp
+  advertise virtual-rmac
+  source-interface loopback1
+  source-interface hold-down-time 60
+  global mcast-group 233.252.0.20 L2
+  member vni 11111 associate-vrf
+  member vni 22222
+  member vni 33333
+    suppress-arp
+  member vni 44444
+    mcast-group 233.252.0.10
+  member vni 55555
+    mcast-group 233.252.0.11
