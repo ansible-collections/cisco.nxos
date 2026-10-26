@@ -1,0 +1,7 @@
+---
+trivial:
+  - integration tests - Wrap each httpapi test case so that a mid-run NX-API
+    httpd bounce (which poisons netcommon's persistent connection and causes
+    intermittent "connection refused" failures on the virtual NX9000v used in
+    CI) resets the connection, waits for the httpd to return, and retries the
+    case once. A genuine test failure on retry still propagates.
