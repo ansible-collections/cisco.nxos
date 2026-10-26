@@ -1,0 +1,97 @@
+---
+- ansible.builtin.debug:
+    msg: >-
+      Start nxos_snmp_server replaced ACL-user removal integration tests
+      connection={{ ansible_connection }}
+
+- name: Remove test SNMP user from prior run
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server user aap99708_user
+  ignore_errors: true
+
+- name: Create SNMPv3 user with ACL for replace-removal test
+  cisco.nxos.nxos_snmp_server:
+    config:
+      users:
+        auth:
+          - user: aap99708_user
+            group: vdc-operator
+            authentication:
+              algorithm: md5
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
+              localized_key: true
+              priv:
+                aes_128: true
+                privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+        use_acls:
+          - user: aap99708_user
+            ipv4: snmp_aap99708_acl
+    state: merged
+
+- block:
+    - name: Gather SNMP configuration including ACL user
+      cisco.nxos.nxos_snmp_server:
+        state: gathered
+      register: snmp_gathered
+
+    - name: Build replaced config omitting the ACL user
+      ansible.builtin.set_fact:
+        aap99708_replace_config: >-
+          {{
+            snmp_gathered.gathered | combine(
+              {
+                'users': {
+                  'auth': (
+                    snmp_gathered.gathered.users.auth
+                    | rejectattr('user', 'equalto', 'aap99708_user')
+                    | list
+                  ),
+                  'use_acls': (
+                    snmp_gathered.gathered.users.use_acls | default([])
+                    | rejectattr('user', 'equalto', 'aap99708_user')
+                    | list
+                  ),
+                },
+              },
+              recursive=True,
+            )
+          }}
+
+    - name: Replace SNMP config removing user that had an ACL (AAP-99708)
+      cisco.nxos.nxos_snmp_server:
+        config: "{{ aap99708_replace_config }}"
+        state: replaced
+      register: result
+
+    - name: Assert module did not send leftover ACL removal after user delete
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.commands
+            | select('search', '^no snmp-server user aap99708_user$')
+            | list
+            | length == 1
+          - >-
+            result.commands
+            | select('search', 'no snmp-server user aap99708_user use-ipv')
+            | list
+            | length == 0
+        fail_msg: "AAP-99708: replaced emitted leftover ACL removal for deleted user"
+
+    - name: Verify user is gone from the device
+      cisco.nxos.nxos_command:
+        commands: show running-config | section '^snmp-server user aap99708_user'
+      register: user_show
+
+    - name: Assert user no longer exists after replace
+      ansible.builtin.assert:
+        that:
+          - user_show.stdout[0] is not search('snmp-server user aap99708_user')
+
+  always:
+    - name: Remove test SNMP user
+      cisco.nxos.nxos_config:
+        lines:
+          - no snmp-server user aap99708_user
+      ignore_errors: true

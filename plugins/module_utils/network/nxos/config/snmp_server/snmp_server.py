@@ -208,6 +208,10 @@ class Snmp_server(ResourceModule):
         """
         Compare list of dictionaries
         """
+        # `no snmp-server user NAME` already drops ACL lines for that user.
+        # Track leftover auth usernames so leftover use_acls is not negated
+        # after the user is gone (NX-OS 7.x/9.x: "user not found"). AAP-99708.
+        removed_users = set()
         for x in ["users.auth", "users.use_acls", "hosts", "communities"]:
             wantx = get_from_dict(want, x) or {}
             havex = get_from_dict(have, x) or {}
@@ -224,6 +228,10 @@ class Snmp_server(ResourceModule):
                     self.addcmd(wentry, x)
             # remove superfluous items
             for _k, hv in havex.items():
+                if x == "users.auth":
+                    removed_users.add(_k)
+                elif x == "users.use_acls" and _k in removed_users:
+                    continue
                 self.addcmd(hv, x, negate=True)
 
     def _list_to_dict(self, data):

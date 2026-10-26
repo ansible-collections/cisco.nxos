@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_snmp_server - stop sending leftover ``use-ipv4acl`` / ``use-ipv6acl``
+    removals after ``no snmp-server user NAME`` already deleted the user
+    (AAP-99708).
