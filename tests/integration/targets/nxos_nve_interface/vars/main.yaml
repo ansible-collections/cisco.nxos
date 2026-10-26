@@ -1,0 +1,248 @@
+---
+merged:
+  before: {}
+  commands:
+    - interface nve1
+    - description vxlan vtep
+    - host-reachability protocol bgp
+    - advertise virtual-rmac
+    - source-interface loopback1
+    - source-interface hold-down-time 60
+    - member vni 11111 associate-vrf
+    - member vni 22222
+    - member vni 33333
+    - suppress-arp
+    - member vni 44444
+    - mcast-group 233.252.0.10
+    - member vni 55555
+    - mcast-group 233.252.0.11
+    - no shutdown
+    - global mcast-group 233.252.0.20 L2
+  after:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+
+gathered:
+  config:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+
+overridden:
+  before:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+  commands:
+    - interface nve1
+    - no description vxlan vtep
+    - no source-interface hold-down-time 60
+    - no member vni 11111 associate-vrf
+    - member vni 11111
+    - suppress-arp
+    - ingress-replication protocol bgp
+    - no member vni 22222
+    - member vni 22222 associate-vrf
+    - no member vni 33333
+    - member vni 33333 associate-vrf
+    - member vni 44444
+    - mcast-group 233.252.0.13
+    - no member vni 55555
+    - global mcast-group 233.252.0.30 L2
+  after:
+    enabled: true
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    global_multicast_group:
+      address: 233.252.0.30
+      mode: L2
+    vnis:
+      - ingress_replication_bgp: true
+        suppress_arp: true
+        vni_id: 11111
+      - associate_vrf: true
+        vni_id: 22222
+      - associate_vrf: true
+        vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.13
+
+replaced:
+  before:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - associate_vrf: true
+        vni_id: 11111
+      - vni_id: 22222
+      - suppress_arp: true
+        vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+  commands:
+    - interface nve1
+    - no source-interface hold-down-time 60
+    - no advertise virtual-rmac
+    - no member vni 11111 associate-vrf
+    - no member vni 22222
+    - no member vni 33333
+    - no member vni 44444
+    - no member vni 55555
+    - shutdown
+    - no global mcast-group L2
+  after:
+    description: vxlan vtep
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+
+deleted:
+  before:
+    enabled: true
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    global_multicast_group:
+      address: 233.252.0.30
+      mode: L2
+    vnis:
+      - associate_vrf: false
+        ingress_replication_bgp: true
+        suppress_arp: true
+        vni_id: 11111
+      - associate_vrf: true
+        vni_id: 22222
+      - associate_vrf: true
+        vni_id: 33333
+  commands:
+    - no interface nve1
+  after: {}
+
+deleted_vnis:
+  config:
+    vnis:
+      - vni_id: 11111
+      - vni_id: 33333
+      - vni_id: 99999
+  commands:
+    - interface nve1
+    - no member vni 11111 associate-vrf
+    - no member vni 33333
+  after:
+    enabled: true
+    description: vxlan vtep
+    advertise_virtual_rmac: true
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    source_interface_hold_time: 60
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    vnis:
+      - vni_id: 22222
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11
+
+rendered:
+  commands:
+    - interface nve1
+    - description vxlan vtep
+    - host-reachability protocol bgp
+    - advertise virtual-rmac
+    - source-interface loopback1
+    - member vni 11111
+    - suppress-arp
+    - member vni 22222
+    - suppress-arp disable
+    - no shutdown
+    - global mcast-group 233.252.0.20 L2
+
+parsed:
+  config:
+    description: vxlan vtep
+    enabled: true
+    global_multicast_group:
+      address: 233.252.0.20
+      mode: L2
+    host_reachability_bgp: true
+    source_interface_name: loopback1
+    vnis:
+      - vni_id: 22222
+      - vni_id: 33333
+      - vni_id: 44444
+        mcast_group:
+          address: 233.252.0.10
+      - vni_id: 55555
+        mcast_group:
+          address: 233.252.0.11

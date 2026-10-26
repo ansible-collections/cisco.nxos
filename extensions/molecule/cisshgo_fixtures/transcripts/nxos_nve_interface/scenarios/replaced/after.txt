@@ -1,0 +1,4 @@
+interface nve1
+  description vxlan vtep
+  host-reachability protocol bgp
+  source-interface loopback1

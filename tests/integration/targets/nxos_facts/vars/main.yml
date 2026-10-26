@@ -20,6 +20,7 @@ available_network_resources:
   - lldp_interfaces
   - logging_global
   - ntp_global
+  - nve_interface
   - ospf_interfaces
   - ospfv2
   - ospfv3

@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-nve-interface-gathered
+    count: 1
+  - scenario: nxos-nve-interface-merged
+    count: 1
+  - scenario: nxos-nve-interface-replaced
+    count: 1
+  - scenario: nxos-nve-interface-overridden
+    count: 1
+  - scenario: nxos-nve-interface-deleted
+    count: 1
+  - scenario: nxos-nve-interface-deleted-vnis
+    count: 1

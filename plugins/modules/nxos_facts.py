@@ -60,7 +60,7 @@ options:
       C(telemetry), C(vlans), C(lacp), C(lacp_interfaces), C(interfaces), C(l3_interfaces),
       C(l2_interfaces), C(lldp_global), C(acls), C(acl_interfaces), C(ospfv2), C(ospfv3), C(ospf_interfaces),
       C(bgp_global), C(bgp_address_family), C(route_maps), C(prefix_lists), C(logging_global), C(ntp_global),
-      C(snmp_server), C(hostname), C(igmp_snooping).
+      C(snmp_server), C(hostname), C(nve_interface), C(igmp_snooping).
     required: false
     type: list
     elements: str
