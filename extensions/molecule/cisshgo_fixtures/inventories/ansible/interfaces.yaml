@@ -33,3 +33,7 @@ all:
           hosts:
             cisshgo-interfaces-deleted:
               ansible_port: 10004
+        nxos_interfaces_loopback_enabled:
+          hosts:
+            cisshgo-interfaces-loopback-enabled:
+              ansible_port: 10005
