@@ -155,6 +155,24 @@ class VlansFacts(object):
 
         return utils.remove_empties(obj)
 
+    @staticmethod
+    def _vlan_range(item):
+        """Return (first, last) for 'id' or 'first-last' when it is within the vlan ids, otherwise None."""
+        first, _sep, last = item.partition("-")
+        if not (re.fullmatch(r"\d+", first, re.ASCII) and re.fullmatch(r"\d*", last, re.ASCII)):
+            return None
+        start, end = int(first), int(last or first)
+        if not 1 <= start <= end <= VLAN_ID_MAX:
+            return None
+        return start, end
+
+    def _nve_overlay_items(self, line):
+        """Return (item, (first, last) or None) for each element of a 'system vlan nve-overlay id' line."""
+        match = re.match(r"^\s*system vlan nve-overlay id (\S+)\s*$", line)
+        if not match:
+            return [(line.strip(), None)]
+        return [(item, self._vlan_range(item)) for item in match.group(1).split(",")]
+
     def parse_nve_overlay_vlans(self, run_cfg_output):
         """Return the set of vlan ids found in 'system vlan nve-overlay id' lines.
         The device may display the vlans as a compressed list of ids and ranges.
@@ -168,20 +186,11 @@ class VlansFacts(object):
         for line in str(run_cfg_output).splitlines():
             if "system vlan nve-overlay id" not in line:
                 continue
-            match = re.match(r"^\s*system vlan nve-overlay id (\S+)\s*$", line)
-            if not match:
-                ignored.append(line.strip())
-                continue
-            for item in match.group(1).split(","):
-                first, _sep, last = item.partition("-")
-                if not (re.fullmatch(r"[0-9]+", first) and re.fullmatch(r"[0-9]*", last)):
+            for item, vlan_range in self._nve_overlay_items(line):
+                if vlan_range:
+                    vlans.update(range(vlan_range[0], vlan_range[1] + 1))
+                else:
                     ignored.append(item)
-                    continue
-                start, end = int(first), int(last or first)
-                if not 1 <= start <= end <= VLAN_ID_MAX:
-                    ignored.append(item)
-                    continue
-                vlans.update(range(start, end + 1))
         if ignored:
             self._module.warn(
                 "Ignored 'system vlan nve-overlay id' value(s) that could not be read: {0}. "
