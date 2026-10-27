@@ -1,0 +1,47 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_evpn_vnis merged integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Merge the EVPN VNI configuration
+      cisco.nxos.nxos_evpn_vnis: &id001
+        config:
+          - vni: 10100
+            route_target_both:
+              - 65000:10100
+          - vni: 10300
+            route_distinguisher: auto
+        state: merged
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] == result['commands']
+
+    - name: Assert that after dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Merge the EVPN VNI configuration (idempotent)
+      cisco.nxos.nxos_evpn_vnis: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
