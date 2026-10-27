@@ -37,6 +37,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_templates.bgp_templates import (
     Bgp_templatesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.evpn_vnis.evpn_vnis import (
+    Evpn_vnisFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces import (
     Fc_interfacesFacts,
 )
@@ -177,6 +180,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     vrf_interfaces=Vrf_interfacesFacts,
     vpc_interfaces=Vpc_interfacesFacts,
     vpc=VpcFacts,
+    evpn_vnis=Evpn_vnisFacts,
     igmp_snooping=Igmp_snoopingFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(

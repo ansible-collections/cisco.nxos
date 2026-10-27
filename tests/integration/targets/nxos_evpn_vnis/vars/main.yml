@@ -1,0 +1,94 @@
+---
+# NOTE: the expected `show running-config | section ^evpn` display format is
+# assumed (separate import/export lines, `rd auto` under the VNI) and has not
+# been verified on hardware.
+merged:
+  before:
+    - vni: 10100
+      route_distinguisher: auto
+      route_target_import:
+        - auto
+      route_target_export:
+        - auto
+    - vni: 10200
+      route_distinguisher: "65000:10200"
+      route_target_import:
+        - "65000:10200"
+  commands:
+    - evpn
+    - vni 10100 l2
+    - route-target import 65000:10100
+    - route-target export 65000:10100
+    - vni 10300 l2
+    - rd auto
+  after:
+    - vni: 10100
+      route_distinguisher: auto
+      route_target_import:
+        - 65000:10100
+        - auto
+      route_target_export:
+        - 65000:10100
+        - auto
+    - vni: 10200
+      route_distinguisher: "65000:10200"
+      route_target_import:
+        - "65000:10200"
+    - vni: 10300
+      route_distinguisher: auto
+
+replaced:
+  commands:
+    - evpn
+    - vni 10100 l2
+    - no route-target export auto
+  after:
+    - vni: 10100
+      route_distinguisher: auto
+      route_target_import:
+        - auto
+    - vni: 10200
+      route_distinguisher: "65000:10200"
+      route_target_import:
+        - "65000:10200"
+
+overridden:
+  commands:
+    - evpn
+    - no vni 10200 l2
+  after:
+    - vni: 10100
+      route_distinguisher: auto
+      route_target_import:
+        - auto
+      route_target_export:
+        - auto
+
+deleted:
+  commands:
+    - evpn
+    - no vni 10200 l2
+  after:
+    - vni: 10100
+      route_distinguisher: auto
+      route_target_import:
+        - auto
+      route_target_export:
+        - auto
+
+deleted_all:
+  commands:
+    - evpn
+    - no vni 10100 l2
+    - no vni 10200 l2
+
+rendered:
+  commands:
+    - evpn
+    - vni 10100 l2
+    - rd auto
+    - route-target import auto
+    - route-target export auto
+    - vni 10200 l2
+    - rd 65000:10200
+    - route-target import 65000:10200
