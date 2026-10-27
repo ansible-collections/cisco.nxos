@@ -30,6 +30,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vl
 )
 
 
+VLAN_ID_MAX = 4094
+
+
 class VlansFacts(object):
     """The nxos vlans fact class"""
 
@@ -91,7 +94,9 @@ class VlansFacts(object):
         else:
             running_config = data.split("\n\n")
             structured, run_cfg_output = running_config[0], running_config[1]
-            nve_overlay_output = running_config[2] if len(running_config) > 2 else ""
+            # The 'system vlan nve-overlay id' lines cannot be mistaken for anything else,
+            # so the whole input is scanned instead of relying on the position of a block.
+            nve_overlay_output = data
 
         # Create a single dictionary from all data sources
         data = self.normalize_table_data(structured, run_cfg_output)
@@ -154,17 +159,36 @@ class VlansFacts(object):
         """Return the set of vlan ids found in 'system vlan nve-overlay id' lines.
         The device may display the vlans as a compressed list of ids and ranges.
         Sample: system vlan nve-overlay id 3801-3809,3820
+        Values that cannot be read, or that are outside the vlan range 1-4094,
+        are ignored with a warning, because a vlan that is wrongly read as not
+        being an nve-overlay vlan would make replaced and overridden remove it.
         """
         vlans = set()
+        ignored = []
         for line in str(run_cfg_output).splitlines():
+            if "system vlan nve-overlay id" not in line:
+                continue
             match = re.match(r"^\s*system vlan nve-overlay id (\S+)\s*$", line)
             if not match:
+                ignored.append(line.strip())
                 continue
             for item in match.group(1).split(","):
                 first, _sep, last = item.partition("-")
-                if not first.isdigit() or (last and not last.isdigit()):
+                if not (re.fullmatch(r"[0-9]+", first) and re.fullmatch(r"[0-9]*", last)):
+                    ignored.append(item)
                     continue
-                vlans.update(range(int(first), int(last or first) + 1))
+                start, end = int(first), int(last or first)
+                if not 1 <= start <= end <= VLAN_ID_MAX:
+                    ignored.append(item)
+                    continue
+                vlans.update(range(start, end + 1))
+        if ignored:
+            self._module.warn(
+                "Ignored 'system vlan nve-overlay id' value(s) that could not be read: {0}. "
+                "The nve_overlay setting of the vlans they cover is reported as not set.".format(
+                    ", ".join(ignored),
+                ),
+            )
         return vlans
 
     def normalize_table_data(self, structured, run_cfg_output):
@@ -209,6 +233,12 @@ class VlansFacts(object):
         vlans = []
         for index, v in enumerate(vlanbrief):
             v["vlan_id"] = v.get("vlanshowbr-vlanid-utf")
+            if v["vlan_id"] is None:
+                self._module.fail_json(
+                    msg="The output of 'show vlan' has an entry without 'vlanshowbr-vlanid-utf': {0}".format(
+                        v,
+                    ),
+                )
             vlan = {}
             vlan.update(v)
             vlan.update(mtuinfo[index])

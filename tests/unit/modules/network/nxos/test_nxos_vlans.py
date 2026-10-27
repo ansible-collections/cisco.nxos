@@ -22,9 +22,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import copy
 import json
 
 from unittest.mock import patch
+
+from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vlans
 
@@ -611,3 +614,66 @@ class TestNxosVlansModule(TestNxosModule):
             set_module_args(playbook, ignore_provider_arg)
             result = self.execute_module(changed=False)
             self.assertNotIn("no name", result["commands"])
+
+    def _parsed(self, nve_overlay_part, extra_blocks=()):
+        """Parse a running_config and return the result, the warnings are in self.warnings."""
+        show_vlan = copy.deepcopy(load_fixture("nxos_vlans", "show_vlan"))
+        blocks = [
+            json.dumps(show_vlan),
+            load_fixture("nxos_vlans", "show_running-config"),
+        ]
+        blocks.extend(extra_blocks)
+        blocks.append(nve_overlay_part)
+        set_module_args(
+            dict(running_config="\n\n".join(blocks), state="parsed"),
+            ignore_provider_arg,
+        )
+        with patch.object(AnsibleModule, "warn") as warn:
+            result = self.execute_module(changed=False)
+        self.warnings = " ".join(str(call.args[0]) for call in warn.call_args_list)
+        return result
+
+    def test_nve_overlay_parsed_does_not_depend_on_the_block_position(self):
+        result = self._parsed("system vlan nve-overlay id 4", extra_blocks=["feature nv overlay"])
+        overlay = sorted(v["vlan_id"] for v in result["parsed"] if v.get("nve_overlay"))
+        self.assertEqual(overlay, [4])
+
+    def test_nve_overlay_parsed_ignores_a_range_outside_the_vlan_ids(self):
+        # a range like this used to build a set with millions of entries
+        result = self._parsed("system vlan nve-overlay id 4,1-20000000,0,5000,9-3,x1")
+        overlay = sorted(v["vlan_id"] for v in result["parsed"] if v.get("nve_overlay"))
+        self.assertEqual(overlay, [4])
+        for value in ["1-20000000", "0", "5000", "9-3", "x1"]:
+            self.assertIn(value, self.warnings)
+
+    def test_nve_overlay_parsed_warns_about_a_line_it_cannot_read(self):
+        result = self._parsed("system vlan nve-overlay id\nsystem vlan nve-overlay id 4")
+        overlay = sorted(v["vlan_id"] for v in result["parsed"] if v.get("nve_overlay"))
+        self.assertEqual(overlay, [4])
+        self.assertIn("system vlan nve-overlay id", self.warnings)
+
+    def test_nve_overlay_parsed_valid_input_has_no_warning(self):
+        self._parsed("system vlan nve-overlay id 3-4,8")
+        self.assertEqual(self.warnings, "")
+
+    def test_show_vlan_entry_without_a_vlan_id_fails_readably(self):
+        set_module_args(
+            dict(
+                running_config="\n\n".join(
+                    [
+                        json.dumps(self._without_vlan_id()),
+                        load_fixture("nxos_vlans", "show_running-config"),
+                    ],
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("without 'vlanshowbr-vlanid-utf'", result["msg"])
+
+    @staticmethod
+    def _without_vlan_id():
+        show_vlan = copy.deepcopy(load_fixture("nxos_vlans", "show_vlan"))
+        del show_vlan["TABLE_vlanbrief"]["ROW_vlanbrief"][0]["vlanshowbr-vlanid-utf"]
+        return show_vlan
