@@ -1,0 +1,204 @@
+---
+- name: "Nxos_evpn_vnis — state: gathered"
+  hosts: nxos_evpn_vnis_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Gather nxos_evpn_vnis facts
+      register: result
+      cisco.nxos.nxos_evpn_vnis:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['before'] == result['gathered']
+
+- name: "Nxos_evpn_vnis — state: merged"
+  hosts: nxos_evpn_vnis_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis merged
+      register: result
+      cisco.nxos.nxos_evpn_vnis: &merged
+        config:
+          - vni: 10100
+            route_target_both:
+              - 65000:10100
+          - vni: 10300
+            route_distinguisher: auto
+        state: merged
+    - name: Assert merged result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - merged['commands'] == result['commands']
+          - merged['after'] == result['after']
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_evpn_vnis: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_evpn_vnis — state: replaced"
+  hosts: nxos_evpn_vnis_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis replaced
+      register: result
+      cisco.nxos.nxos_evpn_vnis: &replaced
+        config:
+          - vni: 10100
+            route_distinguisher: auto
+            route_target_import:
+              - auto
+        state: replaced
+    - name: Assert replaced result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - replaced['commands'] == result['commands']
+          - replaced['after'] == result['after']
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_evpn_vnis: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_evpn_vnis — state: overridden"
+  hosts: nxos_evpn_vnis_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis overridden
+      register: result
+      cisco.nxos.nxos_evpn_vnis: &overridden
+        config:
+          - vni: 10100
+            route_distinguisher: auto
+            route_target_both:
+              - auto
+        state: overridden
+    - name: Assert overridden result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - overridden['commands'] == result['commands']
+          - overridden['after'] == result['after']
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_evpn_vnis: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_evpn_vnis — state: deleted"
+  hosts: nxos_evpn_vnis_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis deleted
+      register: result
+      cisco.nxos.nxos_evpn_vnis: &deleted
+        config:
+          - vni: 10200
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - deleted['commands'] == result['commands']
+          - deleted['after'] == result['after']
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_evpn_vnis: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_evpn_vnis — state: deleted (all VNIs)"
+  hosts: nxos_evpn_vnis_deleted_all
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis deleted without config
+      register: result
+      cisco.nxos.nxos_evpn_vnis: &deleted_all
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted_all['commands'] == result['commands']
+          - result['after'] == []
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_evpn_vnis: *deleted_all
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Rendered state (offline)
+  hosts: nxos_evpn_vnis_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis rendered
+      register: result
+      cisco.nxos.nxos_evpn_vnis:
+        config:
+          - vni: 10100
+            route_distinguisher: auto
+            route_target_both:
+              - auto
+          - vni: 10200
+            route_distinguisher: "65000:10200"
+            route_target_import:
+              - "65000:10200"
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - rendered['commands'] == result['rendered']
+          - result.changed == false
+
+- name: Parsed state (offline)
+  hosts: nxos_evpn_vnis_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_evpn_vnis/vars/main.yml
+  tasks:
+    - name: Run nxos_evpn_vnis parsed
+      register: result
+      cisco.nxos.nxos_evpn_vnis:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_evpn_vnis/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['parsed']

@@ -1548,6 +1548,40 @@ platforms:
       "#": " "
       (config)#: " "
       (config-if)#: " "
+  nxos_evpn_vnis:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      evpn: (config-evpn)#
+      vni: (config-evpn-evi)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-evpn-evi)#: (config-evpn)#
+      (config-evpn)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-evpn)#: " "
+      (config-evpn-evi)#: " "
 scenarios:
   nxos-acls-gathered:
     platform: nxos_acls
@@ -6926,3 +6960,139 @@ scenarios:
         transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
       - command: show running-config | section '^vpc domain'
         transcript: transcripts/nxos_vpc/scenarios/new_attributes/after.txt
+  nxos-evpn-vnis-gathered:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/gathered/before.txt
+  nxos-evpn-vnis-merged:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vni 10100 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: route-target import 65000:10100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: route-target export 65000:10100
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vni 10300 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: rd auto
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/merged/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/merged/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/merged/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/merged/after.txt
+  nxos-evpn-vnis-replaced:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vni 10100 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no route-target export auto
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/replaced/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/replaced/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/replaced/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/replaced/after.txt
+  nxos-evpn-vnis-overridden:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vni 10200 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/overridden/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/overridden/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/overridden/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/overridden/after.txt
+  nxos-evpn-vnis-deleted:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vni 10200 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted/after.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted/after.txt
+  nxos-evpn-vnis-deleted_all:
+    platform: nxos_evpn_vnis
+    sequence:
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/nxos_evpn_vnis/scenarios/deleted_all/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vni 10100 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no vni 10200 l2
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section '^evpn'
+        transcript: transcripts/common/generic_empty_return.txt
