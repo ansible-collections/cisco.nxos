@@ -78,6 +78,7 @@ Name | Description
 [cisco.nxos.nxos_devicealias](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_devicealias_module.rst)|Configuration of device alias for Cisco NXOS MDS Switches.
 [cisco.nxos.nxos_evpn_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_global_module.rst)|Handles the EVPN control plane for VXLAN.
 [cisco.nxos.nxos_evpn_vni](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vni_module.rst)|Manages Cisco EVPN VXLAN Network Identifier (VNI).
+[cisco.nxos.nxos_evpn_vnis](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vnis_module.rst)|EVPN VNIs resource module
 [cisco.nxos.nxos_facts](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_facts_module.rst)|Gets facts about NX-OS switches
 [cisco.nxos.nxos_fc_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_fc_interfaces_module.rst)|Fc Interfaces resource module
 [cisco.nxos.nxos_feature](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst)|Manage features in NX-OS switches.
