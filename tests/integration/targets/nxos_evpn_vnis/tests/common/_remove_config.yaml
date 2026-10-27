@@ -1,0 +1,6 @@
+---
+- name: Remove all EVPN VNI configuration
+  cisco.nxos.nxos_evpn_vnis:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
