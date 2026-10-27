@@ -1,0 +1,4 @@
+minor_changes:
+  - >-
+    nxos_evpn_vnis - new resource module to manage the Layer 2 VNIs under the ``evpn`` section with
+    ``route_distinguisher`` and route targets. The existing ``nxos_evpn_vni`` module is unchanged.
