@@ -74,10 +74,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                         "route_target": {
                             "type": "list",
                             "elements": "dict",
-                            "mutually_exclusive": [["import", "export"]],
+                            "mutually_exclusive": [["import", "export", "both"]],
                             "options": {
                                 "import": {"type": "str"},
                                 "export": {"type": "str"},
+                                "both": {"type": "str"},
+                                "evpn": {"type": "bool"},
                             },
                         },
                         "export": {

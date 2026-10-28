@@ -5716,6 +5716,101 @@ scenarios:
         transcript: transcripts/nxos_vrf_address_family/scenarios/deleted/after.txt
       - command: show running-config | section ^vrf
         transcript: transcripts/nxos_vrf_address_family/scenarios/deleted/after.txt
+  nxos-vrf-address-family-route-target-evpn:
+    platform: nxos_vrf_address_family
+    sequence:
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vrf context VRF1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: address-family ipv4 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: route-target both auto
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: route-target both auto evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_merged.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_merged.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_merged.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vrf context VRF1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: address-family ipv4 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no route-target both auto evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn/after_replaced.txt
+  nxos-vrf-address-family-route-target-evpn-pair:
+    platform: nxos_vrf_address_family
+    sequence:
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/before.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/before.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/before.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vrf context VRF1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: address-family ipv4 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no route-target export 65000:3 evpn
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/after_replaced.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/route_target_evpn_pair/after_replaced.txt
+  nxos-vrf-address-family-purged:
+    platform: nxos_vrf_address_family
+    sequence:
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: vrf context VRF1
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no address-family ipv4 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: no address-family ipv6 unicast
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/after.txt
+      - command: show running-config | section ^vrf
+        transcript: transcripts/nxos_vrf_address_family/scenarios/purged/after.txt
   nxos-bgp-templates-merged:
     platform: nxos_bgp_templates
     sequence:
