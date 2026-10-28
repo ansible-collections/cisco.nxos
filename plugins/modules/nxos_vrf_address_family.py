@@ -21,6 +21,7 @@ version_added: 9.3.0
 author: Vinay Mulugund (@roverflow)
 notes:
   - Tested against NX-OS 9.3.6.
+  - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
   - This module works with connection C(network_cli) and C(httpapi).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
@@ -76,11 +77,30 @@ options:
             elements: dict
             suboptions:
               import:
-                description: Import Target-VPN community
+                description:
+                  - Import Target-VPN community.
+                  - The value C(auto) is only accepted by NX-OS with I(both) and is rejected here.
                 type: str
               export:
-                description: Export Target-VPN community
+                description:
+                  - Export Target-VPN community.
+                  - The value C(auto) is only accepted by NX-OS with I(both) and is rejected here.
                 type: str
+              both:
+                description:
+                  - Import and export Target-VPN community (C(route-target both)).
+                  - Treated as equivalent to an I(import) plus an I(export) entry with the same value
+                    when comparing with the device configuration, whether the device
+                    displays C(both) as one line or as two lines.
+                  - NX-OS rejects negating only one direction of a C(both) line. With I(state) C(replaced) or
+                    C(overridden) a C(both) line that is only partly wanted is removed as a whole and the wanted
+                    direction is configured again. With I(state) C(deleted) listing one direction of a C(both) line fails.
+                type: str
+              evpn:
+                description:
+                  - Apply the route-target to the EVPN address family (for example C(route-target both auto evpn)).
+                  - Only valid together with one of I(import), I(export) or I(both).
+                type: bool
           export:
             description: VRF export
             type: list
@@ -139,6 +159,10 @@ options:
       - The state the configuration should be left in
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
+      - The state I(deleted) removes only the configuration that is listed in I(config), so a VRF
+        given with only its name is left unchanged.
+      - The state I(purged) removes the address family configuration of the listed VRFs
+        (only the listed address families if any are given), or of all VRFs when I(config) is not set.
       - The state I(rendered) will transform the configuration in C(config) option to
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is
