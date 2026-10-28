@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_vrf_address_family - Fix state ``purged`` sending only ``vrf context <name>`` and removing nothing when
+    a VRF is listed without address families; it now removes the address families the device has for the VRF.

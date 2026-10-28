@@ -1,0 +1,9 @@
+vrf context VRF1
+  address-family ipv4 unicast
+    route-target import 65000:100
+    maximum routes 500
+  address-family ipv6 unicast
+    route-target export 65000:100
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1

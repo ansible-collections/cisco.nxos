@@ -37,6 +37,16 @@ def _tmplt_maximum(maximum):
     return cmd
 
 
+def _tmplt_route_target(rt):
+    for direction in ("import", "export", "both"):
+        if rt.get(direction):
+            cmd = f"route-target {direction} {rt[direction]}"
+            if rt.get("evpn"):
+                cmd += " evpn"
+            return cmd
+    return ""
+
+
 def _tmplt_export_vrf(vrf):
     cmd = "export vrf"
     vrfData = vrf.get("vrf")
@@ -131,9 +141,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+route-target\simport\s(?P<import>\S+)
+                (\s(?P<evpn>evpn))?
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target import {{ import }}",
+            "setval": _tmplt_route_target,
             "result": {
                 '{{ name }}': {
                     "address_families": {
@@ -142,6 +153,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ safi }}",
                             "route_target": [{
                                 "import": "{{ import }}",
+                                "evpn": "{{ True if evpn }}",
                             }],
                         },
                     },
@@ -153,9 +165,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+route-target\sexport\s(?P<export>\S+)
+                (\s(?P<evpn>evpn))?
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target export {{ export }}",
+            "setval": _tmplt_route_target,
             "result": {
                 '{{ name }}': {
                     "address_families": {
@@ -164,6 +177,31 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ safi }}",
                             "route_target": [{
                                 "export": "{{ export }}",
+                                "evpn": "{{ True if evpn }}",
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_target.both",
+            "getval": re.compile(
+                r"""
+                \s+route-target\sboth\s(?P<both>\S+)
+                (\s(?P<evpn>evpn))?
+                $""", re.VERBOSE,
+            ),
+            "setval": _tmplt_route_target,
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "route_target": [{
+                                "both": "{{ both }}",
+                                "evpn": "{{ True if evpn }}",
                             }],
                         },
                     },
