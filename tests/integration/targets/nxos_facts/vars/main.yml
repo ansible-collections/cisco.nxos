@@ -7,6 +7,7 @@ available_network_resources:
   - bgp_global
   - bgp_neighbor_address_family
   - bgp_templates
+  - evpn_vnis
   - hostname
   - hsrp_interfaces
   - interfaces
@@ -19,6 +20,7 @@ available_network_resources:
   - lldp_interfaces
   - logging_global
   - ntp_global
+  - nve_interface
   - ospf_interfaces
   - ospfv2
   - ospfv3

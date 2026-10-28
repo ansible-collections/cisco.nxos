@@ -241,6 +241,179 @@
           - idempotent_result.changed == false
           - idempotent_result.commands | length == 0
 
+- name: "Nxos_vrf_address_family — route-target both/evpn: merged and replaced"
+  hosts: nxos_vrf_address_family_route_target_evpn
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_vrf_address_family/vars/main.yaml
+  tasks:
+    - name: Merge route-target both auto and both auto evpn
+      register: result
+      cisco.nxos.nxos_vrf_address_family: &rt_merged
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - both: auto
+                  - both: auto
+                    evpn: true
+        state: merged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == route_target_evpn.merged.commands
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_address_family: *rt_merged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+    - name: Replace dropping the evpn route-target
+      register: result
+      cisco.nxos.nxos_vrf_address_family: &rt_replaced
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - both: auto
+        state: replaced
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == route_target_evpn.replaced.commands
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_address_family: *rt_replaced
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_address_family — route-target evpn: explicit pair and auto validation"
+  hosts: nxos_vrf_address_family_route_target_evpn_pair
+  gather_facts: false
+  tasks:
+    - name: Import auto without both should fail
+      register: result_import_auto
+      ignore_errors: true
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - import: auto
+        state: merged
+    - name: Export auto without both should fail
+      register: result_export_auto
+      ignore_errors: true
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - export: auto
+        state: merged
+    - name: Assert auto is only accepted with both
+      ansible.builtin.assert:
+        that:
+          - result_import_auto.failed == true
+          - result_import_auto.msg is search("only accepts 'auto' with 'both'")
+          - result_export_auto.failed == true
+          - result_export_auto.msg is search("only accepts 'auto' with 'both'")
+
+    - name: Merge both with evpn against the device import and export pair
+      register: result
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - both: "65000:3"
+                    evpn: true
+        state: merged
+    - name: Assert the pair is idempotent against both
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - name: Replace keeping only the import half of the pair
+      register: result
+      cisco.nxos.nxos_vrf_address_family: &rt_import_only
+        config:
+          - name: VRF1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                route_target:
+                  - import: "65000:3"
+                    evpn: true
+        state: replaced
+    - name: Assert only the export half is removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['vrf context VRF1', 'address-family ipv4 unicast', 'no route-target export 65000:3 evpn']
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_address_family: *rt_import_only
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_vrf_address_family — state: purged"
+  hosts: nxos_vrf_address_family_purged
+  gather_facts: false
+  tasks:
+    - name: Purge the address families of VRF1
+      register: result
+      cisco.nxos.nxos_vrf_address_family: &purged
+        config:
+          - name: VRF1
+        state: purged
+    - name: Assert commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['vrf context VRF1', 'no address-family ipv4 unicast', 'no address-family ipv6 unicast']
+    - name: Idempotent re-run (purged)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_address_family: *purged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+    - name: Purge an unknown VRF
+      register: result_unknown
+      cisco.nxos.nxos_vrf_address_family:
+        config:
+          - name: VRF9
+        state: purged
+    - name: Assert nothing to purge
+      ansible.builtin.assert:
+        that:
+          - result_unknown.changed == false
+          - result_unknown.commands | length == 0
+
 - name: Parsed state (offline)
   hosts: nxos_vrf_address_family_gathered
   gather_facts: false

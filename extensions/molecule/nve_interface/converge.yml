@@ -1,0 +1,271 @@
+---
+- name: "Nxos_nve_interface — state: gathered"
+  hosts: nxos_nve_interface_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Gather nxos_nve_interface facts
+      register: result
+      cisco.nxos.nxos_nve_interface:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered.config == result.gathered
+
+- name: "Nxos_nve_interface — state: merged"
+  hosts: nxos_nve_interface_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface merged
+      register: result
+      cisco.nxos.nxos_nve_interface: &merged
+        config:
+          enabled: true
+          description: vxlan vtep
+          advertise_virtual_rmac: true
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+          source_interface_hold_time: 60
+          global_multicast_group:
+            address: 233.252.0.20
+            mode: L2
+          vnis:
+            - vni_id: 11111
+              associate_vrf: true
+            - vni_id: 22222
+            - vni_id: 33333
+              suppress_arp: true
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.10
+            - vni_id: 55555
+              mcast_group:
+                address: 233.252.0.11
+        state: merged
+    - name: Assert merged commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged.commands | symmetric_difference(result.commands) | length == 0
+          - result.commands | length == merged.commands | length
+          - merged.before == result.before
+          - merged.after == result.after
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_nve_interface: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+    - name: Merge mutually exclusive per-VNI options (expected to fail)
+      register: result_exclusive
+      ignore_errors: true
+      cisco.nxos.nxos_nve_interface:
+        config:
+          vnis:
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.10
+              ingress_replication_bgp: true
+        state: merged
+    - name: Assert mutually exclusive options were rejected
+      ansible.builtin.assert:
+        that:
+          - result_exclusive.failed == true
+          - "'mutually exclusive' in result_exclusive.msg"
+
+- name: "Nxos_nve_interface — state: replaced"
+  hosts: nxos_nve_interface_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface replaced
+      register: result
+      cisco.nxos.nxos_nve_interface: &replaced
+        config:
+          description: vxlan vtep
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+        state: replaced
+    - name: Assert replaced commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced.commands | symmetric_difference(result.commands) | length == 0
+          - result.commands | length == replaced.commands | length
+          - replaced.before == result.before
+          - replaced.after == result.after
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_nve_interface: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_nve_interface — state: overridden"
+  hosts: nxos_nve_interface_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface overridden
+      register: result
+      cisco.nxos.nxos_nve_interface: &overridden
+        config:
+          enabled: true
+          advertise_virtual_rmac: true
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+          global_multicast_group:
+            address: 233.252.0.30
+            mode: L2
+          vnis:
+            - vni_id: 11111
+              associate_vrf: false
+              suppress_arp: true
+              ingress_replication_bgp: true
+            - vni_id: 22222
+              associate_vrf: true
+            - vni_id: 33333
+              associate_vrf: true
+            - vni_id: 44444
+              mcast_group:
+                address: 233.252.0.13
+        state: overridden
+    - name: Assert overridden commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - overridden.commands | symmetric_difference(result.commands) | length == 0
+          - result.commands | length == overridden.commands | length
+          - overridden.before == result.before
+          - overridden.after == result.after
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_nve_interface: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_nve_interface — state: deleted (whole interface)"
+  hosts: nxos_nve_interface_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface deleted
+      register: result
+      cisco.nxos.nxos_nve_interface: &deleted
+        state: deleted
+    - name: Assert deleted commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted.commands | symmetric_difference(result.commands) | length == 0
+          - result.commands | length == deleted.commands | length
+          - merged.after == result.before
+          - deleted.after == result.after
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_nve_interface: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_nve_interface — state: deleted (listed VNIs)"
+  hosts: nxos_nve_interface_deleted_vnis
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface deleted with a vnis list
+      register: result
+      cisco.nxos.nxos_nve_interface: &deleted_vnis
+        config: "{{ deleted_vnis.config }}"
+        state: deleted
+    - name: Assert only the listed VNIs are removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted_vnis.commands | symmetric_difference(result.commands) | length == 0
+          - result.commands | length == deleted_vnis.commands | length
+          - merged.after == result.before
+          - deleted_vnis.after == result.after
+    - name: Gather facts to check the other VNIs and attributes remain
+      register: gathered_result
+      cisco.nxos.nxos_nve_interface:
+        state: gathered
+    - name: Assert the other VNIs remain
+      ansible.builtin.assert:
+        that:
+          - gathered_result.gathered == deleted_vnis.after
+    - name: Idempotent re-run (deleted with a vnis list)
+      register: idempotent_result
+      cisco.nxos.nxos_nve_interface: *deleted_vnis
+    - name: Assert idempotent (deleted with a vnis list)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: Parsed state (offline)
+  hosts: nxos_nve_interface_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface parsed
+      register: result
+      cisco.nxos.nxos_nve_interface:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_nve_interface/tests/cli/_parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed.config == result.parsed
+
+- name: Rendered state (offline)
+  hosts: nxos_nve_interface_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_nve_interface/vars/main.yaml
+  tasks:
+    - name: Run nxos_nve_interface rendered
+      register: result
+      cisco.nxos.nxos_nve_interface:
+        config:
+          enabled: true
+          description: vxlan vtep
+          advertise_virtual_rmac: true
+          host_reachability_bgp: true
+          source_interface_name: loopback1
+          global_multicast_group:
+            address: 233.252.0.20
+            mode: L2
+          vnis:
+            - vni_id: 11111
+              suppress_arp: true
+            - vni_id: 22222
+              suppress_arp_disable: true
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered.commands | symmetric_difference(result.rendered) | length == 0
+          - result.rendered | length == rendered.commands | length

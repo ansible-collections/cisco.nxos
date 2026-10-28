@@ -1,0 +1,7 @@
+vrf context VRF1
+  address-family ipv4 unicast
+    route-target import 65000:3 evpn
+    route-target export 65000:3 evpn
+vrf context management
+  ip name-server 192.168.255.1
+  ip route 0.0.0.0/0 192.168.255.1
