@@ -6,6 +6,9 @@ platforms:
   - name: cisshgo-vrf_address_family-replaced
   - name: cisshgo-vrf_address_family-overridden
   - name: cisshgo-vrf_address_family-deleted
+  - name: cisshgo-vrf_address_family-route-target-evpn
+  - name: cisshgo-vrf_address_family-route-target-evpn-pair
+  - name: cisshgo-vrf_address_family-purged
 provisioner:
   name: ansible
   inventory:
