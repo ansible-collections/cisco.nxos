@@ -26,6 +26,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_evpn_global
     evpn_vni:
       redirect: cisco.nxos.nxos_evpn_vni
+    evpn_vnis:
+      redirect: cisco.nxos.nxos_evpn_vnis
     facts:
       redirect: cisco.nxos.nxos_facts
     feature:
@@ -73,6 +75,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_logging_global
     ntp_global:
       redirect: cisco.nxos.nxos_ntp_global
+    nve_interface:
+      redirect: cisco.nxos.nxos_nve_interface
     nxapi:
       redirect: cisco.nxos.nxos_nxapi
     ospf_interfaces:
@@ -186,6 +190,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_evpn_global
     evpn_vni:
       redirect: cisco.nxos.nxos_evpn_vni
+    evpn_vnis:
+      redirect: cisco.nxos.nxos_evpn_vnis
     facts:
       redirect: cisco.nxos.nxos_facts
     feature:
@@ -233,6 +239,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_logging_global
     ntp_global:
       redirect: cisco.nxos.nxos_ntp_global
+    nve_interface:
+      redirect: cisco.nxos.nxos_nve_interface
     nxapi:
       redirect: cisco.nxos.nxos_nxapi
     ospf_interfaces:

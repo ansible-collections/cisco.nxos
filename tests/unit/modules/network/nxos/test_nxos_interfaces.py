@@ -462,8 +462,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "shutdown",
             "interface loopback2",
             "no shutdown",
-            "interface loopback3",
-            "no shutdown",
+            # loopback3 already up (NX-OS default) — no command expected
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
@@ -487,8 +486,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "shutdown",
             "interface loopback2",
             "no shutdown",
-            "interface loopback3",
-            "no shutdown",
+            # loopback3 already up (NX-OS default) — no command expected
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
@@ -519,8 +517,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "shutdown",
             "interface loopback2",
             "no shutdown",
-            "interface loopback3",
-            "no shutdown",
+            # loopback3 already up (NX-OS default) — no command expected
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
@@ -549,6 +546,41 @@ class TestNxosInterfacesModule(TestNxosModule):
             self.assertIsNone(search_system_default_switchport(text).group(1))
             self.assertEqual(search_system_default_switchport(text, shutdown=True).group(1), "no ")
         self.assertIsNone(search_system_default_switchport("interface Ethernet1/1\n"))
+    def test_loopback_enabled_idempotency(self):
+        # NX-OS loopbacks are always-up by default and never show 'no shutdown'
+        # in running-config.  Setting enabled: true on an already-up loopback
+        # must be idempotent (no commands generated).
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface loopback0
+            description RID
+            ip address 10.0.0.1/32
+          interface loopback1
+          interface loopback2
+            shutdown
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                # Up loopbacks with no explicit admin state — must be idempotent
+                dict(name="loopback0", enabled=True),
+                dict(name="loopback1", enabled=True),
+                # Explicitly shut-down loopback — must still emit no shutdown
+                dict(name="loopback2", enabled=True),
+            ],
+            state="merged",
+        )
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertNotIn("interface loopback0", result["commands"])
+        self.assertNotIn("interface loopback1", result["commands"])
+        self.assertIn("interface loopback2", result["commands"])
+        self.assertIn("no shutdown", result["commands"])
 
     def test_new_layer2_interface_with_system_default_switchport(self):
         # AAP-88449: a missing interface must get an explicit "switchport"

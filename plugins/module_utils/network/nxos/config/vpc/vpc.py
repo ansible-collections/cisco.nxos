@@ -35,6 +35,7 @@ _MAX_RETRY = 5
 _RETRY_INTERVAL = 4
 _TERMINAL_DONT_ASK = "terminal dont-ask"
 _NO_VPC_DOMAIN_FMT = "no vpc domain {0}"
+_VPC_DOMAIN_FMT = "vpc domain {0}"
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vpc import (
@@ -64,12 +65,22 @@ class Vpc(ResourceModule):
         ("auto_recovery", "auto-recovery", "no auto-recovery"),
         ("peer_gw", "peer-gateway", "no peer-gateway"),
         ("peer_sw", "peer-switch", "no peer-switch"),
+        ("layer3_peer_router", "layer3 peer-router", "no layer3 peer-router"),
+        ("arp_synchronize", "ip arp synchronize", "no ip arp synchronize"),
+        ("nd_synchronize", "ipv6 nd synchronize", "no ipv6 nd synchronize"),
     )
 
     # Sub-commands that make NX-OS prompt for confirmation.
-    NEEDS_DONT_ASK = ("peer_gw", "peer_sw")
+    NEEDS_DONT_ASK = ("peer_gw", "peer_sw", "layer3_peer_router")
 
     PKL_KEYS = ("pkl_dest", "pkl_src", "pkl_vrf")
+
+    VPL_KEYS = ("virtual_peer_link_dest", "virtual_peer_link_src", "virtual_peer_link_dscp")
+
+    # NX-OS silently appends dscp 56 to running-config when virtual peer-link
+    # is configured without an explicit dscp value.  Treat an absent dscp as
+    # DEFAULT_VPL_DSCP so the comparison does not falsely report a change.
+    DEFAULT_VPL_DSCP = "56"
 
     # NX-OS does not nvgen the peer-keepalive VRF when it is the default one,
     # so an absent VRF has to be treated as ``management`` for comparison.
@@ -103,6 +114,17 @@ class Vpc(ResourceModule):
         want = self.want or {}
         have = self.have or {}
 
+        domain = want.get("domain")
+        if domain is not None:
+            try:
+                d = int(domain)
+                if not (1 <= d <= 1000):
+                    raise ValueError
+            except (ValueError, TypeError):
+                self._module.fail_json(
+                    msg="vpc domain must be in the range 1-1000, got '{0}'".format(domain),
+                )
+
         # if state is deleted, remove the vpc domain entirely
         if self.state == "deleted":
             if have:
@@ -113,6 +135,7 @@ class Vpc(ResourceModule):
 
         # only one vpc domain can exist at a time, so changing the domain ID
         # means tearing down the existing one first
+        domain_recreate = False
         if (
             have
             and want.get("domain")
@@ -122,8 +145,17 @@ class Vpc(ResourceModule):
             self.commands.append(_TERMINAL_DONT_ASK)
             self.commands.append(_NO_VPC_DOMAIN_FMT.format(have["domain"]))
             have = {}
+            domain_recreate = True
 
         self._compare(want, have)
+
+        # When the domain ID changed and _compare emitted no sub-commands
+        # (want has only the bare domain with no attributes), _compare never
+        # inserts the new 'vpc domain X' line.  Ensure it is always present.
+        new_domain = _VPC_DOMAIN_FMT.format(want.get("domain"))
+        if domain_recreate and new_domain not in self.commands:
+            no_idx = next(i for i, c in enumerate(self.commands) if c.startswith("no vpc domain"))
+            self.commands.insert(no_idx + 1, new_domain)
 
         # NX-OS 10.4(x): every 'no peer-keepalive' form is rejected in
         # (config-vpc-domain)#.  The only reliable way to remove a keepalive
@@ -165,6 +197,9 @@ class Vpc(ResourceModule):
         w_pkl = self._pkl_effective(want)
         if w_pkl:
             cmds.append(self._pkl_cmd(w_pkl))
+        w_vpl = self._vpl_effective(want)
+        if w_vpl:
+            cmds.append(self._vpl_cmd(w_vpl))
         return cmds
 
     def _rewrite_as_domain_recreate(self, want):
@@ -181,7 +216,7 @@ class Vpc(ResourceModule):
         cmds = [
             _TERMINAL_DONT_ASK,
             _NO_VPC_DOMAIN_FMT.format(domain),
-            "vpc domain {0}".format(domain),
+            _VPC_DOMAIN_FMT.format(domain),
         ]
         cmds.extend(positive)
         cmds.append("no terminal dont-ask")
@@ -247,8 +282,11 @@ class Vpc(ResourceModule):
         self._connection.edit_config(candidate=first)
         time.sleep(_DOMAIN_DELETE_SLEEP)
 
-        if rest and rest[0].startswith("vpc domain"):
-            self._probe_domain_ready(rest[0])
+        # Probe the first 'vpc domain X' command in rest — it may not be
+        # rest[0] when terminal dont-ask was already set before the split.
+        probe_cmd = next((c for c in rest if c.startswith("vpc domain")), None)
+        if probe_cmd:
+            self._probe_domain_ready(probe_cmd)
 
         if rest:
             self._edit_config_until_ready(rest)
@@ -289,10 +327,15 @@ class Vpc(ResourceModule):
         self._compare_scalars(want, have, prune)
         needs_dont_ask = self._compare_booleans(want, have, prune)
         self._compare_peer_keepalive(want, have)
+        self._compare_virtual_peer_link(want, have)
 
         if len(self.commands) != begin:
-            self.commands.insert(begin, "vpc domain {0}".format(domain))
-            if needs_dont_ask:
+            self.commands.insert(begin, _VPC_DOMAIN_FMT.format(domain))
+            # Only add terminal dont-ask when it isn't already present before
+            # the block we're about to insert (e.g. domain-change path already
+            # set it up — inserting a second copy pushes 'vpc domain X' out of
+            # rest[0], breaking the domain-ready probe in _run_with_domain_wait)
+            if needs_dont_ask and _TERMINAL_DONT_ASK not in self.commands[:begin]:
                 self.commands.insert(begin, _TERMINAL_DONT_ASK)
 
     def _compare_peer_keepalive(self, want, have):
@@ -335,4 +378,42 @@ class Vpc(ResourceModule):
             cmd += " source {0}".format(pkl["pkl_src"])
         if pkl.get("pkl_vrf"):
             cmd += " vrf {0}".format(pkl["pkl_vrf"])
+        return cmd
+
+    def _compare_virtual_peer_link(self, want, have):
+        """virtual peer-link is a single composite command compared as a unit.
+
+        NX-OS silently appends ``dscp 56`` to running-config when no dscp is
+        configured.  _vpl_effective() injects the default so that omitting dscp
+        in want does not cause a spurious change every run.
+        """
+        w_vpl = self._vpl_effective(want)
+        h_vpl = self._vpl_effective(have)
+
+        if w_vpl and self.state in ["merged", "rendered"]:
+            merged = dict(h_vpl)
+            merged.update(w_vpl)
+            w_vpl = merged
+
+        if w_vpl:
+            if w_vpl != h_vpl:
+                self.commands.append(self._vpl_cmd(w_vpl))
+        elif h_vpl and self.state not in ["merged", "rendered"]:
+            self.commands.append("no " + self._vpl_cmd(h_vpl))
+
+    def _vpl_effective(self, cfg):
+        """Collect virtual-peer-link keys, injecting the default dscp that
+        NX-OS appends silently to running-config.
+        """
+        vpl = {k: cfg.get(k) for k in self.VPL_KEYS if cfg.get(k)}
+        if vpl.get("virtual_peer_link_dest") and not vpl.get("virtual_peer_link_dscp"):
+            vpl["virtual_peer_link_dscp"] = self.DEFAULT_VPL_DSCP
+        return vpl
+
+    def _vpl_cmd(self, vpl):
+        cmd = "virtual peer-link destination {0}".format(vpl["virtual_peer_link_dest"])
+        if vpl.get("virtual_peer_link_src"):
+            cmd += " source {0}".format(vpl["virtual_peer_link_src"])
+        if vpl.get("virtual_peer_link_dscp"):
+            cmd += " dscp {0}".format(vpl["virtual_peer_link_dscp"])
         return cmd

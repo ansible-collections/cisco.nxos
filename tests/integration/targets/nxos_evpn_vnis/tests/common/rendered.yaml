@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_evpn_vnis rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_evpn_vnis:
+    config:
+      - vni: 10100
+        route_distinguisher: auto
+        route_target_both:
+          - auto
+      - vni: 10200
+        route_distinguisher: "65000:10200"
+        route_target_import:
+          - "65000:10200"
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] == result['rendered']
+      - result.changed == false

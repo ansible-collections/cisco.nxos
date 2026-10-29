@@ -1,0 +1,13 @@
+devices:
+  - scenario: nxos-evpn-vnis-gathered
+    count: 1
+  - scenario: nxos-evpn-vnis-merged
+    count: 1
+  - scenario: nxos-evpn-vnis-replaced
+    count: 1
+  - scenario: nxos-evpn-vnis-overridden
+    count: 1
+  - scenario: nxos-evpn-vnis-deleted
+    count: 1
+  - scenario: nxos-evpn-vnis-deleted_all
+    count: 1

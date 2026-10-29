@@ -1,0 +1,4 @@
+vpc domain 100
+  role priority 150
+  peer-keepalive destination 192.0.2.2 source 192.0.2.1
+  peer-gateway

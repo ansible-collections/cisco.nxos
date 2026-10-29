@@ -142,7 +142,17 @@ class Interfaces(ResourceModule):
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
         if want_enabled is not None:
-            if want_enabled != have_enabled:
+            # NX-OS loopbacks are always-up by default and never write
+            # 'no shutdown' to running-config when in that default state.
+            # Only apply when the interface exists (have is non-empty) so that
+            # a new loopback is still created with an explicit 'no shutdown'.
+            name = (want or have).get("name", "")
+            effective_have_enabled = (
+                True
+                if have and have_enabled is None and re.search(r"(?i)loopback", name)
+                else have_enabled
+            )
+            if want_enabled != effective_have_enabled:
                 if want_enabled is True:
                     self.addcmd(want, "enabled", True)
                 else:

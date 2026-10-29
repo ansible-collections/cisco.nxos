@@ -483,6 +483,49 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>both</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Import and export Target-VPN community (<code>route-target both</code>).</div>
+                        <div>Treated as equivalent to an <em>import</em> plus an <em>export</em> entry with the same value when comparing with the device configuration, whether the device displays <code>both</code> as one line or as two lines.</div>
+                        <div>NX-OS rejects negating only one direction of a <code>both</code> line. With <em>state</em> <code>replaced</code> or <code>overridden</code> a <code>both</code> line that is only partly wanted is removed as a whole and the wanted direction is configured again. With <em>state</em> <code>deleted</code> listing one direction of a <code>both</code> line fails.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>evpn</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Apply the route-target to the EVPN address family (for example <code>route-target both auto evpn</code>).</div>
+                        <div>Only valid together with one of <em>import</em>, <em>export</em> or <em>both</em>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>export</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -492,7 +535,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Export Target-VPN community</div>
+                        <div>Export Target-VPN community.</div>
+                        <div>The value <code>auto</code> is only accepted by NX-OS with <em>both</em> and is rejected here.</div>
                 </td>
             </tr>
             <tr>
@@ -510,7 +554,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Import Target-VPN community</div>
+                        <div>Import Target-VPN community.</div>
+                        <div>The value <code>auto</code> is only accepted by NX-OS with <em>both</em> and is rejected here.</div>
                 </td>
             </tr>
 
@@ -595,6 +640,8 @@ Parameters
                 <td>
                         <div>The state the configuration should be left in</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
+                        <div>The state <em>deleted</em> removes only the configuration that is listed in <em>config</em>, so a VRF given with only its name is left unchanged.</div>
+                        <div>The state <em>purged</em> removes the address family configuration of the listed VRFs (only the listed address families if any are given), or of all VRFs when <em>config</em> is not set.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section ^vrf</em>. connection to remote host is not required.</div>
@@ -609,6 +656,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6.
+   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
    - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 

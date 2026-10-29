@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Add a CISSHGO-based Molecule scenario for nxos_vpc."
