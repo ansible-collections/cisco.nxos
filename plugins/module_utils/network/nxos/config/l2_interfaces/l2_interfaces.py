@@ -94,7 +94,7 @@ def parse_range(value, lowest):
     """Return (ids, None) for a list such as '3, 1,2,5-6', or (None, "format" or "range") when it is invalid."""
     numbers = set()
     for part in str(value).replace(" ", "").split(","):
-        found = re.fullmatch(r"([0-9]{1,5})(?:-([0-9]{1,5}))?", part)
+        found = re.fullmatch(r"(\d{1,5})(?:-(\d{1,5}))?", part, re.ASCII)
         if not found:
             return None, "format"
         low = int(found.group(1))
@@ -443,16 +443,18 @@ class L2_interfaces(ResourceModule):
 
     def process_list_attrs(self, param, strict=True):
         """Normalise the interfaces, the spanning_tree and storm_control input is validated when strict."""
-        if param:
-            for _k, val in param.items():
-                val["name"] = normalize_interface(val["name"])
-                normalize_spanning_tree(val.get("spanning_tree", {}), strict)
-                normalize_storm(val.get("storm_control", {}), strict)
-                if val.get("trunk"):
-                    for vlan in ["allowed_vlans"]:
-                        vlanList = val.get("trunk").get(vlan, [])
-                        if vlanList and vlanList != "none":
-                            val["trunk"][vlan] = vlan_range_to_dict(val.get("trunk").get(vlan))
+        for val in (param or {}).values():
+            val["name"] = normalize_interface(val["name"])
+            normalize_spanning_tree(val.get("spanning_tree", {}), strict)
+            normalize_storm(val.get("storm_control", {}), strict)
+            self._normalize_allowed_vlans(val.get("trunk"))
+
+    @staticmethod
+    def _normalize_allowed_vlans(trunk):
+        """Turn the allowed vlans of a trunk into a dict, 'none' and empty stay as they are."""
+        vlans = (trunk or {}).get("allowed_vlans", [])
+        if vlans and vlans != "none":
+            trunk["allowed_vlans"] = vlan_range_to_dict(vlans)
 
     def handle_cdp(self, want_cdp, have_cdp, parser, want):
         if want_cdp is None and have_cdp is None:
