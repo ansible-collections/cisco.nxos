@@ -226,13 +226,19 @@ class Snmp_server(ResourceModule):
                     if x == "communities" and hentry:
                         self.addcmd(hentry, x, negate=True)
                     self.addcmd(wentry, x)
-            # remove superfluous items
-            for _k, hv in havex.items():
-                if x == "users.auth":
-                    removed_users.add(_k)
-                elif x == "users.use_acls" and _k in removed_users:
-                    continue
-                self.addcmd(hv, x, negate=True)
+            self._negate_list_leftovers(x, havex, removed_users)
+
+    def _negate_list_leftovers(self, parser, leftovers, removed_users):
+        """Negate leftover list entries.
+
+        Skip ACL lines for users already removed with ``no snmp-server user NAME``.
+        """
+        for key, entry in leftovers.items():
+            if parser == "users.auth":
+                removed_users.add(key)
+            elif parser == "users.use_acls" and key in removed_users:
+                continue
+            self.addcmd(entry, parser, negate=True)
 
     def _list_to_dict(self, data):
         def _build_key(x):
