@@ -114,6 +114,13 @@ class Vrf_global(ResourceModule):
 
         if self.state == "purged":
             purge_list = wantd or haved
+            skipped = [k for k in purge_list if k not in haved]
+            if skipped:
+                self._module.warn(
+                    "The VRF(s) {0} do not exist on the device and were skipped.".format(
+                        ", ".join(skipped),
+                    ),
+                )
             for k, item in purge_list.items():
                 if k in haved:
                     self.purge(item)
