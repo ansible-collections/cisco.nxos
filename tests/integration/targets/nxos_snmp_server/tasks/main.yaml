@@ -78,6 +78,7 @@
       - no snmp-server aaa-user cache-timeout 36000
       - no snmp-server user snmp_user_1
       - no snmp-server user snmp_user_2
+      - no snmp-server user aap99708_user
       - no snmp-server host 192.0.2.2 informs version 3 auth NMS
       - no snmp-server host 192.0.3.2 informs version 3 auth NMS
       - no snmp-server community private
