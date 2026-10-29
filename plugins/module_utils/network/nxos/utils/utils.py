@@ -164,6 +164,17 @@ def get_switchport_interfaces(config_text):
     return _interfaces_with_line(config_text, r"^\s+switchport$")
 
 
+def search_system_default_switchport(config_text, shutdown=False):
+    """Search the output of `show running-config all | incl 'system default switchport'` for
+    '(no) system default switchport' or, with shutdown, '(no) system default switchport shutdown'.
+
+    The line may end with a carriage return, which is why the pattern ends with `\\s*$`.
+    Returns the match, group 1 is 'no ' when the command is negated, or None.
+    """
+    pattern = r"^(no )?system default switchport{0}\s*$".format(" shutdown" if shutdown else "")
+    return re.search(pattern, str(config_text), re.MULTILINE)
+
+
 def vlan_range_to_dict(vlans):
     result = {}
     if vlans:

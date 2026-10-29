@@ -25,6 +25,8 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+from ansible.module_utils.connection import ConnectionError as DeviceConnectionError
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_routed_interfaces,
     get_switchport_interfaces,
@@ -1704,6 +1706,70 @@ class TestNxosL2InterfacesModule(TestNxosModule):
         self.switchport_defaults.return_value = SWITCHPORT_DEFAULT_L2
         result = self._run("interface Ethernet1/30\n  ip address 192.0.2.1/24\n", config)
         self.assertEqual(result["commands"], expected)
+
+    def test_l2_interfaces_stp_storm_unusual_device_values_do_not_fail_the_module(self):
+        """Only what the user gives is validated, a line the device has is not."""
+        odd = dedent(
+            """
+            interface Ethernet1/25
+              switchport
+              spanning-tree port-priority 100
+              spanning-tree mst 0 cost 0
+              spanning-tree vlan 0 cost 5
+            interface Ethernet1/26
+              switchport
+            """,
+        )
+        # a different interface is targeted
+        config = self._stp_cfg("Ethernet1/26", spanning_tree={"bpduguard": True})
+        result = self._run(odd, config)
+        self.assertEqual(result["commands"], ["interface Ethernet1/26", BPDUGUARD + " enable"])
+        # and the lines can be cleaned up with deleted
+        result = self._run(odd, self._stp_cfg(), state="deleted")
+        self.assertIn("no spanning-tree port-priority", result["commands"])
+        # the facts report them as they are
+        result = self._run(odd, state="gathered", changed=False)
+        self.assertEqual(result["gathered"][0]["spanning_tree"]["port_priority"], 100)
+
+    def test_l2_interfaces_stp_storm_user_input_is_still_validated(self):
+        for sections, message in [
+            ({"port_priority": 100}, "multiple of 32"),
+            ({"mst": [{"instances": "0", "cost": 0}]}, "cost must be at least 1"),
+            ({"vlans": [{"vlans": "0", "cost": 5}]}, "outside the range"),
+        ]:
+            result = self._run(
+                STP_STORM_BLOCK,
+                self._stp_cfg("Ethernet1/26", spanning_tree=sections),
+                failed=True,
+            )
+            self.assertIn(message, result["msg"])
+
+    def test_l2_interfaces_stp_storm_very_long_id_list_fails_readably(self):
+        for value in ["9" * 5000, "1-" + "9" * 5000, "\u0661\u0662", "1,,2"]:
+            result = self._run(
+                STP_STORM_BLOCK,
+                self._stp_cfg(spanning_tree={"mst": [{"instances": value, "cost": 5}]}),
+                failed=True,
+            )
+            self.assertIn("is not a valid list of ids", result["msg"])
+            self.assertLess(len(result["msg"]), 200)
+
+    def test_l2_interfaces_stp_storm_default_with_carriage_returns(self):
+        """Output with CRLF line endings must be read like the one with LF."""
+        config = self._stp_cfg("Ethernet1/30", spanning_tree={"bpduguard": True})
+        self.switchport_defaults.return_value = SWITCHPORT_DEFAULT_L2.replace("\n", "\r\n")
+        result = self._run("interface Ethernet1/30\n  ip address 192.0.2.1/24\n", config)
+        self.assertEqual(result["commands"], ["interface Ethernet1/30", BPDUGUARD + " enable"])
+        self.switchport_defaults.return_value = SWITCHPORT_DEFAULT_L3.replace("\n", "\r\n")
+        result = self._run("interface Ethernet1/30\n", config, failed=True)
+        self.assertIn("not a switchport", result["msg"])
+
+    def test_l2_interfaces_stp_storm_default_lookup_failure_is_readable(self):
+        self.switchport_defaults.side_effect = DeviceConnectionError("device not reachable")
+        config = self._stp_cfg("Ethernet1/30", spanning_tree={"bpduguard": True})
+        result = self._run("interface Ethernet1/30\n", config, failed=True)
+        self.assertIn("Could not read the 'system default switchport' setting", result["msg"])
+        self.assertIn("device not reachable", result["msg"])
 
     def test_l2_interfaces_stp_storm_only_ethernet_and_port_channel(self):
         config = self._stp_cfg("Loopback5", storm_control={"action": "trap"})

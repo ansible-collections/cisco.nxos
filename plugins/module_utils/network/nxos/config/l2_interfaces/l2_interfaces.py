@@ -23,6 +23,7 @@ import re
 from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 
+from ansible.module_utils.connection import ConnectionError as DeviceConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -40,6 +41,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     generate_switchport_trunk,
     normalize_interface,
+    search_system_default_switchport,
     vlan_list_to_range,
     vlan_range_to_dict,
 )
@@ -64,8 +66,12 @@ class L2StpStormError(ValueError):
     """Raised for invalid spanning_tree / storm_control input."""
 
 
-def normalize_level(value):
-    """Return a storm-control level as a string with two decimals so that 1.0 equals 1.00."""
+def normalize_level(value, strict=True):
+    """Return a storm-control level as a string with two decimals so that 1.0 equals 1.00.
+
+    A value that is not a valid level raises L2StpStormError, or with strict=False, which is
+    used for what the device has, is returned unchanged so that it can still be compared.
+    """
     try:
         level = Decimal(str(value).strip())
         valid = (
@@ -73,36 +79,56 @@ def normalize_level(value):
         )
     except InvalidOperation:
         valid = False
-    if not valid:
-        raise L2StpStormError(
-            "storm_control level '{0}' must be a decimal between 0 and 100 with at most two decimals".format(
-                value,
-            ),
-        )
-    return "{0:.2f}".format(level)
+    if valid:
+        return "{0:.2f}".format(level)
+    if not strict:
+        return str(value)
+    raise L2StpStormError(
+        "storm_control level '{0}' must be a decimal between 0 and 100 with at most two decimals".format(
+            value,
+        ),
+    )
 
 
-def normalize_range(value, lowest):
-    """Return an instance / vlan list such as '3, 1,2,5-6' in its canonical form '1-3,5-6'."""
+def parse_range(value, lowest):
+    """Return (ids, None) for a list such as '3, 1,2,5-6', or (None, "format" or "range") when it is invalid."""
     numbers = set()
     for part in str(value).replace(" ", "").split(","):
-        first, _sep, last = part.partition("-")
-        if not first.isdigit() or (last and not last.isdigit()):
-            raise L2StpStormError("'{0}' is not a valid list of ids such as 1,3-5".format(value))
-        low, high = int(first), int(last or first)
+        found = re.fullmatch(r"([0-9]{1,5})(?:-([0-9]{1,5}))?", part)
+        if not found:
+            return None, "format"
+        low = int(found.group(1))
+        high = int(found.group(2) or low)
         if not lowest <= low <= high <= MAX_ID:
-            raise L2StpStormError(
-                "'{0}' is outside the range {1}-{2}".format(value, lowest, MAX_ID),
-            )
+            return None, "range"
         numbers.update(range(low, high + 1))
+    return numbers, None
+
+
+def normalize_range(value, lowest, strict=True):
+    """Return an instance / vlan list such as '3, 1,2,5-6' in its canonical form '1-3,5-6'.
+
+    An invalid list raises L2StpStormError, or with strict=False is returned unchanged.
+    """
+    numbers, problem = parse_range(value, lowest)
+    if problem and not strict:
+        return str(value)
+    if problem == "format":
+        raise L2StpStormError(
+            "'{0}' is not a valid list of ids such as 1,3-5".format(str(value)[:40]),
+        )
+    if problem == "range":
+        raise L2StpStormError(
+            "'{0}' is outside the range {1}-{2}".format(str(value)[:40], lowest, MAX_ID),
+        )
     return vlan_list_to_range(sorted(numbers))
 
 
-def normalize_storm(storm):
-    """Validate the storm_control levels of an interface and canonicalise them in place."""
+def normalize_storm(storm, strict=True):
+    """Canonicalise the storm_control levels of an interface in place, validating them when strict."""
     for traffic in STORM_TYPES:
         if "level" in storm.get(traffic, {}):
-            storm[traffic]["level"] = normalize_level(storm[traffic]["level"])
+            storm[traffic]["level"] = normalize_level(storm[traffic]["level"], strict)
 
 
 def check_priority(value, label):
@@ -127,9 +153,13 @@ def check_entry(section, entry):
         raise L2StpStormError("{0}: cost must be at least 1".format(label))
 
 
-def normalize_spanning_tree(stp):
-    """Turn bools into enable/disable and the mst / vlans lists into dicts keyed by their canonical range."""
-    if "port_priority" in stp:
+def normalize_spanning_tree(stp, strict=True):
+    """Turn bools into enable/disable and the mst / vlans lists into dicts keyed by their canonical range.
+
+    The values are only validated when strict, which is the case for what the user gives. What the
+    device has is normalised as far as possible, so that an unusual line does not fail the module.
+    """
+    if strict and "port_priority" in stp:
         check_priority(stp["port_priority"], "spanning_tree")
     for attr in ("bpduguard", "bpdufilter"):
         if attr in stp:
@@ -137,8 +167,9 @@ def normalize_spanning_tree(stp):
     for section, (key, lowest) in RANGE_KEYS.items():
         entries = {}
         for entry in stp.get(section, []):
-            entry[key] = normalize_range(entry[key], lowest)
-            check_entry(section, entry)
+            entry[key] = normalize_range(entry[key], lowest, strict)
+            if strict:
+                check_entry(section, entry)
             entries[entry[key]] = entry
         if entries:
             stp[section] = entries
@@ -217,8 +248,8 @@ class L2_interfaces(ResourceModule):
         haved = {entry["name"].lower(): entry for entry in self.have}
 
         try:
-            for each in wantd, haved:
-                self.process_list_attrs(each)
+            self.process_list_attrs(wantd)
+            self.process_list_attrs(haved, strict=False)
         except L2StpStormError as err:
             self._module.fail_json(msg=str(err))
 
@@ -300,11 +331,15 @@ class L2_interfaces(ResourceModule):
 
     def _default_is_layer2(self):
         """Whether ports are switchports unless configured otherwise; unknown counts as layer 3."""
-        found = re.search(
-            r"^(no )?system default switchport$",
-            self.get_switchport_defaults(),
-            re.M,
-        )
+        try:
+            output = self.get_switchport_defaults()
+        except DeviceConnectionError as err:
+            self._module.fail_json(
+                msg="Could not read the 'system default switchport' setting from the device: {0}".format(
+                    err,
+                ),
+            )
+        found = search_system_default_switchport(output)
         return bool(found) and not found.group(1)
 
     def _check_switchports(self, wantd):
@@ -406,12 +441,13 @@ class L2_interfaces(ResourceModule):
                     ),
                 )
 
-    def process_list_attrs(self, param):
+    def process_list_attrs(self, param, strict=True):
+        """Normalise the interfaces, the spanning_tree and storm_control input is validated when strict."""
         if param:
             for _k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
-                normalize_spanning_tree(val.get("spanning_tree", {}))
-                normalize_storm(val.get("storm_control", {}))
+                normalize_spanning_tree(val.get("spanning_tree", {}), strict)
+                normalize_storm(val.get("storm_control", {}), strict)
                 if val.get("trunk"):
                     for vlan in ["allowed_vlans"]:
                         vlanList = val.get("trunk").get(vlan, [])
