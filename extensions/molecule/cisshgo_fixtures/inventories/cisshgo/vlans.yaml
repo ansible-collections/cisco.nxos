@@ -11,3 +11,15 @@ devices:
     count: 1
   - scenario: nxos-vlans-deleted
     count: 1
+  - scenario: nxos-vlans-nve-overlay-gathered
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-merged
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-replaced
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-overridden
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-deleted
+    count: 1
+  - scenario: nxos-vlans-nve-overlay-duplicate
+    count: 1

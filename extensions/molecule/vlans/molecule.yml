@@ -6,6 +6,12 @@ platforms:
   - name: cisshgo-vlans-replaced
   - name: cisshgo-vlans-overridden
   - name: cisshgo-vlans-deleted
+  - name: cisshgo-vlans-nve-overlay-gathered
+  - name: cisshgo-vlans-nve-overlay-merged
+  - name: cisshgo-vlans-nve-overlay-replaced
+  - name: cisshgo-vlans-nve-overlay-overridden
+  - name: cisshgo-vlans-nve-overlay-deleted
+  - name: cisshgo-vlans-nve-overlay-duplicate
 provisioner:
   name: ansible
   inventory:

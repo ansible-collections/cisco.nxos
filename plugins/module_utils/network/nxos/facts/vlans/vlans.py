@@ -30,6 +30,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vl
 )
 
 
+VLAN_ID_MAX = 4094
+
+
 class VlansFacts(object):
     """The nxos vlans fact class"""
 
@@ -81,14 +84,26 @@ class VlansFacts(object):
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
             run_cfg_output = self.get_device_data(connection, "show running-config | section ^vlan")
+
+            # nve_overlay is a global command (not under the vlan), so it is not in the
+            # section output above.
+            nve_overlay_output = self.get_device_data(
+                connection,
+                "show running-config | include nve-overlay",
+            )
         else:
             running_config = data.split("\n\n")
             structured, run_cfg_output = running_config[0], running_config[1]
+            # The 'system vlan nve-overlay id' lines cannot be mistaken for anything else,
+            # so the whole input is scanned instead of relying on the position of a block.
+            nve_overlay_output = data
 
         # Create a single dictionary from all data sources
         data = self.normalize_table_data(structured, run_cfg_output)
+        nve_overlay_vlans = self.parse_nve_overlay_vlans(nve_overlay_output)
 
         for vlan in data:
+            vlan["nve_overlay"] = int(vlan["vlan_id"]) in nve_overlay_vlans
             obj = self.render_config(self.generated_spec, vlan)
             if obj:
                 objs.append(obj)
@@ -135,7 +150,55 @@ class VlansFacts(object):
         # non-structured data
         obj["mapped_vni"] = parse_conf_arg(vlan["run_cfg"], "vn-segment")
 
+        # nve_overlay: only reported when set
+        obj["nve_overlay"] = True if vlan.get("nve_overlay") else None
+
         return utils.remove_empties(obj)
+
+    @staticmethod
+    def _vlan_range(item):
+        """Return (first, last) for 'id' or 'first-last' when it is within the vlan ids, otherwise None."""
+        first, _sep, last = item.partition("-")
+        if not (re.fullmatch(r"\d+", first, re.ASCII) and re.fullmatch(r"\d*", last, re.ASCII)):
+            return None
+        start, end = int(first), int(last or first)
+        if not 1 <= start <= end <= VLAN_ID_MAX:
+            return None
+        return start, end
+
+    def _nve_overlay_items(self, line):
+        """Return (item, (first, last) or None) for each element of a 'system vlan nve-overlay id' line."""
+        match = re.match(r"^\s*system vlan nve-overlay id (\S+)\s*$", line)
+        if not match:
+            return [(line.strip(), None)]
+        return [(item, self._vlan_range(item)) for item in match.group(1).split(",")]
+
+    def parse_nve_overlay_vlans(self, run_cfg_output):
+        """Return the set of vlan ids found in 'system vlan nve-overlay id' lines.
+        The device may display the vlans as a compressed list of ids and ranges.
+        Sample: system vlan nve-overlay id 3801-3809,3820
+        Values that cannot be read, or that are outside the vlan range 1-4094,
+        are ignored with a warning, because a vlan that is wrongly read as not
+        being an nve-overlay vlan would make replaced and overridden remove it.
+        """
+        vlans = set()
+        ignored = []
+        for line in str(run_cfg_output).splitlines():
+            if "system vlan nve-overlay id" not in line:
+                continue
+            for item, vlan_range in self._nve_overlay_items(line):
+                if vlan_range:
+                    vlans.update(range(vlan_range[0], vlan_range[1] + 1))
+                else:
+                    ignored.append(item)
+        if ignored:
+            self._module.warn(
+                "Ignored 'system vlan nve-overlay id' value(s) that could not be read: {0}. "
+                "The nve_overlay setting of the vlans they cover is reported as not set.".format(
+                    ", ".join(ignored),
+                ),
+            )
+        return vlans
 
     def normalize_table_data(self, structured, run_cfg_output):
         """Normalize structured output and raw running-config output into
@@ -179,6 +242,12 @@ class VlansFacts(object):
         vlans = []
         for index, v in enumerate(vlanbrief):
             v["vlan_id"] = v.get("vlanshowbr-vlanid-utf")
+            if v["vlan_id"] is None:
+                self._module.fail_json(
+                    msg="The output of 'show vlan' has an entry without 'vlanshowbr-vlanid-utf': {0}".format(
+                        v,
+                    ),
+                )
             vlan = {}
             vlan.update(v)
             vlan.update(mtuinfo[index])
@@ -188,7 +257,8 @@ class VlansFacts(object):
                 # Sample match lines
                 # 202\n  name Production-Segment-100101\n  vn-segment 100101
                 # 5\n  state suspend\n  shutdown\n  name test-changeme\n  vn-segment 942
-                pattern = r"^{0}\s+\S.*vn-segment".format(v["vlan_id"])
+                # 3801\n  vn-segment 50001
+                pattern = r"^{0}\s.*vn-segment".format(v["vlan_id"])
                 if re.search(pattern, item, flags=re.DOTALL):
                     vlan["run_cfg"] = item
                     break
