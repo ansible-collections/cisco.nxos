@@ -73,6 +73,60 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "beacon": {"type": "bool"},
+                "spanning_tree": {
+                    "type": "dict",
+                    "options": {
+                        "port_type": {
+                            "type": "str",
+                            "choices": ["edge", "edge_trunk", "network", "normal"],
+                        },
+                        "bpduguard": {"type": "bool"},
+                        "bpdufilter": {"type": "bool"},
+                        "guard": {"type": "str", "choices": ["loop", "root", "none"]},
+                        "cost": {"type": "int"},
+                        "port_priority": {"type": "int"},
+                        "link_type": {
+                            "type": "str",
+                            "choices": ["auto", "point_to_point", "shared"],
+                        },
+                        "mst": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "instances": {"type": "str", "required": True},
+                                "cost": {"type": "int"},
+                                "port_priority": {"type": "int"},
+                            },
+                        },
+                        "vlans": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "vlans": {"type": "str", "required": True},
+                                "cost": {"type": "int"},
+                                "port_priority": {"type": "int"},
+                            },
+                        },
+                    },
+                },
+                "storm_control": {
+                    "type": "dict",
+                    "options": {
+                        "broadcast": {
+                            "type": "dict",
+                            "options": {"level": {"type": "str"}},
+                        },
+                        "multicast": {
+                            "type": "dict",
+                            "options": {"level": {"type": "str"}},
+                        },
+                        "unicast": {
+                            "type": "dict",
+                            "options": {"level": {"type": "str"}},
+                        },
+                        "action": {"type": "str", "choices": ["shutdown", "trap"]},
+                    },
+                },
             },
         },
         "state": {

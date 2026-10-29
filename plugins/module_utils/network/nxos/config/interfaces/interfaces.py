@@ -35,6 +35,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
+    search_system_default_switchport,
 )
 
 
@@ -240,17 +241,13 @@ class Interfaces(ResourceModule):
         switchport_data = self.get_switchport_defaults()
 
         # Layer 2/3 mode defaults
-        pat = "(no )*system default switchport$"
-        default_mode = re.search(pat, switchport_data, re.MULTILINE)
+        default_mode = search_system_default_switchport(switchport_data)
         if default_mode:
-            interface_defs["default_mode"] = (
-                "layer3" if "no " in default_mode.groups() else "layer2"
-            )
+            interface_defs["default_mode"] = "layer3" if default_mode.group(1) else "layer2"
 
         # Interface enabled state defaults
-        pat = "(no )*system default switchport shutdown$"
-        default_enabled = re.search(pat, switchport_data, re.MULTILINE)
+        default_enabled = search_system_default_switchport(switchport_data, shutdown=True)
         if default_enabled:
-            interface_defs["L2_enabled"] = True if "no " in default_enabled.groups() else False
+            interface_defs["L2_enabled"] = bool(default_enabled.group(1))
 
         return interface_defs
