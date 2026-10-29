@@ -546,6 +546,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             self.assertIsNone(search_system_default_switchport(text).group(1))
             self.assertEqual(search_system_default_switchport(text, shutdown=True).group(1), "no ")
         self.assertIsNone(search_system_default_switchport("interface Ethernet1/1\n"))
+
     def test_loopback_enabled_idempotency(self):
         # NX-OS loopbacks are always-up by default and never show 'no shutdown'
         # in running-config.  Setting enabled: true on an already-up loopback
