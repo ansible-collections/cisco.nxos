@@ -352,3 +352,41 @@
         that:
           - result.changed == false
           - result.rendered | symmetric_difference(rendered.commands) | length == 0
+
+- name: "Nxos_vrf_global — state: purged skips VRFs that do not exist"
+  hosts: nxos_vrf_global_purged
+  gather_facts: false
+  tasks:
+    - name: Run nxos_vrf_global purged with an existing and an unknown VRF
+      register: result
+      cisco.nxos.nxos_vrf_global: &purged
+        config:
+          vrfs:
+            - name: VRF1
+            - name: nosuchvrf
+        state: purged
+    - name: Assert only the existing VRF is purged
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no vrf context VRF1']
+    - name: Idempotent re-run (purged)
+      register: idempotent_result
+      cisco.nxos.nxos_vrf_global: *purged
+    - name: Assert idempotent (no changes)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+    - name: Run nxos_vrf_global purged with only an unknown VRF
+      register: unknown_result
+      cisco.nxos.nxos_vrf_global:
+        config:
+          vrfs:
+            - name: nosuchvrf
+        state: purged
+    - name: Assert nothing is purged for an unknown VRF
+      ansible.builtin.assert:
+        that:
+          - unknown_result.changed == false
+          - unknown_result.commands | length == 0

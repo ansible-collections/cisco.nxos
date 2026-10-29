@@ -6,6 +6,7 @@ platforms:
   - name: cisshgo-vrf_global-replaced
   - name: cisshgo-vrf_global-overridden
   - name: cisshgo-vrf_global-deleted
+  - name: cisshgo-vrf_global-purged
 provisioner:
   name: ansible
   inventory:
