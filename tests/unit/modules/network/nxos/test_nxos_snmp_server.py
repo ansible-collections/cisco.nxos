@@ -1130,6 +1130,103 @@ priv des 482A1501F49C1EAC8FA75840E7ACAF820FCB localizedV2key
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
+    def test_nxos_snmp_server_users_replaced_removes_acl_user(self):
+        # AAP-99708: no snmp-server user NAME already drops ACL lines.
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user keepUser vdc-operator auth sha keepAuth localizedkey
+            snmp-server user badUser vdc-operator auth sha badAuth localizedkey
+            snmp-server user badUser use-ipv4acl acl1 use-ipv6acl acl2
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="keepUser",
+                                group="vdc-operator",
+                                authentication=dict(
+                                    algorithm="sha",
+                                    password="keepAuth",
+                                    localized_key=True,
+                                ),
+                            ),
+                        ],
+                    ),
+                    communities=[
+                        dict(name="public", group="network-operator"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("no snmp-server user badUser", commands)
+        self.assertNotIn(
+            "no snmp-server user badUser use-ipv4acl acl1 use-ipv6acl acl2",
+            commands,
+        )
+        self.assertTrue(
+            all("use-ipv4acl" not in cmd and "use-ipv6acl" not in cmd for cmd in commands),
+        )
+        self.assertIn("snmp-server community public group network-operator", commands)
+        self.assertLess(
+            commands.index("no snmp-server user badUser"),
+            commands.index("snmp-server community public group network-operator"),
+        )
+
+    def test_nxos_snmp_server_users_replaced_acl_only(self):
+        # Keep the user; leftover use_acls must still be negated.
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user keepUser vdc-operator auth sha keepAuth localizedkey
+            snmp-server user keepUser use-ipv4acl acl1 use-ipv6acl acl2
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="keepUser",
+                                group="vdc-operator",
+                                authentication=dict(
+                                    algorithm="sha",
+                                    password="keepAuth",
+                                    localized_key=True,
+                                ),
+                            ),
+                        ],
+                    ),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server user keepUser use-ipv4acl acl1 use-ipv6acl acl2",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_snmp_server_users_deleted_with_acl(self):
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user badUser vdc-operator auth sha badAuth localizedkey
+            snmp-server user badUser use-ipv4acl acl1
+            """,
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("no snmp-server user badUser", commands)
+        self.assertNotIn("no snmp-server user badUser use-ipv4acl acl1", commands)
+
     def test_nxos_snmp_server_rendered(self):
         # test rendered
         set_module_args(
