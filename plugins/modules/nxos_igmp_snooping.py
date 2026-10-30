@@ -79,6 +79,8 @@ notes:
   by C(gathered) when the device has one.
 - Interface names are normalised before they are compared, so C(Eth1/10),
   C(ethernet1/10) and C(Ethernet1/10) are the same, as are C(Po20) and C(port-channel20).
+- Policy names must be 1-63 ASCII letters, numbers, underscores, periods or hyphens.
+- Interface values accept NX-OS Ethernet, VLAN, loopback, port-channel and NVE interface names.
 - This module works with connection C(network_cli) and C(httpapi).
 - The I(parsed) state reads configuration from I(running_config) and does
   not connect to the device.
@@ -277,6 +279,7 @@ options:
           mrouter_interfaces:
             description:
             - Static multicast router ports (C(ip igmp snooping mrouter interface)).
+            - Accepts NX-OS Ethernet, VLAN, loopback, port-channel and NVE interface names.
             type: list
             elements: str
           report_flood:
@@ -307,7 +310,7 @@ options:
                 - route_map
                 - prefix_list
               name:
-                description: The name of the route-map or prefix-list. It does not have to exist.
+                description: The 1-63 character route-map or prefix-list name. It does not have to exist.
                 type: str
                 required: true
               interface:
@@ -330,7 +333,7 @@ options:
                 - route_map
                 - prefix_list
               name:
-                description: The name of the route-map or prefix-list. It does not have to exist.
+                description: The 1-63 character route-map or prefix-list name. It does not have to exist.
                 type: str
                 required: true
               interface:

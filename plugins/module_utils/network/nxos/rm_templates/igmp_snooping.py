@@ -203,7 +203,7 @@ class Igmp_snoopingTemplate(NetworkTemplate):
         },
         {
             "name": "access_group",
-            "getval": _line("vlan", "\\saccess-group\\s(?P<name>[^\\s]+)"),
+            "getval": _line("vlan", "\\saccess-group\\s+(?P<name>[^\\s]+)"),
             "setval": _PREFIX + " access-group {{ name }}",
             "result": _result(
                 "vlan", {

@@ -352,7 +352,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The name of the route-map or prefix-list. It does not have to exist.</div>
+                        <div>The 1-63 character route-map or prefix-list name. It does not have to exist.</div>
                 </td>
             </tr>
             <tr>
@@ -492,6 +492,7 @@ Parameters
                 </td>
                 <td>
                         <div>Static multicast router ports (<code>ip igmp snooping mrouter interface</code>).</div>
+                        <div>Accepts NX-OS Ethernet, VLAN, loopback, port-channel and NVE interface names.</div>
                 </td>
             </tr>
             <tr>
@@ -754,7 +755,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The name of the route-map or prefix-list. It does not have to exist.</div>
+                        <div>The 1-63 character route-map or prefix-list name. It does not have to exist.</div>
                 </td>
             </tr>
             <tr>
@@ -1109,6 +1110,8 @@ Notes
    - A ``vlan configuration`` block that is not for a single VLAN (for example a range) is ignored.
    - A VLAN that is listed without any setting is not created by ``merged``, because an empty ``vlan configuration`` block has no effect. It is reported by ``gathered`` when the device has one.
    - Interface names are normalised before they are compared, so ``Eth1/10``, ``ethernet1/10`` and ``Ethernet1/10`` are the same, as are ``Po20`` and ``port-channel20``.
+   - Policy names must be 1-63 ASCII letters, numbers, underscores, periods or hyphens.
+   - Interface values accept NX-OS Ethernet, VLAN, loopback, port-channel and NVE interface names.
    - This module works with connection ``network_cli`` and ``httpapi``.
    - The *parsed* state reads configuration from *running_config* and does not connect to the device.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

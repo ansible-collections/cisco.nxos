@@ -18,6 +18,7 @@ created.
 """
 
 import ipaddress
+import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -78,6 +79,13 @@ MRT_RANGE = (1, 25)
 # the device removes the proxy line when mrt has its default value
 MRT_DEFAULT = 5
 POLICY_KEYWORDS = {"route_map": "route-map", "prefix_list": "prefix-list"}
+POLICY_NAME_RE = re.compile(r"^[A-Za-z0-9_.-]{1,63}$")
+INTERFACE_NAME_RE = re.compile(
+    r"^(?:(?:Eth|Ethernet)[0-9]+(?:/[0-9]+){1,3}(?:\.[0-9]+)?|"
+    r"(?:Vl|Vlan)[0-9]+|(?:Lo|loopback)[0-9]+|"
+    r"(?:Po|port-channel)[0-9]+(?:\.[0-9]+)?|(?:Nv|Nve)[0-9]+)$",
+    re.IGNORECASE | re.ASCII,
+)
 
 
 class Igmp_snooping(ResourceModule):
@@ -173,7 +181,7 @@ class Igmp_snooping(ResourceModule):
             settings[PROXY] = {"mrt": proxy.get("mrt")}
 
     def _check_range(self, what, value, limits):
-        if not limits[0] <= value <= limits[1]:
+        if isinstance(value, bool) or not limits[0] <= value <= limits[1]:
             self._module.fail_json(
                 msg="{0} must be in the range {1}-{2}, got '{3}'".format(
                     what,
@@ -202,10 +210,29 @@ class Igmp_snooping(ResourceModule):
         return str(int(text))
 
     def _check_vlan_id(self, vlan_id):
-        if not 1 <= vlan_id <= VLAN_ID_MAX:
+        if isinstance(vlan_id, bool) or not 1 <= vlan_id <= VLAN_ID_MAX:
             self._module.fail_json(
                 msg="vlan_id must be in the range 1-{0}, got '{1}'".format(VLAN_ID_MAX, vlan_id),
             )
+
+    def _policy_name(self, value):
+        if not isinstance(value, str) or not POLICY_NAME_RE.fullmatch(value):
+            self._module.fail_json(
+                msg="policy name must be 1-63 characters using only letters, numbers, '_', '-', or '.'",
+            )
+        return value
+
+    def _normalize_interface(self, value, what):
+        if not isinstance(value, str) or not INTERFACE_NAME_RE.fullmatch(value):
+            self._module.fail_json(
+                msg="{0} must be a valid NX-OS interface name".format(what),
+            )
+        normalized = normalize_interface(value)
+        if not normalized or not INTERFACE_NAME_RE.fullmatch(normalized):
+            self._module.fail_json(
+                msg="{0} must be a valid NX-OS interface name".format(what),
+            )
+        return normalized
 
     def _address(self, value, what):
         try:
@@ -229,7 +256,7 @@ class Igmp_snooping(ResourceModule):
         items = {}
         self._static_group_items(items, vlan.get("static_groups"))
         for name in vlan.get("mrouter_interfaces") or []:
-            name = normalize_interface(name)
+            name = self._normalize_interface(name, "mrouter interface")
             items[("mrouter", name)] = ("mrouter", {"interface": name})
         self._report_flood_items(items, vlan.get("report_flood"))
         self._policy_items(items, vlan.get("report_policy"), "report_policy")
@@ -260,7 +287,7 @@ class Igmp_snooping(ResourceModule):
             if source:
                 source = str(self._address(source, "source"))
             for name in entry["interfaces"]:
-                name = normalize_interface(name)
+                name = self._normalize_interface(name, "static group interface")
                 data = {"group": str(group), "interface": name}
                 parser = "static_group"
                 if source:
@@ -268,13 +295,12 @@ class Igmp_snooping(ResourceModule):
                     parser = "static_group_source"
                 items[(parser, str(group), source or "", name)] = (parser, data)
 
-    @staticmethod
-    def _report_flood_items(items, report_flood):
+    def _report_flood_items(self, items, report_flood):
         report_flood = report_flood or {}
         if report_flood.get("all"):
             items[("report_flood_all",)] = ("report_flood_all", {})
         for name in report_flood.get("interfaces") or []:
-            name = normalize_interface(name)
+            name = self._normalize_interface(name, "report flood interface")
             items[("report_flood_interface", name)] = (
                 "report_flood_interface",
                 {"interface": name},
@@ -283,10 +309,10 @@ class Igmp_snooping(ResourceModule):
     def _policy_items(self, items, policies, kind):
         for entry in policies or []:
             policy_type = POLICY_KEYWORDS[entry["policy_type"]]
-            name = entry["name"]
+            name = self._policy_name(entry["name"])
             interface = entry.get("interface")
             if interface:
-                interface = normalize_interface(interface)
+                interface = self._normalize_interface(interface, "policy interface")
                 data = {"policy_type": policy_type, "name": name, "interface": interface}
                 parser = kind if kind == "report_policy" else "access_group_interface"
             elif kind == "access_group" and policy_type == "route-map":
@@ -421,13 +447,29 @@ class Igmp_snooping(ResourceModule):
         defaults = dict(VLAN_BOOLEANS)
         defaults.update({key: limits[2] for key, limits in VLAN_NUMBERS.items()})
         defaults.update({"querier": None, GROUP_TIMEOUT: None})
+        if prune:
+            for key, default in defaults.items():
+                if key not in want:
+                    current = have.get(key, default)
+                    self._value_command(key, "vlan_" + key, default, current, default, lines)
+            if PROXY not in want:
+                self._proxy_command("vlan_", False, have.get(PROXY, False), lines)
+            else:
+                self._proxy_command("vlan_", want[PROXY], have.get(PROXY, False), lines)
+            for key, target in want.items():
+                if key in defaults:
+                    default = defaults[key]
+                    current = have.get(key, default)
+                    self._value_command(key, "vlan_" + key, target, current, default, lines)
+            return
+
         for key, default in defaults.items():
-            if key not in want and not prune:
+            if key not in want:
                 continue
             current = have.get(key) if self.state == "rendered" else have.get(key, default)
-            self._value_command(key, "vlan_" + key, want.get(key), current, default, lines)
-        if PROXY in want or prune:
-            self._proxy_command("vlan_", want.get(PROXY, False), have.get(PROXY, False), lines)
+            self._value_command(key, "vlan_" + key, want[key], current, default, lines)
+        if PROXY in want:
+            self._proxy_command("vlan_", want[PROXY], have.get(PROXY, False), lines)
 
     def _deleted_vlans(self, want, have, has_config):
         """A listed VLAN without settings is removed as a whole, one with
@@ -439,6 +481,12 @@ class Igmp_snooping(ResourceModule):
             if vlan_id not in have:
                 continue
             if not wanted["values"] and not wanted["items"]:
+                self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
+                continue
+            existing = have[vlan_id]
+            remaining_values = set(existing["values"]) - set(wanted["values"])
+            remaining_items = set(existing["items"]) - set(wanted["items"])
+            if not remaining_values and not remaining_items:
                 self.commands.append(NO_VLAN_CONFIGURATION.format(vlan_id))
                 continue
             present = {

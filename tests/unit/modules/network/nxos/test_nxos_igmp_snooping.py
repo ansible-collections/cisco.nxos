@@ -647,6 +647,16 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         result = self._run(False, config=dict(BASE_GLOBALS, vlans=BASE_VLANS[:2]), state="replaced")
         self.assertEqual(result["commands"], [])
 
+    def test_nxos_igmp_snooping_replaced_sets_non_default_query_interval(self):
+        self.get_config.return_value = FULL_VLAN_CLI
+        result = self._run(
+            True,
+            config=dict(vlans=[dict(vlan_id=100, query_interval=120)]),
+            state="replaced",
+        )
+        self.assertIn("ip igmp snooping query-interval 120", result["commands"])
+        self.assertEqual(result["commands"][-1], "ip igmp snooping query-interval 120")
+
     def test_nxos_igmp_snooping_replaced_default_have_is_idempotent(self):
         """The defaults are what replaced resets to, so nothing is sent on a default device."""
         self.get_config.return_value = ""
@@ -814,6 +824,26 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
     def test_full_vlan_parsed(self):
         result = self._run(False, running_config=FULL_VLAN_CLI, state="parsed")
         self.assertEqual(result["parsed"], dict(DEFAULTS, vlans=[FULL_VLAN_FACTS]))
+
+    def test_access_group_parser_handles_padded_device_spacing(self):
+        result = self._run(
+            False,
+            running_config=("vlan configuration 100\n" " ip igmp snooping access-group  RM_TWO"),
+            state="parsed",
+        )
+        self.assertEqual(
+            result["parsed"]["vlans"][0]["access_group"],
+            [{"policy_type": "route_map", "name": "RM_TWO"}],
+        )
+
+    def test_nxos_igmp_snooping_deleted_removes_empty_vlan_context(self):
+        self.get_config.return_value = "vlan configuration 100"
+        result = self._run(
+            True,
+            config=dict(vlans=[dict(vlan_id=100, query_interval=100)]),
+            state="deleted",
+        )
+        self.assertEqual(result["commands"], ["no vlan configuration 100"])
 
     def test_full_vlan_gathered_round_trip_is_idempotent(self):
         self.get_config.return_value = FULL_VLAN_CLI
@@ -1103,6 +1133,8 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             (dict(version=1), "version must be in the range 2-3"),
             (dict(querier="not-an-address"), "querier must be an IPv4 address"),
             (dict(querier_timeout=70000), "querier_timeout must be in the range"),
+            (dict(querier_timeout=True), "querier_timeout must be in the range"),
+            (dict(vlan_id=True), "vlan_id must be in the range"),
             (dict(proxy=dict(general_queries=True, mrt=30)), "proxy mrt must be in the range 1-25"),
             (dict(proxy=dict(mrt=5)), "proxy mrt requires general_queries: true"),
             (dict(proxy=dict(general_queries=True, mrt=5)), "is the default and removes the proxy"),
@@ -1123,6 +1155,58 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
             (
                 dict(access_group=[dict(policy_type="prefix_list", name="PL")]),
                 "access_group prefix_list requires an interface",
+            ),
+        ]
+        for extra, message in cases:
+            vlan = dict(vlan_id=100)
+            vlan.update(extra)
+            set_module_args(dict(config=dict(vlans=[vlan]), state="rendered"), ignore_provider_arg)
+            result = self.execute_module(failed=True)
+            self.assertIn(message, result["msg"])
+
+    def test_cli_tokens_reject_invalid_policy_and_interface_names(self):
+        cases = [
+            (
+                dict(
+                    report_policy=[
+                        dict(policy_type="route_map", name="RM\nNAME", interface="Po20"),
+                    ],
+                ),
+                "policy name must be 1-63 characters",
+            ),
+            (
+                dict(access_group=[dict(policy_type="route_map", name="RM\nNAME")]),
+                "policy name must be 1-63 characters",
+            ),
+            (
+                dict(mrouter_interfaces=["unknown0"]),
+                "mrouter interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(mrouter_interfaces=["Ethernetbogus1/10"]),
+                "mrouter interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(mrouter_interfaces=["Eth1/10\nname"]),
+                "mrouter interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(mrouter_interfaces=["Eth１/１０"]),
+                "mrouter interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(report_flood=dict(interfaces=["unknown0"])),
+                "report flood interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(static_groups=[dict(group="233.252.0.10", interfaces=["unknown0"])]),
+                "static group interface must be a valid NX-OS interface name",
+            ),
+            (
+                dict(
+                    report_policy=[dict(policy_type="route_map", name="RM", interface="unknown0")],
+                ),
+                "policy interface must be a valid NX-OS interface name",
             ),
         ]
         for extra, message in cases:
