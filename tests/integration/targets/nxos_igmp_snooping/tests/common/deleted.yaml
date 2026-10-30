@@ -109,8 +109,12 @@
     - name: Assert that nothing is left
       ansible.builtin.assert:
         that:
-          - remaining.stdout[0] | trim == ''
-          - remaining.stdout[1] | trim == ''
+          - >-
+            (remaining.stdout[0] is mapping and remaining.stdout[0] | length == 0)
+            or (remaining.stdout[0] is string and remaining.stdout[0] | trim == '')
+          - >-
+            (remaining.stdout[1] is mapping and remaining.stdout[1] | length == 0)
+            or (remaining.stdout[1] is string and remaining.stdout[1] | trim == '')
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
