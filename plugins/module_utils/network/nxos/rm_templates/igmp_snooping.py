@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The Igmp_snooping parser templates file. This contains
+The IGMP snooping parser templates file. This contains
 a list of parser definitions and associated functions that
 facilitates both facts gathering and native command generation for
 the given network resource.
@@ -25,6 +25,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 _VLAN_ID = "{{ vlan_id }}"
 _GROUP = "{{ group }}"
 _IF = "{{ interface }}"
+_NAME = "{{ name }}"
 _ENABLED = "{{ False if negate is defined else True }}"
 _PREFIX = "ip igmp snooping"
 _POLICY_TYPE = "{{ policy_type | replace('-', '_') }}"
@@ -103,9 +104,9 @@ def _scope_parsers(scope):
     ] + _proxy(scope)
 
 
-class Igmp_snoopingTemplate(NetworkTemplate):
+class IgmpSnoopingTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Igmp_snoopingTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(IgmpSnoopingTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = _scope_parsers("global") + [
@@ -175,7 +176,7 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                     "report_policy": {
                         "{{ policy_type }}|{{ name }}|{{ interface }}": {
                             "policy_type": _POLICY_TYPE,
-                            "name": "{{ name }}",
+                            "name": _NAME,
                             "interface": _IF,
                         },
                     },
@@ -194,7 +195,7 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                     "access_group": {
                         "{{ policy_type }}|{{ name }}|{{ interface }}": {
                             "policy_type": _POLICY_TYPE,
-                            "name": "{{ name }}",
+                            "name": _NAME,
                             "interface": _IF,
                         },
                     },
@@ -210,7 +211,7 @@ class Igmp_snoopingTemplate(NetworkTemplate):
                     "access_group": {
                         "route-map|{{ name }}|": {
                             "policy_type": "route_map",
-                            "name": "{{ name }}",
+                            "name": _NAME,
                         },
                     },
                 },

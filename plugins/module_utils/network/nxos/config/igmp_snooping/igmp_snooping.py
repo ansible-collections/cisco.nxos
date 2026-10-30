@@ -29,7 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.igmp
     GLOBAL_DEFAULTS,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.igmp_snooping import (
-    Igmp_snoopingTemplate,
+    IgmpSnoopingTemplate,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
@@ -88,18 +88,18 @@ INTERFACE_NAME_RE = re.compile(
 )
 
 
-class Igmp_snooping(ResourceModule):
+class IgmpSnooping(ResourceModule):
     """
     The nxos_igmp_snooping config class
     """
 
     def __init__(self, module):
-        super(Igmp_snooping, self).__init__(
+        super(IgmpSnooping, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
             resource="igmp_snooping",
-            tmplt=Igmp_snoopingTemplate(),
+            tmplt=IgmpSnoopingTemplate(),
         )
         self.parsers = []
 
@@ -441,28 +441,31 @@ class Igmp_snooping(ResourceModule):
         ]
 
     def _value_lines(self, lines, want, have, prune):
-        """Commands for the plain settings. Settings missing from want keep their
-        value, except for replaced and overridden where they return to the default.
-        """
+        """Build VLAN value commands for the requested state."""
         defaults = dict(VLAN_BOOLEANS)
         defaults.update({key: limits[2] for key, limits in VLAN_NUMBERS.items()})
         defaults.update({"querier": None, GROUP_TIMEOUT: None})
         if prune:
-            for key, default in defaults.items():
-                if key not in want:
-                    current = have.get(key, default)
-                    self._value_command(key, "vlan_" + key, default, current, default, lines)
-            if PROXY not in want:
-                self._proxy_command("vlan_", False, have.get(PROXY, False), lines)
-            else:
-                self._proxy_command("vlan_", want[PROXY], have.get(PROXY, False), lines)
-            for key, target in want.items():
-                if key in defaults:
-                    default = defaults[key]
-                    current = have.get(key, default)
-                    self._value_command(key, "vlan_" + key, target, current, default, lines)
+            self._prune_value_lines(lines, want, have, defaults)
             return
+        self._merge_value_lines(lines, want, have, defaults)
 
+    def _prune_value_lines(self, lines, want, have, defaults):
+        """Reset omitted values to defaults and apply requested values."""
+        for key, default in defaults.items():
+            if key not in want:
+                current = have.get(key, default)
+                self._value_command(key, "vlan_" + key, default, current, default, lines)
+        proxy = want.get(PROXY, False)
+        self._proxy_command("vlan_", proxy, have.get(PROXY, False), lines)
+        for key, target in want.items():
+            if key in defaults:
+                default = defaults[key]
+                current = have.get(key, default)
+                self._value_command(key, "vlan_" + key, target, current, default, lines)
+
+    def _merge_value_lines(self, lines, want, have, defaults):
+        """Apply only VLAN values explicitly present in the request."""
         for key, default in defaults.items():
             if key not in want:
                 continue

@@ -13,7 +13,7 @@ The arg spec for the nxos_igmp_snooping module
 """
 
 
-class Igmp_snoopingArgs(object):  # pylint: disable=R0903
+class IgmpSnoopingArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_igmp_snooping module"""
 
     argument_spec = {

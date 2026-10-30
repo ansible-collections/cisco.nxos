@@ -27,7 +27,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.igmp_snooping.igmp_snooping import (
-    Igmp_snoopingFacts,
+    IgmpSnoopingFacts,
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_igmp_snooping
 
@@ -205,7 +205,7 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.igmp_snooping.igmp_snooping.Igmp_snoopingFacts.get_config",
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.igmp_snooping.igmp_snooping.IgmpSnoopingFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -1127,6 +1127,14 @@ class TestNxosIgmpSnoopingModule(TestNxosModule):
         result = self._run(False, config=dict(vlans=[dict(vlan_id=100)]), state="merged")
         self.assertEqual(result["commands"], [])
 
+    def test_global_proxy_requires_general_queries(self):
+        set_module_args(
+            dict(config=dict(proxy=dict(mrt=5)), state="rendered"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("proxy mrt requires general_queries: true", result["msg"])
+
     def test_vlan_validation(self):
         cases = [
             (dict(query_interval=0), "query_interval must be in the range 1-18000"),
@@ -1250,7 +1258,7 @@ class TestNxosIgmpSnoopingFacts(TestCase):
     def test_nxos_igmp_snooping_get_config_commands(self):
         connection = MagicMock()
         connection.get.side_effect = [SECTION_OUTPUT, INCLUDE_OUTPUT]
-        facts = Igmp_snoopingFacts(MagicMock())
+        facts = IgmpSnoopingFacts(MagicMock())
         text = facts.get_config(connection)
         self.assertEqual(
             [call.args[0] for call in connection.get.call_args_list],
@@ -1268,4 +1276,4 @@ class TestNxosIgmpSnoopingFacts(TestCase):
     def test_nxos_igmp_snooping_get_config_empty_output(self):
         connection = MagicMock()
         connection.get.return_value = None
-        self.assertEqual(Igmp_snoopingFacts(MagicMock()).get_config(connection), "\n")
+        self.assertEqual(IgmpSnoopingFacts(MagicMock()).get_config(connection), "\n")

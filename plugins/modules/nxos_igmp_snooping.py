@@ -787,10 +787,10 @@ parsed:
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.igmp_snooping.igmp_snooping import (
-    Igmp_snoopingArgs,
+    IgmpSnoopingArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.igmp_snooping.igmp_snooping import (
-    Igmp_snooping,
+    IgmpSnooping,
 )
 
 
@@ -801,7 +801,7 @@ def main():
     :returns: the result from module invocation
     """
     module = AnsibleModule(
-        argument_spec=Igmp_snoopingArgs.argument_spec,
+        argument_spec=IgmpSnoopingArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],
@@ -813,7 +813,7 @@ def main():
         supports_check_mode=True,
     )
 
-    result = Igmp_snooping(module).execute_module()
+    result = IgmpSnooping(module).execute_module()
     module.exit_json(**result)
 
 

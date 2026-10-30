@@ -20,10 +20,10 @@ import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.igmp_snooping.igmp_snooping import (
-    Igmp_snoopingArgs,
+    IgmpSnoopingArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.igmp_snooping import (
-    Igmp_snoopingTemplate,
+    IgmpSnoopingTemplate,
 )
 
 
@@ -69,12 +69,12 @@ def _relevant_lines(data):
     return keep
 
 
-class Igmp_snoopingFacts(object):
+class IgmpSnoopingFacts(object):
     """The nxos igmp_snooping facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Igmp_snoopingArgs.argument_spec
+        self.argument_spec = IgmpSnoopingArgs.argument_spec
 
     def get_config(self, connection):
         vlans = connection.get('show running-config | section "^vlan configuration"')
@@ -112,12 +112,12 @@ class Igmp_snoopingFacts(object):
                 vlan["report_flood"]["interfaces"] = sorted(vlan["report_flood"]["interfaces"])
             for key in ("report_policy", "access_group"):
                 if key in vlan:
-                    vlan[key] = Igmp_snoopingFacts._policies(vlan[key])
+                    vlan[key] = IgmpSnoopingFacts._policies(vlan[key])
             result.append(vlan)
         return result
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Igmp_snooping network resource.
+        """Populate the facts for the IGMP snooping network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -131,7 +131,7 @@ class Igmp_snoopingFacts(object):
         if not data:
             data = self.get_config(connection)
 
-        parser = Igmp_snoopingTemplate(lines=_relevant_lines(data), module=self._module)
+        parser = IgmpSnoopingTemplate(lines=_relevant_lines(data), module=self._module)
         objs = parser.parse()
 
         config = dict(GLOBAL_DEFAULTS)
