@@ -1,10 +1,63 @@
 ---
-- name: Include the CLI tasks
-  ansible.builtin.include_tasks: cli.yaml
-  tags:
-    - cli
+# The tests need a switch that supports VXLAN: `ip igmp snooping vxlan` is only
+# available with 'feature nv overlay'. They create the VLANs 100 and 200 and the
+# port channels 20 and 21 and remove them again, together with every
+# 'vlan configuration' block, when they are done.
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Enable 'feature nv overlay'
+      cisco.nxos.nxos_feature:
+        feature: nv overlay
+        state: enabled
 
-- name: Include the NX-API tasks
-  ansible.builtin.include_tasks: nxapi.yaml
-  tags:
-    - nxapi
+    - name: Create the VLANs used by the tests
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 100
+          - vlan_id: 200
+        state: merged
+
+    - name: Create the port channels used by the tests
+      cisco.nxos.nxos_config:
+        lines:
+          - switchport
+        parents: "interface {{ item }}"
+      loop:
+        - port-channel20
+        - port-channel21
+
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi
+  always:
+    - name: Remove all IGMP snooping configuration
+      cisco.nxos.nxos_igmp_snooping:
+        state: deleted
+      failed_when: false
+
+    - name: Remove the port channels used by the tests
+      cisco.nxos.nxos_config:
+        lines:
+          - no interface port-channel20
+          - no interface port-channel21
+      failed_when: false
+
+    - name: Remove the VLANs used by the tests
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 100
+          - vlan_id: 200
+        state: deleted
+      failed_when: false
+
+    - name: Disable 'feature nv overlay'
+      cisco.nxos.nxos_feature:
+        feature: nv overlay
+        state: disabled
+      failed_when: false

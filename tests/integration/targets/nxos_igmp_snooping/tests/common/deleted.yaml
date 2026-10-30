@@ -1,0 +1,120 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_igmp_snooping deleted integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete the listed configuration only
+      cisco.nxos.nxos_igmp_snooping: &id002
+        config:
+          group_timeout: "300"
+          vlans:
+            - vlan_id: 100
+              static_groups:
+                - group: 233.252.0.11
+                  source: 192.0.2.10
+                  interfaces:
+                    - Po20
+            - vlan_id: 200
+        state: deleted
+      register: result
+
+    - name: Assert that before dict was correctly generated
+      ansible.builtin.assert:
+        that: result['before'] == before
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that: deleted['partial_commands'] == result['commands']
+
+    - name: Assert that after dict was correctly generated
+      ansible.builtin.assert:
+        that: deleted['partial_after'] == result['after']
+
+    - name: Delete the listed configuration only (idempotent)
+      cisco.nxos.nxos_igmp_snooping: *id002
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Remove static groups of a VLAN that has no block
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          vlans:
+            - vlan_id: 200
+              static_groups:
+                - group: 233.252.0.20
+                  interfaces:
+                    - port-channel21
+        state: deleted
+      register: result
+
+    - name: Assert that nothing was sent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Read the vlan configuration blocks
+      cisco.nxos.nxos_command:
+        commands:
+          - show running-config | section "^vlan configuration"
+      register: blocks
+
+    - name: Assert that no block was created for VLAN 200
+      ansible.builtin.assert:
+        that: "'vlan configuration 200' not in blocks.stdout[0]"
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete all the IGMP snooping configuration
+      cisco.nxos.nxos_igmp_snooping: &id001
+        state: deleted
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that: deleted['commands'] == result['commands']
+
+    - name: Assert that after dict was correctly generated
+      ansible.builtin.assert:
+        that: result['after'] == defaults
+
+    - name: Delete all the IGMP snooping configuration (idempotent)
+      cisco.nxos.nxos_igmp_snooping: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Read the IGMP snooping configuration
+      cisco.nxos.nxos_command:
+        commands:
+          - show running-config | section "^vlan configuration"
+          - show running-config | include "^ip igmp snooping"
+      register: remaining
+
+    - name: Assert that nothing is left
+      ansible.builtin.assert:
+        that:
+          - >-
+            (remaining.stdout[0] is mapping and remaining.stdout[0] | length == 0)
+            or (remaining.stdout[0] is string and remaining.stdout[0] | trim == '')
+          - >-
+            (remaining.stdout[1] is mapping and remaining.stdout[1] | length == 0)
+            or (remaining.stdout[1] is string and remaining.stdout[1] | trim == '')
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

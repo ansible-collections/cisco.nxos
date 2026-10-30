@@ -1582,6 +1582,56 @@ platforms:
       (config)#: " "
       (config-evpn)#: " "
       (config-evpn-evi)#: " "
+  nxos_igmp_snooping:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      ip igmp snooping group-timeout 500: transcripts/common/generic_empty_return.txt
+      ip igmp snooping max-gq-miss 4: transcripts/common/generic_empty_return.txt
+      ip igmp snooping proxy general-queries mrt 8: transcripts/common/generic_empty_return.txt
+      ip igmp snooping mrouter interface port-channel20: transcripts/common/generic_empty_return.txt
+      ip igmp snooping report-policy route-map RM_REPORTS interface port-channel20: transcripts/common/generic_empty_return.txt
+      ip igmp snooping fast-leave: transcripts/common/generic_empty_return.txt
+      ip igmp snooping query-interval 200: transcripts/common/generic_empty_return.txt
+      ip igmp snooping version 2: transcripts/common/generic_empty_return.txt
+      ip igmp snooping querier 192.0.2.1: transcripts/common/generic_empty_return.txt
+      ip igmp snooping static-group 233.252.0.12 interface port-channel21: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping group-timeout 300: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping link-local-groups-suppression: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping static-group 233.252.0.10 interface port-channel21: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping v3-report-suppression: transcripts/common/generic_empty_return.txt
+      no ip igmp snooping vxlan: transcripts/common/generic_empty_return.txt
+      no vlan configuration 100: transcripts/common/generic_empty_return.txt
+      no vlan configuration 200: transcripts/common/generic_empty_return.txt
+      vlan configuration 100: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      vlan configuration: (config-vlan-config)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-vlan-config)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-vlan-config)#: " "
 scenarios:
   nxos-acls-gathered:
     platform: nxos_acls
@@ -7191,3 +7241,172 @@ scenarios:
         transcript: transcripts/common/generic_empty_return.txt
       - command: show running-config | section '^evpn'
         transcript: transcripts/common/generic_empty_return.txt
+  nxos-igmp-snooping-gathered:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/gathered/before_global.txt
+  nxos-igmp-snooping-merged:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/before_global.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/merged/after_global.txt
+  nxos-igmp-snooping-replaced:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/before_global.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/replaced/after_global.txt
+  nxos-igmp-snooping-overridden:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/before_global.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/overridden/after_global.txt
+  nxos-igmp-snooping-deleted:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/before_global.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted/after_global.txt
+  nxos-igmp-snooping-deleted_all:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted_all/before_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/deleted_all/before_global.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/common/generic_empty_return.txt
+  nxos-igmp-snooping-options:
+    platform: nxos_igmp_snooping
+    sequence:
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_global.txt
+      - command: show running-config | section "^vlan configuration"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_vlans.txt
+      - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
+        transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_global.txt

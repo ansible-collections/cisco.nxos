@@ -1,0 +1,136 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_igmp_snooping vlan_options integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Configure the global and per-VLAN options
+      cisco.nxos.nxos_igmp_snooping: &options
+        config:
+          max_gq_miss: 4
+          syslog_threshold: 70
+          holddown_timer: 100
+          proxy:
+            general_queries: true
+            mrt: 8
+          vlans:
+            - vlan_id: 100
+              querier: 192.0.2.1
+              querier_timeout: 300
+              query_interval: 200
+              query_max_response_time: 15
+              startup_query_count: 4
+              startup_query_interval: 100
+              robustness_variable: 3
+              last_member_query_interval: 2
+              version: 2
+              fast_leave: true
+              explicit_tracking: false
+              v3_report_suppression: true
+              proxy_leave_use_group_address: true
+              group_timeout: "300"
+              mrouter_interfaces:
+                - Po20
+              report_flood:
+                all: true
+                interfaces:
+                  - Po21
+              report_policy:
+                - policy_type: route_map
+                  name: RM_IGMP_REPORT
+                  interface: Po20
+              access_group:
+                - policy_type: route_map
+                  name: RM_IGMP_GROUPS
+                - policy_type: prefix_list
+                  name: PL_IGMP_GROUPS
+                  interface: Po21
+        state: merged
+      register: result
+
+    - name: Assert that the options were configured
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'ip igmp snooping max-gq-miss 4' in result.commands"
+          - "'ip igmp snooping proxy general-queries mrt 8' in result.commands"
+          - "'ip igmp snooping querier 192.0.2.1' in result.commands"
+          - "'ip igmp snooping mrouter interface port-channel20' in result.commands"
+          - "'ip igmp snooping access-group RM_IGMP_GROUPS' in result.commands"
+
+    - name: Rerun the same task, it must be idempotent
+      cisco.nxos.nxos_igmp_snooping: *options
+      register: result
+
+    - name: Assert that the rerun changed nothing
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands | length == 0
+
+    - name: Gather the facts and compare them with the options
+      cisco.nxos.nxos_igmp_snooping:
+        state: gathered
+      register: result
+
+    - name: Assert the gathered values
+      ansible.builtin.assert:
+        that:
+          - result.gathered.max_gq_miss == 4
+          - result.gathered.holddown_timer == 100
+          - "result.gathered.proxy == {'general_queries': true, 'mrt': 8}"
+          - result.gathered.vlans | length == 1
+          - result.gathered.vlans[0].querier == '192.0.2.1'
+          - result.gathered.vlans[0].query_interval == 200
+          - result.gathered.vlans[0].version == 2
+          - result.gathered.vlans[0].mrouter_interfaces == ['port-channel20']
+          - "result.gathered.vlans[0].report_flood == {'all': true, 'interfaces': ['port-channel21']}"
+
+    - name: Replace the VLAN with a smaller configuration
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          vlans:
+            - vlan_id: 100
+              querier: 192.0.2.1
+              version: 3
+        state: replaced
+      register: result
+
+    - name: Assert that everything else was removed
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'no ip igmp snooping mrouter interface port-channel20' in result.commands"
+          - "'no ip igmp snooping query-interval 200' in result.commands"
+          - "'no ip igmp snooping version 2' in result.commands"
+          - "'no ip igmp snooping proxy general-queries' in result.commands"
+
+    - name: Rerun the replaced task
+      cisco.nxos.nxos_igmp_snooping:
+        config:
+          vlans:
+            - vlan_id: 100
+              querier: 192.0.2.1
+              version: 3
+        state: replaced
+      register: result
+
+    - name: Assert that replaced is idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands | length == 0
+
+    - name: Remove the configuration
+      cisco.nxos.nxos_igmp_snooping:
+        state: deleted
+      register: result
+
+    - name: Assert that deleted removed the VLAN block
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'no vlan configuration 100' in result.commands"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
