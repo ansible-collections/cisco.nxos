@@ -271,7 +271,7 @@ class Vpc(ResourceModule):
             None,
         )
 
-        if self._module.check_mode or not self.commands:
+        if self._module.check_mode or self.state == "rendered" or not self.commands:
             self.run_commands()
             return
 
