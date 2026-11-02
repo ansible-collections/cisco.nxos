@@ -15,7 +15,6 @@ This module tests the behavior of nxos_nve_interface including:
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from textwrap import dedent
