@@ -271,8 +271,16 @@ class Vpc(ResourceModule):
             None,
         )
 
-        if split_idx is None or self._module.check_mode:
+        if self._module.check_mode or not self.commands:
             self.run_commands()
+            return
+
+        if split_idx is None:
+            # A previous module invocation may have deleted a domain. NX-OS
+            # completes that deletion asynchronously, so even a plain merge
+            # that creates a new domain can hit the same transient error.
+            self._edit_config_until_ready(self.commands)
+            self.changed = True
             return
 
         boundary = split_idx + 1
