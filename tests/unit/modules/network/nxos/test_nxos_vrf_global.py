@@ -8,6 +8,8 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vrf_global
 
 from .nxos_module import TestNxosModule, set_module_args
@@ -837,6 +839,39 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         commands = ["no vrf context test1"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_vrf_global_purged_unknown_vrf(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context test1
+              description this is descrition
+            """,
+        )
+
+        set_module_args(dict(config={"vrfs": [{"name": "nosuchvrf"}]}, state="purged"))
+        with patch.object(AnsibleModule, "warn") as warn:
+            result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+        warn.assert_called_once()
+        self.assertIn("nosuchvrf", warn.call_args.args[0])
+
+    def test_nxos_vrf_global_purged_only_existing_vrfs(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context test1
+              description this is descrition
+            """,
+        )
+
+        set_module_args(
+            dict(config={"vrfs": [{"name": "test1"}, {"name": "nosuchvrf"}]}, state="purged"),
+        )
+        with patch.object(AnsibleModule, "warn") as warn:
+            result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no vrf context test1"])
+        warn.assert_called_once()
+        self.assertIn("nosuchvrf", warn.call_args.args[0])
+        self.assertNotIn("test1", warn.call_args.args[0])
 
     def test_nxos_vrf_global_parsed(self):
         set_module_args(
