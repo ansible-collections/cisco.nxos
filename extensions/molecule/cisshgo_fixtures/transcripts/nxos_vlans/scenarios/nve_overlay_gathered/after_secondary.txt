@@ -1,0 +1,5 @@
+vlan 1,3801-3802,3810,3820
+vlan 3801
+  vn-segment 50001
+vlan 3820
+  name ex-3820

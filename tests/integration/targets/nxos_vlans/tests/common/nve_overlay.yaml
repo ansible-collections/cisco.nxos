@@ -1,0 +1,97 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_vlans nve_overlay integration tests connection={{ ansible_connection }}
+
+- name: Setup
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no system vlan nve-overlay id 6"
+      - "no vlan 2-100"
+
+- block:
+    - name: Merged - add nve_overlay
+      register: result
+      cisco.nxos.nxos_vlans: &id001
+        config:
+          - vlan_id: 6
+            name: vlan6
+            nve_overlay: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'vlan 6' in result.commands"
+          - "'name vlan6' in result.commands"
+          - "'system vlan nve-overlay id 6' in result.commands"
+          - result.commands|length == 3
+
+    - name: Gather vlans facts
+      cisco.nxos.nxos_facts: &id002
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: vlans
+
+    - ansible.builtin.assert:
+        that:
+          - result.after|length == ansible_facts.network_resources.vlans|length
+          - (ansible_facts.network_resources.vlans | selectattr('vlan_id', 'equalto', 6) | first).nve_overlay == true
+
+    - name: Idempotence - merged
+      register: result
+      cisco.nxos.nxos_vlans: *id001
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+
+    - name: Merged - remove nve_overlay
+      register: result
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 6
+            nve_overlay: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no system vlan nve-overlay id 6' in result.commands"
+          - result.commands|length == 1
+
+    - name: Gather vlans facts after removal
+      cisco.nxos.nxos_facts: *id002
+
+    - ansible.builtin.assert:
+        that:
+          - (ansible_facts.network_resources.vlans | selectattr('vlan_id', 'equalto', 6) | first).nve_overlay is not defined
+
+    - name: Set nve_overlay again
+      cisco.nxos.nxos_vlans: *id001
+
+    - name: Replaced - omitting nve_overlay removes it
+      register: result
+      cisco.nxos.nxos_vlans: &id004
+        config:
+          - vlan_id: 6
+            name: vlan6
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no system vlan nve-overlay id 6' in result.commands"
+
+    - name: Idempotence - replaced
+      register: result
+      cisco.nxos.nxos_vlans: *id004
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+    - name: Teardown
+      cisco.nxos.nxos_config: *id003

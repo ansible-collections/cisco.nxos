@@ -33,3 +33,27 @@ all:
           hosts:
             cisshgo-vlans-deleted:
               ansible_port: 10005
+        nxos_vlans_nve_overlay_gathered:
+          hosts:
+            cisshgo-vlans-nve-overlay-gathered:
+              ansible_port: 10006
+        nxos_vlans_nve_overlay_merged:
+          hosts:
+            cisshgo-vlans-nve-overlay-merged:
+              ansible_port: 10007
+        nxos_vlans_nve_overlay_replaced:
+          hosts:
+            cisshgo-vlans-nve-overlay-replaced:
+              ansible_port: 10008
+        nxos_vlans_nve_overlay_overridden:
+          hosts:
+            cisshgo-vlans-nve-overlay-overridden:
+              ansible_port: 10009
+        nxos_vlans_nve_overlay_deleted:
+          hosts:
+            cisshgo-vlans-nve-overlay-deleted:
+              ansible_port: 10010
+        nxos_vlans_nve_overlay_duplicate:
+          hosts:
+            cisshgo-vlans-nve-overlay-duplicate:
+              ansible_port: 10011
