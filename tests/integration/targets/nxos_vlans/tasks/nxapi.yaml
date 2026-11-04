@@ -3,6 +3,7 @@
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
+    use_regex: true
   delegate_to: localhost
   register: test_cases
 
@@ -10,6 +11,7 @@
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/nxapi"
     patterns: "{{ testcase }}.yaml"
+    use_regex: true
   delegate_to: localhost
   register: nxapi_cases
 

@@ -5,6 +5,7 @@
 - name: Setup
   cisco.nxos.nxos_config: &id002
     lines:
+      - "no system vlan nve-overlay id 6"
       - "no vlan 2-100"
 
 - block:
@@ -18,6 +19,7 @@
           - vlan_id: 6
             name: vlan6
             state: suspend
+            nve_overlay: true
         state: merged
 
     - ansible.builtin.assert:
@@ -30,7 +32,8 @@
           - "'vlan 6' in result.commands"
           - "'name vlan6' in result.commands"
           - "'state suspend' in result.commands"
-          - result.commands|length == 5
+          - "'system vlan nve-overlay id 6' in result.commands"
+          - result.commands|length == 6
 
     - name: Gather vlans facts
       cisco.nxos.nxos_facts:
