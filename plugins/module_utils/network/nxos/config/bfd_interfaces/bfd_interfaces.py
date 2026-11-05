@@ -9,8 +9,8 @@ This class creates a command set to bring the current device configuration
 to a desired end-state. The command set is based on a comparison of the
 current configuration (as dict) and the provided configuration (as dict).
 """
-from __future__ import absolute_import, division, print_function
 
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 

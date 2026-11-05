@@ -19,7 +19,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import copy
@@ -32,7 +31,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vlans
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
-
 
 ignore_provider_arg = True
 

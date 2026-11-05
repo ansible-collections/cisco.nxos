@@ -13,7 +13,6 @@ created.
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
@@ -29,7 +28,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.nve_interface import (
     Nve_interfaceTemplate,
 )
-
 
 # pairs of VNI options that NX-OS treats as alternatives
 VNI_EXCLUSIVE = (
