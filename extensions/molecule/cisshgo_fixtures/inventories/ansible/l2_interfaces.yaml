@@ -29,3 +29,19 @@ all:
           hosts:
             cisshgo-l2_interfaces-port_channel_member:
               ansible_port: 10003
+        nxos_l2_interfaces_stp_storm_merged:
+          hosts:
+            cisshgo-l2_interfaces-stp_storm_merged:
+              ansible_port: 10004
+        nxos_l2_interfaces_stp_storm_replaced:
+          hosts:
+            cisshgo-l2_interfaces-stp_storm_replaced:
+              ansible_port: 10005
+        nxos_l2_interfaces_stp_storm_deleted:
+          hosts:
+            cisshgo-l2_interfaces-stp_storm_deleted:
+              ansible_port: 10006
+        nxos_l2_interfaces_stp_storm_gathered:
+          hosts:
+            cisshgo-l2_interfaces-stp_storm_gathered:
+              ansible_port: 10007

@@ -25,6 +25,9 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    search_system_default_switchport,
+)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_interfaces
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
@@ -526,6 +529,23 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_system_default_switchport_lines_with_carriage_returns(self):
+        """The 'system default switchport' lines are read the same with CRLF and LF line endings."""
+        for newline in ["\n", "\r\n"]:
+            text = newline.join(
+                ["no system default switchport", "system default switchport shutdown", ""],
+            )
+            mode = search_system_default_switchport(text)
+            self.assertEqual(mode.group(1), "no ")
+            shutdown = search_system_default_switchport(text, shutdown=True)
+            self.assertIsNone(shutdown.group(1))
+            text = newline.join(
+                ["system default switchport", "no system default switchport shutdown", ""],
+            )
+            self.assertIsNone(search_system_default_switchport(text).group(1))
+            self.assertEqual(search_system_default_switchport(text, shutdown=True).group(1), "no ")
+        self.assertIsNone(search_system_default_switchport("interface Ethernet1/1\n"))
 
     def test_loopback_enabled_idempotency(self):
         # NX-OS loopbacks are always-up by default and never show 'no shutdown'
