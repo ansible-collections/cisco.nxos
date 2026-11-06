@@ -7,3 +7,11 @@ devices:
     count: 1
   - scenario: nxos-l2-interfaces-port_channel_member
     count: 1
+  - scenario: nxos-l2-interfaces-stp_storm_merged
+    count: 1
+  - scenario: nxos-l2-interfaces-stp_storm_replaced
+    count: 1
+  - scenario: nxos-l2-interfaces-stp_storm_deleted
+    count: 1
+  - scenario: nxos-l2-interfaces-stp_storm_gathered
+    count: 1

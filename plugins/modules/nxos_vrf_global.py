@@ -304,6 +304,11 @@ options:
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config | section ^vrf).
         connection to remote host is not required.
+      - The state I(purged) removes the VRFs listed in C(config) completely (C(no vrf context <name>)),
+        together with all their configuration. A listed VRF that does not exist on the device is skipped
+        and reported in a warning. Without any VRF in C(config) (an empty C(vrfs) list, an empty C(config)
+        or no C(config) at all) I(purged) removes every VRF on the device, including C(management),
+        so use it with care.
     type: str
 """
 

@@ -5,6 +5,10 @@ platforms:
   - name: cisshgo-l2_interfaces-action_states
   - name: cisshgo-l2_interfaces-non_action_states
   - name: cisshgo-l2_interfaces-port_channel_member
+  - name: cisshgo-l2_interfaces-stp_storm_merged
+  - name: cisshgo-l2_interfaces-stp_storm_replaced
+  - name: cisshgo-l2_interfaces-stp_storm_deleted
+  - name: cisshgo-l2_interfaces-stp_storm_gathered
 provisioner:
   name: ansible
   playbooks:
