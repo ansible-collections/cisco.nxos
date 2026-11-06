@@ -90,7 +90,7 @@ Name | Description
 [cisco.nxos.nxos_hsrp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst)|HSRP interfaces resource module
 [cisco.nxos.nxos_igmp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_module.rst)|Manages IGMP global configuration.
 [cisco.nxos.nxos_igmp_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_interface_module.rst)|Manages IGMP interface configuration.
-[cisco.nxos.nxos_igmp_snooping](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_snooping_module.rst)|Manages IGMP snooping global configuration.
+[cisco.nxos.nxos_igmp_snooping](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_snooping_module.rst)|IGMP snooping resource module.
 [cisco.nxos.nxos_install_os](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_install_os_module.rst)|Set boot options like boot, kickstart image and issu.
 [cisco.nxos.nxos_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst)|Interfaces resource module
 [cisco.nxos.nxos_l2_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l2_interfaces_module.rst)|L2 interfaces resource module
