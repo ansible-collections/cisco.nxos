@@ -517,3 +517,281 @@
       ansible.builtin.assert:
         that:
           - overridden_result.commands | reject('match', '.*cdp.*') | reject('match', '^interface.*') | list | length == 0
+
+- name: "Nxos_l2_interfaces -- state: stp_storm_merged"
+  hosts: nxos_l2_interfaces_stp_storm_merged
+  gather_facts: false
+  tasks:
+    - name: Merged - spanning_tree and storm_control, including a tri-state bpduguard
+      register: result_merged
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                level: "10.50"
+              action: trap
+          - name: Ethernet1/26
+            spanning_tree:
+              port_type: edge
+              bpduguard: false
+          - name: port-channel20
+            spanning_tree:
+              port_type: network
+              mst:
+                - instances: "0,2-4"
+                  cost: 200
+              vlans:
+                - vlans: "100-102"
+                  port_priority: 64
+        state: merged
+
+    - name: Assert Merged - the commands
+      ansible.builtin.assert:
+        that:
+          - result_merged.changed == true
+          - result_merged.commands == expected
+      vars:
+        expected:
+          - interface Ethernet1/25
+          - spanning-tree port type edge trunk
+          - spanning-tree bpduguard enable
+          - spanning-tree cost 100
+          - storm-control broadcast level 0.01
+          - storm-control multicast level 10.50
+          - storm-control action trap
+          - interface Ethernet1/26
+          - spanning-tree port type edge
+          - spanning-tree bpduguard disable
+          - interface port-channel20
+          - spanning-tree port type network
+          - spanning-tree mst 0,2-4 cost 200
+          - spanning-tree vlan 100-102 port-priority 64
+
+    - name: Merged - idempotent, the storm level is compared as a number
+      register: result_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            spanning_tree:
+              bpduguard: true
+            storm_control:
+              broadcast:
+                level: "0.010"
+          - name: Ethernet1/26
+            spanning_tree:
+              bpduguard: false
+          - name: port-channel20
+            spanning_tree:
+              mst:
+                - instances: "4,3,2,0"
+                  cost: 200
+        state: merged
+
+    - name: Assert Merged idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_idempotent.changed == false
+          - result_idempotent.commands | length == 0
+
+- name: "Nxos_l2_interfaces -- state: stp_storm_replaced"
+  hosts: nxos_l2_interfaces_stp_storm_replaced
+  gather_facts: false
+  tasks:
+    - name: Replaced - leave out a guard and an unset bpduguard
+      register: result_replaced
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            mode: trunk
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+              port_priority: 64
+              link_type: point_to_point
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                level: "1.0"
+              unicast:
+                level: "5.00"
+          - name: Ethernet1/26
+            cdp_enable: true
+        state: replaced
+
+    - name: Assert Replaced - only the lines that are not listed are removed
+      ansible.builtin.assert:
+        that:
+          - result_replaced.changed == true
+          - result_replaced.commands == expected
+      vars:
+        expected:
+          - interface Ethernet1/25
+          - no spanning-tree guard
+          - interface Ethernet1/26
+          - no spanning-tree bpduguard
+
+    - name: Replaced - idempotent
+      register: result_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            mode: trunk
+            cdp_enable: true
+            spanning_tree:
+              port_type: edge_trunk
+              bpduguard: true
+              cost: 100
+              port_priority: 64
+              link_type: point_to_point
+            storm_control:
+              broadcast:
+                level: "0.01"
+              multicast:
+                level: "1.00"
+              unicast:
+                level: "5.00"
+          - name: Ethernet1/26
+            cdp_enable: true
+        state: replaced
+
+    - name: Assert Replaced idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_idempotent.changed == false
+          - result_idempotent.commands | length == 0
+
+- name: "Nxos_l2_interfaces -- state: stp_storm_deleted"
+  hosts: nxos_l2_interfaces_stp_storm_deleted
+  gather_facts: false
+  tasks:
+    - name: Deleted - remove everything of an interface
+      register: result_deleted
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+        state: deleted
+
+    - name: Assert Deleted - spanning_tree and storm_control are removed
+      ansible.builtin.assert:
+        that:
+          - result_deleted.changed == true
+          - result_deleted.commands == expected
+      vars:
+        expected:
+          - interface Ethernet1/25
+          - no switchport mode trunk
+          - no spanning-tree port type edge trunk
+          - no spanning-tree bpduguard
+          - no spanning-tree guard
+          - no spanning-tree cost
+          - no spanning-tree port-priority
+          - no spanning-tree link-type
+          - no storm-control broadcast level 0.01
+          - no storm-control multicast level 1.00
+          - no storm-control unicast level 5.00
+
+    - name: Deleted - idempotent
+      register: result_idempotent
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+        state: deleted
+
+    - name: Assert Deleted idempotent - no changes
+      ansible.builtin.assert:
+        that:
+          - result_idempotent.changed == false
+          - result_idempotent.commands | length == 0
+
+- name: "Nxos_l2_interfaces -- state: stp_storm_gathered"
+  hosts: nxos_l2_interfaces_stp_storm_gathered
+  gather_facts: false
+  tasks:
+    - name: Gathered - read spanning_tree and storm_control
+      register: result_gathered
+      cisco.nxos.nxos_l2_interfaces:
+        state: gathered
+
+    - name: Assert Gathered - levels, tri-state bpduguard, lists and the routed port
+      ansible.builtin.assert:
+        that:
+          - eth25.mode == "trunk"
+          - eth25.spanning_tree.bpduguard == true
+          - eth25.spanning_tree.port_type == "edge_trunk"
+          - eth25.spanning_tree.link_type == "point_to_point"
+          - eth25.spanning_tree.guard == "root"
+          - eth25.spanning_tree.cost == 100
+          - eth25.spanning_tree.port_priority == 64
+          - eth25.storm_control.broadcast.level == "0.01"
+          - eth25.storm_control.multicast.level == "1.00"
+          - eth25.storm_control.unicast.level == "5.00"
+          - eth26.spanning_tree.bpduguard == false
+          - eth26.spanning_tree.bpdufilter == true
+          - eth26.storm_control.broadcast.level == "50.50"
+          - "eth27 == {'name': 'Ethernet1/27'}"
+          - pc20.spanning_tree.port_type == "network"
+          - "pc20.spanning_tree.mst == [{'instances': '0,2-4', 'cost': 200, 'port_priority': 32}]"
+          - "pc20.spanning_tree.vlans == [{'vlans': '100-102', 'port_priority': 64}]"
+      vars:
+        eth25: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'Ethernet1/25') | first }}"
+        eth26: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'Ethernet1/26') | first }}"
+        eth27: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'Ethernet1/27') | first }}"
+        pc20: "{{ result_gathered.gathered | selectattr('name', 'equalto', 'port-channel20') | first }}"
+
+    - name: Parsed - spanning_tree and storm_control from a configuration text
+      register: result_parsed
+      cisco.nxos.nxos_l2_interfaces:
+        running_config: |
+          interface Ethernet1/25
+            spanning-tree port type edge
+            spanning-tree bpduguard disable
+            storm-control unicast level 5.00
+        state: parsed
+
+    - name: Assert Parsed
+      ansible.builtin.assert:
+        that:
+          - result_parsed.parsed == expected
+      vars:
+        expected:
+          - name: Ethernet1/25
+            spanning_tree:
+              port_type: edge
+              bpduguard: false
+            storm_control:
+              unicast:
+                level: "5.00"
+
+    - name: Rendered - spanning_tree and storm_control commands
+      register: result_rendered
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: Ethernet1/25
+            spanning_tree:
+              guard: loop
+              bpdufilter: true
+            storm_control:
+              unicast:
+                level: "5"
+        state: rendered
+
+    - name: Assert Rendered
+      ansible.builtin.assert:
+        that:
+          - result_rendered.rendered == expected
+      vars:
+        expected:
+          - interface Ethernet1/25
+          - spanning-tree bpdufilter enable
+          - spanning-tree guard loop
+          - storm-control unicast level 5.00

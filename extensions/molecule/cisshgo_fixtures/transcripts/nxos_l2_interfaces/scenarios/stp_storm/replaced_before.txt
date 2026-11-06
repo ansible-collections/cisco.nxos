@@ -1,0 +1,15 @@
+interface Ethernet1/25
+  switchport
+  switchport mode trunk
+  spanning-tree port-priority 64
+  spanning-tree cost 100
+  spanning-tree link-type point-to-point
+  spanning-tree port type edge trunk
+  spanning-tree bpduguard enable
+  spanning-tree guard root
+  storm-control broadcast level 0.01
+  storm-control multicast level 1.00
+  storm-control unicast level 5.00
+interface Ethernet1/26
+  switchport
+  spanning-tree bpduguard disable
