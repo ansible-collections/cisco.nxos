@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Merge the nxos_vpc changelog fragments of the unreleased rewrite into one entry and drop the notes about fixes made before its first release."
