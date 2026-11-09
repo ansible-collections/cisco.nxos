@@ -16,14 +16,3 @@ breaking_changes:
     nxos_vpc - passing ``default`` as the value of a numeric option is no
     longer supported. Omit the option under ``state: replaced`` or
     ``state: overridden`` to reset it to the platform default.
-minor_changes:
-  - >-
-    nxos_vpc - removing a peer-keepalive under ``state: replaced`` or
-    ``state: overridden`` deletes and recreates the VPC domain, because
-    NX-OS rejects every ``no peer-keepalive`` form on 10.4(x). This
-    momentarily flaps the peer relationship; see the module notes for details.
-  - >-
-    nxos_vpc - add ``layer3_peer_router``, ``arp_synchronize``, ``nd_synchronize``,
-    ``virtual_peer_link_dest``, ``virtual_peer_link_src`` and ``virtual_peer_link_dscp``
-    options to configure ``layer3 peer-router``, ``ip arp synchronize``,
-    ``ipv6 nd synchronize`` and ``virtual peer-link`` VPC domain sub-commands.
