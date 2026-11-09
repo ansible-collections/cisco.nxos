@@ -1,0 +1,27 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_ptp_interfaces rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ptp_interfaces:
+    config:
+      - name: Eth1/3
+        enabled: true
+        vlan: 100
+        role: master
+        transmission: unicast
+        master:
+          - 192.0.2.10
+        asymmetric_delay:
+          forward_path: 100
+        sync_interval:
+          value: -2
+          profile: aes67
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] | sort == result['rendered'] | sort
+      - result.changed == false

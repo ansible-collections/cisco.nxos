@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - >-
+    nxos_ptp_interfaces - new resource module to manage the Precision Time Protocol (PTP) configuration of the
+    interfaces, including the role, transmission mode, transport, VLAN, announce, sync and delay request
+    intervals with their profiles and the unicast addresses.

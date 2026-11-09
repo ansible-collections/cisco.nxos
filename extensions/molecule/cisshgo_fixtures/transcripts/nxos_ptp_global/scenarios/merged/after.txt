@@ -1,0 +1,6 @@
+ptp source 192.0.2.1
+ptp priority1 90
+ptp priority2 120
+ptp notification type gm-change
+ptp correction-range 5000
+ptp correction-range logging

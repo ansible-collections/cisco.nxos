@@ -1,0 +1,48 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_ptp_interfaces overridden integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override the PTP interfaces configuration
+      cisco.nxos.nxos_ptp_interfaces: &id001
+        config:
+          - name: "{{ nxos_int1 }}"
+            enabled: true
+            vlan: 100
+            sync_interval:
+              value: -2
+              profile: aes67
+        state: overridden
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - before == result['before']
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - overridden['commands'] == result['commands']
+
+    - name: Assert that after dicts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: Override the PTP interfaces configuration (idempotent)
+      cisco.nxos.nxos_ptp_interfaces: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

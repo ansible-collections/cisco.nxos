@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - >-
+    nxos_ptp_global - new resource module to manage the global Precision Time Protocol (PTP)
+    configuration, including the source address, domain, priorities, correction range,
+    delay tolerance, notifications and the clock update and time distribution hold settings.
