@@ -13,3 +13,5 @@ tags: [cisco, nxos, networking, nxapi, netconf]
 version: "13.0.0"
 build_ignore:
   - extensions/molecule
+  - docs
+  - .github
