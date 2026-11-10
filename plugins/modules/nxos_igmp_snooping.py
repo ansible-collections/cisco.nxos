@@ -99,11 +99,11 @@ options:
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: 13.1.0
+    version_added: 14.0.0
   config:
     description: IGMP snooping configuration.
     type: dict
-    version_added: 13.1.0
+    version_added: 14.0.0
     suboptions:
       snooping:
         description:
@@ -364,7 +364,7 @@ options:
   state:
     description:
     - The state the configuration should be left in.
-    - The states and the call shape changed in 13.1.0. Only the resource module states exist, the former
+    - The states and the call shape changed in 14.0.0. Only the resource module states exist, the former
       C(present) and C(default) states are replaced by C(merged) and C(deleted).
     - With I(merged) what is given is added to the device, nothing is removed. A setting that
       is not given is not touched.
