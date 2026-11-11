@@ -201,8 +201,8 @@ Notes
    - Interface must be a L3 port before using this module.
    - HSRP cannot be configured on loopback interfaces.
    - MD5 authentication is only possible with HSRPv2 while it is ignored if HSRPv1 is used instead, while it will not raise any error. Here we allow MD5 authentication only with HSRPv2 in order to enforce better practice.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
+   - For information on using CLI and NX-API see the `NXOS Platform Options guide <https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html>`_.
+   - For more information on using Ansible to manage network devices see the `Ansible Network Guide <https://docs.ansible.com/ansible/latest/network/getting_started/index.html>`_.
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
 

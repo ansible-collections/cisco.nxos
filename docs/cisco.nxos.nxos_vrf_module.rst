@@ -384,8 +384,8 @@ Notes
    - Cisco NX-OS creates the default VRF by itself. Therefore, you're not allowed to use default as *vrf* name in this module.
    - ``vrf`` name must be shorter than 32 chars.
    - VRF names are not case sensible in NX-OS. Anyway, the name is stored just like it's inserted by the user and it'll not be changed again unless the VRF is removed and re-created. i.e. ``vrf=NTC`` will create a VRF named NTC, but running it again with ``vrf=ntc`` will not cause a configuration change.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
+   - For information on using CLI and NX-API see the `NXOS Platform Options guide <https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html>`_.
+   - For more information on using Ansible to manage network devices see the `Ansible Network Guide <https://docs.ansible.com/ansible/latest/network/getting_started/index.html>`_.
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
 

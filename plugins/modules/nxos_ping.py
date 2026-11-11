@@ -73,9 +73,9 @@ options:
     type: str
 notes:
 - Unsupported for Cisco MDS
-- For a general purpose network module, see the M(ansible.netcommon.net_ping) module.
-- For Windows targets, use the M(ansible.windows.win_ping) module instead.
-- For targets running Python, use the M(ansible.builtin.ping) module instead.
+- For a general purpose network module, see the C(ansible.netcommon.net_ping) module.
+- For Windows targets, use the C(ansible.windows.win_ping) module instead.
+- For targets running Python, use the C(ansible.builtin.ping) module instead.
 """
 
 EXAMPLES = """

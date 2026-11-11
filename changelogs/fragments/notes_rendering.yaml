@@ -1,0 +1,3 @@
+---
+trivial:
+  - Render the notes of the module documentation correctly on GitHub, the shared notes use plain links and the module notes no longer use M().

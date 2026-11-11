@@ -262,8 +262,8 @@ Notes
    - Unsupported for Cisco MDS
    - BFD global will automatically enable 'feature bfd' if it is disabled.
    - BFD global does not have a 'state' parameter. All of the BFD commands are unique and are defined if 'feature bfd' is enabled.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
+   - For information on using CLI and NX-API see the `NXOS Platform Options guide <https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html>`_.
+   - For more information on using Ansible to manage network devices see the `Ansible Network Guide <https://docs.ansible.com/ansible/latest/network/getting_started/index.html>`_.
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
 

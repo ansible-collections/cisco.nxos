@@ -23,7 +23,7 @@ notes:
 - Tested against NX-OS 9.3.6.
 - Unsupported for Cisco MDS
 - For managing BGP address family configurations please use
-  the M(cisco.nxos.nxos_bgp_address_family) module.
+  the C(cisco.nxos.nxos_bgp_address_family) module.
 - This module works with connection C(network_cli) and C(httpapi).
 author: Nilashish Chakraborty (@NilashishC)
 options:
