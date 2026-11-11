@@ -17,7 +17,6 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 
@@ -127,7 +126,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     load_config,
 )
-
 
 BOOL_PARAMS = ["assoc_vrf", "suppress_arp", "suppress_arp_disable"]
 PARAM_TO_DEFAULT_KEYMAP = {
