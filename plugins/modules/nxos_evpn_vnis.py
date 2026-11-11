@@ -37,6 +37,7 @@ notes:
     distinguisher of a listed VNI that are not in I(config) are removed.
   - Layer 3 VNIs (C(vni <id> l3) under C(vrf context)) are not managed by this module.
   - This module works with connection C(network_cli) and C(httpapi).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
   - The I(parsed) state reads configuration from C(running_config) and does
     not connect to the device.
 author:

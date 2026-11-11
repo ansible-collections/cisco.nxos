@@ -100,6 +100,7 @@ notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
 - Unsupported for Cisco MDS
 - This module works with connection C(network_cli).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 
 """
 EXAMPLES = """

@@ -38,6 +38,7 @@ notes:
 - IGMP snooping over VXLAN needs BGP EVPN and the global I(vxlan) setting, and the configuration
   must be identical on both vPC peers.
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 - The I(parsed) state reads configuration from I(running_config) and does not connect to the device.
 author:
 - Jason Edelman (@jedelman8)

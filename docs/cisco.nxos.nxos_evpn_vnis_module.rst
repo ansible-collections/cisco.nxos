@@ -195,7 +195,7 @@ Notes
    - Under *merged*, route targets are only added and the route distinguisher is only replaced, nothing is removed.
    - Under *replaced* and *overridden*, route targets and the route distinguisher of a listed VNI that are not in *config* are removed.
    - Layer 3 VNIs (``vni <id> l3`` under ``vrf context``) are not managed by this module.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - The *parsed* state reads configuration from ``running_config`` and does not connect to the device.
    - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
    - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.

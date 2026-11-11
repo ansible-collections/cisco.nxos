@@ -1097,7 +1097,7 @@ Notes
    - The device keeps one policy per interface, so an interface can only be used once in *report_policy* and *access_group*.
    - The proxy with *mrt* ``5``, the default, is not stored by the device, omit *mrt* instead.
    - IGMP snooping over VXLAN needs BGP EVPN and the global *vxlan* setting, and the configuration must be identical on both vPC peers.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - The *parsed* state reads configuration from *running_config* and does not connect to the device.
 
 

@@ -22,6 +22,7 @@ author: Ruchi Pakhle (@Ruchip16)
 notes:
   - Tested against Cisco NX-OS.
   - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
     description: A list of interface VRF configurations.

@@ -41,6 +41,7 @@ notes:
 - Tested against NX-OS 7.0(3)I5(1).
 - Unsupported for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:

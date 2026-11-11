@@ -2584,7 +2584,7 @@ Notes
    - Tested against NX-OS 9.3.6.
    - Unsupported for Cisco MDS
    - For managing BGP address family configurations please use the :ref:`cisco.nxos.nxos_bgp_address_family <cisco.nxos.nxos_bgp_address_family_module>` module.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

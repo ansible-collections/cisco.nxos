@@ -180,7 +180,7 @@ Notes
    - ``vpc`` and ``peer_link`` are mutually exclusive for a given interface. Supplying both in the same ``config`` entry fails the task.
    - Setting ``peer_link`` or ``orphan_port_suspend`` to ``false`` removes the corresponding line under every state, including *merged*. Omitting an attribute under *merged* leaves whatever the device already has.
    - ``orphan_port_suspend`` applies to any interface type, including Ethernet interfaces.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - The *parsed* state reads configuration from ``running_config`` and does not connect to the device.
    - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
    - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.

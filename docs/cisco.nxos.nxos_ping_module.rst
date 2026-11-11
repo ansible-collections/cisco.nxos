@@ -18,9 +18,9 @@ Version added: 1.0.0
 Synopsis
 --------
 - Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the :ref:`ansible.netcommon.net_ping <ansible.netcommon.net_ping_module>` module.
-- For Windows targets, use the :ref:`ansible.windows.win_ping <ansible.windows.win_ping_module>` module instead.
-- For targets running Python, use the :ref:`ansible.builtin.ping <ansible.builtin.ping_module>` module instead.
+- For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
+- For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
+- For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.
 
 
 
@@ -160,9 +160,9 @@ Notes
 
 .. note::
    - Unsupported for Cisco MDS
-   - For a general purpose network module, see the :ref:`ansible.netcommon.net_ping <ansible.netcommon.net_ping_module>` module.
-   - For Windows targets, use the :ref:`ansible.windows.win_ping <ansible.windows.win_ping_module>` module instead.
-   - For targets running Python, use the :ref:`ansible.builtin.ping <ansible.builtin.ping_module>` module instead.
+   - For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
+   - For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
+   - For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.
    - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
    - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
    - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
