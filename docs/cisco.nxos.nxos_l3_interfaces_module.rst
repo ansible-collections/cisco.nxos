@@ -5,7 +5,7 @@
 cisco.nxos.nxos_l3_interfaces
 *****************************
 
-**L3 interfaces resource module**
+**L3 interfaces resource module.**
 
 
 Version added: 1.0.0

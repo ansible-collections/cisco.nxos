@@ -24,66 +24,22 @@ description:
 notes:
 - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
 - Unsupported for Cisco MDS.
-- This module was rewritten as a resource module. The former flat parameters
-  and the C(present) and C(default) states are gone, use I(config) with the
-  I(state) C(merged) or C(deleted) instead.
-- The IGMP snooping configuration must be identical on both vPC peers.
-- IGMP snooping over VXLAN is supported with BGP EVPN only, not with flood-and-learn,
-  and not on VLANs with FEX member ports. The global I(vxlan) setting
-  (C(ip igmp snooping vxlan)) must be enabled for snooping to be active on VXLAN VLANs.
-- A VLAN without PIM needs an IGMP querier, configure it with I(querier) of the VLAN.
-- The settings of a VLAN do not apply until the VLAN exists. NX-OS keeps a
-  C(vlan configuration) block when the VLAN itself is removed, use I(state) C(deleted),
-  C(replaced) or C(overridden) to remove such blocks.
-- NX-OS does not show a setting that has its default value in the running configuration.
-  The facts therefore report the global settings with their effective value, which means
-  that C(gathered) and C(parsed) return C(snooping), C(link_local_groups_suppression),
-  C(report_suppression), C(v3_report_suppression), C(vxlan), C(disable_nve_static_router_port),
-  C(max_gq_miss), C(syslog_threshold) and C(holddown_timer) even when they are not configured.
-  The group timeout and the proxy are only returned when they are configured. The settings of a
-  C(vlan configuration) block are only returned when the block shows them; a value equal to the
-  default is not shown by the device and counts as not set.
-- The global defaults are C(snooping=true), C(link_local_groups_suppression=true),
-  C(report_suppression=true), C(v3_report_suppression=false), C(vxlan=false),
-  C(disable_nve_static_router_port=false), C(max_gq_miss=3), C(syslog_threshold=90),
-  C(holddown_timer=210) and no group timeout and no proxy. The defaults of a VLAN are
-  C(snooping=true), C(explicit_tracking=true), C(link_local_groups_suppression=true),
-  C(report_suppression=true), C(v3_report_suppression=false), C(fast_leave=false),
-  C(querier_timeout=255), C(query_interval=125), C(query_max_response_time=10),
-  C(robustness_variable=2), C(last_member_query_interval=1) and C(version=3). Setting an option to
-  its default value removes its line from the configuration, and is a no-op when the device already has it.
-- C(startup_query_count) and C(startup_query_interval) have no default, the device shows them as soon as they are configured.
-- Tested against NX-OS 10.6(4) on N9K-C93180YC-FX, global and per VLAN, that every option is accepted, stored as
-  written by the module, and removed again. The group timeout is accepted while snooping is disabled.
-  The route-maps and prefix-lists of I(report_policy) and I(access_group) do not have to exist,
-  and the interfaces of I(mrouter_interfaces), I(report_flood), I(report_policy), I(access_group) and
-  I(static_groups) do not have to be members of the VLAN.
-- The group timeout is sent after the other global settings, except when snooping ends up disabled.
-- The device keeps one policy per interface. A C(report_policy) and an C(access_group) entry for the same
-  interface replace each other, so the module fails when an interface is used more than once. An
-  C(access_group) without an interface does not conflict with them.
-- The proxy with C(mrt) 5, the default, is removed by the device instead of being stored, so C(mrt) 5 is rejected.
-  Omit I(mrt) for C(proxy general-queries) without a value, which also resets a configured I(mrt).
-- C(event-history) (debug buffer sizes) and C(optimise-multicast-flood) (not available on the tested platform)
-  are not managed by this module.
-- A C(vlan configuration) block is managed completely. Under I(state) C(replaced) and C(overridden) a listed
-  VLAN gets exactly the given settings, the others return to the default, and a VLAN without any setting has
-  no block. C(deleted) and C(overridden) remove the blocks, together with all content, of the VLANs they remove.
-- A static group is accepted and stored for any interface, but C(show ip igmp snooping groups vlan <id>)
-  only lists it (type S) when the interface is a member port of that VLAN.
-- C(state=deleted) without I(config) and C(state=overridden) remove every C(vlan configuration) block on the
-  switch that is not listed, including blocks created by other tools or roles. Run the task in check mode first.
-- A C(vlan configuration) block that is not for a single VLAN (for example a range) is ignored.
-- A VLAN that is listed without any setting is not created by C(merged),
-  because an empty C(vlan configuration) block has no effect. It is reported
-  by C(gathered) when the device has one.
-- Interface names are normalised before they are compared, so C(Eth1/10),
-  C(ethernet1/10) and C(Ethernet1/10) are the same, as are C(Po20) and C(port-channel20).
-- Policy names must be 1-63 ASCII letters, numbers, underscores, periods or hyphens.
-- Interface values accept NX-OS Ethernet, VLAN, loopback, port-channel and NVE interface names.
+- The module was rewritten as a resource module, the former flat parameters and the C(present)
+  and C(default) states are replaced by I(config) with the I(state) C(merged) or C(deleted).
+- NX-OS does not display a setting that has its default value. The global settings are therefore
+  gathered with their effective value, a setting of a VLAN that is equal to its default counts as
+  not set, and an option that is given with its default value removes its line.
+- A C(vlan configuration) block is managed completely. With I(state) C(replaced) or C(overridden) a listed
+  VLAN gets exactly the given settings. I(state) C(deleted) without I(config) and I(state) C(overridden)
+  also remove the blocks that are not listed, also those created by other tools, so run the task in check mode first.
+- The device keeps one policy per interface, so an interface can only be used once in
+  I(report_policy) and I(access_group).
+- The proxy with I(mrt) C(5), the default, is not stored by the device, omit I(mrt) instead.
+- IGMP snooping over VXLAN needs BGP EVPN and the global I(vxlan) setting, and the configuration
+  must be identical on both vPC peers.
 - This module works with connection C(network_cli) and C(httpapi).
-- The I(parsed) state reads configuration from I(running_config) and does
-  not connect to the device.
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+- The I(parsed) state reads configuration from I(running_config) and does not connect to the device.
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -388,8 +344,6 @@ options:
     - rendered
     - parsed
     default: merged
-extends_documentation_fragment:
-- cisco.nxos.nxos
 """
 
 EXAMPLES = """

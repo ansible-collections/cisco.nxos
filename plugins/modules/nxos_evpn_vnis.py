@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_evpn_vnis
 version_added: 13.1.0
-short_description: EVPN VNIs resource module
+short_description: EVPN VNIs resource module.
 description:
   - This module manages the Layer 2 VNIs configured under the C(evpn) section
     (C(vni <id> l2)) on Cisco NX-OS devices, with their route distinguisher
@@ -37,6 +37,7 @@ notes:
     distinguisher of a listed VNI that are not in I(config) are removed.
   - Layer 3 VNIs (C(vni <id> l3) under C(vrf context)) are not managed by this module.
   - This module works with connection C(network_cli) and C(httpapi).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
   - The I(parsed) state reads configuration from C(running_config) and does
     not connect to the device.
 author:

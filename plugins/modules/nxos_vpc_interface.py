@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_vpc_interface
 version_added: 1.0.0
-short_description: VPC interface resource module
+short_description: VPC interface resource module.
 description:
   - This module manages VPC-related interface configuration on Cisco NX-OS devices.
 notes:
@@ -29,6 +29,7 @@ notes:
     attribute under I(merged) leaves whatever the device already has.
   - C(orphan_port_suspend) applies to any interface type, including Ethernet interfaces.
   - This module works with connection C(network_cli) and C(httpapi).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
   - The I(parsed) state reads configuration from C(running_config) and does
     not connect to the device.
 author:

@@ -5,7 +5,7 @@
 cisco.nxos.nxos_l2_interfaces
 *****************************
 
-**L2 interfaces resource module**
+**L2 interfaces resource module.**
 
 
 Version added: 1.0.0

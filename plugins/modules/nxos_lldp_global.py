@@ -32,7 +32,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lldp_global
-short_description: LLDP resource module
+short_description: LLDP global resource module.
 description: This module configures and manages the Link Layer Discovery Protocol(LLDP)
   attributes on NX-OS platforms.
 version_added: 1.0.0

@@ -15,13 +15,14 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_interfaces
-short_description: Resource module to configure VRF interfaces.
+short_description: VRF interfaces resource module.
 description: This module configures and manages the VRF configuration on interfaces on NX-OS platforms.
 version_added: 9.3.0
 author: Ruchi Pakhle (@Ruchip16)
 notes:
   - Tested against Cisco NX-OS.
   - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
     description: A list of interface VRF configurations.

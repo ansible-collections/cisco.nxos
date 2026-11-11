@@ -72,76 +72,76 @@ Name | Description
 --- | ---
 [cisco.nxos.nxos_aaa_server](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_module.rst)|Manages AAA server global configuration.
 [cisco.nxos.nxos_aaa_server_host](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host_module.rst)|Manages AAA server host-specific configuration.
-[cisco.nxos.nxos_acl_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acl_interfaces_module.rst)|ACL interfaces resource module
-[cisco.nxos.nxos_acls](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acls_module.rst)|ACLs resource module
+[cisco.nxos.nxos_acl_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acl_interfaces_module.rst)|ACL interfaces resource module.
+[cisco.nxos.nxos_acls](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acls_module.rst)|ACLs resource module.
 [cisco.nxos.nxos_banner](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_banner_module.rst)|Manage multiline banners on Cisco NXOS devices
 [cisco.nxos.nxos_bfd_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_global_module.rst)|Bidirectional Forwarding Detection (BFD) global-level configuration
-[cisco.nxos.nxos_bfd_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_interfaces_module.rst)|BFD interfaces resource module
-[cisco.nxos.nxos_bgp_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst)|BGP Address Family resource module.
-[cisco.nxos.nxos_bgp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst)|BGP Global resource module.
-[cisco.nxos.nxos_bgp_neighbor_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family_module.rst)|BGP Neighbor Address Family resource module.
-[cisco.nxos.nxos_bgp_templates](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_templates_module.rst)|BGP Templates resource module.
+[cisco.nxos.nxos_bfd_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_interfaces_module.rst)|BFD interfaces resource module.
+[cisco.nxos.nxos_bgp_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst)|BGP address family resource module.
+[cisco.nxos.nxos_bgp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst)|BGP global resource module.
+[cisco.nxos.nxos_bgp_neighbor_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family_module.rst)|BGP neighbor address family resource module.
+[cisco.nxos.nxos_bgp_templates](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_templates_module.rst)|BGP templates resource module.
 [cisco.nxos.nxos_command](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_command_module.rst)|Run arbitrary command on Cisco NXOS devices
 [cisco.nxos.nxos_config](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_config_module.rst)|Manage Cisco NXOS configuration sections
 [cisco.nxos.nxos_devicealias](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_devicealias_module.rst)|Configuration of device alias for Cisco NXOS MDS Switches.
 [cisco.nxos.nxos_evpn_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_global_module.rst)|Handles the EVPN control plane for VXLAN.
 [cisco.nxos.nxos_evpn_vni](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vni_module.rst)|Manages Cisco EVPN VXLAN Network Identifier (VNI).
-[cisco.nxos.nxos_evpn_vnis](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vnis_module.rst)|EVPN VNIs resource module
+[cisco.nxos.nxos_evpn_vnis](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vnis_module.rst)|EVPN VNIs resource module.
 [cisco.nxos.nxos_facts](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_facts_module.rst)|Gets facts about NX-OS switches
-[cisco.nxos.nxos_fc_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_fc_interfaces_module.rst)|Fc Interfaces resource module
+[cisco.nxos.nxos_fc_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_fc_interfaces_module.rst)|FC interfaces resource module.
 [cisco.nxos.nxos_feature](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst)|Manage features in NX-OS switches.
 [cisco.nxos.nxos_file_copy](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_file_copy_module.rst)|Copy a file to a remote NXOS device.
 [cisco.nxos.nxos_gir](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_module.rst)|Trigger a graceful removal or insertion (GIR) of the switch.
 [cisco.nxos.nxos_gir_profile_management](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_profile_management_module.rst)|Create a maintenance-mode or normal-mode profile for GIR.
 [cisco.nxos.nxos_hostname](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hostname_module.rst)|Hostname resource module.
 [cisco.nxos.nxos_hsrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_module.rst)|(deprecated, removed after 2028-06-01) Manages HSRP configuration on NX-OS switches.
-[cisco.nxos.nxos_hsrp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst)|HSRP interfaces resource module
+[cisco.nxos.nxos_hsrp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst)|HSRP interfaces resource module.
 [cisco.nxos.nxos_igmp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_module.rst)|Manages IGMP global configuration.
 [cisco.nxos.nxos_igmp_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_interface_module.rst)|Manages IGMP interface configuration.
 [cisco.nxos.nxos_igmp_snooping](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_igmp_snooping_module.rst)|IGMP snooping resource module.
 [cisco.nxos.nxos_install_os](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_install_os_module.rst)|Set boot options like boot, kickstart image and issu.
-[cisco.nxos.nxos_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst)|Interfaces resource module
-[cisco.nxos.nxos_l2_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l2_interfaces_module.rst)|L2 interfaces resource module
-[cisco.nxos.nxos_l3_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l3_interfaces_module.rst)|L3 interfaces resource module
-[cisco.nxos.nxos_lacp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lacp_module.rst)|LACP resource module
-[cisco.nxos.nxos_lacp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lacp_interfaces_module.rst)|LACP interfaces resource module
-[cisco.nxos.nxos_lag_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lag_interfaces_module.rst)|LAG interfaces resource module
-[cisco.nxos.nxos_lldp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_global_module.rst)|LLDP resource module
-[cisco.nxos.nxos_lldp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst)|LLDP interfaces resource module
-[cisco.nxos.nxos_logging_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_global_module.rst)|Logging resource module.
-[cisco.nxos.nxos_ntp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_global_module.rst)|NTP Global resource module.
+[cisco.nxos.nxos_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst)|Interfaces resource module.
+[cisco.nxos.nxos_l2_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l2_interfaces_module.rst)|L2 interfaces resource module.
+[cisco.nxos.nxos_l3_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l3_interfaces_module.rst)|L3 interfaces resource module.
+[cisco.nxos.nxos_lacp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lacp_module.rst)|LACP resource module.
+[cisco.nxos.nxos_lacp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lacp_interfaces_module.rst)|LACP interfaces resource module.
+[cisco.nxos.nxos_lag_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lag_interfaces_module.rst)|LAG interfaces resource module.
+[cisco.nxos.nxos_lldp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_global_module.rst)|LLDP global resource module.
+[cisco.nxos.nxos_lldp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst)|LLDP interfaces resource module.
+[cisco.nxos.nxos_logging_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_global_module.rst)|Logging global resource module.
+[cisco.nxos.nxos_ntp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_global_module.rst)|NTP global resource module.
 [cisco.nxos.nxos_nve_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nve_interface_module.rst)|NVE interface resource module.
 [cisco.nxos.nxos_nxapi](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst)|Manage NXAPI configuration on an NXOS device.
-[cisco.nxos.nxos_ospf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst)|OSPF Interfaces Resource Module.
-[cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module
-[cisco.nxos.nxos_ospfv3](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv3_module.rst)|OSPFv3 resource module
+[cisco.nxos.nxos_ospf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst)|OSPF interfaces resource module.
+[cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module.
+[cisco.nxos.nxos_ospfv3](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv3_module.rst)|OSPFv3 resource module.
 [cisco.nxos.nxos_overlay_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_overlay_global_module.rst)|Configures anycast gateway MAC of the switch.
 [cisco.nxos.nxos_pim](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_module.rst)|Manages configuration of a PIM instance.
 [cisco.nxos.nxos_pim_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_interface_module.rst)|Manages PIM interface configuration.
 [cisco.nxos.nxos_pim_rp_address](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_rp_address_module.rst)|Manages configuration of an PIM static RP address instance.
 [cisco.nxos.nxos_ping](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ping_module.rst)|Tests reachability using ping from Nexus switch.
-[cisco.nxos.nxos_prefix_lists](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_prefix_lists_module.rst)|Prefix-Lists resource module.
+[cisco.nxos.nxos_prefix_lists](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_prefix_lists_module.rst)|Prefix lists resource module.
 [cisco.nxos.nxos_reboot](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_reboot_module.rst)|Reboot a network device.
 [cisco.nxos.nxos_rollback](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_rollback_module.rst)|Set a checkpoint or rollback to a checkpoint.
-[cisco.nxos.nxos_route_maps](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_route_maps_module.rst)|Route Maps resource module.
+[cisco.nxos.nxos_route_maps](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_route_maps_module.rst)|Route maps resource module.
 [cisco.nxos.nxos_rpm](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_rpm_module.rst)|Install patch or feature rpms on Cisco NX-OS devices.
 [cisco.nxos.nxos_snapshot](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snapshot_module.rst)|Manage snapshots of the running states of selected features.
-[cisco.nxos.nxos_snmp_server](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_server_module.rst)|SNMP Server resource module.
-[cisco.nxos.nxos_static_routes](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst)|Static routes resource module
+[cisco.nxos.nxos_snmp_server](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_server_module.rst)|SNMP server resource module.
+[cisco.nxos.nxos_static_routes](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst)|Static routes resource module.
 [cisco.nxos.nxos_system](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_system_module.rst)|Manage the system attributes on Cisco NXOS devices
-[cisco.nxos.nxos_telemetry](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_telemetry_module.rst)|TELEMETRY resource module
+[cisco.nxos.nxos_telemetry](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_telemetry_module.rst)|Telemetry resource module.
 [cisco.nxos.nxos_udld](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_udld_module.rst)|Manages UDLD global configuration params.
 [cisco.nxos.nxos_udld_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_udld_interface_module.rst)|Manages UDLD interface configuration params.
 [cisco.nxos.nxos_user](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_user_module.rst)|Manage the collection of local users on Nexus devices
-[cisco.nxos.nxos_vlans](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlans_module.rst)|VLANs resource module
-[cisco.nxos.nxos_vpc](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_module.rst)|VPC global domain resource module.
-[cisco.nxos.nxos_vpc_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_interface_module.rst)|VPC interface resource module
+[cisco.nxos.nxos_vlans](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlans_module.rst)|VLANs resource module.
+[cisco.nxos.nxos_vpc](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_module.rst)|VPC resource module.
+[cisco.nxos.nxos_vpc_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_interface_module.rst)|VPC interface resource module.
 [cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|(deprecated, removed after 2026-07-25) Manages global VRF configuration.
-[cisco.nxos.nxos_vrf_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_address_family_module.rst)|Resource module to configure VRF address family definitions.
+[cisco.nxos.nxos_vrf_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_address_family_module.rst)|VRF address family resource module.
 [cisco.nxos.nxos_vrf_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_af_module.rst)|Manages VRF AF.
-[cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|Resource module to configure VRF definitions.
+[cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|VRF global resource module.
 [cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|(deprecated, removed after 2028-06-01) Manages interface specific VRF configuration.
-[cisco.nxos.nxos_vrf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interfaces_module.rst)|Resource module to configure VRF interfaces.
+[cisco.nxos.nxos_vrf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interfaces_module.rst)|VRF interfaces resource module.
 [cisco.nxos.nxos_vrrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrrp_module.rst)|Manages VRRP configuration on NX-OS switches.
 [cisco.nxos.nxos_vsan](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vsan_module.rst)|Configuration of vsan for Cisco NXOS MDS Switches.
 [cisco.nxos.nxos_vtp_domain](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vtp_domain_module.rst)|Manages VTP domain configuration.

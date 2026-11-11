@@ -15,13 +15,14 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ntp_global
-short_description: NTP Global resource module.
+short_description: NTP global resource module.
 description:
 - This module manages ntp configuration on devices running Cisco NX-OS.
 version_added: 2.6.0
 notes:
 - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:

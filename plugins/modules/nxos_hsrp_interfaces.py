@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_hsrp_interfaces
-short_description: HSRP interfaces resource module
+short_description: HSRP interfaces resource module.
 description: Resource module to configure HSRP on interfaces.
 version_added: 10.1.0
 author:

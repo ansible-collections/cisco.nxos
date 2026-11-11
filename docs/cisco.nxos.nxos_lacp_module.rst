@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lacp
 ********************
 
-**LACP resource module**
+**LACP resource module.**
 
 
 Version added: 1.0.0

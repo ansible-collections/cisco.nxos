@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bfd_interfaces
 ******************************
 
-**BFD interfaces resource module**
+**BFD interfaces resource module.**
 
 
 Version added: 1.0.0

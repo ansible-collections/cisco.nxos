@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lacp_interfaces
 *******************************
 
-**LACP interfaces resource module**
+**LACP interfaces resource module.**
 
 
 Version added: 1.0.0
