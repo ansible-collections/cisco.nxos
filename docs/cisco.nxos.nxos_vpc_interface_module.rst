@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vpc_interface
 *****************************
 
-**VPC interface resource module**
+**VPC interface resource module.**
 
 
 Version added: 1.0.0

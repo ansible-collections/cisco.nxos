@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snmp_server
-short_description: SNMP Server resource module.
+short_description: SNMP server resource module.
 description:
 - This module manages SNMP server configuration on devices running Cisco NX-OS.
 version_added: 2.8.0

@@ -5,7 +5,7 @@
 cisco.nxos.nxos_snmp_server
 ***************************
 
-**SNMP Server resource module.**
+**SNMP server resource module.**
 
 
 Version added: 2.8.0

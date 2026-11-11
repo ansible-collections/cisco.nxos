@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vrf_address_family
 **********************************
 
-**Resource module to configure VRF address family definitions.**
+**VRF address family resource module.**
 
 
 Version added: 9.3.0

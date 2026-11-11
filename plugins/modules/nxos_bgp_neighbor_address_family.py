@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bgp_neighbor_address_family
-short_description: BGP Neighbor Address Family resource module.
+short_description: BGP neighbor address family resource module.
 description:
 - This module manages BGP Neighbor Address Family configuration on devices running Cisco NX-OS.
 version_added: 2.0.0

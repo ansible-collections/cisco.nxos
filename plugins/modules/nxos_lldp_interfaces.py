@@ -33,7 +33,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lldp_interfaces
-short_description: LLDP interfaces resource module
+short_description: LLDP interfaces resource module.
 description: This module manages interfaces' configuration for Link Layer Discovery
   Protocol (LLDP) on NX-OS platforms.
 version_added: 1.0.0

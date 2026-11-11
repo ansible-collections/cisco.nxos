@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_logging_global
-short_description: Logging resource module.
+short_description: Logging global resource module.
 description:
 - This module manages logging configuration on devices running Cisco NX-OS.
 version_added: 2.5.0

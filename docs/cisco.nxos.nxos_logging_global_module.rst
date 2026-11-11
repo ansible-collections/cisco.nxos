@@ -5,7 +5,7 @@
 cisco.nxos.nxos_logging_global
 ******************************
 
-**Logging resource module.**
+**Logging global resource module.**
 
 
 Version added: 2.5.0

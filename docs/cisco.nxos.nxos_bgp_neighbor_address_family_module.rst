@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bgp_neighbor_address_family
 *******************************************
 
-**BGP Neighbor Address Family resource module.**
+**BGP neighbor address family resource module.**
 
 
 Version added: 2.0.0

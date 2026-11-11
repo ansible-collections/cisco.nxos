@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lag_interfaces
-short_description: LAG interfaces resource module
+short_description: LAG interfaces resource module.
 description: This module manages attributes of link aggregation groups of NX-OS Interfaces.
 version_added: 1.0.0
 author:

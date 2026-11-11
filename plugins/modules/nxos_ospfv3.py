@@ -33,7 +33,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ospfv3
-short_description: OSPFv3 resource module
+short_description: OSPFv3 resource module.
 description:
 - This module manages OSPFv3 configuration on devices running Cisco NX-OS.
 version_added: 1.2.0

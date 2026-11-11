@@ -33,7 +33,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_acls
-short_description: ACLs resource module
+short_description: ACLs resource module.
 description: Manage named IP ACLs on the Cisco NX-OS platform
 version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)

@@ -5,7 +5,7 @@
 cisco.nxos.nxos_acls
 ********************
 
-**ACLs resource module**
+**ACLs resource module.**
 
 
 Version added: 1.0.0

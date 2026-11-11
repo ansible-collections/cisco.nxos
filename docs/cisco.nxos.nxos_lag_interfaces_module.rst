@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lag_interfaces
 ******************************
 
-**LAG interfaces resource module**
+**LAG interfaces resource module.**
 
 
 Version added: 1.0.0
