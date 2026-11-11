@@ -29,12 +29,9 @@ notes:
 - NX-OS does not display a setting that has its default value. The global settings are therefore
   gathered with their effective value, a setting of a VLAN that is equal to its default counts as
   not set, and an option that is given with its default value removes its line.
-- A C(vlan configuration) block is managed completely. With I(state) C(replaced) or C(overridden)
-  a listed VLAN gets exactly the given settings.
-- I(state) C(deleted) without I(config) and I(state) C(overridden) remove every C(vlan configuration)
-  block that is not listed, also blocks created by other tools. Run the task in check mode first.
-- NX-OS keeps the C(vlan configuration) block when the VLAN itself is removed, the settings
-  of a VLAN do not apply until the VLAN exists.
+- A C(vlan configuration) block is managed completely. With I(state) C(replaced) or C(overridden) a listed
+  VLAN gets exactly the given settings. I(state) C(deleted) without I(config) and I(state) C(overridden)
+  also remove the blocks that are not listed, also those created by other tools, so run the task in check mode first.
 - The device keeps one policy per interface, so an interface can only be used once in
   I(report_policy) and I(access_group).
 - The proxy with I(mrt) C(5), the default, is not stored by the device, omit I(mrt) instead.
