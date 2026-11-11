@@ -10,6 +10,7 @@ available_network_resources:
   - evpn_vnis
   - hostname
   - hsrp_interfaces
+  - igmp_snooping
   - interfaces
   - l2_interfaces
   - l3_interfaces

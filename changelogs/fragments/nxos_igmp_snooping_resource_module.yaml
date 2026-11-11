@@ -1,0 +1,18 @@
+---
+breaking_changes:
+  - >-
+    nxos_igmp_snooping - rewrite as a resource module with the states ``merged``, ``replaced``,
+    ``overridden``, ``deleted``, ``gathered``, ``rendered`` and ``parsed``. The flat parameters
+    and the ``present`` and ``default`` states are removed, settings are now given in ``config``,
+    and the module also manages the per-VLAN ``vlan configuration`` blocks and the global ``vxlan``,
+    ``proxy`` and timer settings.
+    Migration - ``snooping`` becomes ``config.snooping``, ``group_timeout`` becomes ``config.group_timeout``,
+    ``link_local_grp_supp`` becomes ``config.link_local_groups_suppression``,
+    ``report_supp`` becomes ``config.report_suppression``,
+    ``v3_report_supp`` becomes ``config.v3_report_suppression``,
+    ``state=present`` becomes ``state=merged`` and ``state=default`` becomes ``state=deleted``.
+    ``group_timeout`` no longer accepts ``default``, remove it with ``deleted``, ``replaced`` or ``overridden``.
+    Update playbooks from ``snooping: false`` to ``config: {snooping: false}``.
+minor_changes:
+  - >-
+    nxos_facts - add ``igmp_snooping`` to the resources of ``gather_network_resources``.

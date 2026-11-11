@@ -1,0 +1,199 @@
+---
+# State created by tests/common/_populate_config.yaml
+before:
+  snooping: true
+  link_local_groups_suppression: true
+  report_suppression: true
+  v3_report_suppression: true
+  vxlan: true
+  disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
+  group_timeout: "300"
+  vlans:
+    - vlan_id: 100
+      static_groups:
+        - group: 233.252.0.10
+          interfaces:
+            - port-channel20
+            - port-channel21
+        - group: 233.252.0.11
+          source: 192.0.2.10
+          interfaces:
+            - port-channel20
+    - vlan_id: 200
+      static_groups:
+        - group: 233.252.0.20
+          interfaces:
+            - port-channel21
+
+defaults:
+  snooping: true
+  link_local_groups_suppression: true
+  report_suppression: true
+  v3_report_suppression: false
+  vxlan: false
+  disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
+
+merged:
+  commands:
+    - no ip igmp snooping link-local-groups-suppression
+    - ip igmp snooping group-timeout 500
+    - vlan configuration 100
+    - ip igmp snooping static-group 233.252.0.12 interface port-channel21
+  after:
+    snooping: true
+    link_local_groups_suppression: false
+    report_suppression: true
+    v3_report_suppression: true
+    vxlan: true
+    disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
+    group_timeout: "500"
+    vlans:
+      - vlan_id: 100
+        static_groups:
+          - group: 233.252.0.10
+            interfaces:
+              - port-channel20
+              - port-channel21
+          - group: 233.252.0.11
+            source: 192.0.2.10
+            interfaces:
+              - port-channel20
+          - group: 233.252.0.12
+            interfaces:
+              - port-channel21
+      - vlan_id: 200
+        static_groups:
+          - group: 233.252.0.20
+            interfaces:
+              - port-channel21
+
+replaced:
+  commands:
+    - no ip igmp snooping v3-report-suppression
+    - no ip igmp snooping group-timeout 300
+    - vlan configuration 100
+    - no ip igmp snooping static-group 233.252.0.10 interface port-channel21
+    - no ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20
+  after:
+    snooping: true
+    link_local_groups_suppression: true
+    report_suppression: true
+    v3_report_suppression: false
+    vxlan: true
+    disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
+    vlans:
+      - vlan_id: 100
+        static_groups:
+          - group: 233.252.0.10
+            interfaces:
+              - port-channel20
+      - vlan_id: 200
+        static_groups:
+          - group: 233.252.0.20
+            interfaces:
+              - port-channel21
+
+overridden:
+  commands:
+    - no ip igmp snooping v3-report-suppression
+    - no ip igmp snooping group-timeout 300
+    - vlan configuration 100
+    - no ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20
+    - no vlan configuration 200
+  after:
+    snooping: true
+    link_local_groups_suppression: true
+    report_suppression: true
+    v3_report_suppression: false
+    vxlan: true
+    disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
+    vlans:
+      - vlan_id: 100
+        static_groups:
+          - group: 233.252.0.10
+            interfaces:
+              - port-channel20
+              - port-channel21
+
+deleted:
+  commands:
+    - no ip igmp snooping v3-report-suppression
+    - no ip igmp snooping vxlan
+    - no ip igmp snooping group-timeout 300
+    - no vlan configuration 100
+    - no vlan configuration 200
+  partial_commands:
+    - no ip igmp snooping group-timeout 300
+    - vlan configuration 100
+    - no ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel20
+    - no vlan configuration 200
+  partial_after:
+    snooping: true
+    link_local_groups_suppression: true
+    report_suppression: true
+    v3_report_suppression: true
+    vxlan: true
+    disable_nve_static_router_port: false
+    max_gq_miss: 3
+    syslog_threshold: 90
+    holddown_timer: 210
+    vlans:
+      - vlan_id: 100
+        static_groups:
+          - group: 233.252.0.10
+            interfaces:
+              - port-channel20
+              - port-channel21
+
+rendered:
+  commands:
+    - ip igmp snooping
+    - no ip igmp snooping report-suppression
+    - ip igmp snooping vxlan
+    - ip igmp snooping group-timeout never
+    - vlan configuration 100
+    - ip igmp snooping static-group 233.252.0.10 interface port-channel20
+    - ip igmp snooping static-group 233.252.0.11 source 192.0.2.10 interface port-channel21
+
+parsed:
+  snooping: true
+  link_local_groups_suppression: false
+  report_suppression: true
+  v3_report_suppression: false
+  vxlan: true
+  disable_nve_static_router_port: false
+  max_gq_miss: 3
+  syslog_threshold: 90
+  holddown_timer: 210
+  group_timeout: "300"
+  vlans:
+    - vlan_id: 100
+      static_groups:
+        - group: 233.252.0.10
+          interfaces:
+            - port-channel20
+            - port-channel21
+        - group: 233.252.0.11
+          source: 192.0.2.10
+          interfaces:
+            - port-channel20
+    - vlan_id: 200
+      static_groups:
+        - group: 233.252.0.20
+          interfaces:
+            - port-channel21
