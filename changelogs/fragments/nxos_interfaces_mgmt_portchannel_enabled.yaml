@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - >-
+    nxos_interfaces - fix mgmt0 and port-channel interfaces always reporting ``changed`` when
+    ``enabled: true`` is set, since NX-OS omits ``no shutdown`` from the running
+    configuration for these interfaces in their default admin-up state, the same as for loopbacks.
