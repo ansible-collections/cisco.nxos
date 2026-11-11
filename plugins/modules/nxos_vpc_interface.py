@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_vpc_interface
 version_added: 1.0.0
-short_description: VPC interface resource module
+short_description: VPC interface resource module.
 description:
   - This module manages VPC-related interface configuration on Cisco NX-OS devices.
 notes:

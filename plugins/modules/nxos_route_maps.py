@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_route_maps
-short_description: Route Maps resource module.
+short_description: Route maps resource module.
 description:
 - This module manages route maps configuration on devices running Cisco NX-OS.
 version_added: 2.2.0

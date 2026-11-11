@@ -5,7 +5,7 @@
 cisco.nxos.nxos_prefix_lists
 ****************************
 
-**Prefix-Lists resource module.**
+**Prefix lists resource module.**
 
 
 Version added: 2.4.0

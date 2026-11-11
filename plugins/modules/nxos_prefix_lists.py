@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_prefix_lists
-short_description: Prefix-Lists resource module.
+short_description: Prefix lists resource module.
 description:
 - This module manages prefix-lists configuration on devices running Cisco NX-OS.
 version_added: 2.4.0

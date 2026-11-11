@@ -5,7 +5,7 @@
 cisco.nxos.nxos_static_routes
 *****************************
 
-**Static routes resource module**
+**Static routes resource module.**
 
 
 Version added: 1.0.0

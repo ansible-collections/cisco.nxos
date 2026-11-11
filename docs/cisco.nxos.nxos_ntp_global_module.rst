@@ -5,7 +5,7 @@
 cisco.nxos.nxos_ntp_global
 **************************
 
-**NTP Global resource module.**
+**NTP global resource module.**
 
 
 Version added: 2.6.0

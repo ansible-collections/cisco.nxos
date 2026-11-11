@@ -5,7 +5,7 @@
 cisco.nxos.nxos_evpn_vnis
 *************************
 
-**EVPN VNIs resource module**
+**EVPN VNIs resource module.**
 
 
 Version added: 13.1.0

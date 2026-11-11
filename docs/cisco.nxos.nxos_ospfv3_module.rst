@@ -5,7 +5,7 @@
 cisco.nxos.nxos_ospfv3
 **********************
 
-**OSPFv3 resource module**
+**OSPFv3 resource module.**
 
 
 Version added: 1.2.0

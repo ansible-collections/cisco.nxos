@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_global
-short_description: Resource module to configure VRF definitions.
+short_description: VRF global resource module.
 description: This module provides declarative management of VRF definitions on Cisco NXOS.
 version_added: 8.1.0
 author: Vinay Mulugund (@roverflow)

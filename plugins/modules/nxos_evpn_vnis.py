@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_evpn_vnis
 version_added: 13.1.0
-short_description: EVPN VNIs resource module
+short_description: EVPN VNIs resource module.
 description:
   - This module manages the Layer 2 VNIs configured under the C(evpn) section
     (C(vni <id> l2)) on Cisco NX-OS devices, with their route distinguisher

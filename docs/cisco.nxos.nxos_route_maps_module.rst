@@ -5,7 +5,7 @@
 cisco.nxos.nxos_route_maps
 **************************
 
-**Route Maps resource module.**
+**Route maps resource module.**
 
 
 Version added: 2.2.0

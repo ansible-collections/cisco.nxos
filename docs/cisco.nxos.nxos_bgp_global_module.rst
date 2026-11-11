@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bgp_global
 **************************
 
-**BGP Global resource module.**
+**BGP global resource module.**
 
 
 Version added: 1.4.0

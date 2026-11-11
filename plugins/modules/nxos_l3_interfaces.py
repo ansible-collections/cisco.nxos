@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_l3_interfaces
-short_description: L3 interfaces resource module
+short_description: L3 interfaces resource module.
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
 version_added: 1.0.0
 author:

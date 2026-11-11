@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bgp_templates
 *****************************
 
-**BGP Templates resource module.**
+**BGP templates resource module.**
 
 
 Version added: 4.2.0

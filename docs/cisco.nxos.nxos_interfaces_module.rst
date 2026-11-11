@@ -5,7 +5,7 @@
 cisco.nxos.nxos_interfaces
 **************************
 
-**Interfaces resource module**
+**Interfaces resource module.**
 
 
 Version added: 1.0.0

@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bgp_global
-short_description: BGP Global resource module.
+short_description: BGP global resource module.
 description:
 - This module manages global BGP configuration on devices running Cisco NX-OS.
 version_added: 1.4.0

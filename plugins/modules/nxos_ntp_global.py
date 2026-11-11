@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ntp_global
-short_description: NTP Global resource module.
+short_description: NTP global resource module.
 description:
 - This module manages ntp configuration on devices running Cisco NX-OS.
 version_added: 2.6.0

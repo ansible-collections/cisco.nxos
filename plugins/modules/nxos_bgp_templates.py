@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bgp_templates
-short_description: BGP Templates resource module.
+short_description: BGP templates resource module.
 description:
 - This module manages BGP templates on devices running Cisco NX-OS.
 version_added: 4.2.0

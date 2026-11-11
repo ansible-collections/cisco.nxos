@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_interfaces
-short_description: Resource module to configure VRF interfaces.
+short_description: VRF interfaces resource module.
 description: This module configures and manages the VRF configuration on interfaces on NX-OS platforms.
 version_added: 9.3.0
 author: Ruchi Pakhle (@Ruchip16)
