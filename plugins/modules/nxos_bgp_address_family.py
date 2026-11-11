@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bgp_address_family
-short_description: BGP Address Family resource module.
+short_description: BGP address family resource module.
 description:
 - This module manages BGP Address Family configuration on devices running Cisco NX-OS.
 version_added: 2.0.0
@@ -25,6 +25,7 @@ notes:
 - For managing BGP neighbor address family configurations please use
   the M(cisco.nxos.nxos_bgp_neighbor_address_family) module.
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:

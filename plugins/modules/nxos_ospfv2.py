@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ospfv2
-short_description: OSPFv2 resource module
+short_description: OSPFv2 resource module.
 description:
 - This module manages OSPFv2 configuration on devices running Cisco NX-OS.
 version_added: 1.0.0
@@ -42,6 +42,7 @@ notes:
 - Tested against NX-OS 7.0(3)I5(1).
 - Unsupported for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:

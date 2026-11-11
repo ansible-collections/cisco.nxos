@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_ospf_interfaces
 version_added: 1.3.0
-short_description: OSPF Interfaces Resource Module.
+short_description: OSPF interfaces resource module.
 description:
 - This module manages OSPF(v2/v3) configuration of interfaces on devices running Cisco NX-OS.
 notes:

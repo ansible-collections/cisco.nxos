@@ -327,9 +327,9 @@ Notes
    - This module is for Layer 3 interfaces.
    - Route-map check not performed (same as CLI) check when configuring route-map with 'static-oif'
    - If restart is set to true with other params set, the restart will happen last, i.e. after the configuration takes place. However, 'restart' itself is not idempotent as it is an action and not configuration.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

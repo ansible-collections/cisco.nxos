@@ -5,7 +5,7 @@
 cisco.nxos.nxos_logging_global
 ******************************
 
-**Logging resource module.**
+**Logging global resource module.**
 
 
 Version added: 2.5.0
@@ -1180,7 +1180,7 @@ Notes
 .. note::
    - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
    - Limited Support for Cisco MDS
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
 
 

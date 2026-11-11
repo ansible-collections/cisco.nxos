@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_vpc
 version_added: 1.0.0
-short_description: VPC global domain resource module.
+short_description: VPC resource module.
 description:
 - This module manages global VPC domain configuration on devices running Cisco NX-OS.
 notes:

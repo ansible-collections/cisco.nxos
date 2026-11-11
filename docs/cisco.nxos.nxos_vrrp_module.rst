@@ -198,9 +198,9 @@ Notes
    - Interface must be a L3 port before using this module.
    - ``state=absent`` removes the VRRP group if it exists on the device.
    - VRRP cannot be configured on loopback interfaces.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

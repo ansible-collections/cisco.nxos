@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vlans
 *********************
 
-**VLANs resource module**
+**VLANs resource module.**
 
 
 Version added: 1.0.0

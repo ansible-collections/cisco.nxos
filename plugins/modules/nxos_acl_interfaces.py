@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_acl_interfaces
-short_description: ACL interfaces resource module
+short_description: ACL interfaces resource module.
 description: Add and remove Access Control Lists on interfaces in NX-OS platform
 version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)

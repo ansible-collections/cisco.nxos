@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vrf_global
 **************************
 
-**Resource module to configure VRF definitions.**
+**VRF global resource module.**
 
 
 Version added: 8.1.0
