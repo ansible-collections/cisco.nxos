@@ -167,9 +167,9 @@ Notes
    - For feature rpms, the minimum platform version needed is 7.0(3)I6(1)
    - The module manages the entire RPM lifecycle (Add, activate, commit, deactivate, remove)
    - For reload patches, this module is NOT idempotent until the patch is committed.
-   - For information on using CLI and NX-API see the `NXOS Platform Options guide <https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html>`_.
-   - For more information on using Ansible to manage network devices see the `Ansible Network Guide <https://docs.ansible.com/ansible/latest/network/getting_started/index.html>`_.
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

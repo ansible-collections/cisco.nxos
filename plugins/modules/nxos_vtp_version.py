@@ -36,7 +36,7 @@ notes:
 - Unsupported for Cisco MDS
 - VTP feature must be active on the device to use this module.
 - This module is used to manage only VTP version.
-- Use this in combination with C(cisco.nxos.nxos_vtp_password) and C(cisco.nxos.nxos_vtp_version)
+- Use this in combination with M(cisco.nxos.nxos_vtp_password) and M(cisco.nxos.nxos_vtp_version)
   to fully manage VTP operations.
 options:
   version:

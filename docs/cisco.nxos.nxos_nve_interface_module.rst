@@ -531,7 +531,7 @@ Notes
    - ``suppress_arp`` needs the ARP-Ether ACL TCAM region (``hardware access-list tcam region arp-ether``) to be carved, which requires a reload. Devices without it reject the command.
    - Only the ``interface nve1`` interface is managed.
    - Within a VNI, ``suppress-arp`` and ``suppress-arp disable`` are alternatives, as are ``mcast-group`` and ``ingress-replication protocol bgp``. The module fails if both options of such a pair are true (or, for *mcast_group*, set) in the task.
-   - ``cisco.nxos.nxos_vxlan_vtep`` and ``cisco.nxos.nxos_vxlan_vtep_vni`` manage an overlapping part of the same ``interface nve1`` configuration. Prefer this module for whole-interface, declarative management (including ``replaced``, ``overridden`` and ``gathered``). Do not manage the same NVE settings with both this module and the older modules in one play.
+   - :ref:`cisco.nxos.nxos_vxlan_vtep <cisco.nxos.nxos_vxlan_vtep_module>` and :ref:`cisco.nxos.nxos_vxlan_vtep_vni <cisco.nxos.nxos_vxlan_vtep_vni_module>` manage an overlapping part of the same ``interface nve1`` configuration. Prefer this module for whole-interface, declarative management (including ``replaced``, ``overridden`` and ``gathered``). Do not manage the same NVE settings with both this module and the older modules in one play.
 
 
 

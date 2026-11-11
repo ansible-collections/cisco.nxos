@@ -66,10 +66,10 @@ Notes
    - Unsupported for Cisco MDS
    - VTP feature must be active on the device to use this module.
    - This module is used to manage only VTP version.
-   - Use this in combination with ``cisco.nxos.nxos_vtp_password`` and ``cisco.nxos.nxos_vtp_version`` to fully manage VTP operations.
-   - For information on using CLI and NX-API see the `NXOS Platform Options guide <https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html>`_.
-   - For more information on using Ansible to manage network devices see the `Ansible Network Guide <https://docs.ansible.com/ansible/latest/network/getting_started/index.html>`_.
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - Use this in combination with :ref:`cisco.nxos.nxos_vtp_password <cisco.nxos.nxos_vtp_password_module>` and :ref:`cisco.nxos.nxos_vtp_version <cisco.nxos.nxos_vtp_version_module>` to fully manage VTP operations.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

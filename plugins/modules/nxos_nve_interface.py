@@ -29,7 +29,7 @@ notes:
   - Within a VNI, C(suppress-arp) and C(suppress-arp disable) are alternatives, as are
     C(mcast-group) and C(ingress-replication protocol bgp). The module fails if both
     options of such a pair are true (or, for I(mcast_group), set) in the task.
-  - C(cisco.nxos.nxos_vxlan_vtep) and C(cisco.nxos.nxos_vxlan_vtep_vni) manage an overlapping
+  - M(cisco.nxos.nxos_vxlan_vtep) and M(cisco.nxos.nxos_vxlan_vtep_vni) manage an overlapping
     part of the same C(interface nve1) configuration. Prefer this module for whole-interface,
     declarative management (including C(replaced), C(overridden) and C(gathered)). Do not
     manage the same NVE settings with both this module and the older modules in one play.
