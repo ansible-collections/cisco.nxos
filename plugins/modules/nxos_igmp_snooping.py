@@ -55,11 +55,9 @@ options:
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: 14.0.0
   config:
     description: IGMP snooping configuration.
     type: dict
-    version_added: 14.0.0
     suboptions:
       snooping:
         description:

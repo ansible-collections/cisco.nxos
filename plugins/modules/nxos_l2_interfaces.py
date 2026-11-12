@@ -155,7 +155,6 @@ options:
         - Only the explicit interface lines are managed, values left out are removed with
           I(state=replaced), I(state=overridden) and I(state=deleted).
         type: dict
-        version_added: 14.0.0
         suboptions:
           port_type:
             description:
@@ -251,7 +250,6 @@ options:
         - Only the explicit interface lines are managed, values left out are removed with
           I(state=replaced), I(state=overridden) and I(state=deleted).
         type: dict
-        version_added: 14.0.0
         suboptions:
           broadcast:
             description: Broadcast storm-control, C(storm-control broadcast level <level>).
