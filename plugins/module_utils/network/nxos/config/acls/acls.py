@@ -164,7 +164,6 @@ class Acls(ConfigBase):
         protocol = {
             1: "icmp",
             2: "igmp",
-            4: "ip",
             6: "tcp",
             103: "pim",
             108: "pcp",
