@@ -911,13 +911,6 @@ releases:
       - vrf_address_family_evpn_route_target.yaml
       - vrf_address_family_purged.yaml
       - vrf_global_purged_unknown_vrf.yaml
-    modules:
-      - description: EVPN VNIs resource module.
-        name: nxos_evpn_vnis
-        namespace: ""
-      - description: NVE interface resource module.
-        name: nxos_nve_interface
-        namespace: ""
     release_date: "2026-11-12"
   2.0.0:
     changes:

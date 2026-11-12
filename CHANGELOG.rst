@@ -54,12 +54,6 @@ Documentation Changes
 - Render the shared notes of the module documentation correctly on GitHub and Galaxy, and point the connection notes to the NXOS platform guide.
 - Use the same wording for the short description of the resource modules and shorten the notes of nxos_igmp_snooping.
 
-New Modules
------------
-
-- nxos_evpn_vnis - EVPN VNIs resource module.
-- nxos_nve_interface - NVE interface resource module.
-
 v13.0.0
 =======
 

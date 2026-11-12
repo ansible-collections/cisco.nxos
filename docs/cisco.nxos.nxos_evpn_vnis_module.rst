@@ -8,7 +8,6 @@ cisco.nxos.nxos_evpn_vnis
 **EVPN VNIs resource module.**
 
 
-Version added: 14.0.0
 
 .. contents::
    :local:
