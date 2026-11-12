@@ -5,7 +5,7 @@
 cisco.nxos.nxos_ospf_interfaces
 *******************************
 
-**OSPF Interfaces Resource Module.**
+**OSPF interfaces resource module.**
 
 
 Version added: 1.3.0

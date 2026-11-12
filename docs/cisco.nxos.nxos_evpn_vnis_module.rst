@@ -5,7 +5,7 @@
 cisco.nxos.nxos_evpn_vnis
 *************************
 
-**EVPN VNIs resource module**
+**EVPN VNIs resource module.**
 
 
 Version added: 13.1.0
@@ -195,11 +195,11 @@ Notes
    - Under *merged*, route targets are only added and the route distinguisher is only replaced, nothing is removed.
    - Under *replaced* and *overridden*, route targets and the route distinguisher of a listed VNI that are not in *config* are removed.
    - Layer 3 VNIs (``vni <id> l3`` under ``vrf context``) are not managed by this module.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - The *parsed* state reads configuration from ``running_config`` and does not connect to the device.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

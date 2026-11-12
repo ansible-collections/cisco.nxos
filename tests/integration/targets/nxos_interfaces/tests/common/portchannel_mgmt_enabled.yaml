@@ -1,0 +1,95 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_interfaces mgmt0 and port-channel enabled idempotency tests connection={{ ansible_connection }}"
+
+# Like loopbacks, mgmt0 and port-channels are admin-up by default and NX-OS never
+# writes 'no shutdown' to running-config for them in that state, only 'shutdown'
+# when they are disabled. enabled: true on an already-up one must be a no-op.
+
+- block:
+    - name: Setup - create a test port-channel (it comes up automatically)
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface port-channel99"
+          - "switchport"
+
+    - name: Merged - enabled true on the already-up port-channel and on mgmt0
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: port-channel99
+            enabled: true
+          - name: mgmt0
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          enabled: true on an already-up port-channel or mgmt0 should be idempotent but
+          generated commands: {{ result.commands }}
+
+    - name: Replaced - enabled true on the already-up port-channel
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: port-channel99
+            enabled: true
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          replaced with enabled: true on an already-up port-channel should be idempotent but
+          generated commands: {{ result.commands }}
+
+    - name: Merged - shut the port-channel down
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: port-channel99
+            enabled: false
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface port-channel99' in result.commands"
+          - "'shutdown' in result.commands"
+
+    - name: Merged - bring the port-channel back up
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: port-channel99
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no shutdown' in result.commands"
+
+    - name: Merged idempotent - enabled true after the port-channel is back at its default
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: port-channel99
+            enabled: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+        fail_msg: >-
+          enabled: true on a port-channel back at its default should be idempotent but
+          generated commands: {{ result.commands }}
+
+  always:
+    - name: Teardown - remove the test port-channel
+      cisco.nxos.nxos_config:
+        lines:
+          - "no interface port-channel99"
+      failed_when: false

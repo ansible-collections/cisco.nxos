@@ -146,9 +146,9 @@ Notes
    - ``route_target_both``, ``route_target_import`` and ``route_target_export valid`` values are a list of extended communities, (i.e. ['1.2.3.4:5', '33:55']) or the keywords 'auto' or 'default'.
    - The ``route_target_both`` property is discouraged due to the inconsistent behavior of the property across Nexus platforms and image versions. For this reason it is recommended to use explicit ``route_target_export`` and ``route_target_import`` properties instead of ``route_target_both``.
    - RD valid values are a string in one of the route-distinguisher formats, the keyword 'auto', or the keyword 'default'.
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

@@ -5,7 +5,7 @@
 cisco.nxos.nxos_fc_interfaces
 *****************************
 
-**Fc Interfaces resource module**
+**FC interfaces resource module.**
 
 
 Version added: 5.2.0

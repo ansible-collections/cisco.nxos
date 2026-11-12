@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lag_interfaces
 ******************************
 
-**LAG interfaces resource module**
+**LAG interfaces resource module.**
 
 
 Version added: 1.0.0
@@ -196,7 +196,7 @@ Notes
 .. note::
    - Tested against NXOS 7.3.(0)D1(1) on VIRL.
    - Unsupported for Cisco MDS
-   - This module works with connection ``network_cli``.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

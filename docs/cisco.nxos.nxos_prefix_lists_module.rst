@@ -5,7 +5,7 @@
 cisco.nxos.nxos_prefix_lists
 ****************************
 
-**Prefix-Lists resource module.**
+**Prefix lists resource module.**
 
 
 Version added: 2.4.0
@@ -326,7 +326,7 @@ Notes
 .. note::
    - Tested against NX-OS 9.3.6.
    - Unsupported for Cisco MDS
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

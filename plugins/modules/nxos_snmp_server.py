@@ -15,13 +15,14 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snmp_server
-short_description: SNMP Server resource module.
+short_description: SNMP server resource module.
 description:
 - This module manages SNMP server configuration on devices running Cisco NX-OS.
 version_added: 2.8.0
 notes:
 - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 - After trap configuration changes in I(merged), I(replaced), or I(overridden) (including
   LLDP, HSRP, and global EIGRP traps), C(show running-config) used for I(after) and
