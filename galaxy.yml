@@ -10,7 +10,7 @@ readme: README.md
 repository: https://github.com/ansible-collections/cisco.nxos
 issues: https://github.com/ansible-collections/cisco.nxos/issues
 tags: [cisco, nxos, networking, nxapi, netconf]
-version: "13.0.0"
+version: "14.0.0"
 build_ignore:
   - extensions/molecule
   - docs
