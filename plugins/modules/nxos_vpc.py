@@ -128,22 +128,27 @@ options:
         - Enable or disable Layer 3 peer-router.
         - Requires C(terminal dont-ask) on NX-OS because the platform prompts
           for confirmation when this is changed.
+        version_added: 13.1.0
         type: bool
       arp_synchronize:
         description:
         - Enable or disable IP ARP synchronization between VPC peers.
+        version_added: 13.1.0
         type: bool
       nd_synchronize:
         description:
         - Enable or disable IPv6 ND synchronization between VPC peers.
+        version_added: 13.1.0
         type: bool
       virtual_peer_link_dest:
         description:
         - Destination IP address for the virtual peer-link.
+        version_added: 13.1.0
         type: str
       virtual_peer_link_src:
         description:
         - Source IP address for the virtual peer-link.
+        version_added: 13.1.0
         type: str
       virtual_peer_link_dscp:
         description:
@@ -151,6 +156,7 @@ options:
         - NX-OS silently appends C(dscp 56) to running-config when no value is
           specified, so omitting this option is idempotent against a device that
           has the platform default in its running-config.
+        version_added: 13.1.0
         type: str
   state:
     description:

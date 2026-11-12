@@ -41,6 +41,7 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
                     </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 14.0.0</div>
                 </td>
                 <td>
                 </td>
@@ -1038,6 +1039,7 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
                     </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 14.0.0</div>
                 </td>
                 <td>
                 </td>
