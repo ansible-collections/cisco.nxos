@@ -41,7 +41,7 @@ notes:
   - The I(parsed) state reads configuration from C(running_config) and does
     not connect to the device.
 author:
-  - Jorgen Spange (@jorgenspange)
+  - Jørgen Spange (@jorgenspange)
 options:
   running_config:
     description:
