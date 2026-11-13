@@ -1,0 +1,3 @@
+ptp source 192.0.2.1
+ptp priority1 80
+ptp notification type parent-change

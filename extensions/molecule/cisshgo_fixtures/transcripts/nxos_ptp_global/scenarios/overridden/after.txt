@@ -1,0 +1,2 @@
+ptp source 192.0.2.1
+ptp domain 7

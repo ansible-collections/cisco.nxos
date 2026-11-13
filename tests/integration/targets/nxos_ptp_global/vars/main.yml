@@ -1,0 +1,84 @@
+---
+# State created by tests/common/_populate_config.yaml
+before:
+  source:
+    ipv4:
+      address: 192.0.2.1
+  priority1: 100
+  priority2: 120
+  correction_range:
+    value: 5000
+    logging: true
+  domain: 5
+  management: false
+
+merged:
+  commands:
+    - no ptp domain 5
+    - ptp priority1 90
+    - ptp notification type gm-change
+    - ptp management
+  after:
+    source:
+      ipv4:
+        address: 192.0.2.1
+    priority1: 90
+    priority2: 120
+    notification:
+      gm_change: true
+    correction_range:
+      value: 5000
+      logging: true
+
+replaced:
+  commands:
+    - no ptp domain 5
+    - ptp priority1 80
+    - no ptp priority2 120
+    - no ptp correction-range 5000
+    - no ptp correction-range logging
+    - ptp notification type parent-change
+    - ptp management
+  after:
+    source:
+      ipv4:
+        address: 192.0.2.1
+    priority1: 80
+    notification:
+      parent_change: true
+
+overridden:
+  commands:
+    - ptp domain 7
+    - no ptp priority1 100
+    - no ptp priority2 120
+    - no ptp correction-range 5000
+    - no ptp correction-range logging
+    - ptp management
+  after:
+    source:
+      ipv4:
+        address: 192.0.2.1
+    domain: 7
+
+deleted:
+  commands:
+    - no ptp source 192.0.2.1
+    - no ptp domain 5
+    - no ptp priority1 100
+    - no ptp priority2 120
+    - no ptp correction-range 5000
+    - no ptp correction-range logging
+    - ptp management
+  after: {}
+
+rendered:
+  commands:
+    - ptp source 192.0.2.1 vrf management
+    - ptp domain 5
+    - ptp priority1 100
+    - no ptp management
+    - ptp correction-range 5000
+    - ptp correction-range logging
+    - ptp delay tolerance mean-path 10.50
+    - ptp time distribution-hold correction-threshold 500 delay-threshold 100

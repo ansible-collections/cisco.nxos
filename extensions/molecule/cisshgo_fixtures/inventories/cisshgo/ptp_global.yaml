@@ -1,0 +1,11 @@
+devices:
+  - scenario: nxos-ptp-global-gathered
+    count: 1
+  - scenario: nxos-ptp-global-merged
+    count: 1
+  - scenario: nxos-ptp-global-replaced
+    count: 1
+  - scenario: nxos-ptp-global-overridden
+    count: 1
+  - scenario: nxos-ptp-global-deleted
+    count: 1

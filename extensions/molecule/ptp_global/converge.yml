@@ -1,0 +1,174 @@
+---
+- name: "Nxos_ptp_global — state: gathered"
+  hosts: nxos_ptp_global_gathered
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_global/vars/main.yml
+  tasks:
+    - name: Gather nxos_ptp_global facts
+      register: result
+      cisco.nxos.nxos_ptp_global:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - before == result['gathered']
+
+    - name: Run nxos_ptp_global parsed (offline)
+      register: result
+      cisco.nxos.nxos_ptp_global:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_ptp_global/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - before == result['parsed']
+
+    - name: Run nxos_ptp_global rendered (offline)
+      register: result
+      cisco.nxos.nxos_ptp_global:
+        config:
+          source:
+            ipv4:
+              address: 192.0.2.1
+              vrf: management
+          domain: 5
+          priority1: 100
+          management: false
+          correction_range:
+            value: 5000
+            logging: true
+          delay_tolerance:
+            mean_path: "10.5"
+          time_distribution_hold:
+            correction_threshold: 500
+            delay_threshold: 100
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | sort == result['rendered'] | sort
+
+- name: "Nxos_ptp_global — state: merged"
+  hosts: nxos_ptp_global_merged
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_global merged
+      register: result
+      cisco.nxos.nxos_ptp_global: &merged
+        config:
+          domain: 0
+          priority1: 90
+          management: true
+          notification:
+            gm_change: true
+        state: merged
+    - name: Assert merged result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - merged['commands'] == result['commands']
+          - merged['after'] == result['after']
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_global: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_global — state: replaced"
+  hosts: nxos_ptp_global_replaced
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_global replaced
+      register: result
+      cisco.nxos.nxos_ptp_global: &replaced
+        config:
+          source:
+            ipv4:
+              address: 192.0.2.1
+          priority1: 80
+          notification:
+            parent_change: true
+        state: replaced
+    - name: Assert replaced result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - replaced['commands'] == result['commands']
+          - replaced['after'] == result['after']
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_global: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_global — state: overridden"
+  hosts: nxos_ptp_global_overridden
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_global overridden
+      register: result
+      cisco.nxos.nxos_ptp_global: &overridden
+        config:
+          source:
+            ipv4:
+              address: 192.0.2.1
+          domain: 7
+        state: overridden
+    - name: Assert overridden result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - overridden['commands'] == result['commands']
+          - overridden['after'] == result['after']
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_global: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_global — state: deleted"
+  hosts: nxos_ptp_global_deleted
+  gather_facts: false
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_global/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_global deleted
+      register: result
+      cisco.nxos.nxos_ptp_global: &deleted
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - deleted['commands'] == result['commands']
+          - deleted['after'] == result['after']
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_global: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0

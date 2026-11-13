@@ -1,0 +1,29 @@
+---
+- name: Populate the PTP source address
+  cisco.nxos.nxos_config:
+    lines:
+      - ptp source 192.0.2.1
+
+- name: Populate the PTP configuration of the first interface
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+      - ptp
+      - ptp vlan 100
+      - ptp sync interval aes67 -2
+    parents: "interface {{ nxos_int1 }}"
+
+- name: Populate the PTP configuration of the second interface
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+      - ptp
+      - ptp role master
+      - ptp master 192.0.2.10
+    parents: "interface {{ nxos_int2 }}"
+
+- name: Make sure that the third interface is a routed port without PTP
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+    parents: "interface {{ nxos_int3 }}"
