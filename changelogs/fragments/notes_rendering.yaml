@@ -1,4 +1,0 @@
----
-doc_changes:
-  - Render the shared notes of the module documentation correctly on GitHub and Galaxy, and point the connection notes to the NXOS platform guide.
-  - Use the same wording for the short description of the resource modules and shorten the notes of nxos_igmp_snooping.
