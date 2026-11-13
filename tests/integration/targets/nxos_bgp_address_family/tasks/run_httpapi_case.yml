@@ -1,0 +1,24 @@
+---
+# Runs a single httpapi test case with resilience against the NX-API httpd
+# bouncing mid-run (common on the virtual NX9000v used in CI). When the httpd
+# restarts after a config commit, netcommon's persistent httpapi socket caches
+# the dead connection, so every later task in the role gets "connection
+# refused". On failure we drop that poisoned socket (reset_connection), wait for
+# the httpd to come back, and retry the case once. A genuine failure on retry
+# still propagates, since a failing task inside a rescue is not caught.
+- name: "Run httpapi test case: {{ test_case_to_run }}"
+  block:
+    - name: "httpapi case (attempt 1): {{ test_case_to_run }}"
+      ansible.builtin.include_tasks: "{{ test_case_to_run }}"
+  rescue:
+    - name: Drop the poisoned persistent httpapi connection
+      ansible.builtin.meta: reset_connection
+    - name: Wait for NX-API httpd to come back after a config-triggered bounce
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ ansible_httpapi_port | default(80) }}"
+        timeout: 120
+        delay: 2
+      delegate_to: localhost
+    - name: "httpapi case (retry): {{ test_case_to_run }}"
+      ansible.builtin.include_tasks: "{{ test_case_to_run }}"
