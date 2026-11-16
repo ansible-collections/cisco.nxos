@@ -1,0 +1,3 @@
+---
+trivial:
+  - Use "Jørgen" in the author entries of nxos_evpn_vnis, nxos_igmp_snooping, nxos_vpc and nxos_vpc_interface.

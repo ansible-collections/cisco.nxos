@@ -519,4 +519,4 @@ Status
 Authors
 ~~~~~~~
 
-- Jorgen Spange (@jorgenspange)
+- Jørgen Spange (@jorgenspange)
