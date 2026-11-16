@@ -366,6 +366,35 @@ class TestNxosAclsModule(TestNxosModule):
         commands = ["no ipv6 access-list ACL1v6", "no ip access-list ACL1v4"]
         self.execute_module(changed=True, commands=commands)
 
+    def test_nxos_acls_rendered_protocol_4_stays_ipinip(self):
+        # protocol 4 is IP-in-IP; "ip" would match every IP protocol (issue 1107)
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="ACL4",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(any=True),
+                                        sequence=10,
+                                        protocol="4",
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertIn("10 permit 4 any any", result["rendered"])
+
     def test_nxos_acls_rendered(self):
         set_module_args(
             dict(
