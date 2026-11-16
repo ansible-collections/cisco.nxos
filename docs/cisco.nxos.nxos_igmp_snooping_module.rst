@@ -1583,4 +1583,4 @@ Authors
 
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
-- Jorgen Spange (@jorgenspange)
+- Jørgen Spange (@jorgenspange)
