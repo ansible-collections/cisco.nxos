@@ -16,6 +16,7 @@ This module tests the behavior of nxos_pim_global including:
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
@@ -24,6 +25,7 @@ from unittest.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_pim_global
 
 from .nxos_module import TestNxosModule, set_module_args
+
 
 RUNNING = dedent(
     """\
@@ -412,7 +414,7 @@ class TestNxosPimGlobalModule(TestNxosModule):
         self._run(
             {
                 "config": {
-                    "rp_addresses": [{"rp_address": "192.0.2.99", "group_list": "239.1.0.0/16"}]
+                    "rp_addresses": [{"rp_address": "192.0.2.99", "group_list": "239.1.0.0/16"}],
                 },
                 "state": "deleted",
             },
