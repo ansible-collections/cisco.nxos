@@ -775,3 +775,79 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_replaced_loopback_redirects_idem(self):
+        """A loopback never shows the redirects lines, so replaced must not send them on every run."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface loopback1
+              ip address 1.1.1.12/32
+              ip address 1.1.1.10/32 secondary
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="loopback1",
+                        ipv4=[
+                            dict(address="1.1.1.12/32"),
+                            dict(address="1.1.1.10/32", secondary=True),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_overridden_loopback_redirects_false_idem(self):
+        """redirects false on a loopback is not stored by the device, so it must not be sent on every run."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface loopback1
+              ip address 1.1.1.12/32
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="loopback1",
+                        ipv4=[dict(address="1.1.1.12/32")],
+                        redirects=False,
+                        ipv6_redirects=False,
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_replaced_routed_redirects_unchanged(self):
+        """Routed ports show the redirects lines, so replaced still disables them when they are unset."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              no switchport
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41")],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "no ip redirects", "no ipv6 redirects"],
+        )
