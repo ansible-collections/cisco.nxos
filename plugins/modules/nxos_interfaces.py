@@ -92,6 +92,29 @@ options:
             or C(false) to disable it (configures C(no negotiate auto)).
             Applicable for Ethernet interfaces only.
         type: bool
+      medium:
+        description:
+          - Link medium of a routed interface. C(p2p) configures C(medium p2p), for
+            example for OSPF point-to-point links with an unnumbered address.
+            C(broadcast) is the default and is not shown in the running configuration,
+            it is configured with C(no medium p2p).
+            With I(state) C(replaced), C(overridden) and C(deleted) an interface
+            without this option is returned to C(broadcast).
+        type: str
+        choices:
+          - p2p
+          - broadcast
+      port_type:
+        description:
+          - Port type of the interface, C(fabric) configures C(port-type fabric).
+            It is used for the ports to the spines in a VXLAN fabric and for vPC fabric peering.
+            It is not the spanning tree port type, that is I(spanning_tree.port_type)
+            of M(cisco.nxos.nxos_l2_interfaces).
+          - Removed with C(no port-type fabric) when the option is omitted with
+            I(state) C(replaced), C(overridden) and C(deleted).
+        type: str
+        choices:
+          - fabric
       mac_address:
         description: E.E.E  MAC address.
         type: str
@@ -243,6 +266,38 @@ EXAMPLES = """
 #   description mgmt interface
 #   ip address dhcp
 #   vrf member management
+
+# Using merged with medium and port_type
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section "^interface Ethernet1/49"
+# interface Ethernet1/49
+
+- name: Set the link medium and the port type of a fabric port
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: Ethernet1/49
+        medium: p2p
+        port_type: fabric
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface Ethernet1/49
+# - port-type fabric
+# - medium p2p
+
+# After state:
+# ------------
+#
+# switch# show running-config | section "^interface Ethernet1/49"
+# interface Ethernet1/49
+#   port-type fabric
+#   medium p2p
 
 # Using replaced
 

@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - >-
+    nxos_interfaces - add the ``medium`` option (``medium p2p``, ``broadcast`` is the default) and the
+    ``port_type`` option (``port-type fabric``) for routed interfaces, for example the ports to the spines
+    of a VXLAN fabric.

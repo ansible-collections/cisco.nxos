@@ -1132,3 +1132,156 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertIn("negotiate auto", result["commands"])
         self.assertNotIn("no negotiate auto", result["commands"])
+
+    def _fabric_port(self, running):
+        """Mock a routed Ethernet1/49 with the given running config lines."""
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = (
+            dedent(
+                """\
+          interface Ethernet1/49
+            mtu 9216
+        """,
+            )
+            + "".join("  %s\n" % line for line in running)
+        )
+
+    def test_nxos_interfaces_medium_p2p_merged(self):
+        self._fabric_port([])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", medium="p2p")], state="merged"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "medium p2p"])
+
+    def test_nxos_interfaces_medium_p2p_idempotent(self):
+        self._fabric_port(["medium p2p"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", medium="p2p")], state="merged"),
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_interfaces_medium_broadcast_removes_p2p(self):
+        """broadcast is the default, it is configured with 'no medium p2p' (a bare 'no medium' is rejected)."""
+        self._fabric_port(["medium p2p"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", medium="broadcast")], state="merged"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "no medium p2p"])
+
+    def test_nxos_interfaces_medium_broadcast_idempotent(self):
+        """broadcast is not shown in the running config, so an interface without medium is at broadcast."""
+        self._fabric_port([])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", medium="broadcast")], state="merged"),
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_interfaces_medium_replaced_omitted_restores_default(self):
+        self._fabric_port(["medium p2p"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", mtu="9216")], state="replaced"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "no medium p2p"])
+
+    def test_nxos_interfaces_medium_overridden_omitted_restores_default(self):
+        self._fabric_port(["medium p2p"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/50")], state="overridden"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no medium p2p", result["commands"])
+
+    def test_nxos_interfaces_medium_deleted_restores_default(self):
+        self._fabric_port(["medium p2p"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49")], state="deleted"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no medium p2p", result["commands"])
+
+    def test_nxos_interfaces_port_type_fabric_merged(self):
+        self._fabric_port([])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", port_type="fabric")], state="merged"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "port-type fabric"])
+
+    def test_nxos_interfaces_port_type_fabric_idempotent(self):
+        self._fabric_port(["port-type fabric"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", port_type="fabric")], state="merged"),
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_interfaces_port_type_fabric_replaced_omitted_removes(self):
+        """A bare 'no port-type' is rejected by NX-OS, the value has to be part of the command."""
+        self._fabric_port(["port-type fabric"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", mtu="9216")], state="replaced"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "no port-type fabric"])
+
+    def test_nxos_interfaces_port_type_fabric_deleted(self):
+        self._fabric_port(["port-type fabric"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49")], state="deleted"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no port-type fabric", result["commands"])
+
+    def test_nxos_interfaces_medium_port_type_rendered(self):
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/49", port_type="fabric", medium="p2p")],
+                state="rendered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["rendered"],
+            ["interface Ethernet1/49", "port-type fabric", "medium p2p"],
+        )
+
+    def test_nxos_interfaces_medium_port_type_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                  interface Ethernet1/49
+                    mtu 9216
+                    port-type fabric
+                    medium p2p
+                    no shutdown
+                """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            [
+                dict(
+                    name="Ethernet1/49",
+                    mtu="9216",
+                    port_type="fabric",
+                    medium="p2p",
+                    enabled=True,
+                ),
+            ],
+        )
+
+    def test_nxos_interfaces_medium_port_type_gathered(self):
+        self._fabric_port(["port-type fabric", "medium p2p"])
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"][0]["port_type"], "fabric")
+        self.assertEqual(result["gathered"][0]["medium"], "p2p")

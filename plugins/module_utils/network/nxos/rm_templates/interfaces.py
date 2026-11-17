@@ -129,6 +129,34 @@ class InterfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "medium",
+            "getval": re.compile(
+                r"""
+                \s+medium\s(?P<medium>p2p)
+                $""", re.VERBOSE,
+            ),
+            "setval": "medium {{ medium }}",
+            "result": {
+                '{{ name }}': {
+                    'medium': "{{ medium }}",
+                },
+            },
+        },
+        {
+            "name": "port_type",
+            "getval": re.compile(
+                r"""
+                \s+port-type\s(?P<port_type>fabric)
+                $""", re.VERBOSE,
+            ),
+            "setval": "port-type {{ port_type }}",
+            "result": {
+                '{{ name }}': {
+                    'port_type': "{{ port_type }}",
+                },
+            },
+        },
+        {
             "name": "ip_forward",
             "getval": re.compile(
                 r"""
