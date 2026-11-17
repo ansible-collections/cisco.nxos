@@ -1,0 +1,51 @@
+---
+# Features without configuration that are disabled on a clean device.
+config:
+  - name: bash-shell
+    enabled: true
+  - name: scp-server
+    enabled: true
+  - name: sftp-server
+    enabled: true
+
+merged:
+  commands:
+    - feature bash-shell
+    - feature scp-server
+    - feature sftp-server
+
+replaced:
+  config:
+    - name: bash-shell
+      enabled: true
+    - name: scp-server
+      enabled: false
+    - name: sftp-server
+      enabled: true
+  commands:
+    - no feature scp-server
+
+deleted:
+  config:
+    - name: scp-server
+    - name: sftp-server
+  commands:
+    - no feature scp-server
+    - no feature sftp-server
+
+rendered:
+  commands:
+    - feature bash-shell
+    - feature scp-server
+    - feature sftp-server
+
+parsed:
+  config:
+    - name: bash-shell
+      enabled: false
+    - name: nv overlay
+      enabled: true
+    - name: ssh
+      enabled: true
+    - name: tacacs+
+      enabled: true

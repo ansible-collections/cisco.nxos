@@ -90,6 +90,7 @@ Name | Description
 [cisco.nxos.nxos_facts](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_facts_module.rst)|Gets facts about NX-OS switches
 [cisco.nxos.nxos_fc_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_fc_interfaces_module.rst)|FC interfaces resource module.
 [cisco.nxos.nxos_feature](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst)|Manage features in NX-OS switches.
+[cisco.nxos.nxos_features](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_features_module.rst)|Features resource module.
 [cisco.nxos.nxos_file_copy](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_file_copy_module.rst)|Copy a file to a remote NXOS device.
 [cisco.nxos.nxos_gir](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_module.rst)|Trigger a graceful removal or insertion (GIR) of the switch.
 [cisco.nxos.nxos_gir_profile_management](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_profile_management_module.rst)|Create a maintenance-mode or normal-mode profile for GIR.

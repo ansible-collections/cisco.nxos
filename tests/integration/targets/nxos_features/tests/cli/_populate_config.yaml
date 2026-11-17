@@ -1,0 +1,5 @@
+---
+- name: Enable the features of the tests
+  cisco.nxos.nxos_features:
+    config: "{{ config }}"
+    state: merged
