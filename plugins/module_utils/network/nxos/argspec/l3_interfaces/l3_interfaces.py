@@ -56,6 +56,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
                 "proxy_arp": {"type": "bool"},
+                "unnumbered": {"type": "str"},
                 "port_unreachable": {"type": "bool"},
                 "verify": {
                     "type": "dict",

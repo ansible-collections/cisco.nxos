@@ -81,6 +81,16 @@ options:
       proxy_arp:
             description: Configure proxy ARP.
             type: bool
+      unnumbered:
+        description:
+        - Borrow the IPv4 address of another interface (C(ip unnumbered)), for example C(loopback0).
+        - The interface needs C(medium p2p), see the I(medium) option of M(cisco.nxos.nxos_interfaces) for the
+          point-to-point medium. The device rejects C(ip unnumbered) otherwise.
+        - C(ip unnumbered) and C(ip address) replace each other on the device. With I(state) C(replaced) or
+          C(overridden) the addresses of the interface are removed when I(unnumbered) is set and the setting is
+          removed when only addresses are given.
+        type: str
+        version_added: 14.1.0
       port_unreachable:
         description: Enable sending ICMP port-unreachable.
         type: bool
@@ -416,6 +426,45 @@ EXAMPLES = """
 #  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
 #  ipv6 dhcp relay address 2001:db8::1:abcd
 
+
+# Using merged with ip unnumbered
+
+# Before state:
+# -------------
+#
+# router# show running-config | section "^interface Ethernet1/41"
+# interface Ethernet1/41
+#   medium p2p
+#   ip address 192.0.2.41/30
+
+- name: Borrow the address of loopback0 on a point-to-point routed port.
+  cisco.nxos.nxos_l3_interfaces:
+    config:
+      - name: Ethernet1/41
+        unnumbered: loopback0
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: Ethernet1/41
+#   ipv4:
+#     - address: 192.0.2.41/30
+# commands:
+# - interface Ethernet1/41
+# - ip unnumbered loopback0
+# after:
+# - name: Ethernet1/41
+#   unnumbered: loopback0
+
+# After state:
+# ------------
+#
+# router# show running-config | section "^interface Ethernet1/41"
+# interface Ethernet1/41
+#   medium p2p
+#   ip unnumbered loopback0
 
 # Using replaced
 
