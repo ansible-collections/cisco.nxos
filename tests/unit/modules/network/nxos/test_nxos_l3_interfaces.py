@@ -917,7 +917,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                         unnumbered="loopback0",
                         redirects=True,
                         ipv6_redirects=True,
-                    )
+                    ),
                 ],
                 state="replaced",
             ),
