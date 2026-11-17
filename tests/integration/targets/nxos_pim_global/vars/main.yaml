@@ -1,0 +1,120 @@
+---
+config: &config
+  log_neighbor_changes: true
+  register_rate_limit: 100
+  ssm_range:
+    - 232.0.0.0/8
+    - 239.255.250.0/24
+  rp_addresses:
+    - rp_address: 192.0.2.1
+      group_list: 239.255.250.0/24
+    - rp_address: 192.0.2.2
+      prefix_list: PL_PIMTEST
+    - rp_address: 192.0.2.3
+      route_map: RM_PIMTEST
+    - rp_address: 192.0.2.4
+      group_list: 239.255.252.0/24
+      bidir: true
+  anycast_rps:
+    - anycast_rp: 192.0.2.10
+      members:
+        - 192.0.2.11
+        - 192.0.2.12
+
+merged:
+  commands:
+    - ip pim rp-address 192.0.2.1 group-list 239.255.250.0/24
+    - ip pim rp-address 192.0.2.2 prefix-list PL_PIMTEST
+    - ip pim rp-address 192.0.2.3 route-map RM_PIMTEST
+    - ip pim rp-address 192.0.2.4 group-list 239.255.252.0/24 bidir
+    - ip pim anycast-rp 192.0.2.10 192.0.2.11
+    - ip pim anycast-rp 192.0.2.10 192.0.2.12
+    - ip pim log-neighbor-changes
+    - ip pim register-rate-limit 100
+    - ip pim ssm range 232.0.0.0/8 239.255.250.0/24
+
+replaced:
+  config:
+    register_rate_limit: 100
+    rp_addresses:
+      - rp_address: 192.0.2.1
+        group_list: 239.255.250.0/24
+      - rp_address: 192.0.2.5
+        group_list: 239.255.253.0/24
+    anycast_rps:
+      - anycast_rp: 192.0.2.10
+        members:
+          - 192.0.2.11
+  commands:
+    - no ip pim rp-address 192.0.2.2 prefix-list PL_PIMTEST
+    - no ip pim rp-address 192.0.2.3 route-map RM_PIMTEST
+    - no ip pim rp-address 192.0.2.4 group-list 239.255.252.0/24 bidir
+    - no ip pim anycast-rp 192.0.2.10 192.0.2.12
+    - no ip pim log-neighbor-changes
+    - no ip pim ssm range 232.0.0.0/8
+    - ip pim rp-address 192.0.2.5 group-list 239.255.253.0/24
+
+overridden:
+  config:
+    ssm_range:
+      - none
+  commands:
+    - no ip pim rp-address 192.0.2.1 group-list 239.255.250.0/24
+    - no ip pim rp-address 192.0.2.2 prefix-list PL_PIMTEST
+    - no ip pim rp-address 192.0.2.3 route-map RM_PIMTEST
+    - no ip pim rp-address 192.0.2.4 group-list 239.255.252.0/24 bidir
+    - no ip pim anycast-rp 192.0.2.10 192.0.2.11
+    - no ip pim anycast-rp 192.0.2.10 192.0.2.12
+    - no ip pim log-neighbor-changes
+    - no ip pim register-rate-limit
+    - ip pim ssm range none
+
+deleted:
+  config:
+    register_rate_limit: 100
+    ssm_range:
+      - 239.255.250.0/24
+    rp_addresses:
+      - rp_address: 192.0.2.3
+        route_map: RM_PIMTEST
+    anycast_rps:
+      - anycast_rp: 192.0.2.10
+        members:
+          - 192.0.2.12
+  commands:
+    - no ip pim rp-address 192.0.2.3 route-map RM_PIMTEST
+    - no ip pim anycast-rp 192.0.2.10 192.0.2.12
+    - no ip pim register-rate-limit
+    - no ip pim ssm range 232.0.0.0/8
+
+rendered:
+  commands:
+    - ip pim rp-address 192.0.2.1 group-list 224.0.0.0/4
+    - ip pim rp-address 192.0.2.2 group-list 239.255.0.0/16 bidir
+    - ip pim anycast-rp 192.0.2.10 192.0.2.11
+    - ip pim bfd
+    - ip pim register-rate-limit 50
+    - ip pim ssm range none
+
+parsed:
+  config:
+    log_neighbor_changes: true
+    register_rate_limit: 100
+    ssm_range:
+      - 232.0.0.0/8
+      - 239.255.250.0/24
+    rp_addresses:
+      - rp_address: 192.0.2.1
+        group_list: 239.255.250.0/24
+      - rp_address: 192.0.2.2
+        prefix_list: PL_PIMTEST
+      - rp_address: 192.0.2.3
+        route_map: RM_PIMTEST
+      - rp_address: 192.0.2.4
+        group_list: 239.255.252.0/24
+        bidir: true
+    anycast_rps:
+      - anycast_rp: 192.0.2.10
+        members:
+          - 192.0.2.11
+          - 192.0.2.12

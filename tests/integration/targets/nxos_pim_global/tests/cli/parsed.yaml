@@ -1,0 +1,15 @@
+---
+- ansible.builtin.debug:
+    msg: START Parsed nxos_pim_global state for integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided global PIM config
+  cisco.nxos.nxos_pim_global:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+  register: result
+
+- name: Assert the result
+  ansible.builtin.assert:
+    that:
+      - result['changed'] == false
+      - parsed['config'] == result['parsed']

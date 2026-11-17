@@ -25,6 +25,7 @@ available_network_resources:
   - ospf_interfaces
   - ospfv2
   - ospfv3
+  - pim_global
   - prefix_lists
   - route_maps
   - snmp_server

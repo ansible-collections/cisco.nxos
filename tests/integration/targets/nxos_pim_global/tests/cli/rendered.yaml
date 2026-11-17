@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug:
+    msg: START Rendered nxos_pim_global state for integration tests on connection={{ ansible_connection }}
+
+- name: Render the commands for the provided configuration
+  cisco.nxos.nxos_pim_global:
+    config:
+      bfd: true
+      register_rate_limit: 50
+      ssm_range:
+        - none
+      rp_addresses:
+        - rp_address: 192.0.2.1
+        - rp_address: 192.0.2.2
+          group_list: 239.255.0.0/16
+          bidir: true
+      anycast_rps:
+        - anycast_rp: 192.0.2.10
+          members:
+            - 192.0.2.11
+    state: rendered
+  register: result
+
+- name: Assert the result
+  ansible.builtin.assert:
+    that:
+      - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+      - result['changed'] == false

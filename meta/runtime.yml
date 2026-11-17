@@ -93,6 +93,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_overlay_global
     pim:
       redirect: cisco.nxos.nxos_pim
+    pim_global:
+      redirect: cisco.nxos.nxos_pim_global
     pim_interface:
       redirect: cisco.nxos.nxos_pim_interface
     pim_rp_address:
@@ -257,6 +259,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_overlay_global
     pim:
       redirect: cisco.nxos.nxos_pim
+    pim_global:
+      redirect: cisco.nxos.nxos_pim_global
     pim_interface:
       redirect: cisco.nxos.nxos_pim_interface
     pim_rp_address:
