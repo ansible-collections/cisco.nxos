@@ -851,3 +851,55 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             result["commands"],
             ["interface Ethernet1/41", "no ip redirects", "no ipv6 redirects"],
         )
+
+    def test_nxos_l3_interface_name_case_loopback_idempotent(self):
+        """A name in another case than the device reports is the same interface."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface loopback1
+             ip address 192.0.2.1/32
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Loopback1", ipv4=[dict(address="192.0.2.1/32")])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_name_short_forms_idempotent(self):
+        """Lower case and the short name forms are normalized like in the other interface modules."""
+        for name in ("ethernet1/41", "Eth1/41", "eth1/41"):
+            self.execute_show_command.return_value = dedent(
+                """
+                interface Ethernet1/41
+                 ip address 192.0.2.41/30
+                """,
+            )
+            set_module_args(
+                dict(
+                    config=[dict(name=name, ipv4=[dict(address="192.0.2.41/30")])],
+                    state="merged",
+                ),
+            )
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], [], name)
+
+    def test_nxos_l3_interface_name_case_merged_adds_address(self):
+        """The commands use the name of the device and only add what is missing."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface loopback1
+             ip address 192.0.2.1/32
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Loopback1", ipv4=[dict(address="192.0.2.2/32")])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface loopback1", "ip address 192.0.2.2/32"])
