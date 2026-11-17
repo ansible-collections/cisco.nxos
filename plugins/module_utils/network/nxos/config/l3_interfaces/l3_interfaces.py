@@ -31,6 +31,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    normalize_interface,
+)
 
 
 class L3_interfaces(ResourceModule):
@@ -152,6 +155,8 @@ class L3_interfaces(ResourceModule):
 
         for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
+            iface_name = normalize_interface(iface_name)
+            iface_result["name"] = iface_name
 
             ipv4_value_addresses = iface_result.get("ipv4", [])
             ipv6_value_addresses = iface_result.get("ipv6", [])
