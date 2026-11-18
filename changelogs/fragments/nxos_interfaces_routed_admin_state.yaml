@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_interfaces - read the admin state of routed Ethernet ports without a shutdown line from the running config with all defaults.

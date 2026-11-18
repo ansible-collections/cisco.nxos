@@ -69,6 +69,7 @@ class Interfaces(ResourceModule):
             "service_policy.type_options.queuing.input",
             "service_policy.type_options.queuing.output",
         ]
+        self._admin_states = None
         if self.state not in ["parsed", "rendered"]:
             self.defaults = self.get_interface_defaults()
         else:
@@ -96,6 +97,33 @@ class Interfaces(ResourceModule):
         return self._connection.get(
             "show running-config all | incl 'system default switchport'",
         )
+
+    def get_default_admin_states(self):
+        """The admin state of the Ethernet interfaces, read from the 'all' view.
+
+        A routed port that is shut by default prints no 'shutdown' line in the plain
+        running config, so the facts cannot tell it from a port without an admin state.
+        The 'all' view shows 'shutdown' or 'no shutdown' for every interface.
+        The command is only run when it is needed and the result is kept for the run.
+
+        :rtype: dict
+        :returns: lowercase interface name -> True (up) or False (shut)
+        """
+        if self._admin_states is None:
+            self._admin_states = {}
+            data = self._connection.get(
+                'show running-config all | include "^interface Ethernet|^  shutdown$|^  no shutdown$"',
+            )
+            name = None
+            for line in data.splitlines() if isinstance(data, str) else []:
+                line = line.strip()
+                if line.startswith("interface "):
+                    name = line.split()[1].lower()
+                elif name and line == "shutdown":
+                    self._admin_states[name] = False
+                elif name and line == "no shutdown":
+                    self._admin_states[name] = True
+        return self._admin_states
 
     def generate_commands(self):
         """Generate configuration commands to send based on
@@ -140,6 +168,20 @@ class Interfaces(ResourceModule):
             return True
         return lowered.startswith(("mgmt", "port-channel")) and "." not in lowered
 
+    def _is_routed_ethernet(self, name, have, want):
+        """Whether the interface is a routed Ethernet port that stays routed in this run.
+
+        Subinterfaces are not included, they have their own admin state. A port that
+        becomes a switchport in this run gets the default admin state of a switchport.
+        """
+        lowered = name.lower()
+        if self.state in ("parsed", "rendered"):
+            return False
+        if not lowered.startswith("ethernet") or "." in lowered:
+            return False
+        have_mode = have.get("mode", self.defaults.get("default_mode"))
+        return have_mode == "layer3" and want.get("mode") in (None, "layer3")
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
@@ -164,6 +206,10 @@ class Interfaces(ResourceModule):
                 if have and have_enabled is None and self._is_up_by_default(name)
                 else have_enabled
             )
+            if have and have_enabled is None and self._is_routed_ethernet(name, have, want):
+                # A routed Ethernet port that is shut by default prints no 'shutdown'
+                # line either, ask the 'all' view for its real admin state.
+                effective_have_enabled = self.get_default_admin_states().get(name.lower())
             if want_enabled != effective_have_enabled:
                 if want_enabled is True:
                     self.addcmd(want, "enabled", True)

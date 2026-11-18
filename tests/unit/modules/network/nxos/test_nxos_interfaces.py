@@ -406,6 +406,114 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
+    def _run_routed_admin_state(self, config, states, state="merged", changed=None):
+        # A routed Ethernet port that is shut by default prints no 'shutdown' line,
+        # the real admin state comes from the 'all' view.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/1
+            description shut by default
+          interface Ethernet1/2
+            no shutdown
+          interface Ethernet1/3
+            switchport
+        """,
+        )
+        with patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces."
+            "Interfaces.get_default_admin_states",
+            return_value=states,
+        ):
+            set_module_args(dict(config=config, state=state))
+            return self.execute_module(changed=changed)
+
+    def test_routed_port_shut_by_default_enabled_false_idempotent(self):
+        states = {"ethernet1/1": False, "ethernet1/2": True, "ethernet1/3": False}
+        for state in ("merged", "replaced"):
+            result = self._run_routed_admin_state(
+                [dict(name="Ethernet1/1", description="shut by default", enabled=False)],
+                states,
+                state=state,
+                changed=False,
+            )
+            self.assertEqual(result["commands"], [])
+
+    def test_routed_port_shut_by_default_enabled_true(self):
+        states = {"ethernet1/1": False, "ethernet1/2": True, "ethernet1/3": False}
+        result = self._run_routed_admin_state(
+            [dict(name="Ethernet1/1", enabled=True)],
+            states,
+            changed=True,
+        )
+        self.assertEqual(result["commands"], ["interface Ethernet1/1", "no shutdown"])
+
+    def test_routed_port_up_enabled_false(self):
+        states = {"ethernet1/1": False, "ethernet1/2": True, "ethernet1/3": False}
+        result = self._run_routed_admin_state(
+            [dict(name="Ethernet1/2", enabled=False)],
+            states,
+            changed=True,
+        )
+        self.assertEqual(result["commands"], ["interface Ethernet1/2", "shutdown"])
+
+    def test_routed_port_admin_state_unknown_keeps_current_behaviour(self):
+        # No entry in the 'all' view, nothing known, shutdown is sent as before.
+        result = self._run_routed_admin_state(
+            [dict(name="Ethernet1/1", description="shut by default", enabled=False)],
+            {},
+            changed=True,
+        )
+        self.assertEqual(result["commands"], ["interface Ethernet1/1", "shutdown"])
+
+    def test_routed_port_admin_state_is_read_from_the_all_view(self):
+        # The real parser, with the carriage returns the device sends.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Ethernet1/1
+            description shut by default
+          interface Ethernet1/2
+            description up
+          interface Ethernet1/3
+            description not in the all view
+        """,
+        )
+        connection = self.get_resource_connection_facts.return_value
+        connection.get.return_value = (
+            "interface Ethernet1/1\r\n  shutdown\r\n" "interface Ethernet1/2\r\n  no shutdown\r\n"
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="Ethernet1/1", enabled=False),
+                    dict(name="Ethernet1/2", enabled=True),
+                    dict(name="Ethernet1/3", enabled=False),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        # Ethernet1/1 and Ethernet1/2 are already as wanted, Ethernet1/3 is unknown.
+        self.assertEqual(result["commands"], ["interface Ethernet1/3", "shutdown"])
+
+    def test_routed_port_becoming_layer2_is_not_affected(self):
+        # The port is routed now but becomes a switchport in this run: its admin
+        # state is then the default of an L2 port, not the one of the routed port.
+        states = {"ethernet1/1": False, "ethernet1/2": True, "ethernet1/3": False}
+        result = self._run_routed_admin_state(
+            [dict(name="Ethernet1/1", mode="layer2", enabled=False)],
+            states,
+            changed=True,
+        )
+        self.assertIn("shutdown", result["commands"])
+
     def test_3(self):
         # Testing 'enabled' with different 'system default' settings.
         # This is the same as test_2 with some minor changes.
