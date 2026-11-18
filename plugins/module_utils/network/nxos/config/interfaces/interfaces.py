@@ -170,7 +170,10 @@ class Interfaces(ResourceModule):
                 else:
                     self.addcmd(want, "enabled", False)
         elif not want and self.state == "overridden":
-            if have_enabled is not None:
+            # Only shut an interface that is up. One that shows 'shutdown' (this
+            # includes the SVIs in their default state, the facts make it explicit)
+            # is already shut and must not get the command on every run.
+            if have_enabled:
                 self.addcmd(have, "enabled", False)
         elif not want and self.state == "deleted":
             if have_enabled:

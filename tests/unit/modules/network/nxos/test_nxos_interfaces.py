@@ -406,6 +406,51 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
+    def test_overridden_unlisted_interfaces_that_are_shut_are_not_shut_again(self):
+        # An unlisted interface that already shows 'shutdown', or an SVI in its
+        # default shutdown state (the facts make it explicit), must not get a
+        # 'shutdown' command again, or overridden would never be idempotent.
+        # An unlisted interface that is up is still shut.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan1
+          interface Ethernet1/1
+            description foo
+          interface Ethernet1/6
+            no shutdown
+          interface Ethernet1/7
+            shutdown
+        """,
+        )
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/1", description="foo")], state="overridden"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/6", "shutdown"])
+
+    def test_overridden_unlisted_interfaces_that_are_shut_idempotent(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan1
+          interface Ethernet1/1
+            description foo
+          interface Ethernet1/7
+            shutdown
+        """,
+        )
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/1", description="foo")], state="overridden"),
+        )
+        self.execute_module(changed=False, commands=[])
+
     def test_3(self):
         # Testing 'enabled' with different 'system default' settings.
         # This is the same as test_2 with some minor changes.

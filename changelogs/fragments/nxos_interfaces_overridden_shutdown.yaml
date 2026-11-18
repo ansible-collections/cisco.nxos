@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_interfaces - do not shut interfaces that are not listed and already shut again with state overridden.
