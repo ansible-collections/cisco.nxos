@@ -69,6 +69,7 @@ class Interfaces(ResourceModule):
             "service_policy.type_options.queuing.input",
             "service_policy.type_options.queuing.output",
         ]
+        self._admin_states = None
         if self.state not in ["parsed", "rendered"]:
             self.defaults = self.get_interface_defaults()
         else:
@@ -96,6 +97,42 @@ class Interfaces(ResourceModule):
         return self._connection.get(
             "show running-config all | incl 'system default switchport'",
         )
+
+    @staticmethod
+    def _parse_admin_states(data):
+        """Read the 'interface', 'shutdown' and 'no shutdown' lines of the 'all' view.
+
+        :rtype: dict
+        :returns: lowercase interface name -> True (up) or False (shut)
+        """
+        states = {}
+        name = None
+        for line in data.splitlines() if isinstance(data, str) else []:
+            line = line.strip()
+            if line.startswith("interface "):
+                name = line.split()[1].lower()
+            elif name and line in ("shutdown", "no shutdown"):
+                states[name] = line == "no shutdown"
+        return states
+
+    def get_admin_states(self):
+        """The admin state of every interface, read from the 'all' view.
+
+        The plain running config leaves out the admin state of an interface that is in
+        its default state, the 'all' view always shows 'shutdown' or 'no shutdown'.
+        The command is only run when it is needed and the result is kept for the run.
+        This method exists solely to allow the unit test framework to mock device connection calls.
+
+        :rtype: dict
+        :returns: lowercase interface name -> True (up) or False (shut)
+        """
+        if self._admin_states is None:
+            self._admin_states = self._parse_admin_states(
+                self._connection.get(
+                    'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"',
+                ),
+            )
+        return self._admin_states
 
     def generate_commands(self):
         """Generate configuration commands to send based on
@@ -134,11 +171,20 @@ class Interfaces(ResourceModule):
 
         That is the case for loopbacks, mgmt0 and port-channels. Subinterfaces of
         a port-channel are not included, they have their own admin state.
+        Only used for an interface that the 'all' view does not list.
         """
         lowered = name.lower()
         if "loopback" in lowered:
             return True
         return lowered.startswith(("mgmt", "port-channel")) and "." not in lowered
+
+    def _changes_mode(self, want, have):
+        """Whether the interface changes between L2 and L3 in this run."""
+        want_mode = want.get("mode")
+        return want_mode is not None and want_mode != have.get(
+            "mode",
+            self.defaults.get("default_mode"),
+        )
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -153,17 +199,17 @@ class Interfaces(ResourceModule):
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
         if want_enabled is not None:
-            # NX-OS loopbacks, the management interface and port-channels are
-            # admin-up by default and never write 'no shutdown' to running-config
-            # in that default state. Only apply when the interface exists (have
-            # is non-empty) so that a new interface is still created with an
-            # explicit 'no shutdown'.
+            # An interface in its default admin state has no 'shutdown' or 'no shutdown'
+            # line in the plain running config, the 'all' view shows its admin state.
+            # Only for an interface that exists, so that a new interface still gets an
+            # explicit command, and not when the interface changes between L2 and L3 in
+            # this run, it then has the default admin state of the new mode.
             name = (want or have).get("name", "")
-            effective_have_enabled = (
-                True
-                if have and have_enabled is None and self._is_up_by_default(name)
-                else have_enabled
-            )
+            effective_have_enabled = have_enabled
+            if have and have_enabled is None and not self._changes_mode(want, have):
+                effective_have_enabled = self.get_admin_states().get(name.lower())
+                if effective_have_enabled is None and self._is_up_by_default(name):
+                    effective_have_enabled = True
             if want_enabled != effective_have_enabled:
                 if want_enabled is True:
                     self.addcmd(want, "enabled", True)

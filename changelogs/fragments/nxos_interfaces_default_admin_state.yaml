@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_interfaces - read the admin state of an interface without a shutdown line from the all view of the running config.
