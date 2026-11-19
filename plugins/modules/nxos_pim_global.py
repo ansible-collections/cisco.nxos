@@ -31,6 +31,9 @@ notes:
     and is not returned by the module.
   - A static RP without I(group_list), I(prefix_list) and I(route_map) is stored by NX-OS with the
     group list C(224.0.0.0/4), which the module returns and expects in I(replaced) and I(overridden).
+  - A static RP line with a keyword other than C(group-list), C(prefix-list), C(route-map) and C(bidir)
+    is not recognised. I(gathered) and I(parsed) do not return it, and I(replaced), I(overridden) and
+    I(deleted) do not remove it.
   - M(cisco.nxos.nxos_pim) and M(cisco.nxos.nxos_pim_rp_address) manage a part of the same
     configuration. Prefer this module for declarative management, including I(replaced),
     I(overridden) and I(gathered). Do not manage the same settings with both in one play.

@@ -373,6 +373,7 @@ Notes
    - The configuration of the PIM interfaces (``ip pim sparse-mode``) and of the VRFs is not managed.
    - NX-OS replaces the default SSM range ``232.0.0.0/8`` when another range is configured. Add ``232.0.0.0/8`` to *ssm_range* to keep it. The default is not displayed in the running configuration and is not returned by the module.
    - A static RP without *group_list*, *prefix_list* and *route_map* is stored by NX-OS with the group list ``224.0.0.0/4``, which the module returns and expects in *replaced* and *overridden*.
+   - A static RP line with a keyword other than ``group-list``, ``prefix-list``, ``route-map`` and ``bidir`` is not recognised. *gathered* and *parsed* do not return it, and *replaced*, *overridden* and *deleted* do not remove it.
    - :ref:`cisco.nxos.nxos_pim <cisco.nxos.nxos_pim_module>` and :ref:`cisco.nxos.nxos_pim_rp_address <cisco.nxos.nxos_pim_rp_address_module>` manage a part of the same configuration. Prefer this module for declarative management, including *replaced*, *overridden* and *gathered*. Do not manage the same settings with both in one play.
 
 

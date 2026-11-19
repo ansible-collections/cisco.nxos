@@ -490,6 +490,53 @@ class TestNxosPimGlobalModule(TestNxosModule):
             },
         )
 
+    def test_nxos_pim_global_parsed_ignores_rp_with_other_keywords(self):
+        """Test that a static RP line with a keyword other than the supported ones is not parsed."""
+
+        running = (
+            "ip pim rp-address 192.0.2.5 group-list 239.250.0.0/16\n"
+            "ip pim rp-address 192.0.2.6 group-list 239.251.0.0/16 other-keyword\n"
+        )
+        set_module_args({"running_config": running, "state": "parsed"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            {"rp_addresses": [{"rp_address": "192.0.2.5", "group_list": "239.250.0.0/16"}]},
+        )
+
+    def test_nxos_pim_global_replaced_keeps_rp_with_other_keywords(self):
+        """Test that replaced neither sees nor removes a static RP line with another keyword."""
+
+        have = (
+            "ip pim rp-address 192.0.2.5 group-list 239.250.0.0/16\n"
+            "ip pim rp-address 192.0.2.6 group-list 239.251.0.0/16 other-keyword\n"
+        )
+        self._run(
+            {
+                "config": {
+                    "rp_addresses": [
+                        {"rp_address": "192.0.2.5", "group_list": "239.250.0.0/16"},
+                    ],
+                },
+                "state": "replaced",
+            },
+            have=have,
+            changed=False,
+        )
+
+    def test_nxos_pim_global_deleted_keeps_rp_with_other_keywords(self):
+        """Test that deleted removes the supported static RP but not one with another keyword."""
+
+        have = (
+            "ip pim rp-address 192.0.2.5 group-list 239.250.0.0/16\n"
+            "ip pim rp-address 192.0.2.6 group-list 239.251.0.0/16 other-keyword\n"
+        )
+        result = self._run({"state": "deleted"}, have=have)
+        self.assertEqual(
+            result["commands"],
+            ["no ip pim rp-address 192.0.2.5 group-list 239.250.0.0/16"],
+        )
+
     # validation
 
     def test_nxos_pim_global_rp_group_sources_are_exclusive(self):
