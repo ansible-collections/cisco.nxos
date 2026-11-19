@@ -24,12 +24,12 @@ author:
 notes:
   - Tested against NXOS 10.4(2) on CML
   - Unsupported for Cisco MDS
-  - This module assumes the device is configured with the default switchport
-    behavior, specifically that C(system default switchport shutdown) is not
-    enabled. If C(system default switchport shutdown) is enabled on the device,
-    the module will not function correctly. The only resolution is to revert
-    the device to the default setting using C(no system default switchport shutdown).
-    There is currently no workaround for devices with this non-default configuration.
+  - An interface in its default admin state has no C(shutdown) or C(no shutdown) line in the running configuration.
+    For such an interface that is part of the configuration, the module reads the admin state from C(show running-config all).
+    I(enabled) therefore does not depend on C(system default switchport shutdown). It was tested against NX-OS 10.6(4)
+    on N9K-C93180YC-FX with C(system default switchport shutdown) and with C(no system default switchport shutdown),
+    over C(network_cli).
+  - The state I(rendered) and the state I(parsed) do not connect to the device, they do not read the admin state from the device.
 options:
   config:
     description: A dictionary of interface options
