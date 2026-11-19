@@ -101,6 +101,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos_ping
     prefix_lists:
       redirect: cisco.nxos.nxos_prefix_lists
+    ptp_global:
+      redirect: cisco.nxos.nxos_ptp_global
+    ptp_interfaces:
+      redirect: cisco.nxos.nxos_ptp_interfaces
     reboot:
       redirect: cisco.nxos.nxos_reboot
     rollback:
@@ -265,6 +269,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos_ping
     prefix_lists:
       redirect: cisco.nxos.nxos_prefix_lists
+    ptp_global:
+      redirect: cisco.nxos.nxos_ptp_global
+    ptp_interfaces:
+      redirect: cisco.nxos.nxos_ptp_interfaces
     reboot:
       redirect: cisco.nxos.nxos_reboot
     rollback:

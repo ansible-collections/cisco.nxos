@@ -1668,6 +1668,89 @@ platforms:
       "#": " "
       (config)#: " "
       (config-vlan-config)#: " "
+  nxos_ptp_global:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      no ptp correction-range 5000: transcripts/common/generic_empty_return.txt
+      no ptp correction-range logging: transcripts/common/generic_empty_return.txt
+      no ptp domain 5: transcripts/common/generic_empty_return.txt
+      no ptp priority1 100: transcripts/common/generic_empty_return.txt
+      no ptp priority2 120: transcripts/common/generic_empty_return.txt
+      no ptp source 192.0.2.1: transcripts/common/generic_empty_return.txt
+      ptp domain 7: transcripts/common/generic_empty_return.txt
+      ptp management: transcripts/common/generic_empty_return.txt
+      ptp notification type gm-change: transcripts/common/generic_empty_return.txt
+      ptp notification type parent-change: transcripts/common/generic_empty_return.txt
+      ptp priority1 80: transcripts/common/generic_empty_return.txt
+      ptp priority1 90: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+  nxos_ptp_interfaces:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/1: transcripts/common/generic_empty_return.txt
+      ptp vlan 200: transcripts/common/generic_empty_return.txt
+      ptp announce interval aes67 3: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/3: transcripts/common/generic_empty_return.txt
+      ptp: transcripts/common/generic_empty_return.txt
+      ptp role master: transcripts/common/generic_empty_return.txt
+      ptp vlan 150: transcripts/common/generic_empty_return.txt
+      no ptp sync interval aes67 -2: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/2: transcripts/common/generic_empty_return.txt
+      no ptp role master: transcripts/common/generic_empty_return.txt
+      no ptp master 192.0.2.10: transcripts/common/generic_empty_return.txt
+      no ptp: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      interface: (config-if)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-if)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-if)#: " "
 scenarios:
   nxos-acls-gathered:
     platform: nxos_acls
@@ -7741,3 +7824,141 @@ scenarios:
         transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_vlans.txt
       - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
         transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_global.txt
+  nxos-ptp-global-gathered:
+    platform: nxos_ptp_global
+    sequence:
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/gathered/before.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/gathered/before.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/gathered/before.txt
+  nxos-ptp-global-merged:
+    platform: nxos_ptp_global
+    sequence:
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/merged/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/merged/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/merged/after.txt
+  nxos-ptp-global-replaced:
+    platform: nxos_ptp_global
+    sequence:
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/replaced/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/replaced/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/replaced/after.txt
+  nxos-ptp-global-overridden:
+    platform: nxos_ptp_global
+    sequence:
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/overridden/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/overridden/after.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/overridden/after.txt
+  nxos-ptp-global-deleted:
+    platform: nxos_ptp_global
+    sequence:
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/nxos_ptp_global/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^ptp|^no ptp"
+        transcript: transcripts/common/generic_empty_return.txt
+  nxos-ptp-interfaces-gathered:
+    platform: nxos_ptp_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/gathered/before.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/gathered/before.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/gathered/before.txt
+  nxos-ptp-interfaces-merged:
+    platform: nxos_ptp_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/merged/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/merged/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/merged/after.txt
+  nxos-ptp-interfaces-replaced:
+    platform: nxos_ptp_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/replaced/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/replaced/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/replaced/after.txt
+  nxos-ptp-interfaces-overridden:
+    platform: nxos_ptp_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/overridden/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/overridden/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/overridden/after.txt
+  nxos-ptp-interfaces-deleted:
+    platform: nxos_ptp_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/deleted/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/deleted/after.txt
+      - command: show running-config | include "^interface|^  ptp"
+        transcript: transcripts/nxos_ptp_interfaces/scenarios/deleted/after.txt

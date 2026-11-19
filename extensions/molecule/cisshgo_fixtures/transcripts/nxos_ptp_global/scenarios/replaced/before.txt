@@ -1,0 +1,7 @@
+ptp source 192.0.2.1
+ptp priority1 100
+ptp priority2 120
+ptp correction-range 5000
+ptp correction-range logging
+ptp domain 5
+no ptp management

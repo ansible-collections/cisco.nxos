@@ -1,0 +1,197 @@
+---
+- name: "Nxos_ptp_interfaces — state: gathered"
+  hosts: nxos_ptp_interfaces_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_interfaces/vars/main.yml
+  tasks:
+    - name: Gather nxos_ptp_interfaces facts
+      register: result
+      cisco.nxos.nxos_ptp_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - before == result['gathered']
+
+    - name: Run nxos_ptp_interfaces parsed (offline)
+      register: result
+      cisco.nxos.nxos_ptp_interfaces:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_ptp_interfaces/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed == result['parsed']
+
+    - name: Run nxos_ptp_interfaces rendered (offline)
+      register: result
+      cisco.nxos.nxos_ptp_interfaces:
+        config:
+          - name: Eth1/3
+            enabled: true
+            vlan: 100
+            role: master
+            transmission: unicast
+            master:
+              - 192.0.2.10
+            asymmetric_delay:
+              forward_path: 100
+            sync_interval:
+              value: -2
+              profile: aes67
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | sort == result['rendered'] | sort
+
+- name: "Nxos_ptp_interfaces — state: merged"
+  hosts: nxos_ptp_interfaces_merged
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_interfaces merged
+      register: result
+      cisco.nxos.nxos_ptp_interfaces: &merged
+        config:
+          - name: "{{ nxos_int1 }}"
+            vlan: 200
+            announce_interval:
+              value: 3
+              profile: aes67
+          - name: "{{ nxos_int3 }}"
+            enabled: true
+            role: master
+        state: merged
+    - name: Assert merged result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - merged['commands'] == result['commands']
+          - merged['after'] == result['after']
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_interfaces: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_interfaces — state: replaced"
+  hosts: nxos_ptp_interfaces_replaced
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_interfaces replaced
+      register: result
+      cisco.nxos.nxos_ptp_interfaces: &replaced
+        config:
+          - name: "{{ nxos_int1 }}"
+            enabled: true
+            vlan: 150
+          - name: "{{ nxos_int2 }}"
+            enabled: true
+        state: replaced
+    - name: Assert replaced result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - replaced['commands'] == result['commands']
+          - replaced['after'] == result['after']
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_interfaces: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_interfaces — state: overridden"
+  hosts: nxos_ptp_interfaces_overridden
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_interfaces overridden
+      register: result
+      cisco.nxos.nxos_ptp_interfaces: &overridden
+        config:
+          - name: "{{ nxos_int1 }}"
+            enabled: true
+            vlan: 100
+            sync_interval:
+              value: -2
+              profile: aes67
+        state: overridden
+    - name: Assert overridden result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - overridden['commands'] == result['commands']
+          - overridden['after'] == result['after']
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_interfaces: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_ptp_interfaces — state: deleted"
+  hosts: nxos_ptp_interfaces_deleted
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_ptp_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_ptp_interfaces deleted
+      register: result
+      cisco.nxos.nxos_ptp_interfaces: &deleted
+        config:
+          - name: "{{ nxos_int1 }}"
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - deleted['commands'] == result['commands']
+          - deleted['after'] == result['after']
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_ptp_interfaces: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
