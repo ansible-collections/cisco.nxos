@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_interfaces - fix ``enabled`` sending ``shutdown`` or ``no shutdown`` on every run for an interface that is already in the wanted state but has no such line in the running config.
+  - nxos_interfaces - fix state ``overridden`` sending ``shutdown`` on every run for unlisted interfaces that are already shut.
