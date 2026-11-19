@@ -118,3 +118,16 @@ parsed:
         members:
           - 192.0.2.11
           - 192.0.2.12
+
+round_trip:
+  update:
+    register_rate_limit: 200
+    rp_addresses:
+      - rp_address: 192.0.2.6
+        group_list: 239.255.254.0/24
+  update_commands:
+    - ip pim rp-address 192.0.2.6 group-list 239.255.254.0/24
+    - ip pim register-rate-limit 200
+  revert_commands:
+    - no ip pim rp-address 192.0.2.6 group-list 239.255.254.0/24
+    - ip pim register-rate-limit 100

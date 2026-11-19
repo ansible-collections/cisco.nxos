@@ -511,3 +511,124 @@ class TestNxosPimGlobalModule(TestNxosModule):
         )
         result = self.execute_module(failed=True)
         self.assertIn("mutually exclusive", result["msg"])
+
+    def test_nxos_pim_global_empty_config_is_rejected(self):
+        """Test that an empty config is rejected for the states that need one, and nothing is sent."""
+
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                set_module_args({"config": {}, "state": state})
+                result = self.execute_module(failed=True)
+                self.assertEqual(
+                    result["msg"],
+                    "value of config parameter must not be empty for state %s" % state,
+                )
+                self.assertNotIn("commands", result)
+
+    def test_nxos_pim_global_parsed_empty_running_config_is_rejected(self):
+        """Test that state parsed without text to parse is rejected."""
+
+        set_module_args({"running_config": "", "state": "parsed"})
+        result = self.execute_module(failed=True)
+        self.assertEqual(
+            result["msg"],
+            "value of running_config parameter must not be empty for state parsed",
+        )
+
+    def test_nxos_pim_global_deleted_empty_config_removes_everything(self):
+        """Test that state deleted with an empty config is the same as without a config."""
+
+        without_config = self._run({"state": "deleted"}, have=RUNNING)
+        with_empty_config = self._run({"config": {}, "state": "deleted"}, have=RUNNING)
+        self.assertTrue(with_empty_config["changed"])
+        self.assertEqual(with_empty_config["commands"], without_config["commands"])
+
+    def test_nxos_pim_global_deleted_empty_config_idempotent(self):
+        """Test that state deleted with an empty config on a device without PIM configuration changes nothing."""
+
+        result = self._run({"config": {}, "state": "deleted"}, have="", changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_pim_global_parsed_without_pim_lines(self):
+        """Test that text without global PIM lines is parsed to an empty configuration."""
+
+        set_module_args({"running_config": "foo\nbar baz\n", "state": "parsed"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], {})
+        self.assertNotIn("commands", result)
+
+    def test_nxos_pim_global_config_is_required(self):
+        """Test that the states that change or render configuration need a config."""
+
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                set_module_args({"state": state})
+                result = self.execute_module(failed=True)
+                self.assertEqual(
+                    result["msg"],
+                    "state is %s but all of the following are missing: config" % state,
+                )
+
+    def test_nxos_pim_global_parsed_needs_running_config(self):
+        """Test that state parsed without running_config is rejected."""
+
+        set_module_args({"state": "parsed"})
+        result = self.execute_module(failed=True)
+        self.assertEqual(
+            result["msg"],
+            "state is parsed but all of the following are missing: running_config",
+        )
+
+    def test_nxos_pim_global_config_and_running_config_are_exclusive(self):
+        """Test that config and running_config cannot be given together."""
+
+        set_module_args({"config": {"bfd": True}, "running_config": RUNNING, "state": "parsed"})
+        result = self.execute_module(failed=True)
+        self.assertEqual(result["msg"], "parameters are mutually exclusive: config|running_config")
+
+    def test_nxos_pim_global_invalid_state(self):
+        """Test that a state that does not exist is rejected."""
+
+        set_module_args({"config": {"bfd": True}, "state": "present"})
+        result = self.execute_module(failed=True)
+        self.assertIn("value of state must be one of: merged, replaced, overridden", result["msg"])
+
+    def test_nxos_pim_global_rp_address_is_required(self):
+        """Test that a static RP needs its address."""
+
+        set_module_args(
+            {"config": {"rp_addresses": [{"group_list": "239.1.0.0/16"}]}, "state": "merged"},
+        )
+        result = self.execute_module(failed=True)
+        self.assertEqual(
+            result["msg"],
+            "missing required arguments: rp_address found in config -> rp_addresses",
+        )
+
+    def test_nxos_pim_global_anycast_rp_is_required(self):
+        """Test that an anycast RP set needs its address."""
+
+        set_module_args(
+            {"config": {"anycast_rps": [{"members": ["192.0.2.11"]}]}, "state": "merged"},
+        )
+        result = self.execute_module(failed=True)
+        self.assertEqual(
+            result["msg"],
+            "missing required arguments: anycast_rp found in config -> anycast_rps",
+        )
+
+    def test_nxos_pim_global_register_rate_limit_must_be_a_number(self):
+        """Test that a register rate limit that is not a number is rejected."""
+
+        set_module_args({"config": {"register_rate_limit": "fast"}, "state": "merged"})
+        result = self.execute_module(failed=True)
+        self.assertIn("register_rate_limit", result["msg"])
+        self.assertIn("unable to convert to int", result["msg"])
+
+    def test_nxos_pim_global_unknown_option_is_rejected(self):
+        """Test that an option that does not exist is rejected."""
+
+        set_module_args({"config": {"nonsense": True}, "state": "merged"})
+        result = self.execute_module(failed=True)
+        self.assertIn("Unsupported parameters", result["msg"])
+        self.assertIn("config.nonsense", result["msg"])

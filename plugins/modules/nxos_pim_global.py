@@ -250,6 +250,41 @@ EXAMPLES = """
 #   - no ip pim log-neighbor-changes
 #   - ip pim rp-address 192.0.2.5 group-list 239.253.0.0/16
 
+# Using overridden
+
+# The global PIM configuration is a single resource, so overridden removes what is not
+# given in the same way as replaced.
+
+# Before state:
+# -------------
+# switch# show running-config | include "^ip pim "
+# ip pim rp-address 192.0.2.1 group-list 239.255.0.0/16
+# ip pim rp-address 192.0.2.2 group-list 239.254.0.0/16 bidir
+# ip pim ssm range 232.0.0.0/8 239.255.250.0/24
+# ip pim log-neighbor-changes
+# ip pim anycast-rp 192.0.2.10 192.0.2.11
+
+- name: Override the global PIM configuration.
+  cisco.nxos.nxos_pim_global:
+    config:
+      ssm_range:
+        - 232.0.0.0/8
+        - 239.255.250.0/24
+      rp_addresses:
+        - rp_address: 192.0.2.1
+          group_list: 239.255.0.0/16
+        - rp_address: 192.0.2.5
+          group_list: 239.253.0.0/16
+    state: overridden
+
+# Task output:
+# ------------
+# commands:
+#   - no ip pim rp-address 192.0.2.2 group-list 239.254.0.0/16 bidir
+#   - no ip pim anycast-rp 192.0.2.10 192.0.2.11
+#   - no ip pim log-neighbor-changes
+#   - ip pim rp-address 192.0.2.5 group-list 239.253.0.0/16
+
 # Using deleted
 
 # Before state:

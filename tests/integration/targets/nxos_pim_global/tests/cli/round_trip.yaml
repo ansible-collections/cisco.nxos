@@ -1,0 +1,84 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_pim_global round trip integration tests on connection={{ ansible_connection }}
+
+# Merge, gather, merge an update and revert with overridden from the gathered configuration.
+# The configuration that is gathered is given back as it is, so lines that the device has
+# besides the lines of the test stay.
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather the global PIM configuration
+      cisco.nxos.nxos_pim_global:
+        state: gathered
+      register: before
+
+    - name: Merge an update
+      cisco.nxos.nxos_pim_global:
+        config: "{{ round_trip['update'] }}"
+        state: merged
+      register: result
+
+    - name: Assert that only the update was sent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - round_trip['update_commands'] | symmetric_difference(result['commands']) | length == 0
+
+    - name: Gather the global PIM configuration after the update
+      cisco.nxos.nxos_pim_global:
+        state: gathered
+      register: updated
+
+    - name: Assert that the update is on the device
+      ansible.builtin.assert:
+        that:
+          - updated['gathered']['register_rate_limit'] == 200
+          - updated['gathered']['rp_addresses'] | length == before['gathered']['rp_addresses'] | length + 1
+
+    - name: Revert with overridden from the gathered configuration
+      cisco.nxos.nxos_pim_global: &id001
+        config: "{{ before['gathered'] }}"
+        state: overridden
+      register: result
+
+    - name: Assert that the update was reverted and nothing else
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - round_trip['revert_commands'] | symmetric_difference(result['commands']) | length == 0
+
+    - name: Revert with overridden from the gathered configuration (idempotent)
+      cisco.nxos.nxos_pim_global: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Gather the global PIM configuration after the revert
+      cisco.nxos.nxos_pim_global:
+        state: gathered
+      register: reverted
+
+    - name: Assert that the configuration is the one that was gathered first
+      ansible.builtin.assert:
+        that:
+          - reverted['gathered']['register_rate_limit'] == before['gathered']['register_rate_limit']
+          - reverted['gathered']['ssm_range'] | sort == before['gathered']['ssm_range'] | sort
+          - before['gathered']['rp_addresses'] | difference(reverted['gathered']['rp_addresses']) | length == 0
+          - reverted['gathered']['rp_addresses'] | difference(before['gathered']['rp_addresses']) | length == 0
+          - before['gathered']['anycast_rps'] | difference(reverted['gathered']['anycast_rps']) | length == 0
+          - reverted['gathered']['anycast_rps'] | difference(before['gathered']['anycast_rps']) | length == 0
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Remove the lines that only the round trip test configures
+      cisco.nxos.nxos_pim_global:
+        config: "{{ round_trip['update'] }}"
+        state: deleted
+
+- ansible.builtin.debug:
+    msg: END nxos_pim_global round trip integration tests on connection={{ ansible_connection }}
