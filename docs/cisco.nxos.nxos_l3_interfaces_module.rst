@@ -1225,6 +1225,7 @@ Parameters
                         <div>Borrow the IPv4 address of another interface (<code>ip unnumbered</code>), for example <code>loopback0</code>.</div>
                         <div>The interface needs <code>medium p2p</code>, see the <em>medium</em> option of <span class='module'>cisco.nxos.nxos_interfaces</span> for the point-to-point medium. The device rejects <code>ip unnumbered</code> otherwise.</div>
                         <div><code>ip unnumbered</code> and <code>ip address</code> replace each other on the device. With <em>state</em> <code>replaced</code> or <code>overridden</code> the addresses of the interface are removed when <em>unnumbered</em> is set and the setting is removed when only addresses are given.</div>
+                        <div>Cannot be combined with <em>ipv4</em> for the same interface. To change an interface from addresses to <em>unnumbered</em>, give only <em>unnumbered</em>.</div>
                 </td>
             </tr>
             <tr>

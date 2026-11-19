@@ -89,6 +89,8 @@ options:
         - C(ip unnumbered) and C(ip address) replace each other on the device. With I(state) C(replaced) or
           C(overridden) the addresses of the interface are removed when I(unnumbered) is set and the setting is
           removed when only addresses are given.
+        - Cannot be combined with I(ipv4) for the same interface. To change an interface from addresses to
+          I(unnumbered), give only I(unnumbered).
         type: str
         version_added: 14.1.0
       port_unreachable:

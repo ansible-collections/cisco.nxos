@@ -23,6 +23,27 @@
       - "medium p2p"
 
 - block:
+    # ----- unnumbered together with ipv4 is rejected, nothing is sent to the device -----
+    - name: Merged - unnumbered together with ipv4 is rejected
+      register: result
+      ignore_errors: true
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            unnumbered: "{{ test_unnumbered }}"
+            ipv4:
+              - address: 192.0.2.41/30
+        state: merged
+
+    - name: Assert that the combination is rejected
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'mutually exclusive' in result.msg"
+          - "'unnumbered' in result.msg"
+          - "'ipv4' in result.msg"
+          - result.commands is not defined
+
     # ----- merged -----
     - name: Merged - set ip unnumbered
       register: result

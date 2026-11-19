@@ -1002,3 +1002,60 @@ class TestNxosL3InterfaceModule(TestNxosModule):
             result["gathered"],
             [dict(name="Ethernet1/41", unnumbered="loopback0")],
         )
+
+    def test_nxos_l3_interface_unnumbered_with_ipv4_is_rejected(self):
+        """'unnumbered' and 'ipv4' in the same entry fail for every state that sends commands."""
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                self.execute_show_command.return_value = dedent(
+                    """\
+                    interface Ethernet1/41
+                      medium p2p
+                      ip address 192.0.2.41/30
+                    """,
+                )
+                set_module_args(
+                    dict(
+                        config=[
+                            dict(
+                                name="Ethernet1/41",
+                                unnumbered="loopback0",
+                                ipv4=[dict(address="192.0.2.41/30")],
+                            ),
+                        ],
+                        state=state,
+                    ),
+                )
+                result = self.execute_module(failed=True)
+                self.assertIn("mutually exclusive", result["msg"])
+                self.assertIn("unnumbered", result["msg"])
+                self.assertIn("ipv4", result["msg"])
+                self.assertNotIn("commands", result)
+
+    def test_nxos_l3_interface_unnumbered_and_ipv4_on_different_interfaces(self):
+        """The combination is only rejected for the same interface."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              medium p2p
+            interface Ethernet1/42
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="Ethernet1/41", unnumbered="loopback0"),
+                    dict(name="Ethernet1/42", ipv4=[dict(address="192.0.2.42/30")]),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface Ethernet1/41",
+                "ip unnumbered loopback0",
+                "interface Ethernet1/42",
+                "ip address 192.0.2.42/30",
+            ],
+        )

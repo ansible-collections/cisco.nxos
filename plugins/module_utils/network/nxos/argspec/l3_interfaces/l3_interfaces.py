@@ -36,6 +36,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "list",
             "elements": "dict",
+            "mutually_exclusive": [["unnumbered", "ipv4"]],
             "options": {
                 "name": {"type": "str", "required": True},
                 "mac_address": {"type": "str"},
