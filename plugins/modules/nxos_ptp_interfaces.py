@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ptp_interfaces
-version_added: 14.0.0
+version_added: 14.1.0
 short_description: PTP interfaces resource module.
 description:
   - This module manages the Precision Time Protocol (PTP) configuration of the interfaces of Cisco NX-OS devices.

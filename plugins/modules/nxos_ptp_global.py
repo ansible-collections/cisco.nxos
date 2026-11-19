@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ptp_global
-version_added: 14.0.0
+version_added: 14.1.0
 short_description: PTP global resource module.
 description:
   - This module manages the global Precision Time Protocol (PTP) configuration of Cisco NX-OS devices.

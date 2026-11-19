@@ -8,7 +8,7 @@ cisco.nxos.nxos_ptp_global
 **PTP global resource module.**
 
 
-Version added: 14.0.0
+Version added: 14.1.0
 
 .. contents::
    :local:

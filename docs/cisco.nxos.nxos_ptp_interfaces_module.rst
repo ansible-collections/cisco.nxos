@@ -8,7 +8,7 @@ cisco.nxos.nxos_ptp_interfaces
 **PTP interfaces resource module.**
 
 
-Version added: 14.0.0
+Version added: 14.1.0
 
 .. contents::
    :local:
