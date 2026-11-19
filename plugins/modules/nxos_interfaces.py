@@ -169,6 +169,9 @@ options:
         shutdown.
       - The state I(purged) negates virtual interfaces that are specified in
         task from running-config.
+      - With the state I(overridden) the interfaces that are not in I(config) are returned to their default
+        admin state, an interface that shows C(no shutdown) is shut down. An interface that shows C(shutdown)
+        gets no command, and neither does one that shows no admin state line, because it is in its default state.
     type: str
     choices:
       - merged

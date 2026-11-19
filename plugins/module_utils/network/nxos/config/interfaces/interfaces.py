@@ -19,6 +19,7 @@ created.
 """
 
 
+from ansible.module_utils.connection import ConnectionError as DeviceConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -121,17 +122,25 @@ class Interfaces(ResourceModule):
         The plain running config leaves out the admin state of an interface that is in
         its default state, the 'all' view always shows 'shutdown' or 'no shutdown'.
         The command is only run when it is needed and the result is kept for the run.
+        If the device does not take the command, the admin state of the interfaces is unknown
+        and the module goes on without it, with a warning.
         This method exists solely to allow the unit test framework to mock device connection calls.
 
         :rtype: dict
         :returns: lowercase interface name -> True (up) or False (shut)
         """
         if self._admin_states is None:
-            self._admin_states = self._parse_admin_states(
-                self._connection.get(
+            try:
+                data = self._connection.get(
                     'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"',
-                ),
-            )
+                )
+            except DeviceConnectionError as exc:
+                self._module.warn(
+                    "Could not read the admin state of the interfaces from 'show running-config all', "
+                    "it is unknown for the interfaces that show no shutdown line: %s" % exc,
+                )
+                data = None
+            self._admin_states = self._parse_admin_states(data)
         return self._admin_states
 
     def generate_commands(self):
@@ -171,7 +180,7 @@ class Interfaces(ResourceModule):
 
         That is the case for loopbacks, mgmt0 and port-channels. Subinterfaces of
         a port-channel are not included, they have their own admin state.
-        Only used for an interface that the 'all' view does not list.
+        Only used for an interface of the configuration that the 'all' view does not list.
         """
         lowered = name.lower()
         if "loopback" in lowered:
@@ -186,6 +195,31 @@ class Interfaces(ResourceModule):
             self.defaults.get("default_mode"),
         )
 
+    def _admin_state(self, want, have):
+        """The admin state that an existing interface of the configuration has now.
+
+        This is the one place that defines it. An interface that is not in its default
+        admin state has a 'shutdown' or 'no shutdown' line in the plain running config. An
+        interface in its default admin state has none, the 'all' view always shows it. That is
+        the case for ports, loopbacks, mgmt0 and port-channels alike.
+
+        An interface that does not exist yet has no admin state, and neither has one that
+        changes between L2 and L3 in this run, it then gets the default admin state of the
+        new mode. The admin state of an interface that the 'all' view does not list is unknown,
+        except for a loopback, mgmt0 or port-channel (up by default), that is kept from the
+        earlier fixes so that the commands of existing playbooks stay as they were.
+
+        :rtype: bool
+        :returns: True (up), False (shut) or None (unknown)
+        """
+        enabled = have.get("enabled")
+        if enabled is None and have and not self._changes_mode(want, have):
+            name = have.get("name", "")
+            enabled = self.get_admin_states().get(name.lower())
+            if enabled is None and self._is_up_by_default(name):
+                enabled = True
+        return enabled
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
@@ -197,29 +231,15 @@ class Interfaces(ResourceModule):
 
         # Handle the 'enabled' state separately
         want_enabled = want.get("enabled")
-        have_enabled = have.get("enabled")
         if want_enabled is not None:
-            # An interface in its default admin state has no 'shutdown' or 'no shutdown'
-            # line in the plain running config, the 'all' view shows its admin state.
-            # Only for an interface that exists, so that a new interface still gets an
-            # explicit command, and not when the interface changes between L2 and L3 in
-            # this run, it then has the default admin state of the new mode.
-            name = (want or have).get("name", "")
-            effective_have_enabled = have_enabled
-            if have and have_enabled is None and not self._changes_mode(want, have):
-                effective_have_enabled = self.get_admin_states().get(name.lower())
-                if effective_have_enabled is None and self._is_up_by_default(name):
-                    effective_have_enabled = True
-            if want_enabled != effective_have_enabled:
-                if want_enabled is True:
-                    self.addcmd(want, "enabled", True)
-                else:
-                    self.addcmd(want, "enabled", False)
-        elif not want and self.state == "overridden":
-            if have_enabled is not None:
-                self.addcmd(have, "enabled", False)
-        elif not want and self.state == "deleted":
-            if have_enabled:
+            if want_enabled != self._admin_state(want, have):
+                self.addcmd(want, "enabled", want_enabled)
+        elif not want and self.state in ["overridden", "deleted"]:
+            # An interface that is not in the configuration (overridden) or that is deleted is
+            # only shut when its running config shows 'no shutdown', one that shows 'shutdown'
+            # is shut already and must not get the command on every run. Its admin state is not
+            # read from the 'all' view here, only the interfaces of the configuration use that.
+            if have.get("enabled"):
                 self.addcmd(have, "enabled", False)
 
         # Handle the 'mode' state separately

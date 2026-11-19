@@ -593,6 +593,7 @@ Parameters
                         <div>The state of the configuration after module completion</div>
                         <div>The state <em>rendered</em> considers the system default mode for interfaces to be &quot;Layer 3&quot; and the system default state for interfaces to be shutdown.</div>
                         <div>The state <em>purged</em> negates virtual interfaces that are specified in task from running-config.</div>
+                        <div>With the state <em>overridden</em> the interfaces that are not in <em>config</em> are returned to their default admin state, an interface that shows <code>no shutdown</code> is shut down. An interface that shows <code>shutdown</code> gets no command, and neither does one that shows no admin state line, because it is in its default state.</div>
                 </td>
             </tr>
     </table>
