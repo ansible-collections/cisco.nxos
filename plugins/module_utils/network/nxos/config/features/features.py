@@ -16,6 +16,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -48,13 +50,41 @@ class Features(ResourceModule):
             self.run_commands()
         return self.result
 
+    def get_plain_features(self):
+        """
+        Get the feature lines of the plain running configuration.
+
+        The plain running configuration only shows the features that were changed from their
+        default, a feature that is enabled by default, for example ssh, is not in it. The facts
+        use the all view, so they cannot tell the two apart.
+        """
+
+        return self._connection.get("show running-config | include '^feature'")
+
+    def _explicit_features(self):
+        """The names of the features that have a feature line in the plain running configuration."""
+
+        names = set()
+        for line in self.get_plain_features().splitlines():
+            match = re.match(r"^feature\s+(\S.*?)\s*$", line)
+            if match:
+                names.add(match.group(1))
+        return names
+
     def generate_commands(self):
         """
         Generate configuration commands to send based on
         want, have and desired state.
 
         The features are compared by name. The commands that enable a feature are sent in the
-        order of the configuration, the commands that disable a feature after them.
+        order of the configuration, the commands that disable a feature after them and in the
+        reverse order of the configuration, so that a feature that depends on another one is
+        disabled first.
+
+        The states overridden and deleted without config return the features to their default.
+        They only disable the features that have a feature line in the plain running
+        configuration, the features that are enabled by default are left alone. A feature that is
+        listed is always set as given.
         """
         wantd = self._normalize(self.want)
         haved = self._normalize(self.have)
@@ -68,17 +98,29 @@ class Features(ResourceModule):
                     enable.append(name)
                 elif not enabled and haved.get(name) is True:
                     disable.append(name)
+            disable.reverse()
             if self.state == "overridden":
+                explicit = self._explicit_features()
                 disable.extend(
-                    name for name, enabled in haved.items() if enabled and name not in wantd
+                    name
+                    for name, enabled in haved.items()
+                    if enabled and name not in wantd and name in explicit
                 )
         elif self.state == "deleted":
-            # Without config every enabled feature is disabled.
-            names = list(wantd) if self.want else list(haved)
-            disable.extend(name for name in names if haved.get(name) is True)
+            if self.want:
+                disable.extend(name for name in reversed(list(wantd)) if haved.get(name) is True)
+            else:
+                explicit = self._explicit_features()
+                disable.extend(
+                    name for name, enabled in haved.items() if enabled and name in explicit
+                )
         elif self.state == "rendered":
             for name, enabled in wantd.items():
-                (enable if enabled else disable).append(name)
+                if enabled:
+                    enable.append(name)
+                else:
+                    disable.append(name)
+            disable.reverse()
 
         for name in enable:
             self.addcmd({"name": name}, "feature", False)

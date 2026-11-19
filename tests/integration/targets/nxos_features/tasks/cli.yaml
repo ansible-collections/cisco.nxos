@@ -12,12 +12,31 @@
     test_items: "{{ test_cases['files'] | map(attribute='path') | list }}"
   delegate_to: localhost
 
-- name: Run test case (connection=ansible.netcommon.network_cli).
-  ansible.builtin.include_tasks:
-    file: "{{ test_case_to_run }}"
+- name: Run the test cases and restore the features of the tests.
   when: not skip_test
-  loop: "{{ test_items }}"
-  loop_control:
-    loop_var: test_case_to_run
   vars:
     ansible_connection: ansible.netcommon.network_cli
+  block:
+    # The tests enable and disable the features bash-shell, scp-server and sftp-server. Their state before
+    # the tests is restored at the end, whatever it was.
+    - name: Gather the features of the device before the tests.
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: features_before
+
+    - name: Set a fact for the features of the tests before the tests.
+      ansible.builtin.set_fact:
+        features_of_tests_before: "{{ features_before['gathered'] | selectattr('name', 'in', ['bash-shell', 'scp-server', 'sftp-server']) | list }}"
+
+    - name: Run test case (connection=ansible.netcommon.network_cli).
+      ansible.builtin.include_tasks:
+        file: "{{ test_case_to_run }}"
+      loop: "{{ test_items }}"
+      loop_control:
+        loop_var: test_case_to_run
+  always:
+    - name: Restore the features of the tests to the state before the tests.
+      cisco.nxos.nxos_features:
+        config: "{{ features_of_tests_before }}"
+        state: merged
+      when: features_of_tests_before | default([]) | length > 0

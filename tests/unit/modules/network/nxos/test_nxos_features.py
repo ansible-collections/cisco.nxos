@@ -40,6 +40,9 @@ RUNNING = dedent(
     """,
 )
 
+# Features that are enabled by default are in the all view, but not in the plain running configuration.
+DEFAULT_ON = {"ssh"}
+
 RUNNING_CONFIG = [
     {"name": "bash-shell", "enabled": False},
     {"name": "bgp", "enabled": True},
@@ -75,17 +78,36 @@ class TestNxosFeaturesModule(TestNxosModule):
         )
         self.get_config = self.mock_get_config.start()
 
+        self.mock_get_plain = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.features."
+            "features.Features.get_plain_features",
+        )
+        self.get_plain = self.mock_get_plain.start()
+
     def tearDown(self):
         """Clean up after each test method."""
 
         super().tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_get_config.stop()
+        self.mock_get_plain.stop()
 
-    def _run(self, args, have="", changed=True):
-        """Run the module with the given arguments against the given running configuration."""
+    def _run(self, args, have="", changed=True, plain=None):
+        """
+        Run the module with the given arguments against the given running configuration.
+
+        have is the output of the all view. The plain running configuration is the same without
+        the features that are enabled by default, unless plain is given.
+        """
 
         self.get_config.return_value = have
+        if plain is None:
+            plain = "".join(
+                line + "\n"
+                for line in have.splitlines()
+                if line.startswith("feature ") and line.split(" ", 1)[1] not in DEFAULT_ON
+            )
+        self.get_plain.return_value = plain
         set_module_args(args)
         return self.execute_module(changed=changed)
 
@@ -146,7 +168,7 @@ class TestNxosFeaturesModule(TestNxosModule):
         )
         self.assertEqual(
             result["commands"],
-            ["feature lacp", "feature bfd", "no feature interface-vlan", "no feature bgp"],
+            ["feature lacp", "feature bfd", "no feature bgp", "no feature interface-vlan"],
         )
 
     def test_nxos_features_merged_disable_idempotent(self):
@@ -361,10 +383,10 @@ class TestNxosFeaturesModule(TestNxosModule):
             },
             have=RUNNING,
         )
-        self.assertEqual(result["commands"], ["no feature bgp", "no feature interface-vlan"])
+        self.assertEqual(result["commands"], ["no feature interface-vlan", "no feature bgp"])
 
     def test_nxos_features_deleted_all(self):
-        """Test that state deleted without config disables every enabled feature."""
+        """Test that state deleted without config disables the features with a feature line."""
 
         result = self._run({"state": "deleted"}, have=RUNNING)
         self.assertEqual(
@@ -374,7 +396,6 @@ class TestNxosFeaturesModule(TestNxosModule):
                 "no feature interface-vlan",
                 "no feature nv overlay",
                 "no feature password encryption aes",
-                "no feature ssh",
                 "no feature tacacs+",
                 "no feature vn-segment-vlan-based",
             ],
@@ -389,6 +410,168 @@ class TestNxosFeaturesModule(TestNxosModule):
             changed=False,
         )
         self._run({"state": "deleted"}, have="no feature nxapi\n", changed=False)
+
+    # features that are enabled by default, and the order of the disables
+
+    def test_nxos_features_overridden_leaves_default_features_alone(self):
+        """Test that state overridden does not disable ssh, it has no feature line."""
+
+        result = self._run(
+            {"config": [{"name": "bgp", "enabled": True}], "state": "overridden"},
+            have=RUNNING,
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "no feature interface-vlan",
+                "no feature nv overlay",
+                "no feature password encryption aes",
+                "no feature tacacs+",
+                "no feature vn-segment-vlan-based",
+            ],
+        )
+        self.assertNotIn("no feature ssh", result["commands"])
+
+    def test_nxos_features_overridden_default_features_idempotent(self):
+        """Test that the features with a feature line, listed without ssh, change nothing."""
+
+        config = [item for item in RUNNING_CONFIG if item["name"] != "ssh"]
+        self._run({"config": config, "state": "overridden"}, have=RUNNING, changed=False)
+
+    def test_nxos_features_overridden_disables_default_feature_with_a_line(self):
+        """Test that a feature with a feature line is disabled, also if ssh is its name."""
+
+        result = self._run(
+            {"config": [{"name": "bgp", "enabled": True}], "state": "overridden"},
+            have="feature ssh\nfeature bgp\n",
+            plain="feature ssh\nfeature bgp\n",
+        )
+        self.assertEqual(result["commands"], ["no feature ssh"])
+
+    def test_nxos_features_overridden_listed_default_feature_is_disabled(self):
+        """Test that a listed feature that is enabled by default is disabled when asked."""
+
+        result = self._run(
+            {"config": [{"name": "ssh", "enabled": False}], "state": "overridden"},
+            have="feature ssh\n",
+            plain="",
+        )
+        self.assertEqual(result["commands"], ["no feature ssh"])
+
+    def test_nxos_features_merged_listed_default_feature_is_disabled(self):
+        """Test that state merged disables a feature that is enabled by default when asked."""
+
+        result = self._run(
+            {"config": [{"name": "ssh", "enabled": False}], "state": "merged"},
+            have=RUNNING,
+        )
+        self.assertEqual(result["commands"], ["no feature ssh"])
+
+    def test_nxos_features_deleted_listed_default_feature_is_disabled(self):
+        """Test that state deleted with config disables a listed feature that is on by default."""
+
+        result = self._run(
+            {"config": [{"name": "ssh"}], "state": "deleted"},
+            have=RUNNING,
+        )
+        self.assertEqual(result["commands"], ["no feature ssh"])
+
+    def test_nxos_features_deleted_all_only_default_features_changes_nothing(self):
+        """Test that state deleted without config does nothing when only default features are on."""
+
+        self._run({"state": "deleted"}, have="feature ssh\nno feature nxapi\n", changed=False)
+
+    def test_nxos_features_plain_config_is_only_read_when_needed(self):
+        """Test that the plain running configuration is read for overridden and deleted without config."""
+
+        self._run({"config": RUNNING_CONFIG, "state": "merged"}, have=RUNNING, changed=False)
+        self._run({"config": RUNNING_CONFIG, "state": "replaced"}, have=RUNNING, changed=False)
+        self._run(
+            {"config": [{"name": "bgp"}], "state": "deleted"},
+            have=RUNNING,
+        )
+        self.get_plain.assert_not_called()
+        self._run({"state": "deleted"}, have=RUNNING)
+        self.assertEqual(self.get_plain.call_count, 1)
+        self._run({"config": RUNNING_CONFIG, "state": "overridden"}, have=RUNNING, changed=False)
+        self.assertEqual(self.get_plain.call_count, 2)
+
+    def test_nxos_features_disables_in_reverse_order_of_the_config(self):
+        """Test that the disables come in the reverse order of the config, for dependencies."""
+
+        config = [
+            {"name": "nv overlay", "enabled": False},
+            {"name": "vn-segment-vlan-based", "enabled": False},
+            {"name": "interface-vlan", "enabled": False},
+        ]
+        for state in ("merged", "replaced"):
+            result = self._run({"config": config, "state": state}, have=RUNNING)
+            self.assertEqual(
+                result["commands"],
+                [
+                    "no feature interface-vlan",
+                    "no feature vn-segment-vlan-based",
+                    "no feature nv overlay",
+                ],
+            )
+
+    def test_nxos_features_overridden_listed_disables_before_the_unlisted_ones(self):
+        """Test that overridden disables the listed features in reverse order, then the others."""
+
+        result = self._run(
+            {
+                "config": [
+                    {"name": "nv overlay", "enabled": False},
+                    {"name": "vn-segment-vlan-based", "enabled": False},
+                    {"name": "bgp", "enabled": True},
+                ],
+                "state": "overridden",
+            },
+            have=RUNNING,
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "no feature vn-segment-vlan-based",
+                "no feature nv overlay",
+                "no feature interface-vlan",
+                "no feature password encryption aes",
+                "no feature tacacs+",
+            ],
+        )
+
+    def test_nxos_features_deleted_listed_in_reverse_order(self):
+        """Test that state deleted with config disables the features in the reverse order."""
+
+        result = self._run(
+            {
+                "config": [{"name": "nv overlay"}, {"name": "vn-segment-vlan-based"}],
+                "state": "deleted",
+            },
+            have=RUNNING,
+        )
+        self.assertEqual(
+            result["commands"],
+            ["no feature vn-segment-vlan-based", "no feature nv overlay"],
+        )
+
+    def test_nxos_features_rendered_disables_in_reverse_order(self):
+        """Test that state rendered puts the no feature lines in the reverse order."""
+
+        set_module_args(
+            {
+                "config": [
+                    {"name": "nv overlay", "enabled": False},
+                    {"name": "vn-segment-vlan-based", "enabled": False},
+                ],
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["rendered"],
+            ["no feature vn-segment-vlan-based", "no feature nv overlay"],
+        )
 
     # rendered, gathered, parsed
 

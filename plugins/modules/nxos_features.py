@@ -39,9 +39,19 @@ notes:
     C(password encryption aes). The set of features depends on the platform and the license,
     so the names are not restricted.
   - A feature is either enabled or disabled, so I(merged) and I(replaced) behave the same.
+  - Some features are enabled by default, for example C(ssh) (see the Cisco NX-OS security configuration
+    guide, by default the SSH server is enabled). They only show in C(show running-config all), not
+    in the plain running configuration. The states I(overridden) and I(deleted) without I(config) return
+    the features to their default, so they only disable the features that have a C(feature) line in the
+    plain running configuration, and leave the features that are enabled by default alone. List such a
+    feature with I(enabled) false to disable it, with any state that applies I(config).
+  - For I(overridden) and I(deleted) without I(config) the module also reads
+    C(show running-config | include '^feature'), in addition to the C(all) view that I(gathered) uses.
+    The C(all) view is slower on a large chassis. The module was tested over C(network_cli) only.
   - The commands that enable a feature are sent in the order of I(config), the commands that disable a
-    feature after them. List a feature before the features that depend on it, for example
-    C(nv overlay) before C(vn-segment-vlan-based).
+    feature after them and in the reverse order of I(config). List a feature before the features that
+    depend on it, for example C(nv overlay) before C(vn-segment-vlan-based), and they are enabled and
+    disabled in a valid order.
   - The feature sets (C(install feature-set) and C(feature-set)) are not managed.
   - M(cisco.nxos.nxos_feature) manages one feature per task and stays available.
 options:
@@ -76,11 +86,14 @@ options:
       - The state the configuration should be left in.
       - With I(merged) and I(replaced) the features of I(config) are enabled or disabled. Other features
         are not touched.
-      - With I(overridden) the features of I(config) are enabled or disabled and every other enabled
-        feature is disabled. This removes the configuration that depends on those features.
+      - With I(overridden) the features of I(config) are enabled or disabled and every other feature that
+        has a C(feature) line in the plain running configuration is disabled. This removes the
+        configuration that depends on those features. The features that are enabled by default, for example
+        C(ssh), are left alone unless they are listed in I(config).
       - With I(deleted) the features listed in I(config) are disabled, the value of I(enabled) is ignored.
-        Without I(config) B(every enabled feature is disabled), also those that give access to
-        the device.
+        Without I(config) B(every feature that has a C(feature) line in the plain running configuration is
+        disabled), also those that give access to the device, for example C(tacacs+). The features that
+        are enabled by default are left alone.
       - With I(rendered) the commands for I(config) are returned and nothing is sent to the device.
       - With I(gathered) the features are read from the device and returned in I(gathered).
       - With I(parsed) the text of I(running_config) is converted to structured data.
