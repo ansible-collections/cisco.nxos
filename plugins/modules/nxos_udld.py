@@ -17,7 +17,6 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 
@@ -118,7 +117,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     load_config,
     run_commands,
 )
-
 
 PARAM_TO_DEFAULT_KEYMAP = {"msg_time": "15"}
 
