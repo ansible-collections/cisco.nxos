@@ -1,0 +1,5 @@
+---
+- name: Populate the global PIM configuration
+  cisco.nxos.nxos_pim_global:
+    config: "{{ config }}"
+    state: merged

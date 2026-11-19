@@ -1,0 +1,15 @@
+---
+- name: Set a fact for 'skip_test'
+  ansible.builtin.set_fact:
+    skip_test: false
+
+- name: Enable 'feature pim'
+  cisco.nxos.nxos_feature:
+    feature: pim
+    state: enabled
+
+- name: Main task for PIM global module
+  ansible.builtin.include_tasks:
+    file: cli.yaml
+  tags:
+    - network_cli
