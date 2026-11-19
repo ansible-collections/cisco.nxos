@@ -1195,7 +1195,10 @@ class TestNxosInterfacesModule(TestNxosModule):
             dict(config=[dict(name="Ethernet1/50")], state="overridden"),
         )
         result = self.execute_module(changed=True)
-        self.assertIn("no medium p2p", result["commands"])
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/49", "no mtu 9216", "no medium p2p"],
+        )
 
     def test_nxos_interfaces_medium_deleted_restores_default(self):
         self._fabric_port(["medium p2p"])
@@ -1203,7 +1206,10 @@ class TestNxosInterfacesModule(TestNxosModule):
             dict(config=[dict(name="Ethernet1/49")], state="deleted"),
         )
         result = self.execute_module(changed=True)
-        self.assertIn("no medium p2p", result["commands"])
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/49", "no mtu 9216", "no medium p2p"],
+        )
 
     def test_nxos_interfaces_port_type_fabric_merged(self):
         self._fabric_port([])
@@ -1235,7 +1241,19 @@ class TestNxosInterfacesModule(TestNxosModule):
             dict(config=[dict(name="Ethernet1/49")], state="deleted"),
         )
         result = self.execute_module(changed=True)
-        self.assertIn("no port-type fabric", result["commands"])
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/49", "no mtu 9216", "no port-type fabric"],
+        )
+
+    def test_nxos_interfaces_medium_on_a_switchport(self):
+        """The module does not check the mode of the interface, it sends medium also for a switchport."""
+        self._fabric_port(["switchport"])
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/49", medium="p2p")], state="merged"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Ethernet1/49", "medium p2p"])
 
     def test_nxos_interfaces_medium_port_type_rendered(self):
         set_module_args(

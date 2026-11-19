@@ -104,6 +104,7 @@ options:
         choices:
           - p2p
           - broadcast
+        version_added: 14.1.0
       port_type:
         description:
           - Port type of the interface, C(fabric) configures C(port-type fabric).
@@ -115,6 +116,7 @@ options:
         type: str
         choices:
           - fabric
+        version_added: 14.1.0
       mac_address:
         description: E.E.E  MAC address.
         type: str
