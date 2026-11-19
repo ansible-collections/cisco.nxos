@@ -903,3 +903,22 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["interface loopback1", "ip address 192.0.2.2/32"])
+
+    def test_nxos_l3_interface_loopback_name_forms_redirects_idempotent(self):
+        """A loopback in any name form is the loopback of the device, so it never gets the redirects commands."""
+        for name in ("Loopback1", "Lo1", "lo1"):
+            for state in ("replaced", "overridden"):
+                self.execute_show_command.return_value = dedent(
+                    """
+                    interface loopback1
+                     ip address 192.0.2.1/32
+                    """,
+                )
+                set_module_args(
+                    dict(
+                        config=[dict(name=name, ipv4=[dict(address="192.0.2.1/32")])],
+                        state=state,
+                    ),
+                )
+                result = self.execute_module(changed=False)
+                self.assertEqual(result["commands"], [], (name, state))

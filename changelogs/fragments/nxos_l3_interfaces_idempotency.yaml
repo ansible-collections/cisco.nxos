@@ -1,3 +1,4 @@
 ---
 bugfixes:
+  - nxos_l3_interfaces - normalize interface names.
   - nxos_l3_interfaces - do not send the redirects commands for loopbacks on every run, the device does not store them.
