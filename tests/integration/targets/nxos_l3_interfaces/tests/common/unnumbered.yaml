@@ -1,0 +1,177 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_l3_interfaces unnumbered integration tests connection={{ ansible_connection }}
+
+# The interface that lends its address has to exist on the device, the prepare role cannot know it.
+# Set unnumbered_loopback to use another one.
+- name: Set facts for the unnumbered tests
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
+    test_unnumbered: "{{ unnumbered_loopback | default('loopback0') }}"
+
+# ip unnumbered is rejected on a port that is not a point-to-point routed port.
+- name: Setup - default the test interface and make it a routed point-to-point port
+  cisco.nxos.nxos_config:
+    lines:
+      - "default interface {{ test_int1 }}"
+
+- name: Setup - routed port with medium p2p
+  cisco.nxos.nxos_config:
+    parents: "interface {{ test_int1 }}"
+    lines:
+      - "no switchport"
+      - "medium p2p"
+
+- block:
+    # ----- merged -----
+    - name: Merged - set ip unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id001
+        config:
+          - name: "{{ test_int1 }}"
+            unnumbered: "{{ test_unnumbered }}"
+        state: merged
+
+    - name: Assert the commands of merged
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ test_int1, 'ip unnumbered ' ~ test_unnumbered]
+          - (result.before | selectattr('name', 'eq', test_int1) | selectattr('unnumbered', 'defined') | list) == []
+          - "(result.after | selectattr('name', 'eq', test_int1) | list) == [{'name': test_int1, 'unnumbered': test_unnumbered}]"
+
+    - name: Merged - idempotency
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id001
+
+    - name: Assert that merged is idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+
+    # ----- gathered -----
+    - name: Gathered - the facts show unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        state: gathered
+
+    - name: Assert the gathered facts
+      ansible.builtin.assert:
+        that:
+          - "(result.gathered | selectattr('name', 'eq', test_int1) | list) == [{'name': test_int1, 'unnumbered': test_unnumbered}]"
+
+    # replaced resets the redirects that are not listed, they are set here so that the commands below are only those of unnumbered.
+    # ----- replaced: unnumbered to an address -----
+    - name: Replaced - an address instead of unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id002
+        config:
+          - name: "{{ test_int1 }}"
+            redirects: true
+            ipv6_redirects: true
+            ipv4:
+              - address: 192.0.2.41/30
+        state: replaced
+
+    - name: Assert the commands of replaced, unnumbered is removed before the address is added
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ test_int1, 'no ip unnumbered ' ~ test_unnumbered, 'ip address 192.0.2.41/30']
+
+    - name: Replaced - idempotency
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id002
+
+    - name: Assert that replaced is idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+
+    # ----- replaced: an address to unnumbered -----
+    - name: Replaced - unnumbered instead of the address
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id003
+        config:
+          - name: "{{ test_int1 }}"
+            redirects: true
+            ipv6_redirects: true
+            unnumbered: "{{ test_unnumbered }}"
+        state: replaced
+
+    - name: Assert the commands of replaced, the address is removed before unnumbered is set
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ test_int1, 'no ip address 192.0.2.41/30', 'ip unnumbered ' ~ test_unnumbered]
+
+    - name: Replaced - idempotency
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id003
+
+    - name: Assert that replaced is idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+
+    # ----- deleted -----
+    - name: Deleted - remove ip unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id004
+        config:
+          - name: "{{ test_int1 }}"
+        state: deleted
+
+    - name: Assert the commands of deleted
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ test_int1, 'no ip unnumbered ' ~ test_unnumbered]
+          - (result.after | selectattr('name', 'eq', test_int1) | selectattr('unnumbered', 'defined') | list) == []
+
+    - name: Deleted - idempotency
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id004
+
+    - name: Assert that deleted is idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+
+    # ----- rendered and parsed, they do not use the device -----
+    - name: Rendered - ip unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: Ethernet1/800
+            unnumbered: loopback0
+        state: rendered
+
+    - name: Assert the rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.rendered == ['interface Ethernet1/800', 'ip unnumbered loopback0']
+
+    - name: Parsed - ip unnumbered
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        running_config: |
+          interface Ethernet1/800
+            medium p2p
+            ip unnumbered loopback0
+        state: parsed
+
+    - name: Assert the parsed configuration
+      ansible.builtin.assert:
+        that:
+          - "result.parsed == [{'name': 'Ethernet1/800', 'unnumbered': 'loopback0'}]"
+  always:
+    - name: Teardown - default the test interface
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
