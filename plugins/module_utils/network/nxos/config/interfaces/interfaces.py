@@ -59,6 +59,7 @@ class Interfaces(ResourceModule):
             "ip_forward",
             "fabric_forwarding_anycast_gateway",
             "mac_address",
+            "port_type",
             "logging.link_status",
             "logging.trunk_status",
             "snmp.trap.link_status",
@@ -220,6 +221,21 @@ class Interfaces(ResourceModule):
             if have_negotiate is False:
                 # Restore default: remove "no negotiate auto"
                 self.addcmd(have, "negotiate_auto", False)
+
+        # Handle 'medium' separately because its default (broadcast) does not appear in
+        # running-config; only 'medium p2p' appears. NX-OS rejects a bare 'no medium', so
+        # going back to broadcast is done with 'no medium p2p'.
+        want_medium = want.get("medium")
+        have_medium = have.get("medium") or "broadcast"
+        if want_medium is not None:
+            if want_medium != have_medium:
+                if want_medium == "p2p":
+                    self.addcmd(want, "medium", False)
+                else:
+                    self.addcmd(have, "medium", True)
+        elif self.state in ["replaced", "overridden"] or (not want and self.state == "deleted"):
+            if have_medium == "p2p":
+                self.addcmd(have, "medium", True)
 
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))

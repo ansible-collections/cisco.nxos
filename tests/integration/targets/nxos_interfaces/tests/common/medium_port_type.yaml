@@ -1,0 +1,162 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_interfaces medium and port_type integration tests connection={{ ansible_connection }}"
+
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
+
+- block:
+    - name: Setup - default the test interface
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+
+    - name: Setup - make the test interface a routed port
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            mode: layer3
+        state: merged
+
+    # ----- merged: set medium and port_type -----
+
+    - name: Merged - set medium p2p and port_type fabric
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: p2p
+            port_type: fabric
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'medium p2p' in result.commands"
+          - "'port-type fabric' in result.commands"
+
+    - name: Gather interfaces facts after merged
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: interfaces
+
+    - ansible.builtin.assert:
+        that:
+          - >-
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', test_int1)
+            | map(attribute='medium')
+            | first == 'p2p'
+          - >-
+            ansible_network_resources.interfaces
+            | selectattr('name', 'equalto', test_int1)
+            | map(attribute='port_type')
+            | first == 'fabric'
+
+    - name: Merged idempotent - medium and port_type already set
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: p2p
+            port_type: fabric
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    # ----- merged: back to the default medium -----
+
+    - name: Merged - medium broadcast is configured with 'no medium p2p'
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: broadcast
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no medium p2p' in result.commands"
+
+    - name: Merged idempotent - medium broadcast is the default
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: broadcast
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    # ----- replaced: options omitted return to the default -----
+
+    - name: Replaced - set medium p2p again
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: p2p
+            port_type: fabric
+        state: replaced
+
+    - name: Replaced - omit medium and port_type
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no medium p2p' in result.commands"
+          - "'no port-type fabric' in result.commands"
+
+    - name: Replaced idempotent
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    # ----- deleted -----
+
+    - name: Deleted - set medium and port_type
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+            medium: p2p
+            port_type: fabric
+        state: merged
+
+    - name: Deleted - return the interface to the defaults
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ test_int1 }}"
+        state: deleted
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no medium p2p' in result.commands"
+          - "'no port-type fabric' in result.commands"
+
+  always:
+    - name: Teardown - default the test interface
+      cisco.nxos.nxos_config:
+        lines:
+          - "default interface {{ test_int1 }}"
+      failed_when: false
