@@ -36,6 +36,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "list",
             "elements": "dict",
+            "mutually_exclusive": [["unnumbered", "ipv4"]],
             "options": {
                 "name": {"type": "str", "required": True},
                 "mac_address": {"type": "str"},
@@ -56,6 +57,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
                 "proxy_arp": {"type": "bool"},
+                "unnumbered": {"type": "str"},
                 "port_unreachable": {"type": "bool"},
                 "verify": {
                     "type": "dict",

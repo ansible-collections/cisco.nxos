@@ -1212,6 +1212,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>unnumbered</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 14.1.0</div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Borrow the IPv4 address of another interface (<code>ip unnumbered</code>), for example <code>loopback0</code>.</div>
+                        <div>The interface needs <code>medium p2p</code>, see the <em>medium</em> option of <span class='module'>cisco.nxos.nxos_interfaces</span> for the point-to-point medium. The device rejects <code>ip unnumbered</code> otherwise.</div>
+                        <div><code>ip unnumbered</code> and <code>ip address</code> replace each other on the device. With <em>state</em> <code>replaced</code> or <code>overridden</code> the addresses of the interface are removed when <em>unnumbered</em> is set and the setting is removed when only addresses are given.</div>
+                        <div>Cannot be combined with <em>ipv4</em> for the same interface. To change an interface from addresses to <em>unnumbered</em>, give only <em>unnumbered</em>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>unreachables</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1500,6 +1520,45 @@ Examples
     #  ipv6 address 2001:db8::1/32 route-preference 70 tag 97
     #  ipv6 dhcp relay address 2001:db8::1:abcd
 
+
+    # Using merged with ip unnumbered
+
+    # Before state:
+    # -------------
+    #
+    # router# show running-config | section "^interface Ethernet1/41"
+    # interface Ethernet1/41
+    #   medium p2p
+    #   ip address 192.0.2.41/30
+
+    - name: Borrow the address of loopback0 on a point-to-point routed port.
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: Ethernet1/41
+            unnumbered: loopback0
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - name: Ethernet1/41
+    #   ipv4:
+    #     - address: 192.0.2.41/30
+    # commands:
+    # - interface Ethernet1/41
+    # - ip unnumbered loopback0
+    # after:
+    # - name: Ethernet1/41
+    #   unnumbered: loopback0
+
+    # After state:
+    # ------------
+    #
+    # router# show running-config | section "^interface Ethernet1/41"
+    # interface Ethernet1/41
+    #   medium p2p
+    #   ip unnumbered loopback0
 
     # Using replaced
 
