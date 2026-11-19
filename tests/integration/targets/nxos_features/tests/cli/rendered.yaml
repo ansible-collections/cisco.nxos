@@ -1,0 +1,15 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_features rendered integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Render the provided configuration with the required options
+      cisco.nxos.nxos_features:
+        config: "{{ config }}"
+        state: rendered
+      register: result
+
+    - name: Assert that correct set of commands were rendered
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"

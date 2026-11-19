@@ -1,0 +1,50 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden nxos_features state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+# Overridden disables every feature that is not listed, also those the device needs. The test
+# starts from the features of the device, so that only the feature of the test changes.
+- block:
+    - name: Gather the features of the device
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: device
+
+    - name: Add the feature of the test to the features of the device
+      ansible.builtin.set_fact:
+        overridden_config: "{{ device['gathered'] | rejectattr('name', 'eq', 'bash-shell') | list + [{'name': 'bash-shell', 'enabled': true}] }}"
+
+    - name: Override the features
+      cisco.nxos.nxos_features: &id001
+        config: "{{ overridden_config }}"
+        state: overridden
+      register: result
+
+    - name: Assert that only the feature of the test changed
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['feature bash-shell']
+
+    - name: Override the features (idempotent)
+      cisco.nxos.nxos_features: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Override the features without the feature of the test
+      cisco.nxos.nxos_features:
+        config: "{{ device['gathered'] | rejectattr('name', 'eq', 'bash-shell') | list }}"
+        state: overridden
+      register: result
+
+    - name: Assert that the feature of the test was disabled
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['no feature bash-shell']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

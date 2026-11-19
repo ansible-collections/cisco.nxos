@@ -8,6 +8,7 @@ available_network_resources:
   - bgp_neighbor_address_family
   - bgp_templates
   - evpn_vnis
+  - features
   - hostname
   - hsrp_interfaces
   - igmp_snooping

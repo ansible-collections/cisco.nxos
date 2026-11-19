@@ -1,0 +1,6 @@
+---
+# Only the features of the tests are disabled, so that the other features of the device stay.
+- name: Disable the features of the tests
+  cisco.nxos.nxos_features:
+    config: "{{ config }}"
+    state: deleted
