@@ -137,6 +137,48 @@ EXAMPLES = """
 #   - name: vn-segment-vlan-based
 #     enabled: true
 
+# Using replaced
+
+# Before state:
+# -------------
+# switch# show running-config | include ^feature
+# feature bgp
+# feature interface-vlan
+# feature lacp
+
+- name: Set the state of the listed features, a feature that is not listed stays as it is
+  cisco.nxos.nxos_features:
+    config:
+      - name: bgp
+        enabled: true
+      - name: interface-vlan
+        enabled: false
+      - name: nv overlay
+        enabled: true
+    state: replaced
+
+# Task output:
+# ------------
+# before:
+#   - name: bgp
+#     enabled: true
+#   - name: interface-vlan
+#     enabled: true
+#   - name: lacp
+#     enabled: true
+#
+# commands:
+#   - feature nv overlay
+#   - no feature interface-vlan
+#
+# after:
+#   - name: bgp
+#     enabled: true
+#   - name: lacp
+#     enabled: true
+#   - name: nv overlay
+#     enabled: true
+
 # Using overridden
 
 # Before state:

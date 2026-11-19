@@ -186,6 +186,109 @@ class TestNxosFeaturesModule(TestNxosModule):
         result = self.execute_module(failed=True)
         self.assertIn("both enabled true and false", result["msg"])
 
+    # errors and empty configuration
+
+    def _fails(self, args):
+        """Run the module with the given arguments and return the failure."""
+
+        self.get_config.return_value = ""
+        set_module_args(args)
+        return self.execute_module(failed=True)
+
+    def test_nxos_features_config_required(self):
+        """Test that the states that change or render features need a configuration."""
+
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                result = self._fails({"state": state})
+                self.assertIn("state is {0} but all of the following".format(state), result["msg"])
+                self.assertIn("config", result["msg"])
+
+    def test_nxos_features_empty_config_list(self):
+        """Test that an empty list of features is rejected by the states that need features."""
+
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                result = self._fails({"config": [], "state": state})
+                self.assertEqual(
+                    result["msg"],
+                    "value of config parameter must not be empty for state {0}".format(state),
+                )
+
+    def test_nxos_features_deleted_empty_config_list(self):
+        """Test that state deleted with an empty list disables every enabled feature."""
+
+        result = self._run(
+            {"config": [], "state": "deleted"},
+            have="feature bgp\nno feature nxapi\nfeature lacp\n",
+        )
+        self.assertEqual(result["commands"], ["no feature bgp", "no feature lacp"])
+
+    def test_nxos_features_parsed_requires_running_config(self):
+        """Test that state parsed fails without a running configuration."""
+
+        result = self._fails({"state": "parsed"})
+        self.assertIn("running_config", result["msg"])
+
+        result = self._fails({"running_config": "", "state": "parsed"})
+        self.assertEqual(
+            result["msg"],
+            "value of running_config parameter must not be empty for state parsed",
+        )
+
+    def test_nxos_features_parsed_without_feature_lines(self):
+        """Test that state parsed returns nothing for text without feature lines."""
+
+        result = self._run(
+            {
+                "running_config": "hostname sw1\ninterface Ethernet1/1\n  no shutdown\n",
+                "state": "parsed",
+            },
+            changed=False,
+        )
+        self.assertEqual(result["parsed"], [])
+        self.assertNotIn("commands", result)
+
+    def test_nxos_features_config_and_running_config_are_exclusive(self):
+        """Test that config and running_config cannot be given together."""
+
+        result = self._fails(
+            {
+                "config": [{"name": "bgp"}],
+                "running_config": "feature bgp",
+                "state": "parsed",
+            },
+        )
+        self.assertIn("mutually exclusive", result["msg"])
+
+    def test_nxos_features_name_is_required(self):
+        """Test that a feature without a name is rejected."""
+
+        result = self._fails({"config": [{"enabled": True}], "state": "merged"})
+        self.assertIn("name", result["msg"])
+
+    def test_nxos_features_unknown_option(self):
+        """Test that an unknown option of a feature is rejected."""
+
+        result = self._fails(
+            {"config": [{"name": "bgp", "state": "enabled"}], "state": "merged"},
+        )
+        self.assertIn("Unsupported parameters", result["msg"])
+
+    def test_nxos_features_enabled_must_be_boolean(self):
+        """Test that a value for enabled that is not a boolean is rejected."""
+
+        result = self._fails(
+            {"config": [{"name": "bgp", "enabled": "sometimes"}], "state": "merged"},
+        )
+        self.assertIn("boolean", result["msg"])
+
+    def test_nxos_features_state_must_be_known(self):
+        """Test that an unknown state is rejected."""
+
+        result = self._fails({"config": [{"name": "bgp"}], "state": "present"})
+        self.assertIn("value of state must be one of", result["msg"])
+
     # replaced
 
     def test_nxos_features_replaced(self):

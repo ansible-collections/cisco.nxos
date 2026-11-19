@@ -1,0 +1,87 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_features empty_config integration tests on connection={{ ansible_connection }}
+
+- name: The states that set or render features reject an empty list of features
+  cisco.nxos.nxos_features:
+    config: []
+    state: "{{ item }}"
+  loop:
+    - merged
+    - replaced
+    - overridden
+    - rendered
+  register: result
+  ignore_errors: true
+
+- name: Assert that the empty list was rejected with the message of the state
+  ansible.builtin.assert:
+    that:
+      - item['msg'] == 'value of config parameter must not be empty for state ' ~ item['item']
+  loop: "{{ result['results'] }}"
+  loop_control:
+    label: "{{ item['item'] }}"
+
+- name: Merged without config is rejected
+  cisco.nxos.nxos_features:
+    state: merged
+  register: result
+  ignore_errors: true
+
+- name: Assert that merged without config was rejected
+  ansible.builtin.assert:
+    that:
+      - "result['msg'] == 'state is merged but all of the following are missing: config'"
+
+- name: Parsed with an empty running_config is rejected
+  cisco.nxos.nxos_features:
+    running_config: ""
+    state: parsed
+  register: result
+  ignore_errors: true
+
+- name: Assert that parsed with an empty running_config was rejected
+  ansible.builtin.assert:
+    that:
+      - result['msg'] == 'value of running_config parameter must not be empty for state parsed'
+
+- name: Parsed without running_config is rejected
+  cisco.nxos.nxos_features:
+    state: parsed
+  register: result
+  ignore_errors: true
+
+- name: Assert that parsed without running_config was rejected
+  ansible.builtin.assert:
+    that:
+      - "result['msg'] == 'state is parsed but all of the following are missing: running_config'"
+
+# Deleted without config disables every enabled feature of the device, also those it needs.
+# It only runs in check mode here, and the test asserts that the features did not change.
+- name: Gather the features of the device
+  cisco.nxos.nxos_features:
+    state: gathered
+  register: before
+
+- name: Deleted with an empty list of features only reports the commands, check mode
+  cisco.nxos.nxos_features:
+    config: []
+    state: deleted
+  check_mode: true
+  register: result
+
+- name: Assert that deleted without features only disables features
+  ansible.builtin.assert:
+    that:
+      - result['commands'] | reject('match', '^no feature ') | list | length == 0
+      - result['changed'] == (before['gathered'] | selectattr('enabled') | list | length > 0)
+
+- name: Gather the features of the device again
+  cisco.nxos.nxos_features:
+    state: gathered
+  register: after
+
+- name: Assert that check mode did not change the features
+  ansible.builtin.assert:
+    that:
+      - before['gathered'] == after['gathered']

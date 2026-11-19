@@ -1,0 +1,100 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_features round trip integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+# Merge, gather, merge an update, then revert with overridden from the gathered facts. Overridden
+# disables every enabled feature that is not listed, so it always starts from the features of the device.
+- block:
+    - name: Gather the features of the device before the test
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: original
+
+    - name: Merge the features of the test
+      cisco.nxos.nxos_features:
+        config: "{{ config }}"
+        state: merged
+      register: result
+
+    - name: Assert that the features of the test were enabled
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - result['changed'] == true
+
+    - name: Gather the features after the merge
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: merged_facts
+
+    - name: Assert that the gathered features contain the features of the test
+      ansible.builtin.assert:
+        that:
+          - (merged_facts['gathered'] | selectattr('name', 'in', ['bash-shell', 'scp-server', 'sftp-server']) | selectattr('enabled') | list | length) == 3
+
+    - name: Merge an update, disable one feature of the test
+      cisco.nxos.nxos_features:
+        config:
+          - name: scp-server
+            enabled: false
+        state: merged
+      register: result
+
+    - name: Assert that only the update was sent
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['no feature scp-server']
+
+    - name: Revert with overridden from the gathered features
+      cisco.nxos.nxos_features: &id001
+        config: "{{ merged_facts['gathered'] }}"
+        state: overridden
+      register: result
+
+    - name: Assert that the revert only enabled the feature of the update
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['feature scp-server']
+
+    - name: Revert with overridden from the gathered features (idempotent)
+      cisco.nxos.nxos_features: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Revert to the features of the device before the test with overridden
+      cisco.nxos.nxos_features: &id002
+        config: "{{ original['gathered'] }}"
+        state: overridden
+      register: result
+
+    - name: Assert that only the features of the test were disabled
+      ansible.builtin.assert:
+        that:
+          - "{{ result['commands'] | symmetric_difference(['no feature bash-shell', 'no feature scp-server', 'no feature sftp-server']) | length == 0 }}"
+
+    - name: Revert to the features of the device before the test with overridden (idempotent)
+      cisco.nxos.nxos_features: *id002
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Gather the features after the round trip
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: final
+
+    - name: Assert that the features are the same as before the test
+      ansible.builtin.assert:
+        that:
+          - final['gathered'] == original['gathered']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
