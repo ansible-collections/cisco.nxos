@@ -637,10 +637,16 @@ class TestNxosInterfacesModule(TestNxosModule):
             self._admin_state_playbook(states, config, state=state)
             self.execute_module(changed=False, commands=[])
 
-        # overridden with the gathered configuration of the whole device
+        # overridden with the gathered configuration of the whole device, the logical interfaces
+        # (an unlisted one is removed with overridden) included
         self._admin_state_playbook(
             states,
-            [dict(name="Ethernet1/50", enabled=True)] + config,
+            [
+                dict(name="Ethernet1/50", enabled=True),
+                dict(name="loopback1"),
+                dict(name="port-channel2"),
+            ]
+            + config,
             state="overridden",
         )
         self.execute_module(changed=False, commands=[])
@@ -914,14 +920,13 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_admin_states.assert_not_called()
 
     def test_overridden_shuts_only_the_unlisted_interfaces_that_show_no_shutdown(self):
-        # Every type. An unlisted interface that shows 'no shutdown' is shut, one that shows
-        # 'shutdown' (also an SVI in its default state, the facts make it explicit) is not shut again,
-        # and one that shows no admin state line is left alone, whatever the 'all' view says.
+        # Physical ports, mgmt0 and nve1. An unlisted interface that shows 'no shutdown' is shut,
+        # one that shows 'shutdown' is not shut again, and one that shows no admin state line is left
+        # alone, whatever the 'all' view says. The logical interfaces of the device are listed here, an
+        # unlisted one is removed with overridden (see test_overridden_removes_unlisted_logical_interfaces).
         expected = [
             "interface mgmt0",
             "no description MGMT",
-            "interface Vlan10",
-            "shutdown",
             "interface Ethernet1/49",
             "shutdown",
             "interface nve1",
@@ -930,7 +935,13 @@ class TestNxosInterfacesModule(TestNxosModule):
         for states in (self.ALL_TYPES_STATES, {}):
             self._all_types_playbook(
                 states,
-                [dict(name="Ethernet1/17", enabled=True)],
+                [
+                    dict(name="Ethernet1/17", enabled=True),
+                    dict(name="Vlan1"),
+                    dict(name="Vlan10"),
+                    dict(name="port-channel20"),
+                    dict(name="loopback1"),
+                ],
                 "overridden",
             )
             result = self.execute_module(changed=True)
@@ -990,8 +1001,12 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """,
         )
+        # Vlan1 is listed, an unlisted SVI is removed with overridden
         set_module_args(
-            dict(config=[dict(name="Ethernet1/1", description="foo")], state="overridden"),
+            dict(
+                config=[dict(name="Ethernet1/1", description="foo"), dict(name="Vlan1")],
+                state="overridden",
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["interface Ethernet1/6", "shutdown"])
@@ -1010,8 +1025,12 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """,
         )
+        # Vlan1 is listed, an unlisted SVI is removed with overridden
         set_module_args(
-            dict(config=[dict(name="Ethernet1/1", description="foo")], state="overridden"),
+            dict(
+                config=[dict(name="Ethernet1/1", description="foo"), dict(name="Vlan1")],
+                state="overridden",
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -1657,3 +1676,187 @@ class TestNxosInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertIn("negotiate auto", result["commands"])
         self.assertNotIn("no negotiate auto", result["commands"])
+
+    # The logical interfaces of a device next to physical ones, mgmt0 and nve1.
+    LOGICAL = dedent(
+        """\
+      interface mgmt0
+        description MGMT
+      interface Vlan1
+      interface Vlan10
+        no shutdown
+      interface Ethernet1/17
+        switchport
+        no shutdown
+      interface Ethernet1/31.210
+      interface port-channel10
+        switchport
+      interface port-channel10.5
+      interface loopback0
+        description RID
+      interface loopback1
+      interface tunnel1
+      interface nve1
+        no shutdown
+    """,
+    )
+    LOGICAL_NAMES = [
+        "Vlan1",
+        "Vlan10",
+        "Ethernet1/31.210",
+        "port-channel10",
+        "port-channel10.5",
+        "loopback0",
+        "loopback1",
+        "tunnel1",
+    ]
+
+    def _logical_playbook(self, config=None, state="overridden", **kwargs):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = self.LOGICAL
+        args = dict(state=state, **kwargs)
+        if config is not None:
+            args["config"] = config
+        set_module_args(args)
+
+    def _logical_config(self):
+        """The logical interfaces of the device, listed with the settings that they have."""
+        return [
+            dict(name=name, description="RID") if name == "loopback0" else dict(name=name)
+            for name in self.LOGICAL_NAMES
+        ]
+
+    def test_overridden_removes_unlisted_logical_interfaces(self):
+        # Every logical type is removed completely, the subinterfaces before their parents. The
+        # physical port that is listed, mgmt0 and nve1 keep the behaviour of the admin state rule.
+        self._logical_playbook([dict(name="Ethernet1/17", enabled=True)])
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface mgmt0",
+                "no description MGMT",
+                "interface nve1",
+                "shutdown",
+                "no interface Ethernet1/31.210",
+                "no interface port-channel10.5",
+                "no interface Vlan1",
+                "no interface Vlan10",
+                "no interface port-channel10",
+                "no interface loopback0",
+                "no interface loopback1",
+                "no interface tunnel1",
+            ],
+        )
+
+    def test_overridden_removes_an_unlisted_svi_that_is_shut_by_default(self):
+        # An SVI in its default shutdown state, which the facts make explicit, is removed as well.
+        self.exec_get_defaults.return_value = {"default_mode": "layer3", "L2_enabled": False}
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface Vlan1
+          interface Ethernet1/1
+            description foo
+        """,
+        )
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/1", description="foo")], state="overridden"),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no interface Vlan1"])
+
+    def test_overridden_removes_the_logical_interfaces_in_check_mode_commands(self):
+        self._logical_playbook([dict(name="Ethernet1/17", enabled=True)], _ansible_check_mode=True)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            [c for c in result["commands"] if c.startswith("no interface ")],
+            ["no interface " + name for name in self._removal_order()],
+        )
+
+    @staticmethod
+    def _removal_order():
+        return [
+            "Ethernet1/31.210",
+            "port-channel10.5",
+            "Vlan1",
+            "Vlan10",
+            "port-channel10",
+            "loopback0",
+            "loopback1",
+            "tunnel1",
+        ]
+
+    def test_overridden_does_not_remove_unlisted_physical_ports_mgmt0_or_nve1(self):
+        # The logical interfaces are listed, so the commands are about the other types only.
+        self._logical_playbook(self._logical_config())
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface mgmt0",
+                "no description MGMT",
+                "interface Ethernet1/17",
+                "shutdown",
+                "interface nve1",
+                "shutdown",
+            ],
+        )
+        for name in ("Ethernet1/17", "mgmt0", "nve1"):
+            self.assertNotIn("no interface " + name, result["commands"])
+
+    def test_overridden_leaves_listed_logical_interfaces_alone(self):
+        # Listed with their own state and settings: nothing is removed or changed for them.
+        self._logical_playbook(
+            [
+                dict(name="Vlan10", enabled=True),
+                dict(name="loopback0", description="RID"),
+                dict(name="port-channel10"),
+            ]
+            + [
+                dict(name=name)
+                for name in (
+                    "Vlan1",
+                    "Ethernet1/31.210",
+                    "port-channel10.5",
+                    "loopback1",
+                    "tunnel1",
+                )
+            ],
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            [c for c in result["commands"] if c.startswith("no interface ")],
+            [],
+        )
+
+    def test_other_states_do_not_remove_logical_interfaces(self):
+        # Only overridden removes them: deleted (with and without configuration), replaced and merged do not.
+        for state, config in (
+            ("deleted", None),
+            ("deleted", [dict(name="Vlan10"), dict(name="loopback0")]),
+            ("replaced", [dict(name="Ethernet1/17", enabled=True)]),
+            ("merged", [dict(name="Ethernet1/17", enabled=True)]),
+        ):
+            self._logical_playbook(config, state=state)
+            result = self.execute_module(changed=(state == "deleted"))
+            self.assertEqual(
+                [c for c in result["commands"] if c.startswith("no interface ")],
+                [],
+                state,
+            )
+
+    def test_purged_still_removes_only_the_listed_interfaces(self):
+        self._logical_playbook([dict(name="loopback1"), dict(name="Vlan10")], state="purged")
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no interface loopback1", "no interface Vlan10"])
+
+    def test_overridden_with_the_gathered_configuration_is_a_no_op(self):
+        # The configuration of the whole device, every interface listed with its own state.
+        config = [dict(name="mgmt0", description="MGMT")]
+        config += self._logical_config()
+        config += [dict(name="Ethernet1/17", enabled=True), dict(name="nve1", enabled=True)]
+        self._logical_playbook(config)
+        self.execute_module(changed=False, commands=[])

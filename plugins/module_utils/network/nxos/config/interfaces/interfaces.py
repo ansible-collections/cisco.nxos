@@ -164,15 +164,31 @@ class Interfaces(ResourceModule):
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
+            logical = []
             for k, have in haved.items():
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    if self.state == "overridden" and self._is_logical(k):
+                        logical.append(have)
+                    else:
+                        self._compare(want={}, have=have)
+            # With overridden a logical interface that is not in the configuration is removed,
+            # subinterfaces first, so that a parent is never removed while it still has one.
+            for have in sorted(logical, key=lambda item: "." not in item["name"]):
+                self.commands.append(self._tmplt.render(have, "name", True))
 
         if self.state == "purged":
             self.purge(wantd, haved)
         else:
             for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
+
+    @staticmethod
+    def _is_logical(name):
+        """Whether the interface is a logical construct that can be removed with 'no interface':
+        loopbacks, SVIs, port-channels, tunnels and subinterfaces.
+        """
+        lowered = name.lower()
+        return "." in lowered or lowered.startswith(("loopback", "vlan", "port-channel", "tunnel"))
 
     @staticmethod
     def _is_up_by_default(name):

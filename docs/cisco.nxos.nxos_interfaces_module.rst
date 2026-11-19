@@ -594,6 +594,8 @@ Parameters
                         <div>The state <em>rendered</em> considers the system default mode for interfaces to be &quot;Layer 3&quot; and the system default state for interfaces to be shutdown.</div>
                         <div>The state <em>purged</em> negates virtual interfaces that are specified in task from running-config.</div>
                         <div>With the state <em>overridden</em> the interfaces that are not in <em>config</em> are returned to their default admin state, an interface that shows <code>no shutdown</code> is shut down. An interface that shows <code>shutdown</code> gets no command, and neither does one that shows no admin state line, because it is in its default state.</div>
+                        <div>With the state <em>overridden</em> the logical interfaces that are not in <em>config</em> are removed completely with <code>no interface</code>, subinterfaces first. These are loopbacks, VLAN interfaces (SVIs), port-channels, tunnels and subinterfaces. Physical ports, <code>mgmt0</code> and <code>nve1</code> are never removed.</div>
+                        <div>Use the state <em>overridden</em> with caution, as you could remove your access to the device. Removing a port-channel drops its member bindings and its vPC settings, including a vPC peer link, removing a VLAN interface drops its IP addresses and its anycast gateway setting, and removing a loopback drops its addresses, for example the router ID or the VTEP source. Check the commands with check mode first. Tasks of other modules that configure interfaces with the state <em>overridden</em> in the same play remove the interfaces that they do not list as well.</div>
                 </td>
             </tr>
     </table>

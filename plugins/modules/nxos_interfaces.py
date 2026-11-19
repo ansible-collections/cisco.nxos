@@ -172,6 +172,15 @@ options:
       - With the state I(overridden) the interfaces that are not in I(config) are returned to their default
         admin state, an interface that shows C(no shutdown) is shut down. An interface that shows C(shutdown)
         gets no command, and neither does one that shows no admin state line, because it is in its default state.
+      - With the state I(overridden) the logical interfaces that are not in I(config) are removed completely with
+        C(no interface), subinterfaces first. These are loopbacks, VLAN interfaces (SVIs), port-channels, tunnels
+        and subinterfaces. Physical ports, C(mgmt0) and C(nve1) are never removed.
+      - Use the state I(overridden) with caution, as you could remove your access to the device. Removing a
+        port-channel drops its member bindings and its vPC settings, including a vPC peer link, removing a VLAN
+        interface drops its IP addresses and its anycast gateway setting, and removing a loopback drops its
+        addresses, for example the router ID or the VTEP source. Check the commands with check mode first.
+        Tasks of other modules that configure interfaces with the state I(overridden) in the same play remove
+        the interfaces that they do not list as well.
     type: str
     choices:
       - merged
