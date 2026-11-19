@@ -1,0 +1,10 @@
+interface mgmt0
+  no shutdown
+interface loopback0
+  no shutdown
+interface loopback1
+  no shutdown
+interface loopback2
+  shutdown
+interface loopback3
+  no shutdown
