@@ -31,6 +31,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    normalize_interface,
+)
 
 
 class L3_interfaces(ResourceModule):
@@ -117,10 +120,11 @@ class L3_interfaces(ResourceModule):
         pre_pop_want = bool(want_without_name)
         want_redirects = want.pop("redirects", None)
         have_redirects = have.pop("redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "redirects", pre_pop_want)
+        name = (want or have).get("name", "")
+        self.handle_redirects(want_redirects, have_redirects, "redirects", pre_pop_want, name)
         want_redirects = want.pop("ipv6_redirects", None)
         have_redirects = have.pop("ipv6_redirects", None)
-        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want)
+        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want, name)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_complex_attrs(want, have)
         if len(self.commands) != begin:
@@ -152,6 +156,8 @@ class L3_interfaces(ResourceModule):
 
         for iface_name, iface_data in iterable:
             iface_result = iface_data.copy()
+            iface_name = normalize_interface(iface_name)
+            iface_result["name"] = iface_name
 
             ipv4_value_addresses = iface_result.get("ipv4", [])
             ipv6_value_addresses = iface_result.get("ipv6", [])
@@ -238,7 +244,11 @@ class L3_interfaces(ResourceModule):
         for key, have_value in haved.items():
             self.compare(parsers=[parser], want={}, have={ip_key: {parser_key: have_value}})
 
-    def handle_redirects(self, want_redirects, have_redirects, parser, want):
+    def handle_redirects(self, want_redirects, have_redirects, parser, want, name=""):
+        # A loopback accepts 'no ip redirects' and 'no ipv6 redirects' but never stores or shows them,
+        # so sending them would report a change on every run.
+        if have_redirects is None and name.lower().startswith("loopback"):
+            return
         if want_redirects is None and have_redirects is None:
             if self.state == "replaced" or (self.state == "overridden" and want):
                 self.addcmd({parser: True}, parser, True)
