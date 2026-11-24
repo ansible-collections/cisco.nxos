@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bfd_interfaces
-short_description: BFD interfaces resource module
+short_description: BFD interfaces resource module.
 description: Manages attributes of Bidirectional Forwarding Detection (BFD) on the
   interface.
 version_added: 1.0.0

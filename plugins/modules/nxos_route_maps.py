@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_route_maps
-short_description: Route Maps resource module.
+short_description: Route maps resource module.
 description:
 - This module manages route maps configuration on devices running Cisco NX-OS.
 version_added: 2.2.0
@@ -23,6 +23,7 @@ notes:
 - Tested against NX-OS 9.3.6.
 - Unsupported for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:

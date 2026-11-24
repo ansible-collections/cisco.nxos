@@ -583,6 +583,83 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.assertIn("interface loopback2", result["commands"])
         self.assertIn("no shutdown", result["commands"])
 
+    def test_mgmt_and_port_channel_enabled_idempotency(self):
+        # mgmt0 and port-channels are admin-up by default and, like loopbacks,
+        # never show 'no shutdown' in running-config. enabled: true on an
+        # already-up one must be idempotent, an explicit shutdown must still be
+        # undone and a subinterface has its own admin state.
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+            vrf member management
+            ip address 192.0.2.10/24
+          interface port-channel20
+            switchport
+            switchport mode trunk
+          interface port-channel21
+            shutdown
+          interface port-channel22.100
+            encapsulation dot1q 100
+        """,
+        )
+
+        playbook = dict(
+            config=[
+                dict(name="mgmt0", enabled=True),
+                dict(name="port-channel20", enabled=True),
+                dict(name="port-channel21", enabled=True),
+                dict(name="port-channel22.100", enabled=True),
+            ],
+            state="merged",
+        )
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertNotIn("interface mgmt0", result["commands"])
+        self.assertNotIn("interface port-channel20", result["commands"])
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface port-channel21",
+                "no shutdown",
+                "interface port-channel22.100",
+                "no shutdown",
+            ],
+        )
+
+    def test_mgmt_and_port_channel_enabled_replaced_and_shutdown(self):
+        self.exec_get_defaults.return_value = {
+            "default_mode": "layer3",
+            "L2_enabled": False,
+        }
+        self.execute_show_command.return_value = dedent(
+            """\
+          interface mgmt0
+            ip address 192.0.2.10/24
+          interface port-channel20
+            switchport
+        """,
+        )
+        # replaced with enabled: true is idempotent
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="mgmt0", enabled=True),
+                    dict(name="port-channel20", enabled=True),
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+        # enabled: false still shuts an up port-channel down
+        set_module_args(dict(config=[dict(name="port-channel20", enabled=False)], state="merged"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface port-channel20", "shutdown"])
+
     def test_new_layer2_interface_with_system_default_switchport(self):
         # AAP-88449: a missing interface must get an explicit "switchport"
         # even when the platform default is already layer2. Otherwise

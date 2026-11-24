@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vrf_interfaces
 ******************************
 
-**Resource module to configure VRF interfaces.**
+**VRF interfaces resource module.**
 
 
 Version added: 9.3.0
@@ -134,7 +134,7 @@ Notes
 
 .. note::
    - Tested against Cisco NX-OS.
-   - This module works with connection ``network_cli``.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

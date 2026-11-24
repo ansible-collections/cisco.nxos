@@ -5,7 +5,7 @@
 cisco.nxos.nxos_acl_interfaces
 ******************************
 
-**ACL interfaces resource module**
+**ACL interfaces resource module.**
 
 
 Version added: 1.0.0

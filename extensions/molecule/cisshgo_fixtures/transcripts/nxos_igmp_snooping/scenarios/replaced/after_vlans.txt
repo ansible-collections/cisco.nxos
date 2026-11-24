@@ -1,0 +1,4 @@
+vlan configuration 100
+  ip igmp snooping static-group 233.252.0.10 interface port-channel20
+vlan configuration 200
+  ip igmp snooping static-group 233.252.0.20 interface port-channel21

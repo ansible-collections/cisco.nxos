@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_l2_interfaces
-short_description: L2 interfaces resource module
+short_description: L2 interfaces resource module.
 description: This module manages Layer-2 interfaces attributes of NX-OS Interfaces.
 version_added: 1.0.0
 author:

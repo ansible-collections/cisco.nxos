@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vpc
 *******************
 
-**VPC global domain resource module.**
+**VPC resource module.**
 
 
 Version added: 1.0.0
@@ -788,4 +788,4 @@ Authors
 
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
-- Jorgen Spange (@jorgenspange)
+- Jørgen Spange (@jorgenspange)

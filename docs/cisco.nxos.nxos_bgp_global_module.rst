@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bgp_global
 **************************
 
-**BGP Global resource module.**
+**BGP global resource module.**
 
 
 Version added: 1.4.0
@@ -4820,7 +4820,7 @@ Notes
 .. note::
    - Tested against NX-OS 9.3.6.
    - Unsupported for Cisco MDS
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

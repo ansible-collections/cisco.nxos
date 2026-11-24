@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_logging_global
-short_description: Logging resource module.
+short_description: Logging global resource module.
 description:
 - This module manages logging configuration on devices running Cisco NX-OS.
 version_added: 2.5.0
@@ -23,6 +23,7 @@ notes:
 - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - Limited Support for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:

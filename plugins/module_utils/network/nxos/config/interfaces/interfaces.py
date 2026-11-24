@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -129,6 +128,18 @@ class Interfaces(ResourceModule):
             for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
 
+    @staticmethod
+    def _is_up_by_default(name):
+        """Whether the interface is admin-up unless a 'shutdown' line says otherwise.
+
+        That is the case for loopbacks, mgmt0 and port-channels. Subinterfaces of
+        a port-channel are not included, they have their own admin state.
+        """
+        lowered = name.lower()
+        if "loopback" in lowered:
+            return True
+        return lowered.startswith(("mgmt", "port-channel")) and "." not in lowered
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
@@ -142,14 +153,15 @@ class Interfaces(ResourceModule):
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
         if want_enabled is not None:
-            # NX-OS loopbacks are always-up by default and never write
-            # 'no shutdown' to running-config when in that default state.
-            # Only apply when the interface exists (have is non-empty) so that
-            # a new loopback is still created with an explicit 'no shutdown'.
+            # NX-OS loopbacks, the management interface and port-channels are
+            # admin-up by default and never write 'no shutdown' to running-config
+            # in that default state. Only apply when the interface exists (have
+            # is non-empty) so that a new interface is still created with an
+            # explicit 'no shutdown'.
             name = (want or have).get("name", "")
             effective_have_enabled = (
                 True
-                if have and have_enabled is None and re.search(r"(?i)loopback", name)
+                if have and have_enabled is None and self._is_up_by_default(name)
                 else have_enabled
             )
             if want_enabled != effective_have_enabled:

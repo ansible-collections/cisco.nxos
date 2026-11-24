@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vlans
-short_description: VLANs resource module
+short_description: VLANs resource module.
 description: This module creates and manages VLAN configurations on Cisco NX-OS.
 version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)

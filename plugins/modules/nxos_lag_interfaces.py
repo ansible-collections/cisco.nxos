@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lag_interfaces
-short_description: LAG interfaces resource module
+short_description: LAG interfaces resource module.
 description: This module manages attributes of link aggregation groups of NX-OS Interfaces.
 version_added: 1.0.0
 author:
@@ -100,6 +100,7 @@ notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
 - Unsupported for Cisco MDS
 - This module works with connection C(network_cli).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 
 """
 EXAMPLES = """

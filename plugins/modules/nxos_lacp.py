@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lacp
-short_description: LACP resource module
+short_description: LACP resource module.
 description: This module manages Global Link Aggregation Control Protocol (LACP) on
   NX-OS devices.
 version_added: 1.0.0

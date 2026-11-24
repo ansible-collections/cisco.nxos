@@ -784,6 +784,141 @@ releases:
       - nxos_snmp_server_replaced_user.yml
       - route_maps_match_metric_deviation.yaml
     release_date: "2026-09-15"
+  14.0.0:
+    changes:
+      breaking_changes:
+        - "nxos_igmp_snooping - rewrite as a resource module with the states ``merged``,
+          ``replaced``, ``overridden``, ``deleted``, ``gathered``, ``rendered`` and
+          ``parsed``. The flat parameters and the ``present`` and ``default`` states
+          are removed, settings are now given in ``config``, and the module also manages
+          the per-VLAN ``vlan configuration`` blocks and the global ``vxlan``, ``proxy``
+          and timer settings. Migration - ``snooping`` becomes ``config.snooping``,
+          ``group_timeout`` becomes ``config.group_timeout``, ``link_local_grp_supp``
+          becomes ``config.link_local_groups_suppression``, ``report_supp`` becomes
+          ``config.report_suppression``, ``v3_report_supp`` becomes ``config.v3_report_suppression``,
+          ``state=present`` becomes ``state=merged`` and ``state=default`` becomes ``state=deleted``.
+          ``group_timeout`` no longer accepts ``default``, remove it with ``deleted``,
+          ``replaced`` or ``overridden``. Update playbooks from ``snooping: false``
+          to ``config: {snooping: false}``."
+        - "nxos_vpc - passing ``default`` as the value of a numeric option is no longer
+          supported. Omit the option under ``state: replaced`` or ``state: overridden``
+          to reset it to the platform default."
+        - 'nxos_vpc - rewrite as a modern resource module using the ``rm_base`` pattern
+          with all 7 states (``merged``, ``replaced``, ``overridden``, ``deleted``,
+          ``gathered``, ``rendered``, ``parsed``). The flat top-level parameters (``domain``,
+          ``role_priority``, ``system_priority``, ``pkl_dest``, ``pkl_src``, ``pkl_vrf``,
+          ``peer_gw``, ``peer_sw``, ``auto_recovery``, ``delay_restore``) are replaced
+          by a ``config`` dict. Update playbooks from ``domain: 100`` to ``config: {domain:
+          "100", ...}``. Includes NX-OS-specific handling for ``peer-gateway``, ``peer-switch``,
+          and composite ``peer-keepalive`` commands.'
+        - "nxos_vpc - the ``state: present`` and ``state: absent`` values are no longer
+          accepted. Use ``state: merged`` and ``state: deleted`` instead."
+        - "nxos_vpc_interface - rewrite as a modern resource module using the ``rm_base``
+          pattern with all 7 states (``merged``, ``replaced``, ``overridden``, ``deleted``,
+          ``gathered``, ``rendered``, ``parsed``). The flat ``portchannel`` / ``vpc``
+          / ``peer_link`` parameters are replaced by a ``config`` list where each entry
+          uses ``name: port-channel10`` (full interface name) as the identifier. Adds
+          ``orphan_port_suspend`` support (``vpc orphan-port suspend``) for any interface
+          type including Ethernet. Update playbooks from ``portchannel: 10`` to ``config:
+          [{name: port-channel10, ...}]``. Setting ``peer_link`` or ``orphan_port_suspend``
+          to ``false`` now removes the corresponding line under every state, including
+          ``merged``, and supplying both ``vpc`` and ``peer_link`` in the same ``config``
+          entry now fails the task instead of silently dropping ``peer_link``."
+      bugfixes:
+        - "nxos_interfaces - fix SVIs in their default shutdown state being reported
+          as ``enabled: true``, since NX-OS omits the admin state from the running configuration
+          unless the SVI has been explicitly brought up."
+        - "nxos_interfaces - fix loopback interfaces always reporting ``changed`` when
+          ``enabled: true`` is set, since NX-OS omits ``no shutdown`` from the running
+          configuration for loopbacks that are in their default always-up state."
+        - "nxos_interfaces - fix mgmt0 and port-channel interfaces always reporting
+          ``changed`` when ``enabled: true`` is set, since NX-OS omits ``no shutdown``
+          from the running configuration for these interfaces in their default admin-up
+          state, the same as for loopbacks."
+        - nxos_snmp_server - stop sending leftover ``use-ipv4acl`` / ``use-ipv6acl``
+          removals after ``no snmp-server user NAME`` already deleted the user (AAP-99708).
+        - nxos_vlans - Do not send ``no name`` for VLAN 1 with states replaced and overridden,
+          NX-OS rejects a change of the name of the default VLAN.
+        - nxos_vlans - Fix facts missing ``mapped_vni`` for a VLAN whose configuration
+          contains only ``vn-segment``, which made merged and replaced report a change
+          on every run.
+        - nxos_vrf_address_family - Fix state ``purged`` sending only ``vrf context
+          <name>`` and removing nothing when a VRF is listed without address families;
+          it now removes the address families the device has for the VRF.
+        - nxos_vrf_global - Fix state ``purged`` sending ``no vrf context <name>`` for
+          a VRF that does not exist on the device, which failed the task on the device
+          instead of reporting no change. A warning lists the skipped VRFs and the documentation
+          of ``state`` now describes ``purged``.
+      doc_changes:
+        - Render the shared notes of the module documentation correctly on GitHub and
+          Galaxy, and point the connection notes to the NXOS platform guide.
+        - Use the same wording for the short description of the resource modules and
+          shorten the notes of nxos_igmp_snooping.
+      minor_changes:
+        - nxos_evpn_vnis - new resource module to manage the Layer 2 VNIs under the
+          ``evpn`` section with ``route_distinguisher`` and route targets. The existing
+          ``nxos_evpn_vni`` module is unchanged.
+        - nxos_facts - add ``igmp_snooping`` to the resources of ``gather_network_resources``.
+        - nxos_interfaces - Add ``negotiate_auto`` boolean attribute to control auto-negotiation
+          on Ethernet interfaces. Set to ``false`` to configure ``no negotiate auto``
+          and disable auto-negotiation; set to ``true`` to configure ``negotiate auto``
+          and re-enable it.
+        - nxos_l2_interfaces - add ``spanning_tree`` and ``storm_control`` options for
+          the spanning-tree and storm-control settings of switchports and port-channels.
+        - "nxos_nve_interface - new resource module to manage the ``interface nve1``
+          VXLAN overlay interface, including per-VNI ``suppress-arp``, ``multisite ingress-replication``,
+          ``ingress-replication protocol bgp`` and ``mcast-group`` (contributed by J\xF8rn
+          Ivar Holland, originally proposed in PR 1003)."
+        - nxos_snmp_server - Add LLDP, HSRP, and global EIGRP SNMP trap support.
+        - nxos_vlans - Add the ``nve_overlay`` option to manage ``system vlan nve-overlay
+          id <vlan_id>`` per VLAN. The facts also gather ``show running-config | include
+          nve-overlay``, and ``running_config`` for state ``parsed`` accepts its output
+          as an optional third block.
+        - nxos_vlans - Fail with a clear message when the same ``vlan_id`` is listed
+          more than once in ``config``, instead of silently ignoring the later entry.
+        - nxos_vrf_address_family - add ``both`` and ``evpn`` to ``route_target`` to
+          manage ``route-target both auto evpn`` and ``route-target import|export <value>
+          evpn`` lines.
+      release_summary:
+        "This is a major release of the ``cisco.nxos`` collection.
+
+        This changelog contains all changes to the modules and plugins in this collection
+
+        that have been made after the previous release.
+
+        "
+    fragments:
+      - aca-6750-molecule-cisshgo-scenarios.yml
+      - notes_rendering.yaml
+      - nve_interface_molecule.yml
+      - nxos_bgp_global_overridden_docs.yaml
+      - nxos_evpn_vnis_resource_module.yaml
+      - nxos_igmp_snooping_resource_module.yaml
+      - nxos_interfaces_loopback_enabled_idempotency.yaml
+      - nxos_interfaces_mgmt_portchannel_enabled.yaml
+      - nxos_interfaces_negotiate_auto.yaml
+      - nxos_interfaces_svi_default_shutdown.yaml
+      - nxos_l2_interfaces_spanning_tree_storm_control.yaml
+      - nxos_nve_interface.yaml
+      - nxos_snmp_server_lldp_hsrp_eigrp_traps.yml
+      - nxos_snmp_server_user_acl_removal.yml
+      - nxos_vlans_nve_overlay.yaml
+      - nxos_vlans_vn_segment_only.yaml
+      - nxos_vpc_interface_resource_module.yaml
+      - nxos_vpc_molecule_cisshgo.yml
+      - nxos_vpc_resource_module.yaml
+      - release_summary.yaml
+      - vrf_address_family_evpn_route_target.yaml
+      - vrf_address_family_purged.yaml
+      - vrf_global_purged_unknown_vrf.yaml
+    modules:
+      - description: EVPN VNIs resource module.
+        name: nxos_evpn_vnis
+        namespace: ""
+      - description: NVE interface resource module.
+        name: nxos_nve_interface
+        namespace: ""
+    release_date: "2026-11-12"
   2.0.0:
     changes:
       bugfixes:

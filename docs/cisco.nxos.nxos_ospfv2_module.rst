@@ -5,7 +5,7 @@
 cisco.nxos.nxos_ospfv2
 **********************
 
-**OSPFv2 resource module**
+**OSPFv2 resource module.**
 
 
 Version added: 1.0.0
@@ -4412,7 +4412,7 @@ Notes
 .. note::
    - Tested against NX-OS 7.0(3)I5(1).
    - Unsupported for Cisco MDS
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
 
 
 

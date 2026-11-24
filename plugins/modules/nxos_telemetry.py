@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_telemetry
-short_description: TELEMETRY resource module
+short_description: Telemetry resource module.
 description: Manages Telemetry Monitoring Service (TMS) configuration
 version_added: 1.0.0
 author: Mike Wiebe (@mikewiebe)

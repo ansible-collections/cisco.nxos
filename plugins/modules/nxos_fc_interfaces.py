@@ -16,7 +16,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 ---
 module: nxos_fc_interfaces
-short_description: Fc Interfaces resource module
+short_description: FC interfaces resource module.
 description: This module manages the interface attributes of NX-OS fc interfaces.
 version_added: 5.2.0
 author: Suhas Bharadwaj (@srbharadwaj)

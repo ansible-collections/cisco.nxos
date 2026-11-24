@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_lacp_interfaces
-short_description: LACP interfaces resource module
+short_description: LACP interfaces resource module.
 description: This module manages Link Aggregation Control Protocol (LACP) attributes
   of NX-OS Interfaces.
 version_added: 1.0.0

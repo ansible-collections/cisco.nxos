@@ -5,7 +5,7 @@
 cisco.nxos.nxos_telemetry
 *************************
 
-**TELEMETRY resource module**
+**Telemetry resource module.**
 
 
 Version added: 1.0.0

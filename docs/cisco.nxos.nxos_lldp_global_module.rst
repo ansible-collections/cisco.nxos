@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lldp_global
 ***************************
 
-**LLDP resource module**
+**LLDP global resource module.**
 
 
 Version added: 1.0.0

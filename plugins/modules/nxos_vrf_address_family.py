@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_address_family
-short_description: Resource module to configure VRF address family definitions.
+short_description: VRF address family resource module.
 description: This module provides declarative management of VRF definitions on Cisco NXOS.
 version_added: 9.3.0
 author: Vinay Mulugund (@roverflow)

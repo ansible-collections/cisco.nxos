@@ -1,0 +1,6 @@
+---
+- name: Remove all IGMP snooping configuration
+  cisco.nxos.nxos_igmp_snooping:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

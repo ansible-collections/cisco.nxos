@@ -5,7 +5,7 @@
 cisco.nxos.nxos_lldp_interfaces
 *******************************
 
-**LLDP interfaces resource module**
+**LLDP interfaces resource module.**
 
 
 Version added: 1.0.0

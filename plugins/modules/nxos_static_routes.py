@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_static_routes
-short_description: Static routes resource module
+short_description: Static routes resource module.
 description: This module configures and manages the attributes of static routes on
   Cisco NX-OS platforms.
 version_added: 1.0.0

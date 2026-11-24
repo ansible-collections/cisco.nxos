@@ -1,0 +1,2 @@
+ip igmp snooping v3-report-suppression
+ip igmp snooping vxlan

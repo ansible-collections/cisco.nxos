@@ -66,7 +66,7 @@ Parameters
                 </td>
                 <td>
                         <div>When supplied, this argument will gather configuration facts only for the given subset. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
-                        <div>Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>, <code>hostname</code>, <code>nve_interface</code>, <code>evpn_vnis</code>.</div>
+                        <div>Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>, <code>hostname</code>, <code>nve_interface</code>, <code>evpn_vnis</code>, <code>igmp_snooping</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -96,9 +96,9 @@ Notes
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
    - Unsupported for Cisco MDS
-   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - For information on using CLI and NX-API see the NXOS Platform Options guide https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html.
+   - For more information on using Ansible to manage network devices see the Ansible Network Guide https://docs.ansible.com/ansible/latest/network/getting_started/index.html.
+   - For more information on using Ansible to manage Cisco devices see the Cisco integration page https://www.ansible.com/integrations/networks/cisco.
 
 
 

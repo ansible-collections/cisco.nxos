@@ -5,7 +5,7 @@
 cisco.nxos.nxos_snmp_server
 ***************************
 
-**SNMP Server resource module.**
+**SNMP server resource module.**
 
 
 Version added: 2.8.0
@@ -3818,7 +3818,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
-   - This module works with connection ``network_cli`` and ``httpapi``.
+   - This module works with connection ``network_cli`` and ``httpapi``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html
    - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
    - After trap configuration changes in *merged*, *replaced*, or *overridden* (including LLDP, HSRP, and global EIGRP traps), ``show running-config`` used for *after* and *state=gathered* may lag behind what was just applied. This is more common with ``httpapi`` than ``network_cli``.
    - For verification playbooks, use a follow-up *state=gathered* task or assert on *after* with task-level ``retries`` and ``delay`` (for example, 3 retries and 15 seconds between attempts). Rerun the task if a one-off gather still misses new trap lines.
