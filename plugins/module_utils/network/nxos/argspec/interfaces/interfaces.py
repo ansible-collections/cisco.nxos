@@ -47,6 +47,8 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "ip_forward": {"type": "bool"},
                 "fabric_forwarding_anycast_gateway": {"type": "bool"},
                 "negotiate_auto": {"type": "bool"},
+                "medium": {"type": "str", "choices": ["p2p", "broadcast"]},
+                "port_type": {"type": "str", "choices": ["fabric"]},
                 "mac_address": {"type": "str"},
                 "logging": {
                     "type": "dict",

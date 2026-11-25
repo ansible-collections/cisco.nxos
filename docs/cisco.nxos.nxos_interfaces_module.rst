@@ -225,6 +225,27 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>medium</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 14.1.0</div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>p2p</li>
+                                    <li>broadcast</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Link medium of a routed interface. <code>p2p</code> configures <code>medium p2p</code>, for example for OSPF point-to-point links with an unnumbered address. <code>broadcast</code> is the default and is not shown in the running configuration, it is configured with <code>no medium p2p</code>. With <em>state</em> <code>replaced</code>, <code>overridden</code> and <code>deleted</code> an interface without this option is returned to <code>broadcast</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -292,6 +313,27 @@ Parameters
                 </td>
                 <td>
                         <div>Enable or disable auto-negotiation on the interface. Set the value to <code>true</code> to enable auto-negotiation (configures <code>negotiate auto</code>) or <code>false</code> to disable it (configures <code>no negotiate auto</code>). Applicable for Ethernet interfaces only.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 14.1.0</div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>fabric</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Port type of the interface, <code>fabric</code> configures <code>port-type fabric</code>. It is used for the ports to the spines in a VXLAN fabric and for vPC fabric peering. It is not the spanning tree port type, that is <em>spanning_tree.port_type</em> of <span class='module'>cisco.nxos.nxos_l2_interfaces</span>.</div>
+                        <div>Removed with <code>no port-type fabric</code> when the option is omitted with <em>state</em> <code>replaced</code>, <code>overridden</code> and <code>deleted</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -674,6 +716,38 @@ Examples
     #   description mgmt interface
     #   ip address dhcp
     #   vrf member management
+
+    # Using merged with medium and port_type
+
+    # Before state:
+    # -------------
+    #
+    # switch# show running-config | section "^interface Ethernet1/49"
+    # interface Ethernet1/49
+
+    - name: Set the link medium and the port type of a fabric port
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: Ethernet1/49
+            medium: p2p
+            port_type: fabric
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface Ethernet1/49
+    # - port-type fabric
+    # - medium p2p
+
+    # After state:
+    # ------------
+    #
+    # switch# show running-config | section "^interface Ethernet1/49"
+    # interface Ethernet1/49
+    #   port-type fabric
+    #   medium p2p
 
     # Using replaced
 
