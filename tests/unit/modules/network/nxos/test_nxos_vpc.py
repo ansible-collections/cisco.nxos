@@ -103,6 +103,35 @@ class TestNxosVpcModule(TestNxosModule):
         self.assertEqual(result["commands"], commands)
         self.assertEqual(result["before"], {})
 
+    def _empty_domain_merge_args(self):
+        self.get_config.return_value = ""
+        set_module_args(
+            dict(config=dict(domain="10", role_priority="150"), state="merged"),
+            ignore_provider_arg,
+        )
+
+    def test_nxos_vpc_merged_empty_have_retries_cli_delete_window(self):
+        """A plain domain create retries CLI's transient delete-in-progress response."""
+        self._empty_domain_merge_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = ["Domain delete in progress", None]
+
+        result = self.execute_module(changed=True)
+
+        self.assertEqual(conn.edit_config.call_count, 2)
+        self.assertEqual(result["commands"], ["vpc domain 10", "role priority 150"])
+
+    def test_nxos_vpc_merged_empty_have_retries_nxapi_delete_window(self):
+        """A plain domain create retries NX-API's transient delete-in-progress error."""
+        self._empty_domain_merge_args()
+        conn = self.get_resource_connection.return_value
+        conn.edit_config.side_effect = [ConnectionError("Domain delete in progress"), None]
+
+        result = self.execute_module(changed=True)
+
+        self.assertEqual(conn.edit_config.call_count, 2)
+        self.assertEqual(result["commands"], ["vpc domain 10", "role priority 150"])
+
     def test_nxos_vpc_merged_idempotent(self):
         self.get_config.return_value = dedent(
             """\

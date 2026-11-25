@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Update nxos/config/vpc/vpc.py with the already existing `_edit_config_until_ready`
+    call due to intermittent failures of it while using NXAPI in integration runs
