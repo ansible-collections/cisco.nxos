@@ -137,6 +137,21 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "unnumbered",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunnumbered
+                \s+(?P<unnumbered>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unnumbered {{ unnumbered }}",
+            "result": {
+                "{{ name }}": {
+                    "unnumbered": "{{ unnumbered }}",
+                },
+            },
+        },
+        {
             "name": "redirects",
             "getval": re.compile(
                 r"""

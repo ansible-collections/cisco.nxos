@@ -31,6 +31,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    normalize_interface,
+)
 
 
 class L3_interfaces(ResourceModule):
@@ -121,10 +124,23 @@ class L3_interfaces(ResourceModule):
         want_redirects = want.pop("ipv6_redirects", None)
         have_redirects = have.pop("ipv6_redirects", None)
         self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want)
+        want_unnumbered = self._normalize_unnumbered(want.pop("unnumbered", None))
+        have_unnumbered = self._normalize_unnumbered(have.pop("unnumbered", None))
         self.compare(parsers=self.parsers, want=want, have=have)
+        # 'ip unnumbered' and 'ip address' replace each other on the device. Remove what is not
+        # wanted first and set 'ip unnumbered' after the addresses are removed.
+        if have_unnumbered and have_unnumbered != want_unnumbered and not want_unnumbered:
+            self.addcmd({"unnumbered": have_unnumbered}, "unnumbered", True)
         self._compare_complex_attrs(want, have)
+        if want_unnumbered and want_unnumbered != have_unnumbered:
+            self.addcmd({"unnumbered": want_unnumbered}, "unnumbered", False)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    @staticmethod
+    def _normalize_unnumbered(name):
+        """The device shows the interface of 'ip unnumbered' in its own case, compare normalized names."""
+        return normalize_interface(name) if name else None
 
     def convert_list_to_dict(self, data):
         def list_to_dict(dict_list, outer_key_priority):

@@ -775,3 +775,287 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_unnumbered_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              medium p2p
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="Loopback0")],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "ip unnumbered loopback0"],
+        )
+
+    def test_nxos_l3_interface_unnumbered_merged_idempotent(self):
+        """The device shows the interface in lower case, the input case does not matter."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              medium p2p
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="Loopback0")],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_unnumbered_merged_change(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="loopback1")],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "ip unnumbered loopback1"],
+        )
+
+    def test_nxos_l3_interface_unnumbered_replaced_address_to_unnumbered(self):
+        """The address is removed before 'ip unnumbered' is set."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip address 192.0.2.41/30
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="loopback0", redirects=True)],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertEqual(commands[0], "interface Ethernet1/41")
+        self.assertIn("no ip address 192.0.2.41/30", commands)
+        self.assertEqual(commands[-1], "ip unnumbered loopback0")
+        self.assertLess(
+            commands.index("no ip address 192.0.2.41/30"),
+            commands.index("ip unnumbered loopback0"),
+        )
+
+    def test_nxos_l3_interface_unnumbered_replaced_unnumbered_to_address(self):
+        """'ip unnumbered' is removed before the address is set."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/41",
+                        ipv4=[dict(address="192.0.2.41/30")],
+                        redirects=True,
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertLess(
+            commands.index("no ip unnumbered loopback0"),
+            commands.index("ip address 192.0.2.41/30"),
+        )
+
+    def test_nxos_l3_interface_unnumbered_replaced_removed(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", redirects=True, ipv6_redirects=True)],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "no ip unnumbered loopback0"],
+        )
+
+    def test_nxos_l3_interface_unnumbered_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/41",
+                        unnumbered="loopback0",
+                        redirects=True,
+                        ipv6_redirects=True,
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_unnumbered_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(dict(config=[dict(name="Ethernet1/41")], state="deleted"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "no ip unnumbered loopback0"],
+        )
+
+    def test_nxos_l3_interface_unnumbered_overridden_other_interface(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/42
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="loopback0")],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no ip unnumbered loopback0", result["commands"])
+        self.assertIn("ip unnumbered loopback0", result["commands"])
+
+    def test_nxos_l3_interface_unnumbered_rendered(self):
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41", unnumbered="loopback0")],
+                state="rendered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["rendered"],
+            ["interface Ethernet1/41", "ip unnumbered loopback0"],
+        )
+
+    def test_nxos_l3_interface_unnumbered_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    interface Ethernet1/41
+                      medium p2p
+                      ip unnumbered loopback0
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            [dict(name="Ethernet1/41", unnumbered="loopback0")],
+        )
+
+    def test_nxos_l3_interface_unnumbered_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              medium p2p
+              ip unnumbered loopback0
+            """,
+        )
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["gathered"],
+            [dict(name="Ethernet1/41", unnumbered="loopback0")],
+        )
+
+    def test_nxos_l3_interface_unnumbered_with_ipv4_is_rejected(self):
+        """'unnumbered' and 'ipv4' in the same entry fail for every state that sends commands."""
+        for state in ("merged", "replaced", "overridden", "rendered"):
+            with self.subTest(state=state):
+                self.execute_show_command.return_value = dedent(
+                    """\
+                    interface Ethernet1/41
+                      medium p2p
+                      ip address 192.0.2.41/30
+                    """,
+                )
+                set_module_args(
+                    dict(
+                        config=[
+                            dict(
+                                name="Ethernet1/41",
+                                unnumbered="loopback0",
+                                ipv4=[dict(address="192.0.2.41/30")],
+                            ),
+                        ],
+                        state=state,
+                    ),
+                )
+                result = self.execute_module(failed=True)
+                self.assertIn("mutually exclusive", result["msg"])
+                self.assertIn("unnumbered", result["msg"])
+                self.assertIn("ipv4", result["msg"])
+                self.assertNotIn("commands", result)
+
+    def test_nxos_l3_interface_unnumbered_and_ipv4_on_different_interfaces(self):
+        """The combination is only rejected for the same interface."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              medium p2p
+            interface Ethernet1/42
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="Ethernet1/41", unnumbered="loopback0"),
+                    dict(name="Ethernet1/42", ipv4=[dict(address="192.0.2.42/30")]),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface Ethernet1/41",
+                "ip unnumbered loopback0",
+                "interface Ethernet1/42",
+                "ip address 192.0.2.42/30",
+            ],
+        )
