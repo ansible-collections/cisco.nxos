@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - nxos_acls - stop translating protocol number 4 (IP-in-IP) to "ip", which matched every IP protocol (https://github.com/ansible-collections/cisco.nxos/issues/1107).
