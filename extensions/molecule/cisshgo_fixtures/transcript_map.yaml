@@ -1815,6 +1815,8 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/merged/before.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: 'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"'
+        transcript: transcripts/nxos_interfaces/scenarios/merged/admin_states.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: interface Ethernet1/1
@@ -1872,6 +1874,8 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/replaced/before.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: 'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"'
+        transcript: transcripts/nxos_interfaces/scenarios/replaced/admin_states.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: interface Ethernet1/1
@@ -1961,10 +1965,14 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/before.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: 'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"'
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/admin_states_before.txt
       - command: show running-config | section ^interface
         transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/before.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: 'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"'
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/admin_states_before.txt
       - command: configure terminal
         transcript: transcripts/common/generic_empty_return.txt
       - command: interface loopback1
@@ -1987,6 +1995,8 @@ scenarios:
         transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/after.txt
       - command: show running-config all | incl 'system default switchport'
         transcript: transcripts/nxos_interfaces/switchport_defaults.txt
+      - command: 'show running-config all | include "^interface |^  shutdown$|^  no shutdown$"'
+        transcript: transcripts/nxos_interfaces/scenarios/loopback_enabled/admin_states_after.txt
   nxos-hostname-gathered:
     platform: nxos_hostname
     sequence:

@@ -24,12 +24,12 @@ author:
 notes:
   - Tested against NXOS 10.4(2) on CML
   - Unsupported for Cisco MDS
-  - This module assumes the device is configured with the default switchport
-    behavior, specifically that C(system default switchport shutdown) is not
-    enabled. If C(system default switchport shutdown) is enabled on the device,
-    the module will not function correctly. The only resolution is to revert
-    the device to the default setting using C(no system default switchport shutdown).
-    There is currently no workaround for devices with this non-default configuration.
+  - An interface in its default admin state has no C(shutdown) or C(no shutdown) line in the running configuration.
+    For such an interface that is part of the configuration, the module reads the admin state from C(show running-config all).
+    I(enabled) therefore does not depend on C(system default switchport shutdown). It was tested against NX-OS 10.6(4)
+    on N9K-C93180YC-FX with C(system default switchport shutdown) and with C(no system default switchport shutdown),
+    over C(network_cli).
+  - The state I(rendered) and the state I(parsed) do not connect to the device, they do not read the admin state from the device.
 options:
   config:
     description: A dictionary of interface options
@@ -169,6 +169,18 @@ options:
         shutdown.
       - The state I(purged) negates virtual interfaces that are specified in
         task from running-config.
+      - With the state I(overridden) the interfaces that are not in I(config) are returned to their default
+        admin state, an interface that shows C(no shutdown) is shut down. An interface that shows C(shutdown)
+        gets no command, and neither does one that shows no admin state line, because it is in its default state.
+      - With the state I(overridden) the logical interfaces that are not in I(config) are removed completely with
+        C(no interface), subinterfaces first. These are loopbacks, VLAN interfaces (SVIs), port-channels, tunnels
+        and subinterfaces. Physical ports, C(mgmt0) and C(nve1) are never removed.
+      - Use the state I(overridden) with caution, as you could remove your access to the device. Removing a
+        port-channel drops its member bindings and its vPC settings, including a vPC peer link, removing a VLAN
+        interface drops its IP addresses and its anycast gateway setting, and removing a loopback drops its
+        addresses, for example the router ID or the VTEP source. Check the commands with check mode first.
+        Tasks of other modules that configure interfaces with the state I(overridden) in the same play remove
+        the interfaces that they do not list as well.
     type: str
     choices:
       - merged

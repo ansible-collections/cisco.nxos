@@ -1,0 +1,3 @@
+---
+breaking_changes:
+  - nxos_interfaces - state ``overridden`` now removes the loopbacks, VLAN interfaces, port-channels, tunnels and subinterfaces that are not in ``config``, they were only reset before.
