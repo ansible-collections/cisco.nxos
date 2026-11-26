@@ -43,6 +43,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.evpn
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces import (
     Fc_interfacesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.features.features import (
+    FeaturesFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -172,6 +175,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     nve_interface=Nve_interfaceFacts,
+    features=FeaturesFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     bgp_templates=Bgp_templatesFacts,

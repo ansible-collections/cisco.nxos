@@ -1,0 +1,15 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_features parsed integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Parse the provided configuration
+      cisco.nxos.nxos_features:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: Assert that the configuration was parsed
+      ansible.builtin.assert:
+        that:
+          - "{{ parsed['config'] | symmetric_difference(result['parsed']) | length == 0 }}"

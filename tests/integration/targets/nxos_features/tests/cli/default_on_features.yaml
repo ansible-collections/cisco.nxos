@@ -1,0 +1,71 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_features default-on features integration tests on connection={{ ansible_connection }}
+
+# A feature that is enabled by default, for example ssh, is in the all view but not in the plain running
+# configuration. The states overridden and deleted without config return the features to their default, so
+# they must leave it alone. Everything here runs in check mode, nothing is changed on the device.
+- block:
+    - name: Read the feature lines of the plain running configuration
+      cisco.nxos.nxos_command:
+        commands:
+          - show running-config | include '^feature'
+      register: plain
+
+    - name: Set facts for the features with a feature line
+      ansible.builtin.set_fact:
+        explicit_features: "{{ plain['stdout'][0].splitlines() | select('match', '^feature ') | map('regex_replace', '^feature\\s+(.*?)\\s*$', '\\1') | list }}"
+
+    - name: Gather the features of the device
+      cisco.nxos.nxos_features:
+        state: gathered
+      register: device
+
+    - name: Set a fact for the features that are enabled by default
+      ansible.builtin.set_fact:
+        default_features: "{{ device['gathered'] | selectattr('enabled') | map(attribute='name') | difference(explicit_features) | list }}"
+
+    - name: Assert that ssh is one of the features that are enabled by default
+      ansible.builtin.assert:
+        that:
+          - "'ssh' in default_features"
+
+    - name: Override with the features that have a feature line, in check mode
+      cisco.nxos.nxos_features:
+        config: "{{ device['gathered'] | selectattr('name', 'in', explicit_features) | list }}"
+        state: overridden
+      check_mode: true
+      register: result
+
+    - name: Assert that overridden left the features that are enabled by default alone
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] == []
+
+    - name: Delete all features in check mode
+      cisco.nxos.nxos_features:
+        state: deleted
+      check_mode: true
+      register: result
+
+    - name: Assert that deleted disables only features with a feature line
+      ansible.builtin.assert:
+        that:
+          - result['commands'] | length == explicit_features | length
+          - result['commands'] | select('in', default_features | map('regex_replace', '^', 'no feature ') | list) | list | length == 0
+          - "'no feature ssh' not in result['commands']"
+
+    - name: Disable ssh explicitly in check mode
+      cisco.nxos.nxos_features:
+        config:
+          - name: ssh
+            enabled: false
+        state: merged
+      check_mode: true
+      register: result
+
+    - name: Assert that a listed default feature is disabled when asked
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['no feature ssh']
