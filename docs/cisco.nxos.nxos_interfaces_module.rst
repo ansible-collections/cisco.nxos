@@ -593,6 +593,7 @@ Parameters
                         <div>The state of the configuration after module completion</div>
                         <div>The state <em>rendered</em> considers the system default mode for interfaces to be &quot;Layer 3&quot; and the system default state for interfaces to be shutdown.</div>
                         <div>The state <em>purged</em> negates virtual interfaces that are specified in task from running-config.</div>
+                        <div>With the state <em>overridden</em> the interfaces that are not in <em>config</em> are returned to their default admin state, an interface that shows <code>no shutdown</code> is shut down. An interface that shows <code>shutdown</code> gets no command, and neither does one that shows no admin state line, because it is in its default state.</div>
                 </td>
             </tr>
     </table>
@@ -605,7 +606,8 @@ Notes
 .. note::
    - Tested against NXOS 10.4(2) on CML
    - Unsupported for Cisco MDS
-   - This module assumes the device is configured with the default switchport behavior, specifically that ``system default switchport shutdown`` is not enabled. If ``system default switchport shutdown`` is enabled on the device, the module will not function correctly. The only resolution is to revert the device to the default setting using ``no system default switchport shutdown``. There is currently no workaround for devices with this non-default configuration.
+   - An interface in its default admin state has no ``shutdown`` or ``no shutdown`` line in the running configuration. For such an interface that is part of the configuration, the module reads the admin state from ``show running-config all``. *enabled* therefore does not depend on ``system default switchport shutdown``. It was tested against NX-OS 10.6(4) on N9K-C93180YC-FX with ``system default switchport shutdown`` and with ``no system default switchport shutdown``, over ``network_cli``.
+   - The state *rendered* and the state *parsed* do not connect to the device, they do not read the admin state from the device.
 
 
 
