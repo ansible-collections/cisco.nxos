@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - nxos_l3_interfaces - normalize interface names.
+  - nxos_l3_interfaces - fix loopbacks reporting a change on every run for ``redirects`` and ``ipv6_redirects``, which the device does not store on loopbacks.

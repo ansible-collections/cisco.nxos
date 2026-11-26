@@ -775,3 +775,150 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_replaced_loopback_redirects_idem(self):
+        """A loopback never shows the redirects lines, so replaced must not send them on every run."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface loopback1
+              ip address 1.1.1.12/32
+              ip address 1.1.1.10/32 secondary
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="loopback1",
+                        ipv4=[
+                            dict(address="1.1.1.12/32"),
+                            dict(address="1.1.1.10/32", secondary=True),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_overridden_loopback_redirects_false_idem(self):
+        """redirects false on a loopback is not stored by the device, so it must not be sent on every run."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface loopback1
+              ip address 1.1.1.12/32
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="loopback1",
+                        ipv4=[dict(address="1.1.1.12/32")],
+                        redirects=False,
+                        ipv6_redirects=False,
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_replaced_routed_redirects_unchanged(self):
+        """Routed ports show the redirects lines, so replaced still disables them when they are unset."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Ethernet1/41
+              no switchport
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[dict(name="Ethernet1/41")],
+                state="replaced",
+            ),
+        )
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Ethernet1/41", "no ip redirects", "no ipv6 redirects"],
+        )
+
+    def test_nxos_l3_interface_name_case_loopback_idempotent(self):
+        """A name in another case than the device reports is the same interface."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface loopback1
+             ip address 192.0.2.1/32
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Loopback1", ipv4=[dict(address="192.0.2.1/32")])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_l3_interface_name_short_forms_idempotent(self):
+        """Lower case and the short name forms are normalized like in the other interface modules."""
+        for name in ("ethernet1/41", "Eth1/41", "eth1/41"):
+            self.execute_show_command.return_value = dedent(
+                """
+                interface Ethernet1/41
+                 ip address 192.0.2.41/30
+                """,
+            )
+            set_module_args(
+                dict(
+                    config=[dict(name=name, ipv4=[dict(address="192.0.2.41/30")])],
+                    state="merged",
+                ),
+            )
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], [], name)
+
+    def test_nxos_l3_interface_name_case_merged_adds_address(self):
+        """The commands use the name of the device and only add what is missing."""
+        self.execute_show_command.return_value = dedent(
+            """
+            interface loopback1
+             ip address 192.0.2.1/32
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Loopback1", ipv4=[dict(address="192.0.2.2/32")])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface loopback1", "ip address 192.0.2.2/32"])
+
+    def test_nxos_l3_interface_loopback_name_forms_redirects_idempotent(self):
+        """A loopback in any name form is the loopback of the device, so it never gets the redirects commands."""
+        for name in ("Loopback1", "Lo1", "lo1"):
+            for state in ("replaced", "overridden"):
+                self.execute_show_command.return_value = dedent(
+                    """
+                    interface loopback1
+                     ip address 192.0.2.1/32
+                    """,
+                )
+                set_module_args(
+                    dict(
+                        config=[dict(name=name, ipv4=[dict(address="192.0.2.1/32")])],
+                        state=state,
+                    ),
+                )
+                result = self.execute_module(changed=False)
+                self.assertEqual(result["commands"], [], (name, state))
