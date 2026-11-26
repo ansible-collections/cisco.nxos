@@ -1,0 +1,55 @@
+---
+# PTP needs 'feature ptp'. Enabling it is the only prerequisite, a platform without PTP
+# support (for example a virtual switch) makes the tests skip instead of fail.
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Enable 'feature ptp'
+      cisco.nxos.nxos_feature:
+        feature: ptp
+        state: enabled
+      register: ptp_feature
+      ignore_errors: true
+      connection: ansible.netcommon.network_cli
+
+    - name: Note that the tests are skipped
+      ansible.builtin.debug:
+        msg: "Skipping nxos_ptp_interfaces integration tests: 'feature ptp' cannot be enabled on this platform."
+      when: ptp_feature is failed
+
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      when: ptp_feature is not failed
+      tags:
+        - cli
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      when: ptp_feature is not failed
+      tags:
+        - nxapi
+  always:
+    - name: Remove the PTP configuration of the interfaces
+      cisco.nxos.nxos_ptp_interfaces:
+        state: deleted
+      failed_when: false
+      when: ptp_feature is defined and ptp_feature is not failed
+      connection: ansible.netcommon.network_cli
+
+    - name: Remove the PTP source address
+      cisco.nxos.nxos_config:
+        lines:
+          - no ptp source 192.0.2.1
+      failed_when: false
+      when: ptp_feature is defined and ptp_feature is not failed
+      connection: ansible.netcommon.network_cli
+
+    - name: Disable 'feature ptp' when the tests enabled it
+      cisco.nxos.nxos_feature:
+        feature: ptp
+        state: disabled
+      failed_when: false
+      when:
+        - ptp_feature is defined
+        - ptp_feature is not failed
+        - ptp_feature is changed
+      connection: ansible.netcommon.network_cli

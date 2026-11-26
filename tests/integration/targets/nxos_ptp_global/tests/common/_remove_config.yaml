@@ -1,0 +1,6 @@
+---
+- name: Remove all PTP global configuration
+  cisco.nxos.nxos_ptp_global:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

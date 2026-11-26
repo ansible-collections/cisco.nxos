@@ -1,0 +1,30 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_ptp_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ptp_global:
+    config:
+      source:
+        ipv4:
+          address: 192.0.2.1
+          vrf: management
+      domain: 5
+      priority1: 100
+      management: false
+      correction_range:
+        value: 5000
+        logging: true
+      delay_tolerance:
+        mean_path: "10.5"
+      time_distribution_hold:
+        correction_threshold: 500
+        delay_threshold: 100
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] | sort == result['rendered'] | sort
+      - result.changed == false

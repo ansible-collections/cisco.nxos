@@ -1,0 +1,14 @@
+---
+- name: Remove the PTP configuration of the interfaces
+  cisco.nxos.nxos_ptp_interfaces:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- name: Remove the PTP source address
+  cisco.nxos.nxos_config:
+    lines:
+      - no ptp source 192.0.2.1
+  ignore_errors: true
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

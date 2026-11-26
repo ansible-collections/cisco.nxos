@@ -105,6 +105,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists import (
     Prefix_listsFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ptp_global.ptp_global import (
+    Ptp_globalFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ptp_interfaces.ptp_interfaces import (
+    Ptp_interfacesFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.route_maps.route_maps import (
     Route_mapsFacts,
 )
@@ -182,6 +188,8 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     vpc=VpcFacts,
     evpn_vnis=Evpn_vnisFacts,
     igmp_snooping=IgmpSnoopingFacts,
+    ptp_global=Ptp_globalFacts,
+    ptp_interfaces=Ptp_interfacesFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
     fc_interfaces=Fc_interfacesFacts,

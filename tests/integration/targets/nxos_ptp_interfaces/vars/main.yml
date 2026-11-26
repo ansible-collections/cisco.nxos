@@ -1,0 +1,103 @@
+---
+# State created by tests/common/_populate_config.yaml, the interfaces are nxos_int1 to nxos_int3
+before:
+  - name: "{{ nxos_int1 }}"
+    enabled: true
+    vlan: 100
+    sync_interval:
+      value: -2
+      profile: aes67
+  - name: "{{ nxos_int2 }}"
+    enabled: true
+    role: master
+    master:
+      - 192.0.2.10
+
+parsed:
+  - name: Ethernet1/1
+    enabled: true
+    vlan: 100
+    sync_interval:
+      value: -2
+      profile: aes67
+  - name: Ethernet1/2
+    enabled: true
+    role: master
+    master:
+      - 192.0.2.10
+
+merged:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - ptp vlan 200
+    - ptp announce interval aes67 3
+    - "interface {{ nxos_int3 }}"
+    - ptp
+    - ptp role master
+  after:
+    - name: "{{ nxos_int1 }}"
+      enabled: true
+      vlan: 200
+      announce_interval:
+        value: 3
+        profile: aes67
+      sync_interval:
+        value: -2
+        profile: aes67
+    - name: "{{ nxos_int2 }}"
+      enabled: true
+      role: master
+      master:
+        - 192.0.2.10
+    - name: "{{ nxos_int3 }}"
+      enabled: true
+      role: master
+
+replaced:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - ptp vlan 150
+    - no ptp sync interval aes67 -2
+    - "interface {{ nxos_int2 }}"
+    - no ptp role master
+    - no ptp master 192.0.2.10
+  after:
+    - name: "{{ nxos_int1 }}"
+      enabled: true
+      vlan: 150
+    - name: "{{ nxos_int2 }}"
+      enabled: true
+
+overridden:
+  commands:
+    - "interface {{ nxos_int2 }}"
+    - no ptp
+  after:
+    - name: "{{ nxos_int1 }}"
+      enabled: true
+      vlan: 100
+      sync_interval:
+        value: -2
+        profile: aes67
+
+deleted:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - no ptp
+  after:
+    - name: "{{ nxos_int2 }}"
+      enabled: true
+      role: master
+      master:
+        - 192.0.2.10
+
+rendered:
+  commands:
+    - interface Ethernet1/3
+    - ptp
+    - ptp vlan 100
+    - ptp role master
+    - ptp transmission unicast
+    - ptp master 192.0.2.10
+    - ptp asymmetric-delay forward-path 100
+    - ptp sync interval aes67 -2
