@@ -1,0 +1,6 @@
+---
+# Only the lines of the test are removed, so that configuration that exists on the device stays.
+- name: Remove the global PIM configuration of the tests
+  cisco.nxos.nxos_pim_global:
+    config: "{{ config }}"
+    state: deleted

@@ -1,0 +1,35 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden nxos_pim_global state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override the global PIM configuration
+      cisco.nxos.nxos_pim_global: &id001
+        config: "{{ overridden['config'] }}"
+        state: overridden
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Override the global PIM configuration (idempotent)
+      cisco.nxos.nxos_pim_global: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - name: Reset the SSM range to the default
+      cisco.nxos.nxos_pim_global:
+        config:
+          ssm_range:
+            - 232.0.0.0/8
+        state: replaced
+    - ansible.builtin.include_tasks: _remove_config.yaml

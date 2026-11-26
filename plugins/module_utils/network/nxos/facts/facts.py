@@ -102,6 +102,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3 import (
     Ospfv3Facts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.pim_global.pim_global import (
+    Pim_globalFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists import (
     Prefix_listsFacts,
 )
@@ -172,6 +175,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     nve_interface=Nve_interfaceFacts,
+    pim_global=Pim_globalFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     bgp_templates=Bgp_templatesFacts,

@@ -117,6 +117,7 @@ Name | Description
 [cisco.nxos.nxos_ospfv3](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv3_module.rst)|OSPFv3 resource module.
 [cisco.nxos.nxos_overlay_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_overlay_global_module.rst)|Configures anycast gateway MAC of the switch.
 [cisco.nxos.nxos_pim](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_module.rst)|Manages configuration of a PIM instance.
+[cisco.nxos.nxos_pim_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_global_module.rst)|PIM global resource module.
 [cisco.nxos.nxos_pim_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_interface_module.rst)|Manages PIM interface configuration.
 [cisco.nxos.nxos_pim_rp_address](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_rp_address_module.rst)|Manages configuration of an PIM static RP address instance.
 [cisco.nxos.nxos_ping](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ping_module.rst)|Tests reachability using ping from Nexus switch.

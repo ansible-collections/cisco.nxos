@@ -1,0 +1,45 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged nxos_pim_global state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge provided configuration with device configuration
+      cisco.nxos.nxos_pim_global: &id001
+        config: "{{ config }}"
+        state: merged
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Merge provided configuration with device configuration (idempotent)
+      cisco.nxos.nxos_pim_global: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Merge a static RP with the group list and the prefix list (expected to fail)
+      cisco.nxos.nxos_pim_global:
+        config:
+          rp_addresses:
+            - rp_address: 192.0.2.9
+              group_list: 239.1.0.0/16
+              prefix_list: PL_PIMTEST
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the mutually exclusive options were rejected
+      ansible.builtin.assert:
+        that:
+          - result['failed'] == true
+          - "'mutually exclusive' in result['msg']"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
