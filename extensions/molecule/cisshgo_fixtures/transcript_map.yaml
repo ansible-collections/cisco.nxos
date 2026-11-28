@@ -369,6 +369,68 @@ platforms:
       (config-tm-sensor)#: " "
       (config-tm-sub)#: " "
       (config-tm-profile)#: " "
+  nxos_netflow_global:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      collect counter bytes: transcripts/common/generic_empty_return.txt
+      collect counter packets: transcripts/common/generic_empty_return.txt
+      description Monitor 2: transcripts/common/generic_empty_return.txt
+      destination 192.0.2.20 use-vrf default: transcripts/common/generic_empty_return.txt
+      "destination 2001:db8::1 use-vrf management": transcripts/common/generic_empty_return.txt
+      flow exporter ansible_exp1: transcripts/common/generic_empty_return.txt
+      flow exporter ansible_exp3: transcripts/common/generic_empty_return.txt
+      flow monitor ansible_mon1: transcripts/common/generic_empty_return.txt
+      flow monitor ansible_mon2: transcripts/common/generic_empty_return.txt
+      flow record ansible_rec1: transcripts/common/generic_empty_return.txt
+      flow record ansible_rec2: transcripts/common/generic_empty_return.txt
+      match ip protocol: transcripts/common/generic_empty_return.txt
+      match ipv6 destination address: transcripts/common/generic_empty_return.txt
+      match ipv6 source address: transcripts/common/generic_empty_return.txt
+      no collect counter packets: transcripts/common/generic_empty_return.txt
+      no description: transcripts/common/generic_empty_return.txt
+      no dscp: transcripts/common/generic_empty_return.txt
+      no exporter ansible_exp1: transcripts/common/generic_empty_return.txt
+      no flow exporter ansible_exp1: transcripts/common/generic_empty_return.txt
+      no flow exporter ansible_exp2: transcripts/common/generic_empty_return.txt
+      no flow monitor ansible_mon1: transcripts/common/generic_empty_return.txt
+      no flow monitor ansible_mon2: transcripts/common/generic_empty_return.txt
+      no flow record ansible_rec1: transcripts/common/generic_empty_return.txt
+      no flow record ansible_rec2: transcripts/common/generic_empty_return.txt
+      no flow timeout: transcripts/common/generic_empty_return.txt
+      no match datalink mac source-address: transcripts/common/generic_empty_return.txt
+      no match transport source-port: transcripts/common/generic_empty_return.txt
+      no transport udp: transcripts/common/generic_empty_return.txt
+      option exporter-stats timeout 0: transcripts/common/generic_empty_return.txt
+      option interface-table timeout 400: transcripts/common/generic_empty_return.txt
+      record netflow ipv4 original-input: transcripts/common/generic_empty_return.txt
+      source loopback2: transcripts/common/generic_empty_return.txt
+      template data timeout 15: transcripts/common/generic_empty_return.txt
+      version 9: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
   nxos_ntp_global:
     vendor: cisco
     hostname: cisshgo-nxos
@@ -1668,6 +1730,45 @@ platforms:
       "#": " "
       (config)#: " "
       (config-vlan-config)#: " "
+  nxos_netflow_interfaces:
+    vendor: cisco
+    hostname: cisshgo-nxos
+    username: admin
+    password: admin
+    command_transcripts:
+      terminal length 0: transcripts/common/generic_empty_return.txt
+      terminal width 512: transcripts/common/generic_empty_return.txt
+      terminal width 0: transcripts/common/generic_empty_return.txt
+      write memory: transcripts/common/generic_empty_return.txt
+      show privilege: transcripts/common/show_privilege.txt
+      show version: transcripts/common/show_version.txt
+      show inventory: transcripts/common/generic_empty_return.txt
+      terminal width 511: transcripts/common/generic_empty_return.txt
+      enable: transcripts/common/generic_empty_return.txt
+      show running-config: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/1: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/2: transcripts/common/generic_empty_return.txt
+      interface Ethernet1/3: transcripts/common/generic_empty_return.txt
+      no ip flow monitor NFI_V4 input: transcripts/common/generic_empty_return.txt
+      ip flow monitor NFI_V4B input: transcripts/common/generic_empty_return.txt
+      ipv6 flow monitor NFI_V6 input: transcripts/common/generic_empty_return.txt
+      no ipv6 flow monitor NFI_V6 input: transcripts/common/generic_empty_return.txt
+      no layer2-switched flow monitor NFI_L2 input: transcripts/common/generic_empty_return.txt
+    context_search:
+      configure terminal: (config)#
+      interface: (config-if)#
+      end: "#"
+      enable: "#"
+      base: "#"
+    context_hierarchy:
+      (config-if)#: (config)#
+      (config)#: "#"
+      "#": ">"
+    end_context: "#"
+    context_prefix_lines:
+      "#": " "
+      (config)#: " "
+      (config-if)#: " "
 scenarios:
   nxos-acls-gathered:
     platform: nxos_acls
@@ -2583,6 +2684,75 @@ scenarios:
         transcript: transcripts/nxos_telemetry/scenarios/deleted/after.txt
       - command: show run telemetry all
         transcript: transcripts/nxos_telemetry/scenarios/deleted/after.txt
+  nxos-netflow-global-gathered:
+    platform: nxos_netflow_global
+    sequence:
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/gathered/before.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/gathered/before.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/gathered/before.txt
+  nxos-netflow-global-merged:
+    platform: nxos_netflow_global
+    sequence:
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/merged/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/merged/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/merged/after.txt
+  nxos-netflow-global-replaced:
+    platform: nxos_netflow_global
+    sequence:
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/replaced/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/replaced/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/replaced/after.txt
+  nxos-netflow-global-overridden:
+    platform: nxos_netflow_global
+    sequence:
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/overridden/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/overridden/after.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/overridden/after.txt
+  nxos-netflow-global-deleted:
+    platform: nxos_netflow_global
+    sequence:
+      - command: show running-config | section ^flow
+        transcript: transcripts/nxos_netflow_global/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | section ^flow
+        transcript: transcripts/common/generic_empty_return.txt
   nxos-ntp-global-gathered:
     platform: nxos_ntp_global
     sequence:
@@ -7741,3 +7911,72 @@ scenarios:
         transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_vlans.txt
       - command: show running-config | include "^ip igmp snooping|^no ip igmp snooping"
         transcript: transcripts/nxos_igmp_snooping/scenarios/options/after_global.txt
+  nxos-netflow-interfaces-gathered:
+    platform: nxos_netflow_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/gathered/before.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/gathered/before.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/gathered/before.txt
+  nxos-netflow-interfaces-merged:
+    platform: nxos_netflow_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/merged/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/merged/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/merged/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/merged/after.txt
+  nxos-netflow-interfaces-replaced:
+    platform: nxos_netflow_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/replaced/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/replaced/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/replaced/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/replaced/after.txt
+  nxos-netflow-interfaces-overridden:
+    platform: nxos_netflow_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/overridden/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/overridden/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/overridden/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/overridden/after.txt
+  nxos-netflow-interfaces-deleted:
+    platform: nxos_netflow_interfaces
+    sequence:
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/deleted/before.txt
+      - command: configure terminal
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: end
+        transcript: transcripts/common/generic_empty_return.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/deleted/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/deleted/after.txt
+      - command: show running-config | include "^interface|^  (ip|ipv6|layer2-switched) flow monitor"
+        transcript: transcripts/nxos_netflow_interfaces/scenarios/deleted/after.txt

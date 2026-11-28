@@ -1,0 +1,11 @@
+devices:
+  - scenario: nxos-netflow-global-gathered
+    count: 1
+  - scenario: nxos-netflow-global-merged
+    count: 1
+  - scenario: nxos-netflow-global-replaced
+    count: 1
+  - scenario: nxos-netflow-global-overridden
+    count: 1
+  - scenario: nxos-netflow-global-deleted
+    count: 1

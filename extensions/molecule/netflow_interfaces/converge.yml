@@ -1,0 +1,197 @@
+---
+- name: "Nxos_netflow_interfaces — state: gathered"
+  hosts: nxos_netflow_interfaces_gathered
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_netflow_interfaces/vars/main.yml
+  tasks:
+    - name: Gather nxos_netflow_interfaces facts
+      register: result
+      cisco.nxos.nxos_netflow_interfaces:
+        state: gathered
+    - name: Assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - before == result['gathered']
+
+    - name: Run nxos_netflow_interfaces parsed (offline)
+      register: result
+      cisco.nxos.nxos_netflow_interfaces:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/nxos_netflow_interfaces/tests/common/fixtures/parsed.cfg') }}"
+        state: parsed
+    - name: Assert parsed result
+      ansible.builtin.assert:
+        that:
+          - parsed == result['parsed']
+
+    - name: Run nxos_netflow_interfaces rendered (offline)
+      register: result
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: Eth1/3
+            flow_monitors:
+              - monitor: NFI_V4
+                direction: input
+              - monitor: NFI_V6
+                protocol: ipv6
+                direction: input
+              - monitor: NFI_V4
+                protocol: ipv4
+                direction: output
+        state: rendered
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | sort == result['rendered'] | sort
+
+- name: "Nxos_netflow_interfaces — state: merged"
+  hosts: nxos_netflow_interfaces_merged
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_netflow_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_netflow_interfaces merged
+      register: result
+      cisco.nxos.nxos_netflow_interfaces: &merged
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_V4B
+                direction: input
+          - name: "{{ nxos_int2 }}"
+            flow_monitors:
+              - monitor: NFI_V6
+                protocol: ipv6
+                direction: input
+        state: merged
+    - name: Assert merged result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - merged['commands'] == result['commands']
+          - merged['after'] == result['after']
+    - name: Idempotent re-run (merged)
+      register: idempotent_result
+      cisco.nxos.nxos_netflow_interfaces: *merged
+    - name: Assert idempotent (merged)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_netflow_interfaces — state: replaced"
+  hosts: nxos_netflow_interfaces_replaced
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_netflow_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_netflow_interfaces replaced
+      register: result
+      cisco.nxos.nxos_netflow_interfaces: &replaced
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_V4
+                direction: input
+          - name: "{{ nxos_int2 }}"
+            flow_monitors:
+              - monitor: NFI_V4B
+                direction: input
+        state: replaced
+    - name: Assert replaced result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - replaced['commands'] == result['commands']
+          - replaced['after'] == result['after']
+    - name: Idempotent re-run (replaced)
+      register: idempotent_result
+      cisco.nxos.nxos_netflow_interfaces: *replaced
+    - name: Assert idempotent (replaced)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_netflow_interfaces — state: overridden"
+  hosts: nxos_netflow_interfaces_overridden
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_netflow_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_netflow_interfaces overridden
+      register: result
+      cisco.nxos.nxos_netflow_interfaces: &overridden
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_V4
+                direction: input
+        state: overridden
+    - name: Assert overridden result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - overridden['commands'] == result['commands']
+          - overridden['after'] == result['after']
+    - name: Idempotent re-run (overridden)
+      register: idempotent_result
+      cisco.nxos.nxos_netflow_interfaces: *overridden
+    - name: Assert idempotent (overridden)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0
+
+- name: "Nxos_netflow_interfaces — state: deleted"
+  hosts: nxos_netflow_interfaces_deleted
+  gather_facts: false
+  vars:
+    nxos_int1: Ethernet1/1
+    nxos_int2: Ethernet1/2
+    nxos_int3: Ethernet1/3
+  vars_files:
+    - ../../../tests/integration/targets/nxos_netflow_interfaces/vars/main.yml
+  tasks:
+    - name: Run nxos_netflow_interfaces deleted
+      register: result
+      cisco.nxos.nxos_netflow_interfaces: &deleted
+        config:
+          - name: "{{ nxos_int1 }}"
+        state: deleted
+    - name: Assert deleted result
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - before == result['before']
+          - deleted['commands'] == result['commands']
+          - deleted['after'] == result['after']
+    - name: Idempotent re-run (deleted)
+      register: idempotent_result
+      cisco.nxos.nxos_netflow_interfaces: *deleted
+    - name: Assert idempotent (deleted)
+      ansible.builtin.assert:
+        that:
+          - idempotent_result.changed == false
+          - idempotent_result.commands | length == 0

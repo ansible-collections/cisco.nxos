@@ -1,0 +1,9 @@
+interface Ethernet1/1
+  ip flow monitor NFI_V4B input
+  ipv6 flow monitor NFI_V6 input
+interface Ethernet1/2
+  ip flow monitor NFI_V4 input
+  ipv6 flow monitor NFI_V6 input
+interface Ethernet1/3
+  layer2-switched flow monitor NFI_L2 input
+interface Ethernet1/4
