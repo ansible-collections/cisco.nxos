@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - nxos_netflow_interfaces - new resource module to manage the flow monitors of interfaces.

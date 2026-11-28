@@ -87,6 +87,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.lldp
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.logging_global.logging_global import (
     Logging_globalFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.netflow_global.netflow_global import (
+    Netflow_globalFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.netflow_interfaces.netflow_interfaces import (
+    Netflow_interfacesFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global import (
     Ntp_globalFacts,
 )
@@ -182,6 +188,8 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     vpc=VpcFacts,
     evpn_vnis=Evpn_vnisFacts,
     igmp_snooping=IgmpSnoopingFacts,
+    netflow_global=Netflow_globalFacts,
+    netflow_interfaces=Netflow_interfacesFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
     fc_interfaces=Fc_interfacesFacts,
