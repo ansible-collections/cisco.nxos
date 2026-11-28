@@ -18,7 +18,7 @@ Version added: 14.1.0
 Synopsis
 --------
 - This module manages the global NetFlow configuration of Cisco NX-OS devices, the flow exporters, the flow records, the flow monitors and the flow timeout.
-- The assignment of the flow monitors to the interfaces is managed by :ref:`cisco.nxos.nxos_netflow_interfaces <cisco.nxos.nxos_netflow_interfaces_module>`.
+- The assignment of the flow monitors to the interfaces is managed by ``cisco.nxos.nxos_netflow_interfaces``.
 
 
 
@@ -1105,7 +1105,7 @@ Notes
 .. note::
    - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
    - Unsupported for Cisco MDS.
-   - The NetFlow commands only exist when ``feature netflow`` is enabled, use :ref:`cisco.nxos.nxos_feature <cisco.nxos.nxos_feature_module>` for it.
+   - The NetFlow commands only exist when ``feature netflow`` is enabled, use ``cisco.nxos.nxos_feature`` for it.
    - NX-OS 10.6(4) supports only ``version 9`` exporters, no ``sampler`` and no flow monitor cache settings.
    - A flow monitor has two exporters at most and its record can only be replaced, never removed.
    - Settings given with their default value, or a flag given as ``false``, are removed from the device.

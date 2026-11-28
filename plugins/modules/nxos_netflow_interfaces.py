@@ -20,7 +20,7 @@ short_description: NetFlow interfaces resource module.
 description:
   - This module manages the assignment of flow monitors to the interfaces of Cisco NX-OS devices.
   - It manages the C(ip flow monitor), C(ipv6 flow monitor) and C(layer2-switched flow monitor) commands of an interface.
-  - The flow monitors themselves must already exist on the device, they are managed by M(cisco.nxos.nxos_netflow_global).
+  - The flow monitors themselves must already exist on the device, they are managed by C(cisco.nxos.nxos_netflow_global).
 notes:
   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
   - Unsupported for Cisco MDS.

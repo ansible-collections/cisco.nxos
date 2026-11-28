@@ -19,7 +19,7 @@ Synopsis
 --------
 - This module manages the assignment of flow monitors to the interfaces of Cisco NX-OS devices.
 - It manages the ``ip flow monitor``, ``ipv6 flow monitor`` and ``layer2-switched flow monitor`` commands of an interface.
-- The flow monitors themselves must already exist on the device, they are managed by :ref:`cisco.nxos.nxos_netflow_global <cisco.nxos.nxos_netflow_global_module>`.
+- The flow monitors themselves must already exist on the device, they are managed by ``cisco.nxos.nxos_netflow_global``.
 
 
 

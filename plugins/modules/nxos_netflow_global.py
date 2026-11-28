@@ -20,11 +20,11 @@ short_description: NetFlow global resource module.
 description:
   - This module manages the global NetFlow configuration of Cisco NX-OS devices, the flow exporters,
     the flow records, the flow monitors and the flow timeout.
-  - The assignment of the flow monitors to the interfaces is managed by M(cisco.nxos.nxos_netflow_interfaces).
+  - The assignment of the flow monitors to the interfaces is managed by C(cisco.nxos.nxos_netflow_interfaces).
 notes:
   - Tested against NX-OS 10.6(4) on N9K-C93180YC-FX.
   - Unsupported for Cisco MDS.
-  - The NetFlow commands only exist when C(feature netflow) is enabled, use M(cisco.nxos.nxos_feature) for it.
+  - The NetFlow commands only exist when C(feature netflow) is enabled, use C(cisco.nxos.nxos_feature) for it.
   - NX-OS 10.6(4) supports only C(version 9) exporters, no C(sampler) and no flow monitor cache settings.
   - A flow monitor has two exporters at most and its record can only be replaced, never removed.
   - Settings given with their default value, or a flag given as C(false), are removed from the device.
