@@ -1,0 +1,29 @@
+---
+- name: Make sure that 'feature netflow' is enabled
+  cisco.nxos.nxos_feature:
+    feature: netflow
+    state: enabled
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- name: Populate the flow monitors of the first interface
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+      - ip flow monitor NFI_V4 input
+      - ipv6 flow monitor NFI_V6 input
+    parents: "interface {{ nxos_int1 }}"
+
+- name: Populate the flow monitor of the second interface
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+      - ip flow monitor NFI_V4 input
+    parents: "interface {{ nxos_int2 }}"
+
+- name: Populate the Layer 2 flow monitor of the third interface
+  cisco.nxos.nxos_config:
+    lines:
+      - switchport
+      - layer2-switched flow monitor NFI_L2 input
+    parents: "interface {{ nxos_int3 }}"

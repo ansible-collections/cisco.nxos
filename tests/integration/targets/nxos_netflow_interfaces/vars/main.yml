@@ -1,0 +1,129 @@
+---
+# State created by tests/common/_populate_config.yaml, the interfaces are nxos_int1 to nxos_int3
+before:
+  - name: "{{ nxos_int1 }}"
+    flow_monitors:
+      - monitor: NFI_V4
+        direction: input
+        protocol: ipv4
+      - monitor: NFI_V6
+        direction: input
+        protocol: ipv6
+  - name: "{{ nxos_int2 }}"
+    flow_monitors:
+      - monitor: NFI_V4
+        direction: input
+        protocol: ipv4
+  - name: "{{ nxos_int3 }}"
+    flow_monitors:
+      - monitor: NFI_L2
+        direction: input
+        protocol: layer2_switched
+
+parsed:
+  - name: Ethernet1/1
+    flow_monitors:
+      - monitor: NFI_V4
+        direction: input
+        protocol: ipv4
+      - monitor: NFI_V6
+        direction: input
+        protocol: ipv6
+  - name: Ethernet1/2
+    flow_monitors:
+      - monitor: NFI_L2
+        direction: input
+        protocol: layer2_switched
+
+merged:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - no ip flow monitor NFI_V4 input
+    - ip flow monitor NFI_V4B input
+    - "interface {{ nxos_int2 }}"
+    - ipv6 flow monitor NFI_V6 input
+  after:
+    - name: "{{ nxos_int1 }}"
+      flow_monitors:
+        - monitor: NFI_V4B
+          direction: input
+          protocol: ipv4
+        - monitor: NFI_V6
+          direction: input
+          protocol: ipv6
+    - name: "{{ nxos_int2 }}"
+      flow_monitors:
+        - monitor: NFI_V4
+          direction: input
+          protocol: ipv4
+        - monitor: NFI_V6
+          direction: input
+          protocol: ipv6
+    - name: "{{ nxos_int3 }}"
+      flow_monitors:
+        - monitor: NFI_L2
+          direction: input
+          protocol: layer2_switched
+
+replaced:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - no ipv6 flow monitor NFI_V6 input
+    - "interface {{ nxos_int2 }}"
+    - no ip flow monitor NFI_V4 input
+    - ip flow monitor NFI_V4B input
+  after:
+    - name: "{{ nxos_int1 }}"
+      flow_monitors:
+        - monitor: NFI_V4
+          direction: input
+          protocol: ipv4
+    - name: "{{ nxos_int2 }}"
+      flow_monitors:
+        - monitor: NFI_V4B
+          direction: input
+          protocol: ipv4
+    - name: "{{ nxos_int3 }}"
+      flow_monitors:
+        - monitor: NFI_L2
+          direction: input
+          protocol: layer2_switched
+
+overridden:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - no ipv6 flow monitor NFI_V6 input
+    - "interface {{ nxos_int2 }}"
+    - no ip flow monitor NFI_V4 input
+    - "interface {{ nxos_int3 }}"
+    - no layer2-switched flow monitor NFI_L2 input
+  after:
+    - name: "{{ nxos_int1 }}"
+      flow_monitors:
+        - monitor: NFI_V4
+          direction: input
+          protocol: ipv4
+
+deleted:
+  commands:
+    - "interface {{ nxos_int1 }}"
+    - no ip flow monitor NFI_V4 input
+    - no ipv6 flow monitor NFI_V6 input
+  after:
+    - name: "{{ nxos_int2 }}"
+      flow_monitors:
+        - monitor: NFI_V4
+          direction: input
+          protocol: ipv4
+    - name: "{{ nxos_int3 }}"
+      flow_monitors:
+        - monitor: NFI_L2
+          direction: input
+          protocol: layer2_switched
+
+rendered:
+  commands:
+    - interface Ethernet1/3
+    - ip flow monitor NFI_V4 input
+    - ip flow monitor NFI_V4 output
+    - ipv6 flow monitor NFI_V6 input

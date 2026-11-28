@@ -20,6 +20,8 @@ available_network_resources:
   - lldp_global
   - lldp_interfaces
   - logging_global
+  - netflow_global
+  - netflow_interfaces
   - ntp_global
   - nve_interface
   - ospf_interfaces

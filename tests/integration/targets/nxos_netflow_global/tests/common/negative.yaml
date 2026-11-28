@@ -1,0 +1,196 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_netflow_global negative integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Reject what is checked before the device is touched
+      cisco.nxos.nxos_netflow_global:
+        config: "{{ item.config }}"
+        state: "{{ item.state | default('merged') }}"
+      register: result
+      ignore_errors: true
+      loop:
+        - config:
+            monitors:
+              - name: ansible_mon3
+                record: ansible_unknown_record
+          text: record 'ansible_unknown_record' that does not exist
+        - config:
+            monitors:
+              - name: ansible_mon3
+                exporters:
+                  - ansible_unknown_exporter
+          text: exporter 'ansible_unknown_exporter' that does not exist
+        - config:
+            exporters:
+              - name: ansible_exp3
+                destination:
+                  address: 192.0.2.30
+            monitors:
+              - name: ansible_mon3
+                exporters:
+                  - ansible_exp1
+                  - ansible_exp2
+                  - ansible_exp3
+          text: 2 exporters at most
+        - config:
+            records:
+              - name: ansible_rec1
+                match:
+                  ipv6:
+                    source_address: true
+          text: ipv4 and ipv6 matches cannot be mixed
+        - config:
+            records:
+              - name: ansible_rec2
+                match:
+                  ipv4:
+                    source_address: true
+          text: datalink (Layer 2) matches cannot be mixed
+        - config:
+            exporters:
+              - name: ansible_exp1
+                destination:
+                  address: 999.1.1.1
+          text: IPv4 or IPv6 address
+        - config:
+            exporters:
+              - name: ansible_exp1
+                dscp: 64
+          text: dscp must be in the range 0-63
+        - config:
+            timeout: 4
+          state: replaced
+          text: timeout must be in the range 5-60
+        - config:
+            timeout: abc
+          text: is of type
+        - config:
+            unknown_key: true
+          text: Unsupported parameters
+        - config:
+            exporters:
+              - description: no name
+          text: "missing required arguments: name"
+        - config:
+            monitors:
+              - name: ansible_mon3
+                record: ansible_unknown_record
+          state: overridden
+          text: record 'ansible_unknown_record' that does not exist
+
+    - name: Assert that all of them failed with the right message
+      ansible.builtin.assert:
+        that:
+          - item.failed
+          - item.item.text in item.msg
+      loop: "{{ result.results }}"
+      loop_control:
+        label: "{{ item.item.text }}"
+
+    - name: Gather the configuration
+      cisco.nxos.nxos_netflow_global:
+        state: gathered
+      register: result
+
+    - name: Assert that nothing was changed
+      ansible.builtin.assert:
+        that:
+          - before == result['gathered']
+
+    - name: The device rejects a source interface that does not exist (nothing else is changed)
+      cisco.nxos.nxos_netflow_global:
+        config:
+          exporters:
+            - name: ansible_exp1
+              source: nosuchinterface0
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the module failed with the message of the device
+      ansible.builtin.assert:
+        that:
+          - result.failed
+          - result.msg is search('nosuchinterface0|Invalid interface')
+
+    - name: Gather the configuration
+      cisco.nxos.nxos_netflow_global:
+        state: gathered
+      register: result
+
+    - name: Assert that nothing was changed
+      ansible.builtin.assert:
+        that:
+          - before == result['gathered']
+
+    - name: The names of the interfaces are accepted in any form (idempotent)
+      cisco.nxos.nxos_netflow_global:
+        config:
+          exporters:
+            - name: ansible_exp1
+              source: "{{ item }}"
+        state: merged
+      register: result
+      loop:
+        - Lo1
+        - LOOPBACK1
+        - loopback1
+        - Loopback1
+      failed_when: result.changed
+
+    - name: Check mode reports the commands and changes nothing
+      cisco.nxos.nxos_netflow_global:
+        config:
+          timeout: 50
+          exporters:
+            - name: ansible_exp9
+              destination:
+                address: 192.0.2.90
+        state: merged
+      register: result
+      check_mode: true
+
+    - name: Assert the commands of check mode
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - result.commands == ['flow timeout 50', 'flow exporter ansible_exp9', 'destination 192.0.2.90']
+
+    - name: Gather the configuration
+      cisco.nxos.nxos_netflow_global:
+        state: gathered
+      register: result
+
+    - name: Assert that nothing was changed
+      ansible.builtin.assert:
+        that:
+          - before == result['gathered']
+
+    - name: Deleting an exporter and a record that a monitor uses removes them from the monitor
+      cisco.nxos.nxos_netflow_global:
+        config:
+          exporters:
+            - name: ansible_exp1
+          records:
+            - name: ansible_rec1
+        state: deleted
+      register: result
+
+    - name: Gather the configuration
+      cisco.nxos.nxos_netflow_global:
+        state: gathered
+      register: result
+
+    - name: Assert that the monitor lost them and still exists
+      ansible.builtin.assert:
+        that:
+          - result.gathered.monitors | selectattr('name', 'equalto', 'ansible_mon1') | map(attribute='exporters') | first == ['ansible_exp2']
+          - (result.gathered.monitors | selectattr('name', 'equalto', 'ansible_mon1') | first).record is not defined
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

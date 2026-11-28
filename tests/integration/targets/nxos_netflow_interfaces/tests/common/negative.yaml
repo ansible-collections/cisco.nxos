@@ -1,0 +1,178 @@
+---
+- ansible.builtin.debug:
+    msg: "Start nxos_netflow_interfaces negative integration tests connection={{ ansible_connection }}"
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: A flow monitor that does not exist is rejected by the device
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_NOPE
+                direction: input
+        state: replaced
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the module failed with the message of the device
+      ansible.builtin.assert:
+        that:
+          - result is failed
+          - "'The device rejected a command' in result.msg"
+          - "'NFI_NOPE does not exist' in result.msg"
+          - "'ip flow monitor NFI_NOPE input' in result.commands"
+
+    - name: A flow monitor without an exporter is rejected by the device
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int2 }}"
+            flow_monitors:
+              - monitor: NFI_NOEXP
+                direction: input
+        state: replaced
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the module failed with the message of the device
+      ansible.builtin.assert:
+        that:
+          - result is failed
+          - "'No Exporter under the Monitor NFI_NOEXP' in result.msg"
+
+    - name: A Layer 2 flow monitor on a routed interface is rejected by the device
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int2 }}"
+            flow_monitors:
+              - monitor: NFI_L2
+                protocol: layer2_switched
+                direction: input
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the module failed
+      ansible.builtin.assert:
+        that:
+          - result is failed
+          - "'The device rejected a command' in result.msg"
+
+    # The commands are sent in one session, the removal of the old flow monitor before the
+    # rejected command stays applied. The populate tasks restore the interfaces.
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: The check mode reports the commands and changes nothing
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int2 }}"
+            flow_monitors:
+              - monitor: NFI_V4B
+                direction: input
+        state: replaced
+      check_mode: true
+      register: result
+
+    - name: Assert the commands of the check mode
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ["interface " + nxos_int2, "no ip flow monitor NFI_V4 input", "ip flow monitor NFI_V4B input"]
+
+    - name: Gather the flow monitors after the check mode
+      cisco.nxos.nxos_netflow_interfaces:
+        state: gathered
+      register: result
+
+    - name: Assert that the check mode changed nothing
+      ansible.builtin.assert:
+        that:
+          - before == result['gathered']
+
+    - name: Other spellings of the interface names are the same interfaces
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ item.name }}"
+            flow_monitors: "{{ item.flow_monitors }}"
+        state: merged
+      loop:
+        - name: eth1/2
+          flow_monitors:
+            - monitor: NFI_V4
+              direction: input
+        - name: ETHERNET1/1
+          flow_monitors:
+            - monitor: NFI_V4
+              direction: input
+      register: result
+
+    - name: Assert that the spellings were idempotent
+      ansible.builtin.assert:
+        that:
+          - result.results | map(attribute='changed') | list == [false, false]
+
+    - name: Wrong values are rejected before the device is used
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_V4
+                direction: sideways
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the value was rejected
+      ansible.builtin.assert:
+        that:
+          - result is failed
+          - "'must be one of: input, output' in result.msg"
+
+    - name: Two flow monitors for the same protocol and direction are rejected
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            flow_monitors:
+              - monitor: NFI_V4
+                direction: input
+              - monitor: NFI_V4B
+                direction: input
+        state: merged
+      register: result
+      ignore_errors: true
+
+    - name: Assert that the duplicate was rejected
+      ansible.builtin.assert:
+        that:
+          - result is failed
+          - "'only one flow monitor is possible' in result.msg"
+
+    - name: Deleting what does not exist changes nothing
+      cisco.nxos.nxos_netflow_interfaces:
+        config:
+          - name: Ethernet1/48
+        state: deleted
+      register: result
+
+    - name: Assert that nothing changed
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - name: Parse a configuration that has nothing to do with the flow monitors
+      cisco.nxos.nxos_netflow_interfaces:
+        running_config: "garbage\ninterface\n  ip flow monitor\n"
+        state: parsed
+      register: result
+
+    - name: Assert that nothing was parsed
+      ansible.builtin.assert:
+        that:
+          - result.parsed == []
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

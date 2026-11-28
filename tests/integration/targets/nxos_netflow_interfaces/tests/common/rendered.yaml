@@ -1,0 +1,25 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_netflow_interfaces rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_netflow_interfaces:
+    config:
+      - name: Eth1/3
+        flow_monitors:
+          - monitor: NFI_V4
+            direction: input
+          - monitor: NFI_V6
+            protocol: ipv6
+            direction: input
+          - monitor: NFI_V4
+            protocol: ipv4
+            direction: output
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] | sort == result['rendered'] | sort
+      - result.changed == false
