@@ -73,6 +73,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos_lldp_interfaces
     logging_global:
       redirect: cisco.nxos.nxos_logging_global
+    netflow_global:
+      redirect: cisco.nxos.nxos_netflow_global
+    netflow_interfaces:
+      redirect: cisco.nxos.nxos_netflow_interfaces
     ntp_global:
       redirect: cisco.nxos.nxos_ntp_global
     nve_interface:
@@ -237,6 +241,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos_lldp_interfaces
     logging_global:
       redirect: cisco.nxos.nxos_logging_global
+    netflow_global:
+      redirect: cisco.nxos.nxos_netflow_global
+    netflow_interfaces:
+      redirect: cisco.nxos.nxos_netflow_interfaces
     ntp_global:
       redirect: cisco.nxos.nxos_ntp_global
     nve_interface:

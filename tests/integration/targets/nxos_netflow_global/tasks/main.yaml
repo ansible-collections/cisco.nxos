@@ -1,0 +1,54 @@
+---
+# NetFlow needs 'feature netflow'. Enabling it is the only prerequisite, a platform without NetFlow
+# support (for example a virtual switch) makes the tests skip instead of fail.
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Read whether 'feature netflow' is enabled
+      cisco.nxos.nxos_command:
+        commands:
+          - show feature | include netflow
+      register: netflow_feature_before
+      connection: ansible.netcommon.network_cli
+
+    - name: Enable 'feature netflow'
+      cisco.nxos.nxos_feature:
+        feature: netflow
+        state: enabled
+      register: netflow_feature
+      ignore_errors: true
+      connection: ansible.netcommon.network_cli
+
+    - name: Note that the tests are skipped
+      ansible.builtin.debug:
+        msg: "Skipping nxos_netflow_global integration tests: 'feature netflow' cannot be enabled on this platform."
+      when: netflow_feature is failed
+
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      when: netflow_feature is not failed
+      tags:
+        - cli
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      when: netflow_feature is not failed
+      tags:
+        - nxapi
+  always:
+    - name: Remove all NetFlow configuration
+      cisco.nxos.nxos_netflow_global:
+        state: deleted
+      failed_when: false
+      when: netflow_feature is defined and netflow_feature is not failed
+      connection: ansible.netcommon.network_cli
+
+    - name: Disable 'feature netflow' when the tests enabled it
+      cisco.nxos.nxos_feature:
+        feature: netflow
+        state: disabled
+      failed_when: false
+      when:
+        - netflow_feature is defined
+        - netflow_feature is not failed
+        - netflow_feature is changed
+      connection: ansible.netcommon.network_cli

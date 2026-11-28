@@ -1,0 +1,34 @@
+flow exporter ansible_exp1
+  description Collector 1
+  destination 192.0.2.10 use-vrf management
+  transport udp 9996
+  source loopback2
+  version 9
+    template data timeout 600
+    option exporter-stats timeout 300
+    option interface-table timeout 400
+flow exporter ansible_exp2
+  destination 198.51.100.5
+  version 9
+flow exporter ansible_exp3
+  destination 2001:db8::1 use-vrf management
+  version 9
+flow record ansible_rec1
+  description IPv4 flows
+  match ipv4 source address
+  match ipv4 destination address
+  match ip protocol
+  collect counter bytes
+  collect counter packets
+flow record ansible_rec2
+  match datalink mac source-address
+  collect counter packets
+flow monitor ansible_mon1
+  description Monitor 1
+  record ansible_rec1
+  exporter ansible_exp1
+  exporter ansible_exp2
+flow monitor ansible_mon2
+  description Monitor 2
+  record netflow ipv4 original-input
+  exporter ansible_exp2

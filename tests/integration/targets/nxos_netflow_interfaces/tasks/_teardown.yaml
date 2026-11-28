@@ -1,0 +1,27 @@
+---
+- name: Remove the flow monitors, exporter and records
+  cisco.nxos.nxos_config:
+    lines:
+      - no flow monitor NFI_V4
+      - no flow monitor NFI_V4B
+      - no flow monitor NFI_V6
+      - no flow monitor NFI_L2
+      - no flow monitor NFI_NOEXP
+      - no flow exporter NFI_EXP
+      - no flow record NFI_REC4
+      - no flow record NFI_REC6
+      - no flow record NFI_REC2
+  failed_when: false
+  connection: ansible.netcommon.network_cli
+
+- name: Make the interfaces routed ports again
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+    parents: "interface {{ item }}"
+  loop:
+    - "{{ nxos_int1 }}"
+    - "{{ nxos_int2 }}"
+    - "{{ nxos_int3 }}"
+  failed_when: false
+  connection: ansible.netcommon.network_cli

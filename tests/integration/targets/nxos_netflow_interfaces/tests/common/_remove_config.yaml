@@ -1,0 +1,6 @@
+---
+- name: Remove the flow monitors of the interfaces
+  cisco.nxos.nxos_netflow_interfaces:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

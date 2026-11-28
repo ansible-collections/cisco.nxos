@@ -1,0 +1,56 @@
+---
+# The flow monitor commands of an interface need 'feature netflow' and flow monitors that have a record and an
+# exporter. They are created here with nxos_config, so the tests do not depend on another module. A platform
+# without NetFlow support (for example a virtual switch) makes the tests skip instead of fail.
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Enable 'feature netflow'
+      cisco.nxos.nxos_feature:
+        feature: netflow
+        state: enabled
+      register: netflow_feature
+      ignore_errors: true
+      connection: ansible.netcommon.network_cli
+
+    - name: Note that the tests are skipped
+      ansible.builtin.debug:
+        msg: "Skipping nxos_netflow_interfaces integration tests: 'feature netflow' cannot be enabled on this platform."
+      when: netflow_feature is failed
+
+    - name: Create the flow records, exporter and monitors
+      ansible.builtin.include_tasks: _setup.yaml
+      when: netflow_feature is not failed
+
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      when: netflow_feature is not failed
+      tags:
+        - cli
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      when: netflow_feature is not failed
+      tags:
+        - nxapi
+  always:
+    - name: Remove the flow monitors of the interfaces
+      cisco.nxos.nxos_netflow_interfaces:
+        state: deleted
+      failed_when: false
+      when: netflow_feature is defined and netflow_feature is not failed
+      connection: ansible.netcommon.network_cli
+
+    - name: Remove the flow records, exporter and monitors
+      ansible.builtin.include_tasks: _teardown.yaml
+      when: netflow_feature is defined and netflow_feature is not failed
+
+    - name: Disable 'feature netflow' when the tests enabled it
+      cisco.nxos.nxos_feature:
+        feature: netflow
+        state: disabled
+      failed_when: false
+      when:
+        - netflow_feature is defined
+        - netflow_feature is not failed
+        - netflow_feature is changed
+      connection: ansible.netcommon.network_cli

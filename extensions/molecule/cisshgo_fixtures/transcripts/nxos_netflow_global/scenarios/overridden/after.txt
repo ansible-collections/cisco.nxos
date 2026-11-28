@@ -1,0 +1,10 @@
+flow exporter ansible_exp2
+  destination 198.51.100.5
+  version 9
+flow record ansible_rec1
+  match ipv4 source address
+  match ipv4 destination address
+  collect counter bytes
+flow monitor ansible_mon1
+  record ansible_rec1
+  exporter ansible_exp2

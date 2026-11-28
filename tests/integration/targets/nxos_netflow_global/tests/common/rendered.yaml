@@ -1,0 +1,56 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_netflow_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_netflow_global:
+    config:
+      timeout: 20
+      exporters:
+        - name: ansible_exp1
+          description: Collector 1
+          destination:
+            address: 192.0.2.10
+            vrf: management
+          source: Eth1/1
+          transport_udp: 9996
+          dscp: 10
+          template_data_timeout: 600
+          option_exporter_stats_timeout: 300
+          option_interface_table_timeout: 400
+      records:
+        - name: ansible_rec1
+          description: IPv4 flows
+          match:
+            ipv4:
+              source_address: true
+              destination_address: true
+            ip:
+              protocol: true
+              tos: true
+            transport:
+              source_port: true
+              destination_port: true
+          collect:
+            counter:
+              bytes: true
+              packets: true
+            timestamp_sys_uptime:
+              first: true
+              last: true
+            transport_tcp_flags: true
+            ip_version: true
+      monitors:
+        - name: ansible_mon1
+          description: Monitor 1
+          record: ansible_rec1
+          exporters:
+            - ansible_exp1
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - rendered['commands'] == result['rendered']
+      - result.changed == false

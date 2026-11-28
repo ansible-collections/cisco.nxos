@@ -1,0 +1,283 @@
+---
+# State created by tests/common/_populate_config.yaml
+before:
+  exporters:
+    - description: Collector 1
+      destination:
+        address: 192.0.2.10
+        vrf: management
+      dscp: 10
+      name: ansible_exp1
+      option_exporter_stats_timeout: 300
+      source: loopback1
+      template_data_timeout: 600
+      transport_udp: 9996
+    - destination:
+        address: 198.51.100.5
+      name: ansible_exp2
+  monitors:
+    - description: Monitor 1
+      exporters:
+        - ansible_exp1
+        - ansible_exp2
+      name: ansible_mon1
+      record: ansible_rec1
+    - exporters:
+        - ansible_exp2
+      name: ansible_mon2
+      record: netflow-original
+  records:
+    - collect:
+        counter:
+          bytes: true
+      description: IPv4 flows
+      match:
+        ipv4:
+          destination_address: true
+          source_address: true
+        transport:
+          source_port: true
+      name: ansible_rec1
+    - collect:
+        counter:
+          packets: true
+      match:
+        datalink:
+          mac_source_address: true
+      name: ansible_rec2
+  timeout: 30
+merged:
+  after:
+    exporters:
+      - description: Collector 1
+        destination:
+          address: 192.0.2.10
+          vrf: management
+        name: ansible_exp1
+        option_exporter_stats_timeout: 300
+        option_interface_table_timeout: 400
+        source: loopback2
+        template_data_timeout: 600
+        transport_udp: 9996
+      - destination:
+          address: 198.51.100.5
+        name: ansible_exp2
+      - destination:
+          address: 2001:db8::1
+          vrf: management
+        name: ansible_exp3
+    monitors:
+      - description: Monitor 1
+        exporters:
+          - ansible_exp1
+          - ansible_exp2
+        name: ansible_mon1
+        record: ansible_rec1
+      - description: Monitor 2
+        exporters:
+          - ansible_exp2
+        name: ansible_mon2
+        record: netflow ipv4 original-input
+    records:
+      - collect:
+          counter:
+            bytes: true
+            packets: true
+        description: IPv4 flows
+        match:
+          ip:
+            protocol: true
+          ipv4:
+            destination_address: true
+            source_address: true
+        name: ansible_rec1
+      - collect:
+          counter:
+            packets: true
+        match:
+          datalink:
+            mac_source_address: true
+        name: ansible_rec2
+  commands:
+    - no flow timeout
+    - flow exporter ansible_exp1
+    - no dscp
+    - source loopback2
+    - version 9
+    - option interface-table timeout 400
+    - flow exporter ansible_exp3
+    - destination 2001:db8::1 use-vrf management
+    - flow record ansible_rec1
+    - no match transport source-port
+    - match ip protocol
+    - collect counter packets
+    - flow monitor ansible_mon2
+    - description Monitor 2
+    - record netflow ipv4 original-input
+replaced:
+  after:
+    exporters:
+      - destination:
+          address: 192.0.2.20
+        name: ansible_exp1
+        source: loopback2
+      - destination:
+          address: 198.51.100.5
+        name: ansible_exp2
+    monitors:
+      - exporters:
+          - ansible_exp2
+        name: ansible_mon1
+        record: ansible_rec1
+      - exporters:
+          - ansible_exp2
+        name: ansible_mon2
+        record: netflow-original
+    records:
+      - collect:
+          counter:
+            bytes: true
+        description: IPv4 flows
+        match:
+          ipv4:
+            destination_address: true
+            source_address: true
+          transport:
+            source_port: true
+        name: ansible_rec1
+      - collect:
+          counter:
+            bytes: true
+        match:
+          ipv6:
+            destination_address: true
+            source_address: true
+        name: ansible_rec2
+    timeout: 30
+  commands:
+    - flow monitor ansible_mon1
+    - no description
+    - no exporter ansible_exp1
+    - flow exporter ansible_exp1
+    - no description
+    - no transport udp
+    - no dscp
+    - destination 192.0.2.20 use-vrf default
+    - source loopback2
+    - version 9
+    - template data timeout 15
+    - option exporter-stats timeout 0
+    - flow record ansible_rec2
+    - no match datalink mac source-address
+    - no collect counter packets
+    - match ipv6 source address
+    - match ipv6 destination address
+    - collect counter bytes
+overridden:
+  after:
+    exporters:
+      - destination:
+          address: 198.51.100.5
+        name: ansible_exp2
+    monitors:
+      - exporters:
+          - ansible_exp2
+        name: ansible_mon1
+        record: ansible_rec1
+    records:
+      - collect:
+          counter:
+            bytes: true
+        match:
+          ipv4:
+            destination_address: true
+            source_address: true
+        name: ansible_rec1
+  commands:
+    - flow monitor ansible_mon1
+    - no description
+    - no exporter ansible_exp1
+    - no flow monitor ansible_mon2
+    - no flow record ansible_rec2
+    - no flow exporter ansible_exp1
+    - no flow timeout
+    - flow record ansible_rec1
+    - no description
+    - no match transport source-port
+deleted:
+  after: {}
+  commands:
+    - no flow monitor ansible_mon1
+    - no flow monitor ansible_mon2
+    - no flow record ansible_rec1
+    - no flow record ansible_rec2
+    - no flow exporter ansible_exp1
+    - no flow exporter ansible_exp2
+    - no flow timeout
+deleted_selected:
+  after:
+    exporters:
+      - description: Collector 1
+        destination:
+          address: 192.0.2.10
+          vrf: management
+        dscp: 10
+        name: ansible_exp1
+        option_exporter_stats_timeout: 300
+        source: loopback1
+        template_data_timeout: 600
+        transport_udp: 9996
+    monitors:
+      - description: Monitor 1
+        exporters:
+          - ansible_exp1
+        name: ansible_mon1
+        record: ansible_rec1
+    records:
+      - collect:
+          counter:
+            bytes: true
+        description: IPv4 flows
+        match:
+          ipv4:
+            destination_address: true
+            source_address: true
+          transport:
+            source_port: true
+        name: ansible_rec1
+    timeout: 30
+  commands:
+    - no flow monitor ansible_mon2
+    - no flow record ansible_rec2
+    - no flow exporter ansible_exp2
+rendered:
+  commands:
+    - flow timeout 20
+    - flow exporter ansible_exp1
+    - description Collector 1
+    - destination 192.0.2.10 use-vrf management
+    - transport udp 9996
+    - source Ethernet1/1
+    - dscp 10
+    - version 9
+    - template data timeout 600
+    - option exporter-stats timeout 300
+    - option interface-table timeout 400
+    - flow record ansible_rec1
+    - description IPv4 flows
+    - match ip protocol
+    - match ip tos
+    - match ipv4 source address
+    - match ipv4 destination address
+    - match transport source-port
+    - match transport destination-port
+    - collect counter bytes
+    - collect counter packets
+    - collect timestamp sys-uptime first
+    - collect timestamp sys-uptime last
+    - collect transport tcp flags
+    - collect ip version
+    - flow monitor ansible_mon1
+    - description Monitor 1
+    - record ansible_rec1
+    - exporter ansible_exp1

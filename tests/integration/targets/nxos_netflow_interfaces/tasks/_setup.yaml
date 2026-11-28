@@ -1,0 +1,55 @@
+---
+- name: Create the flow records
+  cisco.nxos.nxos_config:
+    lines: "{{ item.lines }}"
+    parents: "flow record {{ item.name }}"
+  loop:
+    - name: NFI_REC4
+      lines:
+        - match ipv4 source address
+        - match ipv4 destination address
+        - collect counter bytes
+    - name: NFI_REC6
+      lines:
+        - match ipv6 source address
+        - match ipv6 destination address
+        - collect counter bytes
+    - name: NFI_REC2
+      lines:
+        - match datalink mac source-address
+        - match datalink mac destination-address
+        - collect counter bytes
+  loop_control:
+    label: "{{ item.name }}"
+  connection: ansible.netcommon.network_cli
+
+- name: Create the flow exporter
+  cisco.nxos.nxos_config:
+    lines:
+      - destination 192.0.2.10
+      - source mgmt0
+      - version 9
+    parents: flow exporter NFI_EXP
+  connection: ansible.netcommon.network_cli
+
+- name: Create the flow monitors
+  cisco.nxos.nxos_config:
+    lines:
+      - "record {{ item.record }}"
+      - exporter NFI_EXP
+    parents: "flow monitor {{ item.name }}"
+  loop:
+    - { name: NFI_V4, record: NFI_REC4 }
+    - { name: NFI_V4B, record: NFI_REC4 }
+    - { name: NFI_V6, record: NFI_REC6 }
+    - { name: NFI_L2, record: NFI_REC2 }
+  loop_control:
+    label: "{{ item.name }}"
+  connection: ansible.netcommon.network_cli
+
+- name: Create a flow monitor without an exporter
+  cisco.nxos.nxos_config:
+    lines:
+      - record NFI_REC4
+    parents: flow monitor NFI_NOEXP
+  connection: ansible.netcommon.network_cli
